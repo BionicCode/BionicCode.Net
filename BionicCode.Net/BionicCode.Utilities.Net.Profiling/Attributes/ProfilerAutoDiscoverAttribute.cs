@@ -10,7 +10,7 @@
         }
 
         public ProfilerAutoDiscoverAttribute(params Type[] genericTypeParameters)
-          => this.GenericTypeParameters = genericTypeParameters;
+          => GenericTypeParameters = genericTypeParameters;
 
         public Type[] GenericTypeParameters { get; }
     }

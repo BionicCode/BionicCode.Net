@@ -23,8 +23,8 @@
         /// <param name="oldValue">The old value that was replaced by the new value.</param>
         public ValueChangedEventArgs(TValue newValue, TValue oldValue)
         {
-            this.NewValue = newValue;
-            this.OldValue = oldValue;
+            NewValue = newValue;
+            OldValue = oldValue;
         }
 
         /// <summary>

@@ -7,21 +7,21 @@
     {
         public ChartTable(int dataSetCount, int dataColumnOffset)
         {
-            this.Rows = new List<ChartTableRow>();
-            this.Columns = new List<ChartTableColumn>();
-            this.SeriesResultToRowIndexMap = new List<SeriesResultToRowIndexMap>();
-            this.DataSetCount = dataSetCount;
-            this.DataColumnOffset = dataColumnOffset;
+            Rows = new List<ChartTableRow>();
+            Columns = new List<ChartTableColumn>();
+            SeriesResultToRowIndexMap = new List<SeriesResultToRowIndexMap>();
+            DataSetCount = dataSetCount;
+            DataColumnOffset = dataColumnOffset;
         }
 
-        public ChartTableRowBuilder CreateTableRowBuilder() => new ChartTableRowBuilder(this, this.ColumnCount);
+        public ChartTableRowBuilder CreateTableRowBuilder() => new ChartTableRowBuilder(this, ColumnCount);
 
-        public void AddRow(ChartTableRow row) => this.Rows.Add(row);
-        public void AddColumn(ChartTableColumn column) => this.Columns.Add(column);
+        public void AddRow(ChartTableRow row) => Rows.Add(row);
+        public void AddColumn(ChartTableColumn column) => Columns.Add(column);
         public SeriesResultToRowIndexMap AddResultMapperEntry(int originalProfilerResultCount)
         {
             var seriesMapper = new SeriesResultToRowIndexMap(originalProfilerResultCount);
-            this.SeriesResultToRowIndexMap.Add(seriesMapper);
+            SeriesResultToRowIndexMap.Add(seriesMapper);
 
             return seriesMapper;
         }
@@ -45,17 +45,17 @@
         public ChartOptions Options { get; set; }
 
         [JsonIgnore]
-        public int ColumnCount => this.Columns.Count;
+        public int ColumnCount => Columns.Count;
         [JsonIgnore]
-        public int RowCount => this.Rows.Count;
+        public int RowCount => Rows.Count;
     }
 
     internal class SeriesResultToRowIndexMap
     {
         public SeriesResultToRowIndexMap(int capacity)
-          => this.ResultToRowIndexMap = new ResultMapperEntry[capacity];
+          => ResultToRowIndexMap = new ResultMapperEntry[capacity];
 
-        public void AddResultMapperEntry(int resultIndex, int rowIndex) => this.ResultToRowIndexMap[resultIndex] = new ResultMapperEntry(resultIndex, rowIndex);
+        public void AddResultMapperEntry(int resultIndex, int rowIndex) => ResultToRowIndexMap[resultIndex] = new ResultMapperEntry(resultIndex, rowIndex);
 
         [JsonPropertyName("resultToRowIndexMap")]
         public ResultMapperEntry[] ResultToRowIndexMap { get; }
@@ -65,8 +65,8 @@
     {
         public ResultMapperEntry(int resultIndex, int tableRowIndex)
         {
-            this.ResultIndex = resultIndex;
-            this.TableRowIndex = tableRowIndex;
+            ResultIndex = resultIndex;
+            TableRowIndex = tableRowIndex;
         }
 
         [JsonPropertyName("resultIndex")]

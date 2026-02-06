@@ -8,21 +8,21 @@
         public string SourceFilePath { get; }
         public Runtime TargetFramework { get; }
         public bool IsStatic { get; }
-        public string Name => this.MemberInfoData.Name;
-        public string DisplayName => this.MemberInfoData.DisplayName;
-        public string ShortDisplayName => this.MemberInfoData.ShortDisplayName;
-        public string Namespace => this.MemberInfoData.Namespace;
-        public string Signature => this.MemberInfoData.Signature;
-        public string ShortSignature => this.MemberInfoData.ShortSignature;
-        public string ShortCompactSignature => this.MemberInfoData.ShortCompactSignature;
+        public string Name => MemberInfoData.Name;
+        public string DisplayName => MemberInfoData.DisplayName;
+        public string ShortDisplayName => MemberInfoData.ShortDisplayName;
+        public string Namespace => MemberInfoData.Namespace;
+        public string Signature => MemberInfoData.Signature;
+        public string ShortSignature => MemberInfoData.ShortSignature;
+        public string ShortCompactSignature => MemberInfoData.ShortCompactSignature;
 
         protected ProfiledMemberInfo(bool isStatic, string assemblyName, int lineNumber, string sourceFilePath, Runtime targetFramework)
         {
-            this.IsStatic = isStatic;
-            this.AssemblyName = assemblyName;
-            this.LineNumber = lineNumber;
-            this.SourceFilePath = sourceFilePath;
-            this.TargetFramework = targetFramework;
+            IsStatic = isStatic;
+            AssemblyName = assemblyName;
+            LineNumber = lineNumber;
+            SourceFilePath = sourceFilePath;
+            TargetFramework = targetFramework;
         }
     }
 }

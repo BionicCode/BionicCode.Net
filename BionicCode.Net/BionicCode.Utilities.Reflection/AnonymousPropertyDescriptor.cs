@@ -76,11 +76,11 @@
                 [PropertyAccessors.None],
                 $"invalid argument '{nameof(declaredPropertyAccessors)}'. A property must declare at least a getter or a setter.");
 
-            this.HasPropertyGetAccessor = (declaredPropertyAccessors & PropertyAccessors.Get) != 0;
-            this.HasPropertySetAccessor = (declaredPropertyAccessors & PropertyAccessors.Set) != 0;
+            HasPropertyGetAccessor = (declaredPropertyAccessors & PropertyAccessors.Get) != 0;
+            HasPropertySetAccessor = (declaredPropertyAccessors & PropertyAccessors.Set) != 0;
 
-            this.IndexerGetterMethodParameterInfoList = indexerGetterParameters.OrEmpty();
-            this.IndexerSetterMethodParameterInfoList = indexerSetterParameters.OrEmpty();
+            IndexerGetterMethodParameterInfoList = indexerGetterParameters.OrEmpty();
+            IndexerSetterMethodParameterInfoList = indexerSetterParameters.OrEmpty();
 
             if (isExplicitInterfaceImplementation)
             {
@@ -104,17 +104,17 @@
                     $"Invalid argument '{nameof(implementingTypeHandle)}'. The argument '{nameof(implementingTypeHandle)}' points to a interface type. Reason: Only non-interface types can provide the explicit interface implementations.");
             }
 
-            this.ImplementingTypeHandle = declaringTypeHandle;
-            this.DeclaringInterfaceTypeHandle = isExplicitInterfaceImplementation
+            ImplementingTypeHandle = declaringTypeHandle;
+            DeclaringInterfaceTypeHandle = isExplicitInterfaceImplementation
                 ? implementingTypeHandle!.Value
                 : default;
-            this.PropertyName = propertyName;
-            this.DeclaredAccessors = declaredPropertyAccessors;
-            this.IsIndexerProperty = this.IndexerGetterMethodParameterInfoList.HasItems || this.IndexerSetterMethodParameterInfoList.HasItems;
-            this.IndexerGetterMethodParameterInfoList = indexerGetterParameters;
-            this.IndexerSetterMethodParameterInfoList = indexerSetterParameters;
-            this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
-            this.IsAnonymous = true;
+            PropertyName = propertyName;
+            DeclaredAccessors = declaredPropertyAccessors;
+            IsIndexerProperty = IndexerGetterMethodParameterInfoList.HasItems || IndexerSetterMethodParameterInfoList.HasItems;
+            IndexerGetterMethodParameterInfoList = indexerGetterParameters;
+            IndexerSetterMethodParameterInfoList = indexerSetterParameters;
+            IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
+            IsAnonymous = true;
         }
 
         public RuntimeTypeHandle ImplementingTypeHandle { get; }
@@ -130,30 +130,30 @@
         public bool HasPropertySetAccessor { get; }
 
         public bool Equals(AnonymousPropertyDescriptor other)
-            => this.ImplementingTypeHandle.Equals(other.ImplementingTypeHandle)
-            && this.DeclaringInterfaceTypeHandle.Equals(other.DeclaringInterfaceTypeHandle)
-            && this.PropertyName.Equals(other.PropertyName, StringComparison.Ordinal)
-            && this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-            && this.IndexerGetterMethodParameterInfoList.Equals(other.IndexerGetterMethodParameterInfoList)
-            && this.IndexerSetterMethodParameterInfoList.Equals(other.IndexerSetterMethodParameterInfoList)
-            && this.IsIndexerProperty == other.IsIndexerProperty
-            && this.IsAnonymous == other.IsAnonymous
-            && this.HasPropertyGetAccessor == other.HasPropertyGetAccessor
-            && this.HasPropertySetAccessor == other.HasPropertySetAccessor;
+            => ImplementingTypeHandle.Equals(other.ImplementingTypeHandle)
+            && DeclaringInterfaceTypeHandle.Equals(other.DeclaringInterfaceTypeHandle)
+            && PropertyName.Equals(other.PropertyName, StringComparison.Ordinal)
+            && IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
+            && IndexerGetterMethodParameterInfoList.Equals(other.IndexerGetterMethodParameterInfoList)
+            && IndexerSetterMethodParameterInfoList.Equals(other.IndexerSetterMethodParameterInfoList)
+            && IsIndexerProperty == other.IsIndexerProperty
+            && IsAnonymous == other.IsAnonymous
+            && HasPropertyGetAccessor == other.HasPropertyGetAccessor
+            && HasPropertySetAccessor == other.HasPropertySetAccessor;
 
         public override int GetHashCode()
         {
             var hasCode = new HashCode();
-            hasCode.Add(this.ImplementingTypeHandle);
-            hasCode.Add(this.DeclaringInterfaceTypeHandle);
-            hasCode.Add(this.PropertyName);
-            hasCode.Add(this.IsExplicitInterfaceImplementation);
-            hasCode.Add(this.IndexerGetterMethodParameterInfoList);
-            hasCode.Add(this.IndexerSetterMethodParameterInfoList);
-            hasCode.Add(this.IsIndexerProperty);
-            hasCode.Add(this.HasPropertyGetAccessor);
-            hasCode.Add(this.HasPropertySetAccessor);
-            hasCode.Add(this.IsAnonymous);
+            hasCode.Add(ImplementingTypeHandle);
+            hasCode.Add(DeclaringInterfaceTypeHandle);
+            hasCode.Add(PropertyName);
+            hasCode.Add(IsExplicitInterfaceImplementation);
+            hasCode.Add(IndexerGetterMethodParameterInfoList);
+            hasCode.Add(IndexerSetterMethodParameterInfoList);
+            hasCode.Add(IsIndexerProperty);
+            hasCode.Add(HasPropertyGetAccessor);
+            hasCode.Add(HasPropertySetAccessor);
+            hasCode.Add(IsAnonymous);
 
             return hasCode.ToHashCode();
         }

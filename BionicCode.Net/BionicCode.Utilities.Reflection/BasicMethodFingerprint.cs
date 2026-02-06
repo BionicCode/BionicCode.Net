@@ -20,13 +20,13 @@
             ArgumentNullException.ThrowIfNull(parameters, nameof(parameters));
             ArgumentNullException.ThrowIfNull(genericMethodParameters, nameof(genericMethodParameters));
 
-            this.MethodName = methodName;
-            this.DeclaringTypeData = declaringTypeHandle;
-            this.ReturnTypeData = returnTypeHandle;
-            this.Parameters = parameters;
-            this.GenericMethodParameters = genericMethodParameters;
+            MethodName = methodName;
+            DeclaringTypeData = declaringTypeHandle;
+            ReturnTypeData = returnTypeHandle;
+            Parameters = parameters;
+            GenericMethodParameters = genericMethodParameters;
 
-            this._hashCode = ComputeHashCode();
+            _hashCode = ComputeHashCode();
         }
 
         public string MethodName { get; }
@@ -36,25 +36,25 @@
         public TypeList GenericMethodParameters { get; }
         private readonly int _hashCode;
 
-        public bool Equals(BasicMethodFingerprint other) => this.MethodName.Equals(other.MethodName, StringComparison.Ordinal)
-            && this.DeclaringTypeData.Equals(other.DeclaringTypeData)
-            && this.ReturnTypeData.Equals(other.ReturnTypeData)
-            && this.Parameters == other.Parameters
-            && this.GenericMethodParameters == other.GenericMethodParameters;
+        public bool Equals(BasicMethodFingerprint other) => MethodName.Equals(other.MethodName, StringComparison.Ordinal)
+            && DeclaringTypeData.Equals(other.DeclaringTypeData)
+            && ReturnTypeData.Equals(other.ReturnTypeData)
+            && Parameters == other.Parameters
+            && GenericMethodParameters == other.GenericMethodParameters;
 
         public override bool Equals([NotNullWhen(true)] object? obj)
             => obj is BasicMethodFingerprint basicMethodFingerprint && Equals(basicMethodFingerprint);
         public override int GetHashCode()
-            => this._hashCode;
+            => _hashCode;
 
         private int ComputeHashCode()
         {
             return HashCode.Combine(
-                this.MethodName,
-                this.DeclaringTypeData,
-                this.ReturnTypeData,
-                this.Parameters,
-                this.GenericMethodParameters);
+                MethodName,
+                DeclaringTypeData,
+                ReturnTypeData,
+                Parameters,
+                GenericMethodParameters);
         }
 
         public static bool operator ==(BasicMethodFingerprint left, BasicMethodFingerprint right) => left.Equals(right);

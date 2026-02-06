@@ -22,15 +22,15 @@
 
         internal ProfilerResult(int iteration, bool isProfiledTaskCancelled, Microseconds elapsedTime, Microseconds deviation, ProfilerBatchResult owner, int argumentListIndex)
         {
-            this.Owner = owner;
-            this.Iteration = iteration;
-            this.IsProfiledTaskCancelled = isProfiledTaskCancelled;
-            this.ElapsedTime = elapsedTime;
-            this.deviation = deviation;
-            this.ArgumentListIndex = argumentListIndex;
+            Owner = owner;
+            Iteration = iteration;
+            IsProfiledTaskCancelled = isProfiledTaskCancelled;
+            ElapsedTime = elapsedTime;
+            deviation = deviation;
+            ArgumentListIndex = argumentListIndex;
         }
 
-        internal Microseconds GetDeviation() => this.ElapsedTime - (this.Owner?.AverageDuration ?? Microseconds.Zero);
+        internal Microseconds GetDeviation() => ElapsedTime - (Owner?.AverageDuration ?? Microseconds.Zero);
 
         /// <summary>
         /// The duration of the benchmark run in microseconds.
@@ -42,7 +42,7 @@
         /// The duration of the benchmark run converted to the base unit.
         /// </summary>
         /// <value>The duration converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
-        public double ElapsedTimeConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.ElapsedTime, true);
+        public double ElapsedTimeConverted => TimeValueConverter.ConvertTo(BaseUnit, ElapsedTime, true);
 
         private Microseconds deviation;
 
@@ -50,20 +50,20 @@
         /// The deviation from the arithmetic mean in microseconds.
         /// </summary>
         /// <value>A positive or negative value to describe the deviation from the arithmetic mean in microseconds.</value>
-        public Microseconds Deviation => this.deviation == Microseconds.MinValue
-          ? (this.deviation = GetDeviation())
-          : this.deviation;
+        public Microseconds Deviation => deviation == Microseconds.MinValue
+          ? (deviation = GetDeviation())
+          : deviation;
 
         /// <summary>
         /// The deviation from the arithmetic mean converted to the base unit.
         /// </summary>
         /// <value>A positive or negative value to describe the deviation from the arithmetic mean. the value is converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
-        public double DeviationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.Deviation, true);
+        public double DeviationConverted => TimeValueConverter.ConvertTo(BaseUnit, Deviation, true);
 
         /// <summary>
         /// The base unit used to calculate the values for <see cref="DeviationConverted"/> and <see cref="ElapsedTimeConverted"/>.
         /// </summary>
-        public TimeUnit BaseUnit => this.Owner?.BaseUnit ?? TimeUnit.Microsecond;
+        public TimeUnit BaseUnit => Owner?.BaseUnit ?? TimeUnit.Microsecond;
 
         /// <summary>
         /// In case the benchmarked operation is an async method, <see cref="IsProfiledTaskCancelled"/> indicates whether the <see langword="async"/>operation was cancelled or not.
@@ -94,40 +94,40 @@
         internal ProfilerBatchResult Owner { get; }
 
         /// <inheritdoc/>
-        public int CompareTo(ProfilerResult other) => this.ElapsedTime.CompareTo(other.ElapsedTime);
+        public int CompareTo(ProfilerResult other) => ElapsedTime.CompareTo(other.ElapsedTime);
 
         /// <inheritdoc/>
         public override bool Equals(object obj) => obj is ProfilerResult result && Equals(result);
 
         /// <inheritdoc/>
-        public bool Equals(ProfilerResult other) => this.ElapsedTime.Equals(other.ElapsedTime)
-          && this.IsProfiledTaskCancelled == other.IsProfiledTaskCancelled
-          && this.Iteration == other.Iteration
-          && this.Owner == other.Owner
-          && this.ArgumentListIndex == other.ArgumentListIndex
-          && this.BaseUnit.Equals(other.BaseUnit)
-          && this.Deviation.Equals(other.Deviation);
+        public bool Equals(ProfilerResult other) => ElapsedTime.Equals(other.ElapsedTime)
+          && IsProfiledTaskCancelled == other.IsProfiledTaskCancelled
+          && Iteration == other.Iteration
+          && Owner == other.Owner
+          && ArgumentListIndex == other.ArgumentListIndex
+          && BaseUnit.Equals(other.BaseUnit)
+          && Deviation.Equals(other.Deviation);
 
         /// <inheritdoc/>
 #if NET || NETSTANDARD2_1_OR_GREATER
-        public override int GetHashCode() => HashCode.Combine(this.ElapsedTime,
-          this.IsProfiledTaskCancelled,
-          this.Iteration,
-          this.Owner,
-          this.ArgumentListIndex,
-          this.BaseUnit,
-          this.Deviation);
+        public override int GetHashCode() => HashCode.Combine(ElapsedTime,
+          IsProfiledTaskCancelled,
+          Iteration,
+          Owner,
+          ArgumentListIndex,
+          BaseUnit,
+          Deviation);
 #else
     public override int GetHashCode()
     {
       int hashCode = 208172843;
-      hashCode = (hashCode * -1521134295) + this.ElapsedTime.GetHashCode();
-      hashCode = (hashCode * -1521134295) + this.IsProfiledTaskCancelled.GetHashCode();
-      hashCode = (hashCode * -1521134295) + this.Iteration.GetHashCode();
-      hashCode = (hashCode * -1521134295) + this.Owner.GetHashCode();
-      hashCode = (hashCode * -1521134295) + this.ArgumentListIndex.GetHashCode();
-      hashCode = (hashCode * -1521134295) + this.BaseUnit.GetHashCode();
-      hashCode = (hashCode * -1521134295) + this.Deviation.GetHashCode();
+      hashCode = (hashCode * -1521134295) + ElapsedTime.GetHashCode();
+      hashCode = (hashCode * -1521134295) + IsProfiledTaskCancelled.GetHashCode();
+      hashCode = (hashCode * -1521134295) + Iteration.GetHashCode();
+      hashCode = (hashCode * -1521134295) + Owner.GetHashCode();
+      hashCode = (hashCode * -1521134295) + ArgumentListIndex.GetHashCode();
+      hashCode = (hashCode * -1521134295) + BaseUnit.GetHashCode();
+      hashCode = (hashCode * -1521134295) + Deviation.GetHashCode();
       return hashCode;
     }
 #endif

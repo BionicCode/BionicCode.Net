@@ -6,8 +6,8 @@
     {
         public EntryInfo(TEntry entry, ImmutableHashSet<ManagedWeakTableEntry> bucket)
         {
-            this.Entry = entry;
-            this.Bucket = bucket;
+            Entry = entry;
+            Bucket = bucket;
         }
 
         public TEntry Entry { get; }

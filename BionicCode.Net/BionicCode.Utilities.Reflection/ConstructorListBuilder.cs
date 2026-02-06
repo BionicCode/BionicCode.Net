@@ -69,7 +69,7 @@
 
         private static ConstructorList CreateInternal(Type declaringType)
         {
-            ConstructorInfo[] constructorInfoList = declaringType.GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            ConstructorInfo[] constructorInfoList = declaringType.GetConstructors(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             if (constructorInfoList.IsEmpty())
             {
                 return ConstructorList.Empty;
@@ -87,7 +87,7 @@
         }
 
         ConstructorList IConstructorListBuilder.Build()
-            => this._builderResult ??= new ConstructorList(Build(), isIntegrityValidationEnabled: false);
+            => _builderResult ??= new ConstructorList(Build(), isIntegrityValidationEnabled: false);
     }
 
     internal static class ConstructorListBuilderExtensions

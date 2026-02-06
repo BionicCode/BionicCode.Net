@@ -17,10 +17,10 @@
         /// <value>An instance of type <see cref="Stream"/>. This instance will be decorated to extend the default <see cref="Stream"/> features and behaviors.</value>
         public Stream BaseStream
         {
-            get => this.baseStream;
+            get => baseStream;
             set
             {
-                this.baseStream = value;
+                baseStream = value;
                 Reset();
             }
         }
@@ -39,7 +39,7 @@
         /// <summary>
         /// Default constructor. Creates an instance where the <see cref="BaseStream"/> is set to a <see cref="MemoryStream"/>.
         /// </summary>
-        public AutoResetStream() => this.BaseStream = new MemoryStream();
+        public AutoResetStream() => BaseStream = new MemoryStream();
 
         /// <summary>
         /// MemberConstructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
@@ -56,8 +56,8 @@
         /// <param name="leaveDecoratedStreamOpen">When set to <see langword="true"/> the decorated underlying <see cref="Stream"/> will be disposed or closed too, if the <see cref="AutoResetStream"/> is disposed or closed.</param>
         public AutoResetStream(Stream baseStream, bool leaveDecoratedStreamOpen) : this(baseStream, SeekOrigin.Begin, leaveDecoratedStreamOpen)
         {
-            this.BaseStream = baseStream;
-            this.IsDisposingDecoratedStream = leaveDecoratedStreamOpen;
+            BaseStream = baseStream;
+            IsDisposingDecoratedStream = leaveDecoratedStreamOpen;
         }
 
         /// <summary>
@@ -68,29 +68,29 @@
         /// <param name="leaveDecoratedStreamOpen">When set to <see langword="true"/> the decorated underlying <see cref="Stream"/> will be disposed or closed too, if the <see cref="AutoResetStream"/> is disposed or closed.</param>
         public AutoResetStream(Stream baseStream, SeekOrigin resetOrigin, bool leaveDecoratedStreamOpen)
         {
-            this.BaseStream = baseStream;
-            this.IsDisposingDecoratedStream = leaveDecoratedStreamOpen;
-            this.ResetOrigin = resetOrigin;
+            BaseStream = baseStream;
+            IsDisposingDecoratedStream = leaveDecoratedStreamOpen;
+            ResetOrigin = resetOrigin;
         }
 
         /// <summary>
         /// Resets the <see cref="Stream.Position"/> to an offset of '0' relative to the provided <paramref name="seekOrigin"/>.
         /// </summary>
         /// <param name="seekOrigin">The optional relative position of the <see cref="Stream"/> to apply the zero offset to. The default is <see cref="SeekOrigin.Begin"/>.</param>
-        public void Reset(SeekOrigin seekOrigin = SeekOrigin.Current) => this.BaseStream.Seek(0, seekOrigin == SeekOrigin.Current ? this.ResetOrigin : seekOrigin);
+        public void Reset(SeekOrigin seekOrigin = SeekOrigin.Current) => BaseStream.Seek(0, seekOrigin == SeekOrigin.Current ? ResetOrigin : seekOrigin);
 
         #region Overrides of Stream
 
         /// <inheritdoc />
-        public override void Flush() => this.BaseStream.Flush();
+        public override void Flush() => BaseStream.Flush();
 
         /// <inheritdoc />
-        public override Task FlushAsync(CancellationToken cancellationToken) => this.BaseStream.FlushAsync(cancellationToken);
+        public override Task FlushAsync(CancellationToken cancellationToken) => BaseStream.FlushAsync(cancellationToken);
 
         /// <inheritdoc />
         public override int Read(byte[] buffer, int offset, int count)
         {
-            int bytesRead = this.BaseStream.Read(buffer, offset, count);
+            int bytesRead = BaseStream.Read(buffer, offset, count);
             Reset();
             return bytesRead;
         }
@@ -98,7 +98,7 @@
         /// <inheritdoc />
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            int bytesRead = await this.BaseStream.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            int bytesRead = await BaseStream.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
             Reset();
             return bytesRead;
         }
@@ -106,63 +106,63 @@
         /// <inheritdoc />
         public override int ReadByte()
         {
-            int bytesRead = this.BaseStream.ReadByte();
+            int bytesRead = BaseStream.ReadByte();
             Reset();
             return bytesRead;
         }
 
         /// <inheritdoc />
-        public override int ReadTimeout { get => this.BaseStream.ReadTimeout; set => this.BaseStream.ReadTimeout = value; }
+        public override int ReadTimeout { get => BaseStream.ReadTimeout; set => BaseStream.ReadTimeout = value; }
 
         /// <inheritdoc />
-        public override long Seek(long offset, SeekOrigin origin) => this.BaseStream.Seek(offset, origin);
+        public override long Seek(long offset, SeekOrigin origin) => BaseStream.Seek(offset, origin);
 
         /// <inheritdoc />
-        public override void SetLength(long value) => this.BaseStream.SetLength(value);
+        public override void SetLength(long value) => BaseStream.SetLength(value);
 
         /// <inheritdoc />
         public override void Write(byte[] buffer, int offset, int count)
         {
-            this.BaseStream.Write(buffer, offset, count);
+            BaseStream.Write(buffer, offset, count);
             Reset();
         }
 
         /// <inheritdoc />
         public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            await this.BaseStream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            await BaseStream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
             Reset();
         }
 
         /// <inheritdoc />
         public override void WriteByte(byte value)
         {
-            this.BaseStream.WriteByte(value);
+            BaseStream.WriteByte(value);
             Reset();
         }
 
         /// <inheritdoc />
         public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
         {
-            await this.BaseStream.CopyToAsync(destination, bufferSize, cancellationToken).ConfigureAwait(false);
+            await BaseStream.CopyToAsync(destination, bufferSize, cancellationToken).ConfigureAwait(false);
             Reset();
         }
 
         /// <inheritdoc />
-        public override int WriteTimeout { get => this.BaseStream.WriteTimeout; set => this.BaseStream.WriteTimeout = value; }
+        public override int WriteTimeout { get => BaseStream.WriteTimeout; set => BaseStream.WriteTimeout = value; }
 
         /// <inheritdoc />
-        public override bool CanRead => this.BaseStream.CanRead;
+        public override bool CanRead => BaseStream.CanRead;
 
         /// <inheritdoc />
-        public override bool CanTimeout => this.BaseStream.CanTimeout;
+        public override bool CanTimeout => BaseStream.CanTimeout;
 
         /// <inheritdoc />
         public override void Close()
         {
-            if (this.IsDisposingDecoratedStream)
+            if (IsDisposingDecoratedStream)
             {
-                this.BaseStream.Close();
+                BaseStream.Close();
             }
 
             base.Close();
@@ -171,9 +171,9 @@
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-            if (this.IsDisposingDecoratedStream)
+            if (IsDisposingDecoratedStream)
             {
-                this.BaseStream.Dispose();
+                BaseStream.Dispose();
             }
 
             base.Dispose(disposing);
@@ -182,30 +182,30 @@
         #region Overrides of Object
 
         /// <inheritdoc />
-        public override bool Equals(object obj) => this.BaseStream.Equals(obj);
+        public override bool Equals(object obj) => BaseStream.Equals(obj);
 
         /// <inheritdoc />
-        public override int GetHashCode() => this.BaseStream.GetHashCode();
+        public override int GetHashCode() => BaseStream.GetHashCode();
 
         /// <inheritdoc />
-        public override string ToString() => this.BaseStream.ToString();
+        public override string ToString() => BaseStream.ToString();
 
         #endregion
 
         /// <inheritdoc />
-        public override bool CanSeek => this.BaseStream.CanSeek;
+        public override bool CanSeek => BaseStream.CanSeek;
 
         /// <inheritdoc />
-        public override bool CanWrite => this.BaseStream.CanWrite;
+        public override bool CanWrite => BaseStream.CanWrite;
 
         /// <inheritdoc />
-        public override long Length => this.BaseStream.Length;
+        public override long Length => BaseStream.Length;
 
         /// <inheritdoc />
         public override long Position
         {
-            get => this.BaseStream.Position;
-            set => this.BaseStream.Position = value;
+            get => BaseStream.Position;
+            set => BaseStream.Position = value;
         }
 
         #endregion

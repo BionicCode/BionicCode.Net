@@ -153,7 +153,7 @@
         }
 
         MethodParameterInfoList IMethodParameterInfoListBuilder.Build()
-            => this._builderResult ??= new MethodParameterInfoList(Build(), isIntegrityValidationEnabled: false);
+            => _builderResult ??= new MethodParameterInfoList(Build(), isIntegrityValidationEnabled: false);
     }
 
     internal static class MethodParameterInfoListBuilderExtensions

@@ -20,16 +20,16 @@
         /// <inheritdoc />
         public bool IsCommandManagerRequerySuggestedEnabled
         {
-            get => this.isCommandManagerRequerySuggestedEnabled;
+            get => isCommandManagerRequerySuggestedEnabled;
             set
             {
-                if (value == this.IsCommandManagerRequerySuggestedEnabled)
+                if (value == IsCommandManagerRequerySuggestedEnabled)
                 {
                     return;
                 }
 
-                this.isCommandManagerRequerySuggestedEnabled = value;
-                if (this.IsCommandManagerRequerySuggestedEnabled)
+                isCommandManagerRequerySuggestedEnabled = value;
+                if (IsCommandManagerRequerySuggestedEnabled)
                 {
                     // CommandManager internally uses a WeakEventManager to register the event handlers
                     CommandManager.RequerySuggested += OnCommandManagerRequerySuggested;
@@ -50,7 +50,7 @@
         public RelayCommand(Action executeNoParam) : base(executeNoParam)
         {
 #if !NETSTANDARD
-            this.IsCommandManagerRequerySuggestedEnabled = true;
+            IsCommandManagerRequerySuggestedEnabled = true;
 #endif
         }
 
@@ -58,7 +58,7 @@
         public RelayCommand(Action<CancellationToken> executeNoParam) : base(executeNoParam)
         {
 #if !NETSTANDARD
-            this.IsCommandManagerRequerySuggestedEnabled = true;
+            IsCommandManagerRequerySuggestedEnabled = true;
 #endif
         }
 
@@ -66,7 +66,7 @@
         public RelayCommand(Action executeNoParam, Func<bool> canExecuteNoParam) : base(executeNoParam, canExecuteNoParam)
         {
 #if !NETSTANDARD
-            this.IsCommandManagerRequerySuggestedEnabled = true;
+            IsCommandManagerRequerySuggestedEnabled = true;
 #endif
         }
 
@@ -74,7 +74,7 @@
         public RelayCommand(Action<CancellationToken> execute, Func<bool> canExecute) : base(execute, canExecute)
         {
 #if !NETSTANDARD
-            this.IsCommandManagerRequerySuggestedEnabled = true;
+            IsCommandManagerRequerySuggestedEnabled = true;
 #endif
         }
 
@@ -87,7 +87,7 @@
         /// <param name="isCommandManagerRequerySuggestedEnabled"><see langword="true"/> to enable the WPF framework to raise the CanExecuteChanged event via the <see cref="System.Windows.Input.CommandManager.RequerySuggested"/> event. 
         /// <br/><see langword="false"/> to only raise the <see cref="ICommand.CanExecuteChanged"/> event manually by calling <see cref="IRelayCommandCore.InvalidateCommand"/>.
         /// <br/>The behavior can be changed anytime by setting the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property.</param>
-        public RelayCommand(Action<CancellationToken> execute, Func<bool> canExecute, bool isCommandManagerRequerySuggestedEnabled) : base(execute, canExecute) => this.IsCommandManagerRequerySuggestedEnabled = isCommandManagerRequerySuggestedEnabled;
+        public RelayCommand(Action<CancellationToken> execute, Func<bool> canExecute, bool isCommandManagerRequerySuggestedEnabled) : base(execute, canExecute) => IsCommandManagerRequerySuggestedEnabled = isCommandManagerRequerySuggestedEnabled;
 
         /// <summary>
         ///   Creates a new parameterless synchronous command.
@@ -98,7 +98,7 @@
         /// <br/><see langword="false"/> to only raise the <see cref="ICommand.CanExecuteChanged"/> event manually by calling <see cref="IRelayCommandCore.InvalidateCommand"/>.
         /// <br/>The behavior can be changed anytime by setting the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property.</param>
         public RelayCommand(Action executeNoParam, Func<bool> canExecuteNoParam, bool isCommandManagerRequerySuggestedEnabled) : base(executeNoParam, canExecuteNoParam)
-          => this.IsCommandManagerRequerySuggestedEnabled = isCommandManagerRequerySuggestedEnabled;
+          => IsCommandManagerRequerySuggestedEnabled = isCommandManagerRequerySuggestedEnabled;
 
         /// <summary>
         ///   Creates a new parameterless asynchronous command that supports cancellation and does not take a command parameter.

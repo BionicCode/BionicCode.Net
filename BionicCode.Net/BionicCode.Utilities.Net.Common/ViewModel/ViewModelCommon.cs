@@ -21,8 +21,8 @@ namespace BionicCode.Utilities.Net
         /// </summary>
         protected ViewModelCommon()
         {
-            this.Errors = new Dictionary<string, IList<object>>();
-            this.ValidatedAttributedProperties = new HashSet<string>();
+            Errors = new Dictionary<string, IList<object>>();
+            ValidatedAttributedProperties = new HashSet<string>();
         }
 
         /// <summary>
@@ -665,7 +665,7 @@ namespace BionicCode.Utilities.Net
                 throw new ArgumentNullException(nameof(validationDelegate));
             }
 
-            this.IsSilent = true;
+            IsSilent = true;
             bool isSuccessful = TrySetValueInternal(
               value,
               validationDelegate,
@@ -674,7 +674,7 @@ namespace BionicCode.Utilities.Net
               equalityComparer,
               isValidationEnabled,
               propertyName);
-            this.IsSilent = false;
+            IsSilent = false;
             return isSuccessful;
         }
 
@@ -866,7 +866,7 @@ namespace BionicCode.Utilities.Net
                 throw new ArgumentNullException(nameof(backingFieldSetterDelegate));
             }
 
-            this.IsSilent = true;
+            IsSilent = true;
             bool isSuccessful = await TrySetValueInternalAsync(
               newValue,
               oldValue,
@@ -875,7 +875,7 @@ namespace BionicCode.Utilities.Net
               methodConfiguration,
               equalityComparer,
               propertyName).ConfigureAwait(false);
-            this.IsSilent = false;
+            IsSilent = false;
             return isSuccessful;
         }
         /// <summary>
@@ -962,7 +962,7 @@ namespace BionicCode.Utilities.Net
                 return true;
             }
 
-            _ = this.ValidatedAttributedProperties.Add(propertyName);
+            _ = ValidatedAttributedProperties.Add(propertyName);
 
             // The result flag
             bool isValueValid = true;
@@ -995,10 +995,10 @@ namespace BionicCode.Utilities.Net
                 return;
             }
 
-            if (!this.Errors.TryGetValue(propertyName, out IList<object> propertyErrors))
+            if (!Errors.TryGetValue(propertyName, out IList<object> propertyErrors))
             {
                 propertyErrors = new List<object>();
-                this.Errors.Add(propertyName, propertyErrors);
+                Errors.Add(propertyName, propertyErrors);
             }
 
             if (isWarning)
@@ -1026,8 +1026,8 @@ namespace BionicCode.Utilities.Net
         /// <returns><see langword="true"/> if an item was removed or <see langword="false"/> if no item was removed or the property was not found.</returns>
         protected virtual bool ClearErrors(string propertyName)
         {
-            _ = this.ValidatedAttributedProperties.Remove(propertyName);
-            bool hasRemovedItem = this.Errors.Remove(propertyName);
+            _ = ValidatedAttributedProperties.Remove(propertyName);
+            bool hasRemovedItem = Errors.Remove(propertyName);
             if (hasRemovedItem)
             {
                 OnErrorsChanged(propertyName);
@@ -1038,7 +1038,7 @@ namespace BionicCode.Utilities.Net
 
         /// <inheritdoc />
         public virtual bool PropertyHasError([CallerMemberName] string propertyName = null)
-          => this.Errors.ContainsKey(propertyName ?? throw new ArgumentNullException(nameof(propertyName)));
+          => Errors.ContainsKey(propertyName ?? throw new ArgumentNullException(nameof(propertyName)));
 
         /// <inheritdoc />
         public IEnumerable<string> GetPropertyErrors(string propertyName = null) => GetErrors(propertyName).Cast<string>();
@@ -1067,20 +1067,20 @@ namespace BionicCode.Utilities.Net
         protected virtual void OnPropertyChanged(object oldValue, object newValue, [CallerMemberName] string propertyName = null)
         {
 
-            if (!this.ValidatedAttributedProperties.Contains(propertyName))
+            if (!ValidatedAttributedProperties.Contains(propertyName))
             {
                 _ = IsPropertyAttributeValid(newValue, propertyName);
             }
 
-            if (this.IsSilent)
+            if (IsSilent)
             {
                 return;
             }
 
             // Invoke INotifyPropertyChanged.PropertyChanged
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-            this.PropertyValueChanged?.Invoke(this, new PropertyValueChangedArgs<object>(propertyName, oldValue, newValue));
+            PropertyValueChanged?.Invoke(this, new PropertyValueChangedArgs<object>(propertyName, oldValue, newValue));
         }
 
         #region Implementation of INotifyDataErrorInfo
@@ -1092,13 +1092,13 @@ namespace BionicCode.Utilities.Net
         /// <returns>An <see cref="IEnumerable"/> containing all error messages of the specified property.</returns>
         /// <remarks>If the <paramref name="propertyName"/> is <c>null</c> all current error messages will be returned.</remarks>
         public IEnumerable GetErrors(string propertyName = null) => string.IsNullOrWhiteSpace(propertyName)
-          ? this.Errors.SelectMany(entry => entry.Value)
-          : this.Errors.TryGetValue(propertyName, out IList<object> errors)
+          ? Errors.SelectMany(entry => entry.Value)
+          : Errors.TryGetValue(propertyName, out IList<object> errors)
             ? (IEnumerable)errors
             : new List<object>();
 
         /// <inheritdoc />
-        public bool HasErrors => this.Errors.Any();
+        public bool HasErrors => Errors.Any();
 
         /// <inheritdoc />
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
@@ -1115,9 +1115,9 @@ namespace BionicCode.Utilities.Net
         /// </remarks>
         protected virtual void OnProgress(ProgressData progress)
         {
-            this.ProgressText = progress.Message;
-            this.IsIndeterminate = progress.Progress == ViewModelCommon.EnableIndeterminateMode || this.IsIndeterminate;
-            this.ProgressValue = progress.Progress;
+            ProgressText = progress.Message;
+            IsIndeterminate = progress.Progress == ViewModelCommon.EnableIndeterminateMode || IsIndeterminate;
+            ProgressValue = progress.Progress;
         }
 
         /// <summary>
@@ -1154,28 +1154,28 @@ namespace BionicCode.Utilities.Net
         /// <param name="progressText">The progress message.</param>
         protected virtual void OnProgressChanged(double oldValue, double newValue, string progressText)
         {
-            this.IsReportingProgress = this.IsIndeterminate || (this.ProgressValue > 0 && this.ProgressValue < 100);
-            this.ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(newValue, oldValue, progressText));
+            IsReportingProgress = IsIndeterminate || (ProgressValue > 0 && ProgressValue < 100);
+            ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(newValue, oldValue, progressText));
         }
 
         private bool isReportingProgress;
         /// <inheritdoc/>
         public bool IsReportingProgress
         {
-            get => this.isReportingProgress;
-            set => TrySetValue(value, ref this.isReportingProgress);
+            get => isReportingProgress;
+            set => TrySetValue(value, ref isReportingProgress);
         }
 
         private bool isIndeterminate;
         /// <inheritdoc/>
         public bool IsIndeterminate
         {
-            get => this.isIndeterminate;
+            get => isIndeterminate;
             set
             {
-                double oldValue = this.ProgressValue;
-                _ = TrySetValue(value, ref this.isIndeterminate);
-                OnProgressChanged(oldValue, value ? -1 : this.ProgressValue);
+                double oldValue = ProgressValue;
+                _ = TrySetValue(value, ref isIndeterminate);
+                OnProgressChanged(oldValue, value ? -1 : ProgressValue);
             }
         }
 
@@ -1183,12 +1183,12 @@ namespace BionicCode.Utilities.Net
         /// <inheritdoc/>
         public string ProgressText
         {
-            get => this.progressText;
+            get => progressText;
             set
             {
-                if (TrySetValue(value, ref this.progressText))
+                if (TrySetValue(value, ref progressText))
                 {
-                    OnProgressChanged(this.ProgressValue, this.ProgressValue, this.ProgressText);
+                    OnProgressChanged(ProgressValue, ProgressValue, ProgressText);
                 }
             }
         }
@@ -1197,13 +1197,13 @@ namespace BionicCode.Utilities.Net
         /// <inheritdoc/>
         public double ProgressValue
         {
-            get => this.progressValue;
+            get => progressValue;
             set
             {
-                double oldValue = this.ProgressValue;
-                if (TrySetValue(value, ref this.progressValue))
+                double oldValue = ProgressValue;
+                if (TrySetValue(value, ref progressValue))
                 {
-                    OnProgressChanged(oldValue, this.ProgressValue, this.ProgressText);
+                    OnProgressChanged(oldValue, ProgressValue, ProgressText);
                 }
             }
         }
@@ -1225,6 +1225,6 @@ namespace BionicCode.Utilities.Net
         /// </summary>
         /// <param name="propertyName"></param>
         protected virtual void OnErrorsChanged(string propertyName)
-          => this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+          => ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
     }
 }

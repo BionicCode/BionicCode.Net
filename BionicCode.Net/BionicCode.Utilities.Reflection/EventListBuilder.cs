@@ -69,7 +69,7 @@
 
         private static EventList CreateInternal(Type declaringType)
         {
-            EventInfo[] eventInfoList = declaringType.GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            EventInfo[] eventInfoList = declaringType.GetEvents(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             if (eventInfoList.IsEmpty())
             {
                 return EventList.Empty;
@@ -87,7 +87,7 @@
         }
 
         EventList IEventListBuilder.Build()
-            => this._builderResult ??= new EventList(Build(), isIntegrityValidationEnabled: false);
+            => _builderResult ??= new EventList(Build(), isIntegrityValidationEnabled: false);
     }
 
     internal static class EventListBuilderExtensions

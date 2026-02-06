@@ -10,6 +10,7 @@ internal abstract class MemberData : SymbolInfoData
     private TypeData _declaringTypeData;
     private string? _namespace;
     private BindingFlags? _bindingFlagsVisibilityMask;
+    private TypeData? _implementingTypeData;
 
     protected MemberData(string memberName, SymbolKind symbolKind, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
         : base(memberName, symbolKind, symbolInfoDataCacheKey)
@@ -21,16 +22,16 @@ internal abstract class MemberData : SymbolInfoData
     private BindingFlags ComputeVisibilityBindingFlagsMask()
     {
         BindingFlags visibilityMask = BindingFlags.Default;
-        if (this.IsPublic)
+        if (IsPublic)
         {
             visibilityMask = BindingFlags.Public;
         }
-        else if (this.IsPrivate)
+        else if (IsPrivate)
         {
             visibilityMask = BindingFlags.NonPublic;
         }
 
-        if (this.IsStatic)
+        if (IsStatic)
         {
             visibilityMask |= BindingFlags.Static;
         }
@@ -42,29 +43,62 @@ internal abstract class MemberData : SymbolInfoData
         return visibilityMask;
     }
 
-    public TypeData DeclaringTypeData
-      => this._declaringTypeData ??= Type.GetTypeFromHandle(this.DeclaringTypeHandle) is Type declaringType
+    internal TypeData DeclaringTypeData
+      => _declaringTypeData ??= Type.GetTypeFromHandle(DeclaringTypeHandle) is Type declaringType
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType)
-            : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(this.DeclaringTypeHandle)}' is not valid.");
+            : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(DeclaringTypeHandle)}' is not valid.");
 
-    public string Namespace
-        => this._namespace ??= this.DeclaringTypeData.Namespace;
+    internal TypeData ImplementingTypeData
+      => _implementingTypeData ??= Type.GetTypeFromHandle(ImplementingTypeHandle) is Type implementingType
+            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(implementingType)
+            : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(ImplementingTypeHandle)}' is not valid.");
 
-    public abstract RuntimeTypeHandle DeclaringTypeHandle { get; }
-    public abstract bool IsExplicitInterfaceImplementation { get; }
-    public abstract RuntimeTypeHandle DeclaringInterfaceHandle { get; }
-    public abstract RuntimeTypeHandle ImplementingTypeHandle { get; }
+    internal override string Namespace
+        => _namespace ??= DeclaringTypeData!.Namespace;
 
-    public abstract bool IsStatic { get; }
-    public abstract bool IsPublic { get; }
-    public abstract bool IsPrivate { get; }
-    public abstract bool IsAssembly { get; }
-    public abstract bool IsFamily { get; }
-    public abstract bool IsFamilyOrAssembly { get; }
-    public abstract bool IsFamilyAndAssembly { get; }
-    public abstract AccessModifier AccessModifier { get; }
-    public BindingFlags BindingFlagsVisibilityMask => this._bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
+    /// <summary>
+    /// The declaring type handle of the member. This is the runtime type handle of the type that declares the member. For example, for a method declared in a class, this would be the runtime type handle of that class. 
+    /// <para/>For an explicit interface implementation, this would be the runtime type handle of the interface that declares the member.
+    /// </summary>
+    /// <value>
+    /// The runtime type handle of the type that declares the member.
+    /// <para/> For an explicit interface implementation, this would be the runtime type handle of the interface that declares the member.
+    /// </value>
+    internal abstract RuntimeTypeHandle DeclaringTypeHandle { get; }
+    internal abstract bool IsExplicitInterfaceImplementation { get; }
 
-    public override IList<CustomAttributeData> AttributeData
-      => this._attributeData ??= new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData());
+    /// <summary>
+    /// The implementing type handle of the member. This is the runtime type handle of the type that implements the member. For example, for a method declared in a class, this would be the runtime type handle of that class.
+    /// </summary>
+    /// <remarks>
+    /// For an explicit interface implementation, this would be the runtime type handle of the interface that implements the member.
+    /// <br/> For a non-explicit interface implementation, this would be the same as the declaring type handle.
+    /// </remarks>
+    /// <value>
+    /// The runtime type handle of the type that implements the member.
+    /// <para/> For an explicit interface implementation, this would be the runtime type handle of the interface that implements the member.
+    /// <para/> For a non-explicit interface implementation, this would be the same as the declaring type handle.
+    /// </value>
+    internal abstract RuntimeTypeHandle ImplementingTypeHandle { get; }
+
+    internal abstract bool IsStatic { get; }
+    internal abstract bool IsPublic { get; }
+    internal abstract bool IsPrivate { get; }
+    /// <summary>
+    /// Gets a value indicating whether the member has internal accessibility within its assembly.
+    /// </summary>
+    internal abstract bool IsAssembly { get; }
+    /// <summary>
+    /// Gets a value indicating whether the member is protected and thus accessible only within its own class or by
+    /// derived class instances.
+    /// </summary>
+    internal abstract bool IsFamily { get; }
+    internal abstract bool IsFamilyOrAssembly { get; }
+    internal abstract bool IsFamilyAndAssembly { get; }
+    internal abstract AccessModifier AccessModifier { get; }
+    internal BindingFlags BindingFlagsVisibilityMask => _bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
+
+    /// <inheritdoc/>
+    internal override IList<CustomAttributeData> AttributeData
+      => _attributeData ??= new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData());
 }

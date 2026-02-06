@@ -12,21 +12,21 @@
     {
         public EventInfoTableKey(string eventName, Type eventSourceType)
         {
-            this.EventName = eventName;
-            this.EventSourceType = eventSourceType;
+            EventName = eventName;
+            EventSourceType = eventSourceType;
         }
 
         public string EventName { get; }
         public Type EventSourceType { get; }
 
-        public bool Equals(EventInfoTableKey other) => other.EventName.Equals(this.EventName, StringComparison.OrdinalIgnoreCase) && other.EventSourceType.Equals(this.EventSourceType);
+        public bool Equals(EventInfoTableKey other) => other.EventName.Equals(EventName, StringComparison.OrdinalIgnoreCase) && other.EventSourceType.Equals(EventSourceType);
         public override bool Equals(object obj) => obj is EventInfoTableKey key && Equals(key);
 
         public override int GetHashCode()
         {
             int hashCode = 433094870;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(this.EventName);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<Type>.Default.GetHashCode(this.EventSourceType);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(EventName);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<Type>.Default.GetHashCode(EventSourceType);
             return hashCode;
         }
 

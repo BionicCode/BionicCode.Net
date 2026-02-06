@@ -37,8 +37,8 @@
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            object compareValue = this.CompareValue ?? parameter;
-            return this.Comparer.Compare(value, compareValue) > 0;
+            object compareValue = CompareValue ?? parameter;
+            return Comparer.Compare(value, compareValue) > 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();

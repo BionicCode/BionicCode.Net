@@ -46,8 +46,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke();
-            this.canExecuteDelegate = commandParameter => true;
+            cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke();
+            canExecuteDelegate = commandParameter => true;
         }
 
         /// <summary>
@@ -60,8 +60,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke(cancellationToken);
-            this.canExecuteDelegate = commandParameter => true;
+            cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke(cancellationToken);
+            canExecuteDelegate = commandParameter => true;
         }
 
         /// <summary>
@@ -73,8 +73,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke();
-            this.canExecuteDelegate = commandParameter => canExecute?.Invoke() ?? true;
+            cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke();
+            canExecuteDelegate = commandParameter => canExecute?.Invoke() ?? true;
         }
 
         /// <summary>
@@ -86,8 +86,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke(cancellationToken);
-            this.canExecuteDelegate = commandParameter => canExecute?.Invoke() ?? true;
+            cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke(cancellationToken);
+            canExecuteDelegate = commandParameter => canExecute?.Invoke() ?? true;
         }
 
         /// <summary>
@@ -110,8 +110,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke(commandParameter);
-            this.canExecuteDelegate = canExecute;
+            cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke(commandParameter);
+            canExecuteDelegate = canExecute;
         }
 
         /// <summary>
@@ -123,8 +123,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = execute;
-            this.canExecuteDelegate = canExecute;
+            cancellableExecuteDelegate = execute;
+            canExecuteDelegate = canExecute;
         }
 
         #endregion Constructors
@@ -136,7 +136,7 @@
         ///   Data used by the command. 
         /// </param>
         /// <returns><see langword="true"/> if this command can be executed, otherwise <see langword="false"/>.</returns>
-        public bool CanExecute(TParam parameter) => this.canExecuteDelegate?.Invoke(parameter) ?? true;
+        public bool CanExecute(TParam parameter) => canExecuteDelegate?.Invoke(parameter) ?? true;
 
         /// <inheritdoc />
         public void Execute(TParam parameter) => Execute(parameter, Timeout.InfiniteTimeSpan, CancellationToken.None);
@@ -151,7 +151,7 @@
         public void Execute(TParam parameter, TimeSpan timeout, CancellationToken cancellationToken) => Execute(parameter, Timeout.InfiniteTimeSpan, timeout, cancellationToken);
 
         public void Execute(TParam parameter, TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken)
-          => ExecuteCore(ct => this.cancellableExecuteDelegate?.Invoke(parameter, ct), pendingTimeout, executingTimeout, cancellationToken);
+          => ExecuteCore(ct => cancellableExecuteDelegate?.Invoke(parameter, ct), pendingTimeout, executingTimeout, cancellationToken);
 
         #region ICommand implementation
 #if NET

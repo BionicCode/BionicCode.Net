@@ -9,14 +9,14 @@
 
         private ChartTableRow(int numberOfCells)
         {
-            this.CellCount = numberOfCells;
-            this.CellValues = new object[numberOfCells];
+            CellCount = numberOfCells;
+            CellValues = new object[numberOfCells];
         }
 
         private ChartTableRow(int numberOfCells, params object[] cellValues)
         {
-            this.CellCount = numberOfCells;
-            this.CellValues = new object[numberOfCells];
+            CellCount = numberOfCells;
+            CellValues = new object[numberOfCells];
             for (int index = 0; index < numberOfCells; index++)
             {
                 object value = cellValues[index];
@@ -29,8 +29,8 @@
 
         public int AppendValue(object value)
         {
-            this.CellValues[this.CurrentIndex] = value;
-            return this.CurrentIndex++;
+            CellValues[CurrentIndex] = value;
+            return CurrentIndex++;
         }
 
         [JsonIgnore]

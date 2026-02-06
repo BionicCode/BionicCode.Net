@@ -19,26 +19,26 @@
             Action<ProfilerBatchResult, string>? logger,
             Func<ProfilerBatchResult, string, Task>? asyncLogger)
         {
-            this.TargetInstanceTypeData = targetInstanceTypeData;
-            this.SymbolInfoData = symbolInfoData;
-            this.FullSourceFileName = sourceFileName;
-            this.LineNumber = lineNumber;
-            this.RuntimeVersionFactory = new Lazy<string>(() => System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-            this.WarmupCount = warmupCount;
-            this.IterationCount = iterationCount;
-            this.Runtime = runtime;
-            this.BaseUnit = baseUnit;
-            this.Logger = logger;
-            this.AsyncLogger = asyncLogger;
+            TargetInstanceTypeData = targetInstanceTypeData;
+            SymbolInfoData = symbolInfoData;
+            FullSourceFileName = sourceFileName;
+            LineNumber = lineNumber;
+            RuntimeVersionFactory = new Lazy<string>(() => System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
+            WarmupCount = warmupCount;
+            IterationCount = iterationCount;
+            Runtime = runtime;
+            BaseUnit = baseUnit;
+            Logger = logger;
+            AsyncLogger = asyncLogger;
         }
 
         public Runtime Runtime { get; }
         public TypeData? TargetInstanceTypeData { get; }
         public string FullSourceFileName { get; }
-        public string SourceFileName => Path.GetFileName(this.FullSourceFileName);
+        public string SourceFileName => Path.GetFileName(FullSourceFileName);
         public int LineNumber { get; }
         public Lazy<string> RuntimeVersionFactory { get; }
-        public string RuntimeVersion => this.RuntimeVersionFactory.Value;
+        public string RuntimeVersion => RuntimeVersionFactory.Value;
         public int WarmupCount { get; }
         public int IterationCount { get; }
         public TimeUnit BaseUnit { get; }
@@ -61,7 +61,7 @@
             Action<ProfilerBatchResult, string>? logger,
             Func<ProfilerBatchResult, string, Task>? asyncLogger) : base(typeof(TTarget).ToTypeData(), symbolInfoData, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger)
         {
-            this.TargetInstance = targetInstance;
+            TargetInstance = targetInstance;
         }
 
         public TTarget TargetInstance { get; }
@@ -96,7 +96,7 @@
         }
 
         public MethodData MethodData
-            => (MethodData)this.SymbolInfoData!;
+            => (MethodData)SymbolInfoData!;
 
         public MethodArgumentInfo ArgumentInfo { get; set; }
     }
@@ -119,32 +119,32 @@
         {
             ArgumentNullException.ThrowIfNull(propertyData);
             ArgumentExceptionAdvanced.ThrowIfTrue(
-                (this.ArgumentInfo.Accessor & PropertyAccessor.Set) != 0 && !propertyData.CanWrite,
+                (ArgumentInfo.Accessor & PropertyAccessor.Set) != 0 && !propertyData.CanWrite,
                 nameof(propertyData),
-                $"The provided '{nameof(this.ArgumentInfo)}' does not match the provided argument '{nameof(propertyData)}'. The property '{propertyData.FullyQualifiedSignature}' is read-only but the '{nameof(this.ArgumentInfo)}' specifies a setter as profiling target.");
+                $"The provided '{nameof(ArgumentInfo)}' does not match the provided argument '{nameof(propertyData)}'. The property '{propertyData.FullyQualifiedSignature}' is read-only but the '{nameof(ArgumentInfo)}' specifies a setter as profiling target.");
             ArgumentExceptionAdvanced.ThrowIfTrue(
-                (this.ArgumentInfo.Accessor & PropertyAccessor.Get) != 0 && !propertyData.CanRead,
+                (ArgumentInfo.Accessor & PropertyAccessor.Get) != 0 && !propertyData.CanRead,
                 nameof(propertyData),
-                $"The provided '{nameof(this.ArgumentInfo)}' does not match the provided argument '{nameof(propertyData)}'. The property '{propertyData.FullyQualifiedSignature}' is write-only but the '{nameof(this.ArgumentInfo)}' specifies a getter as profiling target.");
+                $"The provided '{nameof(ArgumentInfo)}' does not match the provided argument '{nameof(propertyData)}'. The property '{propertyData.FullyQualifiedSignature}' is write-only but the '{nameof(ArgumentInfo)}' specifies a getter as profiling target.");
         }
 
         public PropertyData PropertyData
-            => (PropertyData)this.SymbolInfoData!;
+            => (PropertyData)SymbolInfoData!;
 
         public PropertyArgumentInfo ArgumentInfo
         {
-            get => this._argumentInfo;
+            get => _argumentInfo;
             set
             {
-                this._argumentInfo = value;
+                _argumentInfo = value;
                 ArgumentExceptionAdvanced.ThrowIfTrue(
-                    this.PropertyData.IsIndexer && !this._argumentInfo.IsForIndexer,
+                    PropertyData.IsIndexer && !_argumentInfo.IsForIndexer,
                     nameof(value),
-                    $"Invalid value for '{typeof(PropertyProfilerContext<TTarget>).ToFullyQualifiedSignatureName}.{nameof(this.ArgumentInfo)}'. The property is an indexer but the argument info is not for an indexer.");
+                    $"Invalid value for '{typeof(PropertyProfilerContext<TTarget>).ToFullyQualifiedSignatureName}.{nameof(ArgumentInfo)}'. The property is an indexer but the argument info is not for an indexer.");
                 ArgumentExceptionAdvanced.ThrowIfTrue(
-                    !this.PropertyData.IsIndexer && this._argumentInfo.IsForIndexer,
+                    !PropertyData.IsIndexer && _argumentInfo.IsForIndexer,
                     nameof(value),
-                    $"Invalid value for '{typeof(PropertyProfilerContext<TTarget>).ToFullyQualifiedSignatureName}.{nameof(this.ArgumentInfo)}'. The property is not an indexer but the argument info is for an indexer.");
+                    $"Invalid value for '{typeof(PropertyProfilerContext<TTarget>).ToFullyQualifiedSignatureName}.{nameof(ArgumentInfo)}'. The property is not an indexer but the argument info is for an indexer.");
             }
         }
         public bool IsProfilingGetter { get; set; }
@@ -167,7 +167,7 @@
         }
 
         public ConstructorData ConstructorData
-            => (ConstructorData)this.SymbolInfoData!;
+            => (ConstructorData)SymbolInfoData!;
 
         public MethodArgumentInfo ArgumentInfo { get; set; }
     }

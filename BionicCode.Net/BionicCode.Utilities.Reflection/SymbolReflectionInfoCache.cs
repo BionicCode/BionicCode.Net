@@ -8,6 +8,63 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 
+public class EventDataView : IEventDataView
+{
+    internal EventDataView(SymbolReflectionInfoCacheKey cacheKey)
+        => Cach
+    public AccessModifier AccessModifier => SymbolReflectionInfoCache.get(typeof(string)).AccessModifier;
+    public IMethodDataView AddMethodData { get; }
+    public string AssemblyName { get; }
+    public bool CanAdd { get; }
+    public bool CanRemove { get; }
+    public RuntimeTypeHandle DeclaringInterfaceHandle { get; }
+    public RuntimeTypeHandle DeclaringTypeHandle { get; }
+    public string DisplayName { get; }
+    public ITypeDataView EventHandlerTypeData { get; }
+    public IMethodDataView EventInvokerMethodData { get; }
+    public string FullyQualifiedDisplayName { get; }
+    public string FullyQualifiedRuntimeSignature { get; }
+    public string FullyQualifiedSignature { get; }
+    public RuntimeTypeHandle ImplementingTypeHandle { get; }
+    public bool IsAssembly { get; }
+    public bool IsExplicitInterfaceImplementation { get; }
+    public bool IsFamily { get; }
+    public bool IsFamilyAndAssembly { get; }
+    public bool IsFamilyOrAssembly { get; }
+    public bool IsOverride { get; }
+    public bool IsPrivate { get; }
+    public bool IsPublic { get; }
+    public bool IsStatic { get; }
+    public IMethodDataView RemoveMethodData { get; }
+    public string RuntimeShortCompactSignature { get; }
+    public string RuntimeShortSignature { get; }
+    public string RuntimeSignature { get; }
+    public string ShortCompactSignature { get; }
+    public string ShortDisplayName { get; }
+    public string ShortSignature { get; }
+    public string Signature { get; }
+    public SymbolComponentInfo SymbolComponentInfo { get; }
+    public IList<CustomAttributeData> AttributeData { get; }
+    public BindingFlags BindingFlagsVisibilityMask { get; }
+    public string Namespace { get; }
+    public int FormattingIndentation { get; set; }
+    public string IndentationString { get; }
+    public string Name { get; }
+    private SymbolAttributes SymbolAttributes { get; }
+    private SymbolAttributes SymbolAttributes { get; }
+    SymbolAttributes ISymbolInfoDataView.SymbolAttributes { get; }
+    private TypeData DeclaringTypeData { get; }
+    private SymbolReflectionInfoCacheKey CacheKey { get; }
+    private SymbolKind SymbolKind { get; }
+    SymbolKind ISymbolInfoDataView.SymbolKind { get; }
+
+    public void AddEventHandler(object eventSource, Delegate handler) => throw new NotImplementedException();
+    public void AddEventHandler<TEventSource>(TEventSource eventSource, Delegate handler) => throw new NotImplementedException();
+    public object? RaiseEvent(object? target, params object?[]? arguments) => throw new NotImplementedException();
+    public void RemoveEventHandler(object eventSource, Delegate handler) => throw new NotImplementedException();
+    public void RemoveEventHandler<TEventSource>(TEventSource eventSource, Delegate handler) => throw new NotImplementedException();
+}
+
 internal static class SymbolReflectionInfoCache
 {
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolInfoData> s_symbolInfoDataCache = new ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolInfoData>();
@@ -1505,19 +1562,19 @@ internal static class SymbolReflectionInfoCache
             ArgumentOutOfRangeException.ThrowIfNegative(parameterIndex);
             ArgumentNullExceptionAdvanced.ThrowIfDefault(accessorMethodCacheKey);
 
-            this.ParameterIndex = parameterIndex;
-            this.AccessorMethodCacheKey = accessorMethodCacheKey;
+            ParameterIndex = parameterIndex;
+            AccessorMethodCacheKey = accessorMethodCacheKey;
         }
 
         public int ParameterIndex { get; init; }
         public SymbolReflectionInfoCacheKey AccessorMethodCacheKey { get; init; }
 
         public bool Equals(AmbiguousIndexerPropertyKey other)
-            => this.ParameterIndex == other.ParameterIndex
-            && this.AccessorMethodCacheKey.Equals(other.AccessorMethodCacheKey);
+            => ParameterIndex == other.ParameterIndex
+            && AccessorMethodCacheKey.Equals(other.AccessorMethodCacheKey);
 
         public override int GetHashCode()
-            => HashCode.Combine(this.ParameterIndex, this.AccessorMethodCacheKey);
+            => HashCode.Combine(ParameterIndex, AccessorMethodCacheKey);
 
         public override bool Equals([NotNullWhen(true)] object? obj)
             => obj is AmbiguousIndexerPropertyKey other && Equals(other);

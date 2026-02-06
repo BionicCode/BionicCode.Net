@@ -40,24 +40,24 @@
                 throw new ArgumentException($"At least one of the following arguments must be provided to avoid ambiguity when using the created key for lookups: '{nameof(parameterTypeHandle)}', '{nameof(parameterName)}', '{nameof(parameterKind)}', '{nameof(parameterPosition)}'.");
             }
 
-            this.DeclaringMethodDescriptor = declaringMethodDescriptor;
-            this.ParameterName = parameterName ?? string.Empty;
-            this.ParameterPosition = parameterPosition;
-            this.ParameterKind = parameterKind;
-            this.ParameterTypeHandle = parameterTypeHandle ?? default;
+            DeclaringMethodDescriptor = declaringMethodDescriptor;
+            ParameterName = parameterName ?? string.Empty;
+            ParameterPosition = parameterPosition;
+            ParameterKind = parameterKind;
+            ParameterTypeHandle = parameterTypeHandle ?? default;
         }
 
         public bool HasParameterName
-            => !string.IsNullOrWhiteSpace(this.ParameterName);
+            => !string.IsNullOrWhiteSpace(ParameterName);
 
         public bool HasParameterPosition
-            => this.ParameterPosition > SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition;
+            => ParameterPosition > SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition;
 
         public bool HasParameterKind
-            => this.ParameterKind != ParameterKind.Undefined;
+            => ParameterKind != ParameterKind.Undefined;
 
         public bool HasParameterTypeHandle
-            => !this.ParameterTypeHandle.Equals(default);
+            => !ParameterTypeHandle.Equals(default);
 
         public bool IsAnonymous
             => true;
@@ -68,18 +68,18 @@
         public ParameterKind ParameterKind { get; }
         public RuntimeTypeHandle ParameterTypeHandle { get; }
 
-        public bool Equals(AnonymousParameterDescriptor other) => this.ParameterName.Equals(other.ParameterName, StringComparison.Ordinal)
-            && this.ParameterPosition == other.ParameterPosition
-            && this.ParameterKind == other.ParameterKind
-            && this.ParameterTypeHandle.Equals(other.ParameterTypeHandle)
-            && this.DeclaringMethodDescriptor.Equals(other.DeclaringMethodDescriptor);
+        public bool Equals(AnonymousParameterDescriptor other) => ParameterName.Equals(other.ParameterName, StringComparison.Ordinal)
+            && ParameterPosition == other.ParameterPosition
+            && ParameterKind == other.ParameterKind
+            && ParameterTypeHandle.Equals(other.ParameterTypeHandle)
+            && DeclaringMethodDescriptor.Equals(other.DeclaringMethodDescriptor);
 
         public override int GetHashCode() => HashCode.Combine(
-            this.ParameterName,
-            this.ParameterPosition,
-            this.ParameterKind,
-            this.ParameterTypeHandle,
-            this.DeclaringMethodDescriptor);
+            ParameterName,
+            ParameterPosition,
+            ParameterKind,
+            ParameterTypeHandle,
+            DeclaringMethodDescriptor);
 
         public static bool operator ==(AnonymousParameterDescriptor left, AnonymousParameterDescriptor right)
             => left.Equals(right);

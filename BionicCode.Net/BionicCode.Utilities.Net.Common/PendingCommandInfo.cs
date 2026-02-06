@@ -8,22 +8,22 @@
     {
         public PendingCommandInfo(TimeSpan pendingTimeout, DateTime timestamp, Action<CancellationToken> executeDelegate, TimeSpan executingTimeout, CancellationToken cancellationToken)
         {
-            this.PendingTimeout = pendingTimeout;
-            this.Timestamp = timestamp;
-            this.ExecuteDelegate = executeDelegate;
-            this.ExecutingTimeout = executingTimeout;
-            this.CancellationToken = cancellationToken;
-            this.AsyncExecuteDelegate = null;
+            PendingTimeout = pendingTimeout;
+            Timestamp = timestamp;
+            ExecuteDelegate = executeDelegate;
+            ExecutingTimeout = executingTimeout;
+            CancellationToken = cancellationToken;
+            AsyncExecuteDelegate = null;
         }
 
         public PendingCommandInfo(TimeSpan pendingTimeout, DateTime timestamp, Func<CancellationToken, Task> asyncExecuteDelegate, TimeSpan executingTimeout, CancellationToken cancellationToken)
         {
-            this.PendingTimeout = pendingTimeout;
-            this.Timestamp = timestamp;
-            this.AsyncExecuteDelegate = asyncExecuteDelegate;
-            this.ExecutingTimeout = executingTimeout;
-            this.CancellationToken = cancellationToken;
-            this.ExecuteDelegate = null;
+            PendingTimeout = pendingTimeout;
+            Timestamp = timestamp;
+            AsyncExecuteDelegate = asyncExecuteDelegate;
+            ExecutingTimeout = executingTimeout;
+            CancellationToken = cancellationToken;
+            ExecuteDelegate = null;
         }
 
         public TimeSpan PendingTimeout { get; }

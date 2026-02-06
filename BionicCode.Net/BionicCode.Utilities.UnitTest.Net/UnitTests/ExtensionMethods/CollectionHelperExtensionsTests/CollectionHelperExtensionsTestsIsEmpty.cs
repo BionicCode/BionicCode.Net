@@ -18,18 +18,18 @@
 
         public CollectionHelperExtensionsTestsIsEmpty()
         {
-            this.EmptyIEnumerableT = Enumerable.Empty<int>();
-            this.IEnumerableTWith5Items = Enumerable.Range(0, 5);
-            this.EmptyIEnumerable = this.EmptyIEnumerableT;
-            this.IEnumerableWith5Items = this.IEnumerableTWith5Items;
-            this.EmptyList = new List<int>();
-            this.ListWith5Items = this.IEnumerableTWith5Items.ToList();
+            EmptyIEnumerableT = Enumerable.Empty<int>();
+            IEnumerableTWith5Items = Enumerable.Range(0, 5);
+            EmptyIEnumerable = EmptyIEnumerableT;
+            IEnumerableWith5Items = IEnumerableTWith5Items;
+            EmptyList = new List<int>();
+            ListWith5Items = IEnumerableTWith5Items.ToList();
         }
 
         [Fact]
         public void EmptyIEnumerable_IsEmpty_MustReturnTrue()
         {
-            bool isEmpty = this.EmptyIEnumerable.IsEmpty();
+            bool isEmpty = EmptyIEnumerable.IsEmpty();
 
             _ = isEmpty.Should().BeTrue();
         }
@@ -37,7 +37,7 @@
         [Fact]
         public void NotEmptyIEnumerable_IsEmpty_MustReturnFalse()
         {
-            bool isEmpty = this.IEnumerableWith5Items.IsEmpty();
+            bool isEmpty = IEnumerableWith5Items.IsEmpty();
 
             _ = isEmpty.Should().BeFalse();
         }
@@ -53,7 +53,7 @@
         [Fact]
         public void EmptyIEnumerableT_IsEmpty_MustReturnTrue()
         {
-            bool isEmpty = this.EmptyIEnumerableT.IsEmpty();
+            bool isEmpty = EmptyIEnumerableT.IsEmpty();
 
             _ = isEmpty.Should().BeTrue();
         }
@@ -61,7 +61,7 @@
         [Fact]
         public void NotEmptyIEnumerableT_IsEmpty_MustReturnFalse()
         {
-            bool isEmpty = this.IEnumerableTWith5Items.IsEmpty();
+            bool isEmpty = IEnumerableTWith5Items.IsEmpty();
 
             _ = isEmpty.Should().BeFalse();
         }
@@ -77,7 +77,7 @@
         [Fact]
         public void EmptyICollectionT_IsEmpty_MustReturnTrue()
         {
-            bool isEmpty = this.EmptyList.IsEmpty();
+            bool isEmpty = EmptyList.IsEmpty();
 
             _ = isEmpty.Should().BeTrue();
         }
@@ -85,7 +85,7 @@
         [Fact]
         public void NotEmptyICollectionT_IsEmpty_MustReturnFalse()
         {
-            bool isEmpty = this.ListWith5Items.IsEmpty();
+            bool isEmpty = ListWith5Items.IsEmpty();
 
             _ = isEmpty.Should().BeFalse();
         }
@@ -101,7 +101,7 @@
         [Fact]
         public void EmptyICollection_IsEmpty_MustReturnTrue()
         {
-            bool isEmpty = ((ICollection)this.EmptyList).IsEmpty();
+            bool isEmpty = ((ICollection)EmptyList).IsEmpty();
 
             _ = isEmpty.Should().BeTrue();
         }
@@ -109,7 +109,7 @@
         [Fact]
         public void NotEmptyICollection_IsEmpty_MustReturnFalse()
         {
-            bool isEmpty = ((ICollection)this.ListWith5Items).IsEmpty();
+            bool isEmpty = ((ICollection)ListWith5Items).IsEmpty();
 
             _ = isEmpty.Should().BeFalse();
         }

@@ -15,11 +15,11 @@
 
         public WeakManagerTableEntry(object eventSource, Type eventSourceType, string eventName, WeakEventManager weakEventManager) : base(eventSource, eventSourceType, weakEventManager.Id)
         {
-            this.EventName = eventName;
-            this.WeakEventManager = weakEventManager;
+            EventName = eventName;
+            WeakEventManager = weakEventManager;
 
 #if DEBUG
-            this.WeakEventManagerInstanceNumber = weakEventManager.InstanceNumber;
+            WeakEventManagerInstanceNumber = weakEventManager.InstanceNumber;
 #endif
         }
 
@@ -29,7 +29,7 @@
         public override void Recycle()
         {
 #if DEBUG
-            Debug.WriteLine($"WeakEventManager instance #{this.WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: ######## Recycling WeakEventManger ########.");
+            Debug.WriteLine($"WeakEventManager instance #{WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: ######## Recycling WeakEventManger ########.");
 #endif
 
             base.Recycle();
@@ -38,27 +38,27 @@
         public override bool TryPurge(bool isForced)
         {
 #if DEBUG
-            Debug.WriteLine($"WeakEventManager instance #{this.WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: TryPurge called for WeakEventManager (event source).");
+            Debug.WriteLine($"WeakEventManager instance #{WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: TryPurge called for WeakEventManager (event source).");
 #endif
 
-            if (this.IsRecycled || this.IsPurged
-              || (!isForced && this.IsAlive))
+            if (IsRecycled || IsPurged
+              || (!isForced && IsAlive))
             {
 #if DEBUG
-                Debug.WriteLine($"WeakEventManager instance #{this.WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: Nothing to purge here (event source).");
+                Debug.WriteLine($"WeakEventManager instance #{WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: Nothing to purge here (event source).");
 #endif
 
                 return false;
             }
 
 #if DEBUG
-            Debug.WriteLine($"WeakEventManager instance #{this.WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: ******** Purging event source (weak event manager)...Forced: {isForced} ********.");
+            Debug.WriteLine($"WeakEventManager instance #{WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: ******** Purging event source (weak event manager)...Forced: {isForced} ********.");
 #endif
 
-            this.WeakEventManager.Purge();
+            WeakEventManager.Purge();
             Recycle();
 
-            this.IsPurged = true;
+            IsPurged = true;
             return true;
         }
     }

@@ -15,11 +15,11 @@
     {
         public WeakEventAggregatorTest()
         {
-            this.EventSource1 = new TestEventSource1();
-            this.EventSource2 = new TestEventSource2();
-            this.EventAggregatorListenerService = new WeakEventAggregator();
-            this.unsubscribeDelegates = new List<Action>();
-            this.EventAggregatorPublisherService = (IWeakEventAggregatorPublisherService)this.EventAggregatorListenerService;
+            EventSource1 = new TestEventSource1();
+            EventSource2 = new TestEventSource2();
+            EventAggregatorListenerService = new WeakEventAggregator();
+            unsubscribeDelegates = new List<Action>();
+            EventAggregatorPublisherService = (IWeakEventAggregatorPublisherService)EventAggregatorListenerService;
             eventHandlerInvocationCount = 0;
             eventHandlerInvocationThreadId = -1;
         }
@@ -30,11 +30,11 @@
         //  const string eventName = nameof(TestEventSource1.TestEvent);
         //  var eventListener1 = new TestEventListener();
         //  var eventListener2 = new TestEventListener();
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-        //  this.EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
-        //  this.EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler>(eventName, eventListener2.OnGenericAllPurposeTwoParameterEventHandler);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1, eventName);
+        //  EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
+        //  EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler>(eventName, eventListener2.OnGenericAllPurposeTwoParameterEventHandler);
 
-        //  this.EventSource1.RaiseAll();
+        //  EventSource1.RaiseAll();
 
         //  _ = eventListener1.EventHandlerInvocationCount.Should().Be(1);
         //  _ = eventListener2.EventHandlerInvocationCount.Should().Be(1);
@@ -46,11 +46,11 @@
         //  const string eventName = nameof(TestEventSource1.GenericTestEvent);
         //  var eventListener1 = new TestEventListener();
         //  var eventListener2 = new TestEventListener();
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-        //  this.EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler<TestEventArgs>>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
-        //  this.EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler<TestEventArgs>>(eventName, eventListener2.OnGenericAllPurposeTwoParameterEventHandler);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1, eventName);
+        //  EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler<TestEventArgs>>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
+        //  EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler<TestEventArgs>>(eventName, eventListener2.OnGenericAllPurposeTwoParameterEventHandler);
 
-        //  this.EventSource1.RaiseAll();
+        //  EventSource1.RaiseAll();
 
         //  _ = eventListener1.EventHandlerInvocationCount.Should().Be(1);
         //  _ = eventListener2.EventHandlerInvocationCount.Should().Be(1);
@@ -62,11 +62,11 @@
         //  const string eventName = nameof(TestEventSource1.GenericTestEvent);
         //  var eventListener1 = new TestEventListener();
         //  var eventListener2 = new TestEventListener();
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-        //  this.EventAggregatorListenerService.StartListening<TestEventSource1, Action<object, TestEventArgs>>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
-        //  this.EventAggregatorListenerService.StartListening<TestEventSource1, Action<object, TestEventArgs>>(eventName, eventListener2.OnGenericAllPurposeTwoParameterEventHandler);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1, eventName);
+        //  EventAggregatorListenerService.StartListening<TestEventSource1, Action<object, TestEventArgs>>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
+        //  EventAggregatorListenerService.StartListening<TestEventSource1, Action<object, TestEventArgs>>(eventName, eventListener2.OnGenericAllPurposeTwoParameterEventHandler);
 
-        //  this.EventSource1.RaiseAll();
+        //  EventSource1.RaiseAll();
 
         //  _ = eventListener1.EventHandlerInvocationCount.Should().Be(1);
         //  _ = eventListener2.EventHandlerInvocationCount.Should().Be(1);
@@ -78,11 +78,11 @@
         //  const string eventName = nameof(TestEventSource1.CustomSignatureThreeParametersTestEvent);
         //  var eventListener1 = new TestEventListener();
         //  var eventListener2 = new TestEventListener();
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-        //  this.EventAggregatorListenerService.StartListening<TestEventSource1, CustomSignatureMoreThanTwoParametersTestEventHandler>(eventName, eventListener1.OnGenericAllPurposeThreeParameterEventHandler);
-        //  this.EventAggregatorListenerService.StartListening<TestEventSource1, CustomSignatureMoreThanTwoParametersTestEventHandler>(eventName, eventListener2.OnGenericAllPurposeThreeParameterEventHandler);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1, eventName);
+        //  EventAggregatorListenerService.StartListening<TestEventSource1, CustomSignatureMoreThanTwoParametersTestEventHandler>(eventName, eventListener1.OnGenericAllPurposeThreeParameterEventHandler);
+        //  EventAggregatorListenerService.StartListening<TestEventSource1, CustomSignatureMoreThanTwoParametersTestEventHandler>(eventName, eventListener2.OnGenericAllPurposeThreeParameterEventHandler);
 
-        //  this.EventSource1.RaiseAll();
+        //  EventSource1.RaiseAll();
 
         //  _ = eventListener1.EventHandlerInvocationCount.Should().Be(1);
         //  _ = eventListener2.EventHandlerInvocationCount.Should().Be(1);
@@ -94,12 +94,12 @@
         //  const string eventName = nameof(TestEventSource1.TestEvent);
         //  var eventListener1 = new TestEventListener();
         //  var eventListener2 = new TestEventListener();
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource2, eventName);
-        //  this.EventAggregatorListenerService.StartListening<TestEventSourceBase, EventHandler>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1, eventName);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource2, eventName);
+        //  EventAggregatorListenerService.StartListening<TestEventSourceBase, EventHandler>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
 
-        //  this.EventSource1.RaiseAll();
-        //  this.EventSource2.RaiseAll();
+        //  EventSource1.RaiseAll();
+        //  EventSource2.RaiseAll();
 
         //  _ = eventListener1.EventHandlerInvocationCount.Should().Be(2);
         //}
@@ -110,12 +110,12 @@
         //  const string eventName = nameof(TestEventSource1.TestEvent);
         //  var eventListener1 = new TestEventListener();
         //  var eventListener2 = new TestEventListener();
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource2, eventName);
-        //  this.EventAggregatorListenerService.StartListening<ITestEventSourceCommonEventPractice, EventHandler>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1, eventName);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource2, eventName);
+        //  EventAggregatorListenerService.StartListening<ITestEventSourceCommonEventPractice, EventHandler>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
 
-        //  this.EventSource1.RaiseAll();
-        //  this.EventSource2.RaiseAll();
+        //  EventSource1.RaiseAll();
+        //  EventSource2.RaiseAll();
 
         //  _ = eventListener1.EventHandlerInvocationCount.Should().Be(2);
         //}
@@ -126,13 +126,13 @@
             Debug.WriteLine($"Normal test thread: {Thread.CurrentThread.ManagedThreadId}");
             var eventListener1 = new TestEventListener();
             Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-            int numberOfCompatibleEvents = this.EventSource1.GetType().GetEvents().Where(eventInfo => !eventInfo.AddMethod.IsStatic).Where(eventHandler.IsAssignable).ToList().Count;
-            this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-            _ = this.EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
-            Action unsubscribe = this.EventAggregatorListenerService.StopListeningAll<TestEventSource1>;
-            this.unsubscribeDelegates.Add(unsubscribe);
+            int numberOfCompatibleEvents = EventSource1.GetType().GetEvents().Where(eventInfo => !eventInfo.AddMethod.IsStatic).Where(eventHandler.IsAssignable).ToList().Count;
+            EventAggregatorPublisherService.StartBroadcasting(EventSource1);
+            _ = EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
+            Action unsubscribe = EventAggregatorListenerService.StopListeningAll<TestEventSource1>;
+            unsubscribeDelegates.Add(unsubscribe);
 
-            this.EventSource1.RaiseAll();
+            EventSource1.RaiseAll();
 
             _ = eventListener1.EventHandlerInvocationCount.Should().Be(numberOfCompatibleEvents);
         }
@@ -143,7 +143,7 @@
         //  var eventListener1 = new TestEventListener();
         //  Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
 
-        //  bool hasNoIncompatibleHandlers = this.EventAggregatorListenerService.TryStartListeningAll<ITestEventSource, Action<object, object>>(eventHandler);
+        //  bool hasNoIncompatibleHandlers = EventAggregatorListenerService.TryStartListeningAll<ITestEventSource, Action<object, object>>(eventHandler);
 
         //  _ = hasNoIncompatibleHandlers.Should().BeFalse();
         //}
@@ -154,7 +154,7 @@
         //  var eventListener1 = new TestEventListener();
         //  Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
 
-        //  bool hasNoIncompatibleHandlers = this.EventAggregatorListenerService.TryStartListeningAll<ITestEventSourceCommonEventPractice, Action<object, object>>(eventHandler);
+        //  bool hasNoIncompatibleHandlers = EventAggregatorListenerService.TryStartListeningAll<ITestEventSourceCommonEventPractice, Action<object, object>>(eventHandler);
 
         //  _ = hasNoIncompatibleHandlers.Should().BeTrue();
         //}
@@ -164,11 +164,11 @@
         //{
         //  var eventListener1 = new TestEventListener();
         //  Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-        //  _ = this.EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1);
+        //  _ = EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
 
-        //  this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, removeListeners: false);
-        //  this.EventSource1.RaiseAll();
+        //  EventAggregatorPublisherService.StopBroadcasting(EventSource1, removeListeners: false);
+        //  EventSource1.RaiseAll();
 
         //  _ = eventListener1.EventHandlerInvocationCount.Should().Be(0);
         //}
@@ -178,12 +178,12 @@
         //{
         //  var eventListener1 = new TestEventListener();
         //  Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-        //  _ = this.EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1);
+        //  _ = EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
 
-        //  this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, removeListeners: true);
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-        //  this.EventSource1.RaiseAll();
+        //  EventAggregatorPublisherService.StopBroadcasting(EventSource1, removeListeners: true);
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1);
+        //  EventSource1.RaiseAll();
 
         //  _ = eventListener1.EventHandlerInvocationCount.Should().Be(0);
         //}
@@ -193,14 +193,14 @@
         //{
         //  var eventListener1 = new TestEventListener();
         //  Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-        //  int numberOfCompatibleEvents = this.EventSource1.GetType().GetEvents().Where(eventHandler.IsAssignable).ToList().Count;
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-        //  _ = this.EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
+        //  int numberOfCompatibleEvents = EventSource1.GetType().GetEvents().Where(eventHandler.IsAssignable).ToList().Count;
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1);
+        //  _ = EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
 
-        //  this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, removeListeners: false);
-        //  this.EventSource1.RaiseAll();
-        //  this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-        //  this.EventSource1.RaiseAll();
+        //  EventAggregatorPublisherService.StopBroadcasting(EventSource1, removeListeners: false);
+        //  EventSource1.RaiseAll();
+        //  EventAggregatorPublisherService.StartBroadcasting(EventSource1);
+        //  EventSource1.RaiseAll();
 
         //  _ = eventListener1.EventHandlerInvocationCount.Should().Be(numberOfCompatibleEvents);
         //}
@@ -213,7 +213,7 @@
         //  //InitializeGcTest(nameof(TestEventSource1.TestEvent), out weakReferenceToListener, out strongReferenceToListener);
 
         //  //GcEx.ForceFullGC();
-        //  //this.EventSource1?.OnTestEvent();
+        //  //EventSource1?.OnTestEvent();
         //  //GC.KeepAlive(strongReferenceToListener);
 
         //  //// Garbage collect the listener by discarding the strong reference
@@ -221,7 +221,7 @@
         //  //GcEx.ForceFullGC();
 
         //  //// This must not raise any events as the listener is expected to be garbage collected at this point
-        //  //this.EventSource1?.OnTestEvent();
+        //  //EventSource1?.OnTestEvent();
 
         //  //_ = weakReferenceToListener.TryGetTarget(out _).Should().BeFalse();
         //  //_ = eventHandlerInvocationCount.Should().Be(1);
@@ -499,31 +499,31 @@
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposedValue)
+            if (!disposedValue)
             {
                 WeakEventAggregatorTest.IsDisposing = true;
                 if (disposing)
                 {
-                    //this.EventAggregatorListenerService.StopListeningAll<TestEventSource1>();
-                    //this.EventAggregatorListenerService.StopListeningAll<TestEventSource2>();
-                    foreach (Action unsubscribe in this.unsubscribeDelegates)
+                    //EventAggregatorListenerService.StopListeningAll<TestEventSource1>();
+                    //EventAggregatorListenerService.StopListeningAll<TestEventSource2>();
+                    foreach (Action unsubscribe in unsubscribeDelegates)
                     {
                         unsubscribe.Invoke();
                     }
 
-                    this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, true);
-                    this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource2, true);
-                    this.EventAggregatorListenerService = null;
-                    this.EventAggregatorPublisherService = null;
-                    this.EventSource1 = null;
-                    this.EventSource2 = null;
-                    this.currentSynchronizationContext = null;
+                    EventAggregatorPublisherService.StopBroadcasting(EventSource1, true);
+                    EventAggregatorPublisherService.StopBroadcasting(EventSource2, true);
+                    EventAggregatorListenerService = null;
+                    EventAggregatorPublisherService = null;
+                    EventSource1 = null;
+                    EventSource2 = null;
+                    currentSynchronizationContext = null;
                     eventHandlerInvocationCount = 0;
                     eventHandlerInvocationThreadId = -1;
                     GcEx.ForceFullGC();
                 }
 
-                this.disposedValue = true;
+                disposedValue = true;
                 WeakEventAggregatorTest.IsDisposing = false;
             }
         }

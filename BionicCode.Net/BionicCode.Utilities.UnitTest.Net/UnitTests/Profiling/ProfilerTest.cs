@@ -21,7 +21,7 @@
         private string ProfilerRunSummary { get; set; }
 
         private Func<Task> CreateAsyncTimeConsumingOperation(TimeSpan duration) => async () => await Task.Delay(duration).ConfigureAwait(false);
-        private Func<Task> CreateAsyncNoTimeConsumingOperation() => async () => await Task.Delay(this.NoDuration).ConfigureAwait(false);
+        private Func<Task> CreateAsyncNoTimeConsumingOperation() => async () => await Task.Delay(NoDuration).ConfigureAwait(false);
         private Action CreateTimeConsumingOperation(TimeSpan duration) => () =>
         {
             //Thread.Sleep(duration);
@@ -37,16 +37,16 @@
 
         private void LogProfiling(ProfilerBatchResult result, string summary)
         {
-            this.ProfilerRunResult = result;
-            this.ProfilerRunSummary = result.Summary;
+            ProfilerRunResult = result;
+            ProfilerRunSummary = result.Summary;
 
             Debug.WriteLine(result.Summary);
         }
 
         private Task LogProfilingAsync(ProfilerBatchResult result, string summary)
         {
-            this.ProfilerRunResult = result;
-            this.ProfilerRunSummary = result.Summary;
+            ProfilerRunResult = result;
+            ProfilerRunSummary = result.Summary;
 
             Debug.WriteLine(result.Summary);
 
@@ -56,7 +56,7 @@
         [Fact]
         public async Task LogTimeScoped_ExecutionTime_MustBeEqualToMeasuredTime()
         {
-            Func<Task> operationToProfile = CreateAsyncTimeConsumingOperation(this.ShortDuration);
+            Func<Task> operationToProfile = CreateAsyncTimeConsumingOperation(ShortDuration);
             ProfilerBatchResult result;
 
             using (Profiler.LogTimeScoped(out result))
@@ -64,7 +64,7 @@
                 await operationToProfile.Invoke();
             }
 
-            _ = result.TotalDuration.Value.Should().BeGreaterThanOrEqualTo(this.ShortDuration.ToMicroseconds());
+            _ = result.TotalDuration.Value.Should().BeGreaterThanOrEqualTo(ShortDuration.ToMicroseconds());
         }
 
         [Fact]
@@ -85,7 +85,7 @@
         public async Task LogTimeScoped_ExecutionTimeWithLogger_MustBeEqualToMeasuredTime()
         {
             Action<ProfilerBatchResult, string> logger = CreateLogger();
-            Func<Task> operationToProfile = CreateAsyncTimeConsumingOperation(this.ShortDuration);
+            Func<Task> operationToProfile = CreateAsyncTimeConsumingOperation(ShortDuration);
             ProfilerBatchResult result;
 
             using (Profiler.LogTimeScoped(logger, out result))
@@ -93,7 +93,7 @@
                 await operationToProfile.Invoke();
             }
 
-            _ = result.TotalDuration.Value.Should().BeGreaterThanOrEqualTo(this.ShortDuration.ToMicroseconds());
+            _ = result.TotalDuration.Value.Should().BeGreaterThanOrEqualTo(ShortDuration.ToMicroseconds());
         }
 
         [Fact]
@@ -108,7 +108,7 @@
                 operationToProfile.Invoke();
             }
 
-            _ = result.Should().BeSameAs(this.ProfilerRunResult);
+            _ = result.Should().BeSameAs(ProfilerRunResult);
         }
 
         [Fact]
@@ -123,7 +123,7 @@
                 operationToProfile.Invoke();
             }
 
-            _ = result.Summary.Should().BeEquivalentTo(this.ProfilerRunResult.Summary);
+            _ = result.Summary.Should().BeEquivalentTo(ProfilerRunResult.Summary);
         }
 
         [Fact]
@@ -145,22 +145,22 @@
         //public async Task LogTimeAsync_ExecutionTimeWithLogger_MustBeEqualToMeasuredTime()
         //{
         //  Action<ProfilerBatchResult, string> logger = CreateLogger();
-        //  Func<Task> operationToProfile = CreateAsyncTimeConsumingOperation(this.ShortDuration);
+        //  Func<Task> operationToProfile = CreateAsyncTimeConsumingOperation(ShortDuration);
 
         //  ProfilerBatchResult result = await Profiler.LogTimeAsync(operationToProfile, 10, logger);
 
-        //  _ = result.TotalDuration.Should().BeGreaterThanOrEqualTo(this.ShortDuration);
+        //  _ = result.TotalDuration.Should().BeGreaterThanOrEqualTo(ShortDuration);
         //}
 
         //[Fact]
         //public void LogTime_ExecutionTimeWithLogger_MustBeEqualToMeasuredTime()
         //{
         //  Action<ProfilerBatchResult, string> logger = CreateLogger();
-        //  Action operationToProfile = CreateTimeConsumingOperation(this.ShortDuration);
+        //  Action operationToProfile = CreateTimeConsumingOperation(ShortDuration);
 
         //  ProfilerBatchResult result = Profiler.LogTime(operationToProfile, 1, logger);
 
-        //  _ = result.TotalDuration.Should().BeGreaterThanOrEqualTo(this.ShortDuration);
+        //  _ = result.TotalDuration.Should().BeGreaterThanOrEqualTo(ShortDuration);
         //}
 
         //[Theory]
@@ -195,11 +195,11 @@
         //public void LogTime_AverageTimeWithLogger_MustBeEqualToReference(int iterationCount)
         //{
         //  Action<ProfilerBatchResult, string> logger = CreateLogger();
-        //  Action operationToProfile = CreateTimeConsumingOperation(this.ShortDuration);
+        //  Action operationToProfile = CreateTimeConsumingOperation(ShortDuration);
 
         //  ProfilerBatchResult result = Profiler.LogTime(operationToProfile, iterationCount, logger);
 
-        //  _ = result.AverageDuration.Should().BeGreaterThanOrEqualTo(this.ShortDuration);
+        //  _ = result.AverageDuration.Should().BeGreaterThanOrEqualTo(ShortDuration);
         //}
 
         [Fact]

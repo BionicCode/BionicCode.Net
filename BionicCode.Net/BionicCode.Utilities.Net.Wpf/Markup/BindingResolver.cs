@@ -46,17 +46,17 @@ namespace BionicCode.Utilities.Net
                 throw new ArgumentNullException(nameof(target));
             }
 
-            this.Target = new WeakReference<DependencyObject>(target);
-            this.TargetProperty = targetProperty ?? throw new ArgumentNullException(nameof(targetProperty));
-            this.ResolvedSourceValueFilter = value => value;
-            this.ResolvedTargetValueFilter = value => value;
+            Target = new WeakReference<DependencyObject>(target);
+            TargetProperty = targetProperty ?? throw new ArgumentNullException(nameof(targetProperty));
+            ResolvedSourceValueFilter = value => value;
+            ResolvedTargetValueFilter = value => value;
         }
 
         private void AddBindingTargetToLookupTable(DependencyObject target) => BindingResolver.BindingTargetToBindingResolversMap.Add(target, this);
 
         public object ResolveBinding(Binding bindingExpression)
         {
-            if (!this.Target.TryGetTarget(out DependencyObject bindingTarget))
+            if (!Target.TryGetTarget(out DependencyObject bindingTarget))
             {
                 throw new InvalidOperationException("Unable to resolve sourceBinding. Binding target is 'null', because the reference has already been garbage collected.");
             }
@@ -64,7 +64,7 @@ namespace BionicCode.Utilities.Net
             AddBindingTargetToLookupTable(bindingTarget);
 
             Binding binding = bindingExpression;
-            this.OriginalBinding = new WeakReference<Binding>(binding);
+            OriginalBinding = new WeakReference<Binding>(binding);
 
             // Listen to data source
             Binding sourceBinding = CloneBinding(binding);
@@ -278,26 +278,26 @@ namespace BionicCode.Utilities.Net
 
         private void UpdateTarget()
         {
-            if (!this.Target.TryGetTarget(out DependencyObject target))
+            if (!Target.TryGetTarget(out DependencyObject target))
             {
                 return;
             }
 
             object resolvedValue = BindingResolver.GetResolvedValue(target);
-            object value = this.ResolvedSourceValueFilter.Invoke(resolvedValue);
+            object value = ResolvedSourceValueFilter.Invoke(resolvedValue);
 
             BindingResolver.SetResolvedValue(this, value);
         }
 
         private void UpdateSource()
         {
-            if (!this.Target.TryGetTarget(out DependencyObject target))
+            if (!Target.TryGetTarget(out DependencyObject target))
             {
                 return;
             }
 
             object resolvedValue = BindingResolver.GetResolvedValue(this);
-            object value = this.ResolvedTargetValueFilter.Invoke(resolvedValue);
+            object value = ResolvedTargetValueFilter.Invoke(resolvedValue);
 
             BindingResolver.SetResolvedValue(target, value);
         }

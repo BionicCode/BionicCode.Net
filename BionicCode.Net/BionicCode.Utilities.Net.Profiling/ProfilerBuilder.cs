@@ -25,18 +25,18 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     private Action<ProfilerBatchResult, string>? ProfilerLogger { get; set; }
     private Runtime Runtime { get; set; }
 
-    HashSet<TypeData> IAttributeProfilerConfiguration.TypeData => this.TypeData;
-    //Assembly IAttributeProfilerConfiguration.TypeAssembly => this.TypeAssembly;
-    TimeUnit IAttributeProfilerConfiguration.BaseUnit => this.BaseUnit;
-    bool IAttributeProfilerConfiguration.IsWarmupEnabled => this.IsWarmupEnabled;
-    bool IAttributeProfilerConfiguration.IsAutoDiscoverEnabled => this.IsAutoDiscoverEnabled;
-    Assembly[] IAttributeProfilerConfiguration.AutoDiscoverSourceAssemblies => this.SourceAssemblies.ToArray();
-    bool IAttributeProfilerConfiguration.IsDefaultLogOutputEnabled => this.IsDefaultLogOutputEnabled;
-    int IAttributeProfilerConfiguration.Iterations => this.Iterations;
-    int IAttributeProfilerConfiguration.WarmupIterations => this.WarmupIterations;
-    Func<ProfilerBatchResult, string, Task> IAttributeProfilerConfiguration.AsyncProfilerLogger => this.AsyncProfilerLogger;
-    Action<ProfilerBatchResult, string> IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
-    Runtime IAttributeProfilerConfiguration.Runtime => this.Runtime;
+    HashSet<TypeData> IAttributeProfilerConfiguration.TypeData => TypeData;
+    //Assembly IAttributeProfilerConfiguration.TypeAssembly => TypeAssembly;
+    TimeUnit IAttributeProfilerConfiguration.BaseUnit => BaseUnit;
+    bool IAttributeProfilerConfiguration.IsWarmupEnabled => IsWarmupEnabled;
+    bool IAttributeProfilerConfiguration.IsAutoDiscoverEnabled => IsAutoDiscoverEnabled;
+    Assembly[] IAttributeProfilerConfiguration.AutoDiscoverSourceAssemblies => SourceAssemblies.ToArray();
+    bool IAttributeProfilerConfiguration.IsDefaultLogOutputEnabled => IsDefaultLogOutputEnabled;
+    int IAttributeProfilerConfiguration.Iterations => Iterations;
+    int IAttributeProfilerConfiguration.WarmupIterations => WarmupIterations;
+    Func<ProfilerBatchResult, string, Task> IAttributeProfilerConfiguration.AsyncProfilerLogger => AsyncProfilerLogger;
+    Action<ProfilerBatchResult, string> IAttributeProfilerConfiguration.ProfilerLogger => ProfilerLogger;
+    Runtime IAttributeProfilerConfiguration.Runtime => Runtime;
 
     internal ProfilerBuilder() : this(Enumerable.Empty<TypeData>())
     {
@@ -48,20 +48,20 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
 
     internal ProfilerBuilder(IEnumerable<TypeData> targetTypes)
     {
-        this.TypeData = new HashSet<TypeData>(targetTypes);
-        TypeData invalidGenericType = this.TypeData.FirstOrDefault(typeData => typeData.IsGenericTypeDefinition || typeData.ContainsGenericParameters);
+        TypeData = new HashSet<TypeData>(targetTypes);
+        TypeData invalidGenericType = TypeData.FirstOrDefault(typeData => typeData.IsGenericTypeDefinition || typeData.ContainsGenericParameters);
         if (invalidGenericType != null)
         {
             throw new ProfilerConfigurationException(ExceptionMessages.GetMissingGenericTypeArgumentsForAutoDiscoveredGenericTypeExceptionMessage(invalidGenericType));
         }
 
-        this.SourceAssemblies = new HashSet<Assembly>();
-        this.IsWarmupEnabled = true;
-        this.IsDefaultLogOutputEnabled = true;
-        this.WarmupIterations = Profiler.DefaultWarmupCount;
-        this.Iterations = Profiler.DefaultIterationsCount;
-        this.BaseUnit = TimeUnit.Auto;
-        this.Runtime = Runtime.Current;
+        SourceAssemblies = new HashSet<Assembly>();
+        IsWarmupEnabled = true;
+        IsDefaultLogOutputEnabled = true;
+        WarmupIterations = Profiler.DefaultWarmupCount;
+        Iterations = Profiler.DefaultIterationsCount;
+        BaseUnit = TimeUnit.Auto;
+        Runtime = Runtime.Current;
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     public ProfilerBuilder AddTargetType(Type targetType)
     {
         TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(targetType);
-        _ = this.TypeData.Add(typeData);
+        _ = TypeData.Add(typeData);
 
         return this;
     }
@@ -113,7 +113,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     /// </remarks>
     public ProfilerBuilder AddAutoDiscoverAssembly(Assembly targetAssembly)
     {
-        _ = this.SourceAssemblies.Add(targetAssembly);
+        _ = SourceAssemblies.Add(targetAssembly);
         return this;
     }
 
@@ -133,7 +133,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     /// </remarks>
     public ProfilerBuilder AddAutoDiscoverAssembly(IEnumerable<Assembly> targetAssemblies)
     {
-        this.SourceAssemblies.AddRange(targetAssemblies);
+        SourceAssemblies.AddRange(targetAssemblies);
         return this;
     }
 
@@ -152,7 +152,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
             throw new ArgumentOutOfRangeExceptionAdvanced(ExceptionMessages.ArgumentExceptionMessage_ProfilerRunCount(), nameof(iterations));
         }
 
-        this.Iterations = iterations;
+        Iterations = iterations;
         return this;
     }
 
@@ -165,7 +165,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     /// </returns>
     public ProfilerBuilder SetIncludeAutoDiscoverableTypes(bool isAutoDiscoverEnabled)
     {
-        this.IsAutoDiscoverEnabled = isAutoDiscoverEnabled;
+        IsAutoDiscoverEnabled = isAutoDiscoverEnabled;
         return this;
     }
 
@@ -178,7 +178,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     /// </returns>
     public ProfilerBuilder SetBaseUnit(TimeUnit timeUnit)
     {
-        this.BaseUnit = timeUnit;
+        BaseUnit = timeUnit;
         return this;
     }
 
@@ -192,7 +192,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     public ProfilerBuilder SetLogger(Action<ProfilerBatchResult, string> profilerLogger)
     {
         ArgumentNullException.ThrowIfNull(profilerLogger, nameof(profilerLogger));
-        this.ProfilerLogger = profilerLogger;
+        ProfilerLogger = profilerLogger;
         return this;
     }
 
@@ -206,7 +206,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     public ProfilerBuilder SetAsyncLogger(Func<ProfilerBatchResult, string, Task> asyncProfilerLogger)
     {
         ArgumentNullException.ThrowIfNull(asyncProfilerLogger, nameof(asyncProfilerLogger));
-        this.AsyncProfilerLogger = asyncProfilerLogger;
+        AsyncProfilerLogger = asyncProfilerLogger;
         return this;
     }
 
@@ -222,7 +222,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     /// </remarks>
     public ProfilerBuilder EnableWarmup()
     {
-        this.IsWarmupEnabled = true;
+        IsWarmupEnabled = true;
         return this;
     }
 
@@ -236,7 +236,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     /// </remarks>
     public ProfilerBuilder DisableWarmup()
     {
-        this.IsWarmupEnabled = false;
+        IsWarmupEnabled = false;
         return this;
     }
 
@@ -251,7 +251,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     /// </remarks>
     public ProfilerBuilder EnableDefaultLogOutput()
     {
-        this.IsDefaultLogOutputEnabled = true;
+        IsDefaultLogOutputEnabled = true;
         return this;
     }
 
@@ -262,7 +262,7 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.</returns>
     public ProfilerBuilder DisableDefaultLogOutput()
     {
-        this.IsDefaultLogOutputEnabled = false;
+        IsDefaultLogOutputEnabled = false;
         return this;
     }
 
@@ -283,13 +283,13 @@ public class ProfilerBuilder : IAttributeProfilerConfiguration
             throw new ArgumentOutOfRangeExceptionAdvanced(ExceptionMessages.GetArgumentExceptionMessage_ProfilerWarmupCount(), nameof(warmupIterations));
         }
 
-        this.WarmupIterations = warmupIterations;
+        WarmupIterations = warmupIterations;
         return this;
     }
 
     public ProfilerBuilder SetRuntime(Runtime runtime)
     {
-        this.Runtime = runtime;
+        Runtime = runtime;
         return this;
     }
 

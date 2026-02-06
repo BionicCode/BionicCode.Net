@@ -52,7 +52,7 @@ internal sealed class EventData : MemberData
     protected override MemberInfo GetMemberInfo()
       => EventInfo;
 
-    public object? RaiseEvent(object? target, params object?[]? arguments)
+    internal object? RaiseEvent(object? target, params object?[]? arguments)
     {
         ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
         ThrowIfInvalidMethodArguments(arguments);
@@ -120,23 +120,24 @@ internal sealed class EventData : MemberData
         }
     }
 
-    public override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
+    /// <inheritdoc/>
+    internal override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
       ? (_accessModifier = EventData.GetAccessModifierInternal(this))
       : _accessModifier;
 
-    public void AddEventHandler(object eventSource, Delegate handler)
+    internal void AddEventHandler(object eventSource, Delegate handler)
       => AddMethodData.Invoke(eventSource, handler);
 
-    public void AddEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
+    internal void AddEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
       => AddMethodData.Invoke(eventSource, handler);
 
-    public void RemoveEventHandler(object eventSource, Delegate handler)
+    internal void RemoveEventHandler(object eventSource, Delegate handler)
       => RemoveMethodData.Invoke(eventSource, handler);
 
-    public void RemoveEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
+    internal void RemoveEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
       => RemoveMethodData.Invoke(eventSource, handler);
 
-    public MethodData AddMethodData
+    internal MethodData AddMethodData
       => _addMethodData ??= IsExplicitInterfaceImplementation
             ? MethodInfo.GetMethodFromHandle(_descriptor.AddAccessorImplementationMethodHandle) is MethodInfo explicitImplementationAccessor
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(explicitImplementationAccessor)
@@ -145,7 +146,7 @@ internal sealed class EventData : MemberData
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo)
                 : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an add method.");
 
-    public MethodData RemoveMethodData
+    internal MethodData RemoveMethodData
       => _removeMethodData ??= IsExplicitInterfaceImplementation
             ? MethodInfo.GetMethodFromHandle(_descriptor.RemoveAccessorImplementationMethodHandle) is MethodInfo explicitImplementationAccessor
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(explicitImplementationAccessor)
@@ -154,15 +155,15 @@ internal sealed class EventData : MemberData
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo)
                 : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have a remove method.");
 
-    public MethodData EventInvokerMethodData
+    internal MethodData EventInvokerMethodData
       => _invocatorMethodData ??= EventHandlerTypeData?.DelegateInvokeMethodData!;
 
-    public TypeData EventHandlerTypeData
+    internal TypeData EventHandlerTypeData
       => _eventHandlerTypeData ??= EventInfo.EventHandlerType is Type eventHandlerType
         ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventHandlerType)
         : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an event handler type.");
 
-    public EventInfo EventInfo
+    internal EventInfo EventInfo
     {
         get
         {
@@ -174,90 +175,106 @@ internal sealed class EventData : MemberData
         private set => _eventInfo = value;
     }
 
-    public override bool IsExplicitInterfaceImplementation { get; }
+    /// <inheritdoc/>
+    internal override bool IsExplicitInterfaceImplementation { get; }
 
-    public override RuntimeTypeHandle DeclaringTypeHandle { get; }
-    public override RuntimeTypeHandle DeclaringInterfaceHandle { get; }
-    public override RuntimeTypeHandle ImplementingTypeHandle { get; }
+    /// <inheritdoc/>
+    internal override RuntimeTypeHandle DeclaringTypeHandle { get; }
+    /// <inheritdoc/>
+    internal override RuntimeTypeHandle ImplementingTypeHandle { get; }
 
-    public override bool IsStatic
+    /// <inheritdoc/>
+    internal override bool IsStatic
       => _isStatic ??= AddMethodData?.IsStatic ?? false;
 
-    public override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
+    /// <inheritdoc/>
+    internal override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
       ? (_symbolAttributes = EventData.GetAttributesInternal(this))
       : _symbolAttributes;
 
-    public override SymbolComponentInfo SymbolComponentInfo
+    /// <inheritdoc/>
+    internal override SymbolComponentInfo SymbolComponentInfo
       => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
-    public override string Signature
+    /// <inheritdoc/>
+    internal override string Signature
       => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortSignature
+    /// <inheritdoc/>
+    internal override string ShortSignature
       => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortCompactSignature
+    /// <inheritdoc/>
+    internal override string ShortCompactSignature
       => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedSignature
+    /// <inheritdoc/>
+    internal override string FullyQualifiedSignature
       => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedRuntimeSignature
+    /// <inheritdoc/>
+    internal override string FullyQualifiedRuntimeSignature
       => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeSignature
+    /// <inheritdoc/>
+    internal override string RuntimeSignature
       => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortSignature
+    /// <inheritdoc/>
+    internal override string RuntimeShortSignature
       => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortCompactSignature
+    /// <inheritdoc/>
+    internal override string RuntimeShortCompactSignature
       => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
-    public override string DisplayName
+    /// <inheritdoc/>
+    internal override string DisplayName
       => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    public override string ShortDisplayName
+    /// <inheritdoc/>
+    internal override string ShortDisplayName
       => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
-    public override string FullyQualifiedDisplayName
+    /// <inheritdoc/>
+    internal override string FullyQualifiedDisplayName
       => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    public override string AssemblyName
+    /// <inheritdoc/>
+    internal override string AssemblyName
       => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
-    public bool CanAdd
+    internal bool CanAdd
       => _canAdd ??= _addMethodData is not null || (_addMethodData = EventInfo.GetAddMethod(true)?.ToMethodData()) is not null;
 
-    public bool CanRemove
+    internal bool CanRemove
         => _canRemove ??= _removeMethodData is not null || (_removeMethodData = EventInfo.GetRemoveMethod(true)?.ToMethodData()) is not null;
 
-    public bool IsOverride
+    internal bool IsOverride
       => _isOverride ??= AddMethodData!.IsOverride;
 
-    public override bool IsPublic
+    /// <inheritdoc/>
+    internal override bool IsPublic
         => _isPublic ??= AccessModifier == AccessModifier.Public;
 
-    public override bool IsPrivate
+    /// <inheritdoc/>
+    internal override bool IsPrivate
         => _isPrivate ??= AccessModifier == AccessModifier.Private;
 
-    /// <summary>
-    /// Gets a value indicating whether the member has internal accessibility within its assembly.
-    /// </summary>
-    public override bool IsAssembly
+    /// <inheritdoc/>
+    internal override bool IsAssembly
         => _isAssembly ??= AccessModifier == AccessModifier.Internal;
 
-    /// <summary>
-    /// Gets a value indicating whether the member is protected and thus accessible only within its own class or by
-    /// derived class instances.
-    /// </summary>
-    public override bool IsFamily
+    /// <inheritdoc/>
+    internal override bool IsFamily
         => _isFamily ??= AccessModifier == AccessModifier.Protected;
 
-    public override bool IsFamilyOrAssembly
+    /// <inheritdoc/>
+    internal override bool IsFamilyOrAssembly
         => _isFamilyOrAssembly ??= AccessModifier == AccessModifier.ProtectedInternal;
 
-    public override bool IsFamilyAndAssembly
+    /// <inheritdoc/>
+    internal override bool IsFamilyAndAssembly
         => _isFamilyAndAssembly ??= AccessModifier == AccessModifier.PrivateProtected;
 
     /// <summary>

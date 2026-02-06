@@ -81,7 +81,7 @@
 private string name;
 public string Name
 {
-  get => this.name;
+  get => name;
   set
   {
     if (TrySetValue(
@@ -91,9 +91,9 @@ public string Name
         var messages = new List<string>() {"Name must start with an underscore"};
         return (stringValue.StartsWith("_"), messages);
       },
-      ref this.name))
+      ref name))
     {
-      DoSomething(this.name);
+      DoSomething(name);
     }
   }
 }
@@ -104,12 +104,12 @@ public string Name
 private string name;
 public string Name
 {
-  get => this.name;
+  get => name;
   set
   {
-    if (TrySetValue(value, ref this.name))
+    if (TrySetValue(value, ref name))
     {
-      DoSomething(this.name);
+      DoSomething(name);
     }
   }
 }
@@ -142,10 +142,10 @@ Execute C#:
 ```C#
     
 // Execute asynchronously
-await this.SomeAsyncCommand.ExecuteAsync("String value");
+await SomeAsyncCommand.ExecuteAsync("String value");
     
 // Execute synchronously
-this.SomeAsyncCommand.Execute("String value");
+SomeAsyncCommand.Execute("String value");
     
 ```
 
@@ -326,7 +326,7 @@ event EventHandler<ValueChangedEventArgs<(bool HasError, string Message)>> Compl
 // Publish event
 protected virtual void RaiseCompleted((bool HasError, string Message) oldValue, (bool HasError, string Message) newValue)
 {
-  this.Completed?.Invoke(this, new ValueChangedEventArgs<(bool HasError, string Message)>(oldValue, newValue));
+  Completed?.Invoke(this, new ValueChangedEventArgs<(bool HasError, string Message)>(oldValue, newValue));
 }
 
 // Receive event
@@ -335,9 +335,9 @@ private void OnCompleted(object sender, ValueChangedEventArgs<(bool HasError, st
   (bool HasError, string Message) newValue = e.NewValue;
   if (newValue.HasError)
   {
-    this.TaskCompletionSource.TrySetException(new InvalidOperationException(newValue.Message));
+    TaskCompletionSource.TrySetException(new InvalidOperationException(newValue.Message));
   }
-  this.TaskCompletionSource.TrySetResult(true);
+  TaskCompletionSource.TrySetResult(true);
 }
 ```
 
@@ -354,7 +354,7 @@ event EventHandler<ValueEventArgs<int> Completed;
 // Publish event
 protected virtual void RaiseCompleted(int value)
 {
-  this.Completed?.Invoke(this, new ValueEventArgs<int>(value));
+  Completed?.Invoke(this, new ValueEventArgs<int>(value));
 }
 
 // Receive event
@@ -377,7 +377,7 @@ AppSettingsConnector.WriteInt("mruCount", 10);
 // If key exists read the Most Recently Used file count from the AppSettings file
 if (TryReadInt("mruCount", out int mruCount))
 {
-  this.MruCount = mruCount;
+  MruCount = mruCount;
 }
 ```
 
@@ -513,10 +513,10 @@ class MainPageViewModel : IPage, INotifyPropertyChanged
   public string Title 
   { 
     private string title;
-    get => this.title; 
+    get => title; 
     set 
     { 
-      this.title = value;
+      title = value;
       OnPropertyChanged();
     }
   }
@@ -527,10 +527,10 @@ class SettingsPageViewModel : IPage, INotifyPropertyChanged
   private string title;
   public string Title 
   { 
-    get => this.title; 
+    get => title; 
     set 
     { 
-      this.title = value;
+      title = value;
       OnPropertyChanged();
     }
   }
@@ -540,26 +540,26 @@ class MainWindowViewModel : INotifyPropertyChanged
 {
   public void CreateItem()
   {
-    this.Items.Add("New Item");
+    Items.Add("New Item");
     OnItemCreated();
   }
   
   private ObservableCollection<string> items;
   public ObservableCollection<string> Items
   { 
-    get => this.items; 
+    get => items; 
     set 
     { 
-      this.items = value;
+      items = value;
       OnPropertyChanged();
     }
   }
   
   public event PropertyChangedEventHandler PropertyChanged;
-  protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+  protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
   
   public event EventHandler ItemCreated;
-  protected virtual void OnItemCreated() => this.ItemCreated?.Invoke(this, EventArgs.Empty);
+  protected virtual void OnItemCreated() => ItemCreated?.Invoke(this, EventArgs.Empty);
 }
 ```
 
@@ -601,7 +601,7 @@ class MainWindowViewModel : IDialogViewModelProvider
       dialogViewModel => HandleFileExistsDialogResponseAsync(dialogViewModel, filePath, settingsData));
     
     // Show the dialog by setting the DialogViewModel property to an instance of IDialogViewModel
-    this.DialogViewModel = fileExistsdialogViewModel;
+    DialogViewModel = fileExistsdialogViewModel;
   }
   
   // Continuation callback. Will be invoked once the dialog closed. 
@@ -618,8 +618,8 @@ class MainWindowViewModel : IDialogViewModelProvider
   private IDialogViewModel dialogViewModel;  
   public IDialogViewModel DialogViewModel
   {
-    get => this.dialogViewModel;
-    private set => TrySetValue(value, ref this.dialogViewModel);
+    get => dialogViewModel;
+    private set => TrySetValue(value, ref dialogViewModel);
   }
 }
 ```
@@ -783,7 +783,7 @@ class SettingsPageViewModel : IDialogViewModelProviderSource
   public event EventHandler<ValueEventArgs<IDialogViewModel>> DialogRequested;
   protected virtual void OnDialogRequested(IDialogViewModel dialogViewModel)
   {
-    this.DialogRequested?.Invoke(this, new ValueEventArgs<IDialogViewModel>(dialogViewModel));
+    DialogRequested?.Invoke(this, new ValueEventArgs<IDialogViewModel>(dialogViewModel));
   }
 }
 ```
@@ -800,17 +800,17 @@ class MainWindowViewModel : IDialogViewModelProvider
     
     // Listen for dialog requests and provide the dialog view model for binding of the attahced behavior.    
     // Show the dialog by setting the DialogViewModel property to an instance of IDialogViewModel.
-    settingsPageViewModel.DialogRequested += (sender, args) => this.DialogViewModel = args.Value);
+    settingsPageViewModel.DialogRequested += (sender, args) => DialogViewModel = args.Value);
     
-    this.Pages = new ObservableCollection<IPage>() { settingsPageViewModel };
+    Pages = new ObservableCollection<IPage>() { settingsPageViewModel };
   }
   
   // IDialogViewModelProvider interface implementation
   private IDialogViewModel dialogViewModel;  
   public IDialogViewModel DialogViewModel
   {
-    get => this.dialogViewModel;
-    private set => TrySetValue(value, ref this.dialogViewModel);
+    get => dialogViewModel;
+    private set => TrySetValue(value, ref dialogViewModel);
   }
 }
 ```

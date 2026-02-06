@@ -9,17 +9,17 @@
     {
         public RuntimeContextProfilerConfiguration(Runtime runtime, IEnumerable<TypeData> typeData, IAttributeProfilerConfiguration profilerConfigurationToCopy)
         {
-            this.Runtime = runtime;
-            this.TypeData = new HashSet<TypeData>(typeData);
-            this.IsWarmupEnabled = profilerConfigurationToCopy.IsWarmupEnabled;
-            this.IsDefaultLogOutputEnabled = profilerConfigurationToCopy.IsDefaultLogOutputEnabled;
-            this.Iterations = profilerConfigurationToCopy.Iterations;
-            this.WarmupIterations = profilerConfigurationToCopy.WarmupIterations;
-            this.BaseUnit = profilerConfigurationToCopy.BaseUnit;
-            this.AsyncProfilerLogger = profilerConfigurationToCopy.AsyncProfilerLogger;
-            this.ProfilerLogger = profilerConfigurationToCopy.ProfilerLogger;
-            this.AutoDiscoverSourceAssemblies = Array.Empty<Assembly>();
-            this.IsAutoDiscoverEnabled = false;
+            Runtime = runtime;
+            TypeData = new HashSet<TypeData>(typeData);
+            IsWarmupEnabled = profilerConfigurationToCopy.IsWarmupEnabled;
+            IsDefaultLogOutputEnabled = profilerConfigurationToCopy.IsDefaultLogOutputEnabled;
+            Iterations = profilerConfigurationToCopy.Iterations;
+            WarmupIterations = profilerConfigurationToCopy.WarmupIterations;
+            BaseUnit = profilerConfigurationToCopy.BaseUnit;
+            AsyncProfilerLogger = profilerConfigurationToCopy.AsyncProfilerLogger;
+            ProfilerLogger = profilerConfigurationToCopy.ProfilerLogger;
+            AutoDiscoverSourceAssemblies = Array.Empty<Assembly>();
+            IsAutoDiscoverEnabled = false;
         }
 
         public Runtime Runtime { get; }

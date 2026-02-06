@@ -25,8 +25,8 @@
         {
             ArgumentNullException.ThrowIfNull(fieldInfo);
 
-            this.FieldHandle = fieldInfo.FieldHandle;
-            this.FieldName = fieldInfo.Name;
+            FieldHandle = fieldInfo.FieldHandle;
+            FieldName = fieldInfo.Name;
         }
 
         public RuntimeFieldHandle FieldHandle { get; }
@@ -34,16 +34,16 @@
         public bool IsAnonymous { get; }
 
         public bool Equals(WellKnownFieldDescriptor other)
-            => this.FieldHandle.Equals(other.FieldHandle)
-            && this.FieldName.Equals(other.FieldName, StringComparison.Ordinal)
-            && this.IsAnonymous == other.IsAnonymous;
+            => FieldHandle.Equals(other.FieldHandle)
+            && FieldName.Equals(other.FieldName, StringComparison.Ordinal)
+            && IsAnonymous == other.IsAnonymous;
 
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.IsAnonymous);
-            hashCode.Add(this.FieldHandle);
-            hashCode.Add(this.FieldName, StringComparer.Ordinal);
+            hashCode.Add(IsAnonymous);
+            hashCode.Add(FieldHandle);
+            hashCode.Add(FieldName, StringComparer.Ordinal);
 
             return hashCode.ToHashCode();
         }

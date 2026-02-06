@@ -25,10 +25,10 @@
             double baseValue = value is IConvertible convertibleValue
               ? System.Convert.ToDouble(convertibleValue)
               : 0;
-            double left = this.ThicknessPercentage.Left / 100 * baseValue;
-            double top = this.ThicknessPercentage.Top / 100 * baseValue;
-            double right = this.ThicknessPercentage.Right / 100 * baseValue;
-            double bottom = this.ThicknessPercentage.Bottom / 100 * baseValue;
+            double left = ThicknessPercentage.Left / 100 * baseValue;
+            double top = ThicknessPercentage.Top / 100 * baseValue;
+            double right = ThicknessPercentage.Right / 100 * baseValue;
+            double bottom = ThicknessPercentage.Bottom / 100 * baseValue;
 
             return new Thickness(left, top, right, bottom);
         }

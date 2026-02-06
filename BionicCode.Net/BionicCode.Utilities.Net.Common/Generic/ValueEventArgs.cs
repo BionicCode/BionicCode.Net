@@ -19,7 +19,7 @@
         /// MemberConstructor.
         /// </summary>
         /// <param name="value">The value to send as event args.</param>
-        public ValueEventArgs(TValue value) => this.Value = value;
+        public ValueEventArgs(TValue value) => Value = value;
 
         /// <summary>
         /// The value to send as event args.

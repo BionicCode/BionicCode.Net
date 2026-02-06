@@ -12,8 +12,8 @@
         /// <param name="endIndex"></param>
         public HighlightRange(int startIndex, int endIndex)
         {
-            this.StartIndex = startIndex;
-            this.EndIndex = endIndex;
+            StartIndex = startIndex;
+            EndIndex = endIndex;
         }
 
         /// <summary>

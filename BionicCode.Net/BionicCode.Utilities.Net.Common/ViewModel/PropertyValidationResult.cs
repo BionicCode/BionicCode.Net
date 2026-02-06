@@ -14,8 +14,8 @@
         /// <param name="errorMessages">A collection of error messasge objects that can be displayed in the UI. It's expected that the client will generate one message for each validation error of the currently validated property.</param>
         public PropertyValidationResult(bool isValid, IEnumerable<object> errorMessages)
         {
-            this.IsValid = isValid;
-            this.ErrorMessages = errorMessages;
+            IsValid = isValid;
+            ErrorMessages = errorMessages;
         }
 
         /// <summary>
@@ -25,14 +25,14 @@
         /// <param name="errorMessage">An error messasge object that can be displayed in the UI.</param>
         public PropertyValidationResult(bool isValid, object errorMessage)
         {
-            this.IsValid = isValid;
-            this.ErrorMessages = new[] { errorMessage };
+            IsValid = isValid;
+            ErrorMessages = new[] { errorMessage };
         }
 
         internal PropertyValidationResult((bool IsValid, IEnumerable<object> ErrorMessages) validationResult)
         {
-            this.IsValid = validationResult.IsValid;
-            this.ErrorMessages = validationResult.ErrorMessages;
+            IsValid = validationResult.IsValid;
+            ErrorMessages = validationResult.ErrorMessages;
         }
 
         /// <summary>
@@ -43,8 +43,8 @@
         /// <remarks>This deconstructor was mainly introduced to suppport backwards compatibility withlegacy versions where the delegate was returning a <c>ValueTuple</c>.</remarks>
         public void Deconstruct(out bool isValid, out IEnumerable<object> errorMessages)
         {
-            isValid = this.IsValid;
-            errorMessages = this.ErrorMessages;
+            isValid = IsValid;
+            errorMessages = ErrorMessages;
         }
 
         /// <summary>

@@ -27,9 +27,9 @@
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
             ArgumentNullException.ThrowIfNullOrWhiteSpace(fieldName);
 
-            this.DeclaringTypeHandle = declaringTypeHandle;
-            this.FieldName = fieldName;
-            this.IsAnonymous = true;
+            DeclaringTypeHandle = declaringTypeHandle;
+            FieldName = fieldName;
+            IsAnonymous = true;
         }
 
         public RuntimeTypeHandle DeclaringTypeHandle { get; }
@@ -37,16 +37,16 @@
         public bool IsAnonymous { get; }
 
         public bool Equals(AnonymousFieldDescriptor other)
-            => this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
-            && this.FieldName == other.FieldName
-            && this.IsAnonymous == other.IsAnonymous;
+            => DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
+            && FieldName == other.FieldName
+            && IsAnonymous == other.IsAnonymous;
 
         public override int GetHashCode()
         {
             var hasCode = new HashCode();
-            hasCode.Add(this.IsAnonymous);
-            hasCode.Add(this.DeclaringTypeHandle);
-            hasCode.Add(this.FieldName);
+            hasCode.Add(IsAnonymous);
+            hasCode.Add(DeclaringTypeHandle);
+            hasCode.Add(FieldName);
 
             return hasCode.ToHashCode();
         }

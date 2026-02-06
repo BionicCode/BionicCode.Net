@@ -9,8 +9,8 @@
     {
         public IpcProcessArgument(Guid pipeId, Guid serverClientLinkId)
         {
-            this.PipeId = pipeId;
-            this.ServerClientLinkId = serverClientLinkId;
+            PipeId = pipeId;
+            ServerClientLinkId = serverClientLinkId;
         }
 
         public static async Task<IpcProcessArgument> CreateFromJsonAsync(string jsonText)

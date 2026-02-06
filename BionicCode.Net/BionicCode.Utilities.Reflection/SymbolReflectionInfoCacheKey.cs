@@ -44,43 +44,43 @@ internal readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflect
     public readonly SymbolKind SymbolKind { get; }
 
     private readonly WellKnownParameterDescriptor _parameterDescriptor;
-    public WellKnownParameterDescriptor ParameterDescriptor => this.SymbolKind is SymbolKind.Parameter
-        ? this._parameterDescriptor
+    public WellKnownParameterDescriptor ParameterDescriptor => SymbolKind is SymbolKind.Parameter
+        ? _parameterDescriptor
         : ThrowInvalidPropertyContextException<WellKnownParameterDescriptor>([SymbolKind.Parameter]);
 
     private readonly WellKnownPropertyDescriptor _propertyDescriptor;
-    public WellKnownPropertyDescriptor PropertyDescriptor => this.SymbolKind is SymbolKind.MemberProperty
-        ? this._propertyDescriptor
+    public WellKnownPropertyDescriptor PropertyDescriptor => SymbolKind is SymbolKind.MemberProperty
+        ? _propertyDescriptor
         : ThrowInvalidPropertyContextException<WellKnownPropertyDescriptor>([SymbolKind.MemberProperty]);
 
     private readonly WellKnownMethodDescriptor _methodDescriptor;
-    public WellKnownMethodDescriptor MethodDescriptor => this.SymbolKind is SymbolKind.MemberMethod
-        ? this._methodDescriptor
+    public WellKnownMethodDescriptor MethodDescriptor => SymbolKind is SymbolKind.MemberMethod
+        ? _methodDescriptor
         : ThrowInvalidPropertyContextException<WellKnownMethodDescriptor>([SymbolKind.MemberMethod]);
 
     private readonly WellKnownConstructorDescriptor _constructorDescriptor;
-    public WellKnownConstructorDescriptor ConstructorDescriptor => this.SymbolKind is SymbolKind.MemberConstructor
-        ? this._constructorDescriptor
+    public WellKnownConstructorDescriptor ConstructorDescriptor => SymbolKind is SymbolKind.MemberConstructor
+        ? _constructorDescriptor
         : ThrowInvalidPropertyContextException<WellKnownConstructorDescriptor>([SymbolKind.MemberConstructor]);
 
     private readonly WellKnownTypeDescriptor _typeDescriptor;
-    public WellKnownTypeDescriptor TypeDescriptor => this.SymbolKind is SymbolKind.Type
-        ? this._typeDescriptor
+    public WellKnownTypeDescriptor TypeDescriptor => SymbolKind is SymbolKind.Type
+        ? _typeDescriptor
         : ThrowInvalidPropertyContextException<WellKnownTypeDescriptor>([SymbolKind.Type]);
 
     private readonly WellKnownFieldDescriptor _fieldDescriptor;
-    public WellKnownFieldDescriptor FieldDescriptor => this.SymbolKind is SymbolKind.MemberField
-        ? this._fieldDescriptor
+    public WellKnownFieldDescriptor FieldDescriptor => SymbolKind is SymbolKind.MemberField
+        ? _fieldDescriptor
         : ThrowInvalidPropertyContextException<WellKnownFieldDescriptor>([SymbolKind.MemberField]);
 
     private readonly WellKnownEventDescriptor _eventDescriptor;
-    public WellKnownEventDescriptor EventDescriptor => this.SymbolKind is SymbolKind.MemberEvent
-        ? this._eventDescriptor
+    public WellKnownEventDescriptor EventDescriptor => SymbolKind is SymbolKind.MemberEvent
+        ? _eventDescriptor
         : ThrowInvalidPropertyContextException<WellKnownEventDescriptor>([SymbolKind.MemberEvent]);
 
     private readonly bool _isExplicitInterfaceImplementation;
-    public bool IsExplicitInterfaceImplementation => this.SymbolKind is SymbolKind.MemberProperty or SymbolKind.MemberEvent or SymbolKind.MemberMethod
-        ? this._isExplicitInterfaceImplementation
+    public bool IsExplicitInterfaceImplementation => SymbolKind is SymbolKind.MemberProperty or SymbolKind.MemberEvent or SymbolKind.MemberMethod
+        ? _isExplicitInterfaceImplementation
         : ThrowInvalidPropertyContextException<bool>([SymbolKind.MemberProperty, SymbolKind.MemberEvent, SymbolKind.MemberMethod]);
 
     private readonly int _hashCode;
@@ -100,17 +100,17 @@ internal readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflect
         ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(symbolKind, [SymbolKind.Undefined], nameof(symbolKind));
         ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
 
-        this.SymbolKind = symbolKind;
-        this._typeDescriptor = typeDescriptor;
-        this._parameterDescriptor = parameterDescriptor;
-        this._methodDescriptor = methodDescriptor;
-        this._constructorDescriptor = constructorDescriptor;
-        this._propertyDescriptor = propertyDescriptor;
-        this._fieldDescriptor = fieldDescriptor;
-        this._eventDescriptor = eventDescriptor;
-        this.SymbolName = name;
+        SymbolKind = symbolKind;
+        _typeDescriptor = typeDescriptor;
+        _parameterDescriptor = parameterDescriptor;
+        _methodDescriptor = methodDescriptor;
+        _constructorDescriptor = constructorDescriptor;
+        _propertyDescriptor = propertyDescriptor;
+        _fieldDescriptor = fieldDescriptor;
+        _eventDescriptor = eventDescriptor;
+        SymbolName = name;
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     /// <summary>
@@ -259,28 +259,28 @@ internal readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflect
     }
 
     public override int GetHashCode()
-        => this._hashCode;
+        => _hashCode;
 
     private int ComputeHashCode()
     {
         unchecked
         {
-            if (this._hashCode != 0)
+            if (_hashCode != 0)
             {
-                return this._hashCode;
+                return _hashCode;
             }
 
             var hashCode = new HashCode();
-            hashCode.Add(this.SymbolName);
-            hashCode.Add(this.SymbolKind);
-            hashCode.Add(this._parameterDescriptor);
-            hashCode.Add(this._methodDescriptor);
-            hashCode.Add(this._constructorDescriptor);
-            hashCode.Add(this._propertyDescriptor);
-            hashCode.Add(this._fieldDescriptor);
-            hashCode.Add(this._eventDescriptor);
-            hashCode.Add(this._typeDescriptor);
-            hashCode.Add(this._isExplicitInterfaceImplementation);
+            hashCode.Add(SymbolName);
+            hashCode.Add(SymbolKind);
+            hashCode.Add(_parameterDescriptor);
+            hashCode.Add(_methodDescriptor);
+            hashCode.Add(_constructorDescriptor);
+            hashCode.Add(_propertyDescriptor);
+            hashCode.Add(_fieldDescriptor);
+            hashCode.Add(_eventDescriptor);
+            hashCode.Add(_typeDescriptor);
+            hashCode.Add(_isExplicitInterfaceImplementation);
 
             return hashCode.ToHashCode();
         }
@@ -289,16 +289,16 @@ internal readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflect
     public override bool Equals(object obj)
         => obj is SymbolReflectionInfoCacheKey other && Equals(other);
 
-    public bool Equals(SymbolReflectionInfoCacheKey other) => this.SymbolName == other.SymbolName
-        && this.SymbolKind == other.SymbolKind
-        && this._parameterDescriptor == other._parameterDescriptor
-        && this._methodDescriptor == other._methodDescriptor
-        && this._constructorDescriptor == other._constructorDescriptor
-        && this._propertyDescriptor == other._propertyDescriptor
-        && this._fieldDescriptor == other._fieldDescriptor
-        && this._eventDescriptor == other._eventDescriptor
-        && this._typeDescriptor == other._typeDescriptor
-        && this._isExplicitInterfaceImplementation == other._isExplicitInterfaceImplementation;
+    public bool Equals(SymbolReflectionInfoCacheKey other) => SymbolName == other.SymbolName
+        && SymbolKind == other.SymbolKind
+        && _parameterDescriptor == other._parameterDescriptor
+        && _methodDescriptor == other._methodDescriptor
+        && _constructorDescriptor == other._constructorDescriptor
+        && _propertyDescriptor == other._propertyDescriptor
+        && _fieldDescriptor == other._fieldDescriptor
+        && _eventDescriptor == other._eventDescriptor
+        && _typeDescriptor == other._typeDescriptor
+        && _isExplicitInterfaceImplementation == other._isExplicitInterfaceImplementation;
 
     public static bool operator ==(SymbolReflectionInfoCacheKey left, SymbolReflectionInfoCacheKey right) => left.Equals(right);
     public static bool operator !=(SymbolReflectionInfoCacheKey left, SymbolReflectionInfoCacheKey right) => !(left == right);
@@ -310,8 +310,8 @@ internal readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflect
 
         string allowedKinds = allowedSymbolKinds.JoinToString(kind => $"{typeof(SymbolKind).FullName}.{kind}", ", ");
         return allowedSymbolKinds.Length > 1
-            ? throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(this.SymbolKind)}' returns any of the following values: {allowedKinds}.")
-            : throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(this.SymbolKind)}' returns the value '{allowedKinds[0]}'.");
+            ? throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(SymbolKind)}' returns any of the following values: {allowedKinds}.")
+            : throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(SymbolKind)}' returns the value '{allowedKinds[0]}'.");
     }
 }
 
@@ -338,38 +338,38 @@ internal readonly partial struct AnonymousSymbolDescriptorContainer : IEquatable
     public readonly SymbolKind SymbolKind { get; }
 
     private readonly AnonymousParameterDescriptor _parameterDescriptor;
-    public AnonymousParameterDescriptor ParameterDescriptor => this.SymbolKind is SymbolKind.Parameter
-        ? this._parameterDescriptor
+    public AnonymousParameterDescriptor ParameterDescriptor => SymbolKind is SymbolKind.Parameter
+        ? _parameterDescriptor
         : ThrowInvalidPropertyContextException<AnonymousParameterDescriptor>([SymbolKind.Parameter]);
 
     private readonly AnonymousPropertyDescriptor _propertyDescriptor;
-    public AnonymousPropertyDescriptor PropertyDescriptor => this.SymbolKind is SymbolKind.MemberProperty
-        ? this._propertyDescriptor
+    public AnonymousPropertyDescriptor PropertyDescriptor => SymbolKind is SymbolKind.MemberProperty
+        ? _propertyDescriptor
         : ThrowInvalidPropertyContextException<AnonymousPropertyDescriptor>([SymbolKind.MemberProperty]);
 
     private readonly AnonymousMethodDescriptor _methodDescriptor;
-    public AnonymousMethodDescriptor MethodDescriptor => this.SymbolKind is SymbolKind.MemberMethod
-        ? this._methodDescriptor
+    public AnonymousMethodDescriptor MethodDescriptor => SymbolKind is SymbolKind.MemberMethod
+        ? _methodDescriptor
         : ThrowInvalidPropertyContextException<AnonymousMethodDescriptor>([SymbolKind.MemberMethod]);
 
     private readonly AnonymousConstructorDescriptor _constructorDescriptor;
-    public AnonymousConstructorDescriptor ConstructorDescriptor => this.SymbolKind is SymbolKind.MemberConstructor
-        ? this._constructorDescriptor
+    public AnonymousConstructorDescriptor ConstructorDescriptor => SymbolKind is SymbolKind.MemberConstructor
+        ? _constructorDescriptor
         : ThrowInvalidPropertyContextException<AnonymousConstructorDescriptor>([SymbolKind.MemberConstructor]);
 
     private readonly AnonymousFieldDescriptor _fieldDescriptor;
-    public AnonymousFieldDescriptor FieldDescriptor => this.SymbolKind is SymbolKind.MemberField
-        ? this._fieldDescriptor
+    public AnonymousFieldDescriptor FieldDescriptor => SymbolKind is SymbolKind.MemberField
+        ? _fieldDescriptor
         : ThrowInvalidPropertyContextException<AnonymousFieldDescriptor>([SymbolKind.MemberField]);
 
     private readonly AnonymousEventDescriptor _eventDescriptor;
-    public AnonymousEventDescriptor EventDescriptor => this.SymbolKind is SymbolKind.MemberEvent
-        ? this._eventDescriptor
+    public AnonymousEventDescriptor EventDescriptor => SymbolKind is SymbolKind.MemberEvent
+        ? _eventDescriptor
         : ThrowInvalidPropertyContextException<AnonymousEventDescriptor>([SymbolKind.MemberEvent]);
 
     private readonly bool _isExplicitInterfaceImplementation;
-    public bool IsExplicitInterfaceImplementation => this.SymbolKind is SymbolKind.MemberProperty or SymbolKind.MemberEvent or SymbolKind.MemberMethod
-        ? this._isExplicitInterfaceImplementation
+    public bool IsExplicitInterfaceImplementation => SymbolKind is SymbolKind.MemberProperty or SymbolKind.MemberEvent or SymbolKind.MemberMethod
+        ? _isExplicitInterfaceImplementation
         : ThrowInvalidPropertyContextException<bool>([SymbolKind.MemberProperty, SymbolKind.MemberEvent, SymbolKind.MemberMethod]);
 
     private readonly int _hashCode;
@@ -388,16 +388,16 @@ internal readonly partial struct AnonymousSymbolDescriptorContainer : IEquatable
         ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(symbolKind, [SymbolKind.Undefined], nameof(symbolKind));
         ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
 
-        this.SymbolKind = symbolKind;
-        this._parameterDescriptor = parameterDescriptor;
-        this._constructorDescriptor = constructorDescriptor;
-        this._methodDescriptor = methodDescriptor;
-        this._propertyDescriptor = propertyDescriptor;
-        this._fieldDescriptor = fieldDescriptor;
-        this._eventDescriptor = eventDescriptor;
-        this.SymbolName = name;
+        SymbolKind = symbolKind;
+        _parameterDescriptor = parameterDescriptor;
+        _constructorDescriptor = constructorDescriptor;
+        _methodDescriptor = methodDescriptor;
+        _propertyDescriptor = propertyDescriptor;
+        _fieldDescriptor = fieldDescriptor;
+        _eventDescriptor = eventDescriptor;
+        SymbolName = name;
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     /// <summary>
@@ -522,27 +522,27 @@ internal readonly partial struct AnonymousSymbolDescriptorContainer : IEquatable
     }
 
     public override int GetHashCode()
-        => this._hashCode;
+        => _hashCode;
 
     private int ComputeHashCode()
     {
         unchecked
         {
-            if (this._hashCode != 0)
+            if (_hashCode != 0)
             {
-                return this._hashCode;
+                return _hashCode;
             }
 
             var hashCode = new HashCode();
-            hashCode.Add(this.SymbolName);
-            hashCode.Add(this.SymbolKind);
-            hashCode.Add(this._parameterDescriptor);
-            hashCode.Add(this._methodDescriptor);
-            hashCode.Add(this._constructorDescriptor);
-            hashCode.Add(this._propertyDescriptor);
-            hashCode.Add(this._fieldDescriptor);
-            hashCode.Add(this._eventDescriptor);
-            hashCode.Add(this._isExplicitInterfaceImplementation);
+            hashCode.Add(SymbolName);
+            hashCode.Add(SymbolKind);
+            hashCode.Add(_parameterDescriptor);
+            hashCode.Add(_methodDescriptor);
+            hashCode.Add(_constructorDescriptor);
+            hashCode.Add(_propertyDescriptor);
+            hashCode.Add(_fieldDescriptor);
+            hashCode.Add(_eventDescriptor);
+            hashCode.Add(_isExplicitInterfaceImplementation);
 
             return hashCode.ToHashCode();
         }
@@ -551,15 +551,15 @@ internal readonly partial struct AnonymousSymbolDescriptorContainer : IEquatable
     public override bool Equals(object obj)
         => obj is AnonymousSymbolDescriptorContainer other && Equals(other);
 
-    public bool Equals(AnonymousSymbolDescriptorContainer other) => this.SymbolName == other.SymbolName
-        && this.SymbolKind == other.SymbolKind
-        && this._parameterDescriptor == other._parameterDescriptor
-        && this._methodDescriptor == other._methodDescriptor
-        && this._constructorDescriptor == other._constructorDescriptor
-        && this._propertyDescriptor == other._propertyDescriptor
-        && this._fieldDescriptor == other._fieldDescriptor
-        && this._eventDescriptor == other._eventDescriptor
-        && this._isExplicitInterfaceImplementation == other._isExplicitInterfaceImplementation;
+    public bool Equals(AnonymousSymbolDescriptorContainer other) => SymbolName == other.SymbolName
+        && SymbolKind == other.SymbolKind
+        && _parameterDescriptor == other._parameterDescriptor
+        && _methodDescriptor == other._methodDescriptor
+        && _constructorDescriptor == other._constructorDescriptor
+        && _propertyDescriptor == other._propertyDescriptor
+        && _fieldDescriptor == other._fieldDescriptor
+        && _eventDescriptor == other._eventDescriptor
+        && _isExplicitInterfaceImplementation == other._isExplicitInterfaceImplementation;
 
     public static bool operator ==(AnonymousSymbolDescriptorContainer left, AnonymousSymbolDescriptorContainer right) => left.Equals(right);
     public static bool operator !=(AnonymousSymbolDescriptorContainer left, AnonymousSymbolDescriptorContainer right) => !(left == right);
@@ -571,7 +571,7 @@ internal readonly partial struct AnonymousSymbolDescriptorContainer : IEquatable
 
         string allowedKinds = allowedSymbolKinds.JoinToString(kind => $"{typeof(SymbolKind).FullName}.{kind}", ", ");
         return allowedSymbolKinds.Length > 1
-            ? throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(this.SymbolKind)}' returns any of the following values: {allowedKinds}.")
-            : throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(this.SymbolKind)}' returns the value '{allowedKinds[0]}'.");
+            ? throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(SymbolKind)}' returns any of the following values: {allowedKinds}.")
+            : throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(SymbolKind)}' returns the value '{allowedKinds[0]}'.");
     }
 }

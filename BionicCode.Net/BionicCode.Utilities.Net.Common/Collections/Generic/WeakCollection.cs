@@ -55,9 +55,9 @@
             get
             {
                 ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(index, nameof(index));
-                ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(index, this.Count, nameof(index));
+                ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(index, Count, nameof(index));
 
-                WeakReference<object> reference = this.Items[index];
+                WeakReference<object> reference = Items[index];
                 bool isAlive = reference.TryGetTarget(out object target);
                 if (isAlive)
                 {
@@ -76,8 +76,8 @@
             set
             {
                 ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(index, nameof(index));
-                ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(index, this.Count, nameof(index));
-                if (this.IsReadOnly)
+                ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(index, Count, nameof(index));
+                if (IsReadOnly)
                 {
                     throw new NotSupportedException("Collection is read-only");
                 }
@@ -98,7 +98,7 @@
             get
             {
                 PurgeDeadReferences();
-                return this.Items.Count;
+                return Items.Count;
             }
         }
 
@@ -118,46 +118,46 @@
 
         public WeakCollection()
         {
-            this.Items = new List<WeakReference<object>>();
-            this.IsReadOnly = false;
+            Items = new List<WeakReference<object>>();
+            IsReadOnly = false;
         }
 
         public WeakCollection(ICollection<WeakReference<object>> collection)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(collection, nameof(collection));
 
-            this.Items = collection.Select(WeakReferencePool.GetOrCreate).ToList();
-            this.IsReadOnly = collection.IsReadOnly;
+            Items = collection.Select(WeakReferencePool.GetOrCreate).ToList();
+            IsReadOnly = collection.IsReadOnly;
         }
 
         public WeakCollection(IEnumerable<WeakReference<object>> items)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(items, nameof(items));
 
-            this.Items = items.Select(WeakReferencePool.GetOrCreate).ToList();
-            this.IsReadOnly = false;
+            Items = items.Select(WeakReferencePool.GetOrCreate).ToList();
+            IsReadOnly = false;
         }
 
         public WeakCollection(bool isReadOnly)
         {
-            this.Items = new List<WeakReference<object>>();
-            this.IsReadOnly = isReadOnly;
+            Items = new List<WeakReference<object>>();
+            IsReadOnly = isReadOnly;
         }
 
         public WeakCollection(ICollection<WeakReference<object>> collection, bool isReadOnly)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(collection, nameof(collection));
 
-            this.Items = collection.Select(WeakReferencePool.GetOrCreate).ToList();
-            this.IsReadOnly = collection.IsReadOnly || isReadOnly;
+            Items = collection.Select(WeakReferencePool.GetOrCreate).ToList();
+            IsReadOnly = collection.IsReadOnly || isReadOnly;
         }
 
         public WeakCollection(IEnumerable<TItem> items, bool isReadOnly)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(items, nameof(items));
 
-            this.Items = items.Select(WeakReferencePool.GetOrCreate).ToList();
-            this.IsReadOnly = isReadOnly;
+            Items = items.Select(WeakReferencePool.GetOrCreate).ToList();
+            IsReadOnly = isReadOnly;
         }
 
         #endregion Constructors
@@ -205,12 +205,12 @@
         /// </remarks>
         public void Add(TItem item)
         {
-            if (this.IsReadOnly)
+            if (IsReadOnly)
             {
                 throw new NotSupportedException("Collection is read-only");
             }
 
-            int index = this.Items.Count;
+            int index = Items.Count;
             InsertItem(index, item);
             OnCountChanged();
             OnIndexerChanged();
@@ -222,12 +222,12 @@
         /// <exception cref="NotSupportedException">The collection is read-only and <see cref="IsReadOnly"/> returns <see langword="true"/>.</exception>
         public void Clear()
         {
-            if (this.IsReadOnly)
+            if (IsReadOnly)
             {
                 throw new NotSupportedException("Collection is read-only");
             }
 
-            bool hasChanges = this.Items.Any();
+            bool hasChanges = Items.Any();
 
             ClearItems();
             if (hasChanges)
@@ -245,9 +245,9 @@
         public bool Contains(TItem item)
         {
             bool hasCountChanged = false;
-            for (int index = this.Items.Count - 1; index >= 0; index--)
+            for (int index = Items.Count - 1; index >= 0; index--)
             {
-                WeakReference<object> reference = this.Items[index];
+                WeakReference<object> reference = Items[index];
                 bool isAlive = reference.TryGetTarget(out object target);
                 if (isAlive && ReferenceEquals(item, target))
                 {
@@ -288,14 +288,14 @@
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(arrayIndex, nameof(arrayIndex));
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(arrayIndex, array.Length, nameof(arrayIndex));
             int availableArrayLength = array.Length - arrayIndex;
-            if (availableArrayLength < this.Items.Count)
+            if (availableArrayLength < Items.Count)
             {
                 throw new ArgumentException("The array is too small", nameof(array));
             }
 
-            for (int index = 0; index < this.Items.Count; index++)
+            for (int index = 0; index < Items.Count; index++)
             {
-                WeakReference<object> reference = this.Items[index];
+                WeakReference<object> reference = Items[index];
                 bool isAlive = reference.TryGetTarget(out object target);
                 if (isAlive)
                 {
@@ -310,9 +310,9 @@
         /// <returns>An <see cref="IEnumerator"/> object that can be used to iterate through the collection.</returns>
         public IEnumerator<TItem> GetEnumerator()
         {
-            WeakReference<object>[] items = this.Items.ToArray();
+            WeakReference<object>[] items = Items.ToArray();
             bool hasCountChanged = false;
-            for (int index = 0; index < this.Items.Count; index++)
+            for (int index = 0; index < Items.Count; index++)
             {
                 WeakReference<object> reference = items[index];
                 if (reference.TryGetTarget(out object target))
@@ -342,15 +342,15 @@
         /// <exception cref="NotSupportedException">The collection is read-only and <see cref="IsReadOnly"/> returns <see langword="true"/>.</exception>
         public bool Remove(TItem item)
         {
-            if (this.IsReadOnly)
+            if (IsReadOnly)
             {
                 throw new NotSupportedException("Collection is read-only");
             }
 
             bool hasCountChanged = false;
-            for (int index = this.Items.Count - 1; index >= 0; index--)
+            for (int index = Items.Count - 1; index >= 0; index--)
             {
-                WeakReference<object> reference = this.Items[index];
+                WeakReference<object> reference = Items[index];
                 bool isAlive = reference.TryGetTarget(out object target);
                 if (isAlive && ReferenceEquals(item, target))
                 {
@@ -378,7 +378,7 @@
 
         protected virtual void ClearItems()
         {
-            for (int index = this.Items.Count - 1; index >= 0; index--)
+            for (int index = Items.Count - 1; index >= 0; index--)
             {
                 RemoveItem(index);
             }
@@ -387,35 +387,35 @@
         protected virtual void InsertItem(int index, TItem item)
         {
             WeakReference<object> reference = WeakReferencePool.GetOrCreate(item);
-            this.Items.Insert(index, reference);
+            Items.Insert(index, reference);
         }
 
         protected virtual void RemoveItem(int index)
         {
-            WeakReference<object> reference = this.Items[index];
-            this.Items.RemoveAt(index);
+            WeakReference<object> reference = Items[index];
+            Items.RemoveAt(index);
             WeakReferencePool.Add(reference);
         }
 
-        protected virtual void SetItem(int index, TItem item) => this.Items[index].SetTarget(item);
+        protected virtual void SetItem(int index, TItem item) => Items[index].SetTarget(item);
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-          => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+          => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         protected virtual void OnCountChanged()
-          => this.PropertyChanged?.Invoke(this, Common.CountPropertyChangedEventArgs);
+          => PropertyChanged?.Invoke(this, Common.CountPropertyChangedEventArgs);
 
         protected virtual void OnIndexerChanged()
-          => this.PropertyChanged?.Invoke(this, Common.IndexerPropertyChangedEventArgs);
+          => PropertyChanged?.Invoke(this, Common.IndexerPropertyChangedEventArgs);
 
         private void PurgeDeadReferences()
         {
             bool hasCountChanged = false;
-            for (int index = this.Items.Count - 1; index >= 0; index--)
+            for (int index = Items.Count - 1; index >= 0; index--)
             {
-                WeakReference<object> reference = this.Items[index];
+                WeakReference<object> reference = Items[index];
                 bool isAlive = reference.TryGetTarget(out _);
                 if (!isAlive)
                 {

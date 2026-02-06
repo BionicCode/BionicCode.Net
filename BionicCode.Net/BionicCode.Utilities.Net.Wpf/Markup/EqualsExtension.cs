@@ -19,24 +19,24 @@ namespace BionicCode.Utilities.Net
         {
             if (valueXToCompare is Binding)
             {
-                this.valueX = (valueXToCompare as Binding).Path;
+                valueX = (valueXToCompare as Binding).Path;
             }
             else
             {
-                this.valueX = valueXToCompare;
+                valueX = valueXToCompare;
             }
 
-            this.typeToEqual = expectedType;
-            this.valueY = null;
+            typeToEqual = expectedType;
+            valueY = null;
         }
 
         public EqualsExtension(object valueX, object valueY)
         {
-            this.valueX = valueX;
-            this.valueY = valueY;
+            valueX = valueX;
+            valueY = valueY;
         }
 
-        public override object ProvideValue(IServiceProvider serviceProvider) => this.valueY == null ? this.valueX?.GetType().Equals(this.typeToEqual) ?? false : this.valueX?.Equals(this.valueY) ?? false;
+        public override object ProvideValue(IServiceProvider serviceProvider) => valueY == null ? valueX?.GetType().Equals(typeToEqual) ?? false : valueX?.Equals(valueY) ?? false;
     }
 #endif
 }

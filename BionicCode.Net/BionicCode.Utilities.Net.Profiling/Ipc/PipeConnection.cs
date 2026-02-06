@@ -15,10 +15,10 @@
 
         protected PipeConnection(Guid serverClientLinkId, Guid pipeId)
         {
-            this.ServerClientLinkId = serverClientLinkId;
-            this.PipeId = pipeId;
-            this.pipeWriterResource = new Lazy<StreamWriter>(StreamWriterFactory);
-            this.pipeReaderResource = new Lazy<StreamReader>(StreamReaderFactory);
+            ServerClientLinkId = serverClientLinkId;
+            PipeId = pipeId;
+            pipeWriterResource = new Lazy<StreamWriter>(StreamWriterFactory);
+            pipeReaderResource = new Lazy<StreamReader>(StreamReaderFactory);
         }
 
         public abstract void Disconnect();
@@ -26,7 +26,7 @@
 
         public IPipeMessage<TData> CreateNewConversation<TData>(MessageType messageType, TData data)
         {
-            var conversationId = new ConversationId(this.PipeId, this.ServerClientLinkId);
+            var conversationId = new ConversationId(PipeId, ServerClientLinkId);
             var message = new PipeMessage<TData>(conversationId, data);
             return message;
         }
@@ -54,8 +54,8 @@
         public async Task<IPipeMessage<TData>> ReadFromPipeAsync<TData>()
         {
             //_ = waitHandle.WaitOne();
-            this.PipeStream.WaitForPipeDrain();
-            string jsonResponse = await this.PipeReader.ReadLineAsync().ConfigureAwait(false);
+            PipeStream.WaitForPipeDrain();
+            string jsonResponse = await PipeReader.ReadLineAsync().ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(jsonResponse))
             {
                 IPipeMessage<TData> emptyMessage = CreateEmptyMessage<TData>();
@@ -64,7 +64,7 @@
 
             IPipeMessage<TData> receivedMessage = JsonSerializer.Deserialize<PipeMessage<TData>>(jsonResponse);
             ConversationId conversationId = receivedMessage.Id;
-            if (conversationId.PipeId != this.PipeId)
+            if (conversationId.PipeId != PipeId)
             {
                 receivedMessage.InvalidateMessage(InvalidMessageCondition.Credentials);
             }
@@ -73,10 +73,10 @@
         }
 
         private StreamWriter StreamWriterFactory()
-          => new StreamWriter(this.PipeStream) { AutoFlush = true };
+          => new StreamWriter(PipeStream) { AutoFlush = true };
 
         private StreamReader StreamReaderFactory()
-          => new StreamReader(this.PipeStream);
+          => new StreamReader(PipeStream);
 
         public Guid ServerClientLinkId { get; }
         public Guid PipeId { get; }
@@ -85,23 +85,23 @@
         protected abstract PipeStream PipeStream { get; }
         private readonly Lazy<StreamWriter> pipeWriterResource;
         private readonly Lazy<StreamReader> pipeReaderResource;
-        protected StreamWriter PipeWriter => this.pipeWriterResource.Value;
-        protected StreamReader PipeReader => this.pipeReaderResource.Value;
-        public string PipeIdString => this.PipeId.ToString();
+        protected StreamWriter PipeWriter => pipeWriterResource.Value;
+        protected StreamReader PipeReader => pipeReaderResource.Value;
+        public string PipeIdString => PipeId.ToString();
         public bool IsDisposed { get; private set; }
 
         protected virtual async Task DisposeAsync(bool disposing)
         {
-            if (!this.IsDisposed && disposing)
+            if (!IsDisposed && disposing)
             {
                 // TODO: dispose managed state (managed objects)
-                this.PipeReader?.Dispose();
-                this.PipeWriter?.Dispose();
+                PipeReader?.Dispose();
+                PipeWriter?.Dispose();
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
-                this.IsDisposed = true;
-                this.IsClosed = true;
+                IsDisposed = true;
+                IsClosed = true;
             }
         }
 

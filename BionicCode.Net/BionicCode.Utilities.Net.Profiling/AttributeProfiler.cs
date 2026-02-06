@@ -13,7 +13,7 @@
 
     internal class ExecutionContext : IDisposable
     {
-        public bool IsRunning => (!this.serverConnection?.IsDisposed ?? false) || ((this.serverConnection?.IsConnected ?? false) && this.isRunningInternal);
+        public bool IsRunning => (!serverConnection?.IsDisposed ?? false) || ((serverConnection?.IsConnected ?? false) && isRunningInternal);
         public Process Process { get; private set; }
         public Runtime Runtime { get; }
         public event EventHandler ContextClosed;
@@ -25,16 +25,16 @@
         private bool isRunningInternal;
         private bool disposedValue;
 
-        internal ExecutionContext(Runtime runtime) => this.Runtime = runtime;
+        internal ExecutionContext(Runtime runtime) => Runtime = runtime;
 
         public async Task<bool> TryStartAsync(CancellationToken cancellationToken)
         {
-            if (this.IsRunning)
+            if (IsRunning)
             {
                 return false;
             }
 
-            if (!this.IsRunning)
+            if (!IsRunning)
             {
                 await InitializeConnectionContextAsync();
             }
@@ -42,48 +42,48 @@
             var startInfo = new ProcessStartInfo()
             {
                 CreateNoWindow = true,
-                FileName = this.executableFileInfo.FullName,
-                Arguments = this.processArgumentJsonText,
+                FileName = executableFileInfo.FullName,
+                Arguments = processArgumentJsonText,
                 UseShellExecute = false,
                 //RedirectStandardOutput = true,
                 RedirectStandardError = true,
             };
 
-            this.Process = new Process
+            Process = new Process
             {
                 StartInfo = startInfo,
                 EnableRaisingEvents = true
             };
-            this.Process.Exited += OnProcessExited;
-            this.Process.ErrorDataReceived += OnProcessErrorReceived;
+            Process.Exited += OnProcessExited;
+            Process.ErrorDataReceived += OnProcessErrorReceived;
 
-            bool isProcessRunning = this.Process.Start();
+            bool isProcessRunning = Process.Start();
             if (isProcessRunning)
             {
-                this.isRunningInternal = await this.serverConnection.TryConnectAsync(cancellationToken);
+                isRunningInternal = await serverConnection.TryConnectAsync(cancellationToken);
             }
 
-            return this.IsRunning;
+            return IsRunning;
         }
 
         public void Close()
         {
             // Disconnects and disposes the server connection
-            this.serverConnection.Close();
-            this.isRunningInternal = false;
+            serverConnection.Close();
+            isRunningInternal = false;
         }
 
         public async Task<ProfiledTypeResultCollection> ProfileTargetTypesInRuntimeContext(IAttributeProfilerConfiguration configuration, CancellationToken cancellationToken)
         {
-            if (!this.IsRunning && !await TryStartAsync(cancellationToken))
+            if (!IsRunning && !await TryStartAsync(cancellationToken))
             {
                 throw new InvalidOperationException("Pipe server is not connected.");
             }
 
             var message = new ProfilerContextMessage(configuration);
-            IPipeMessage<ProfilerContextMessage> ipcMessage = this.serverConnection.CreateNewConversation(MessageType.ReceiveRequest, message);
-            await this.serverConnection.WriteToPipeAsync(ipcMessage).ConfigureAwait(false);
-            IPipeMessage<ProfilerResultMessage> response = await this.serverConnection.ReadFromPipeAsync<ProfilerResultMessage>().ConfigureAwait(false);
+            IPipeMessage<ProfilerContextMessage> ipcMessage = serverConnection.CreateNewConversation(MessageType.ReceiveRequest, message);
+            await serverConnection.WriteToPipeAsync(ipcMessage).ConfigureAwait(false);
+            IPipeMessage<ProfilerResultMessage> response = await serverConnection.ReadFromPipeAsync<ProfilerResultMessage>().ConfigureAwait(false);
 
             return response.IsValid && response.HasData && response.Id == ipcMessage.Id
               ? response.Data.Results
@@ -93,25 +93,25 @@
         private async Task InitializeConnectionContextAsync()
         {
             var serverClientLinkId = Guid.NewGuid();
-            this.serverConnection = new PipeServerConnection(serverClientLinkId);
-            this.processArgument = new IpcProcessArgument(this.serverConnection.PipeId, this.serverConnection.ServerClientLinkId);
+            serverConnection = new PipeServerConnection(serverClientLinkId);
+            processArgument = new IpcProcessArgument(serverConnection.PipeId, serverConnection.ServerClientLinkId);
 
-            string processArgumentJson = await this.processArgument.ToJsonAsync().ConfigureAwait(false);
-            this.processArgumentJsonText = processArgumentJson.Replace(@"""", @"\""");
+            string processArgumentJson = await processArgument.ToJsonAsync().ConfigureAwait(false);
+            processArgumentJsonText = processArgumentJson.Replace(@"""", @"\""");
 
-            this.executableFileInfo = CreateExecutableFilePath();
+            executableFileInfo = CreateExecutableFilePath();
         }
 
         private FileInfo CreateExecutableFilePath()
         {
-            if (this.executableFileInfo is null)
+            if (executableFileInfo is null)
             {
-                string directoryName = this.Runtime.ToString().Replace('_', '.');
+                string directoryName = Runtime.ToString().Replace('_', '.');
                 string filePath = string.Format(ExecutionContext.ExecutableFilePathTemplate, directoryName);
-                this.executableFileInfo = new FileInfo(filePath);
+                executableFileInfo = new FileInfo(filePath);
             }
 
-            return this.executableFileInfo;
+            return executableFileInfo;
         }
 
         private void OnProcessErrorReceived(object sender, DataReceivedEventArgs e)
@@ -121,11 +121,11 @@
           => OnContextClosed();
 
         private void OnContextClosed()
-          => this.ContextClosed?.Invoke(this, EventArgs.Empty);
+          => ContextClosed?.Invoke(this, EventArgs.Empty);
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposedValue)
+            if (!disposedValue)
             {
                 if (disposing)
                 {
@@ -135,9 +135,9 @@
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
 
-                this.Process.Dispose();
+                Process.Dispose();
 
-                this.disposedValue = true;
+                disposedValue = true;
             }
         }
 
@@ -164,20 +164,20 @@
 
         public AttributeProfiler(IAttributeProfilerConfiguration configuration)
         {
-            this.Configuration = configuration;
-            this.DefaultLoggers = new List<IProfilerLogger>() { new HtmlLogger() };
-            this.ExecutionContexts = new Dictionary<Runtime, ExecutionContext>();
+            Configuration = configuration;
+            DefaultLoggers = new List<IProfilerLogger>() { new HtmlLogger() };
+            ExecutionContexts = new Dictionary<Runtime, ExecutionContext>();
         }
 
         internal async Task<ProfiledTypeResultCollection> StartAsync(CancellationToken cancellationToken)
         {
             var typeResults = new ProfiledTypeResultCollection();
-            if (this.Configuration.IsAutoDiscoverEnabled)
+            if (Configuration.IsAutoDiscoverEnabled)
             {
-                DiscoverTargetTypes(this.Configuration.AutoDiscoverSourceAssemblies, this.Configuration.TypeData);
+                DiscoverTargetTypes(Configuration.AutoDiscoverSourceAssemblies, Configuration.TypeData);
             }
 
-            foreach (TypeData typeDataToProfile in this.Configuration.TypeData)
+            foreach (TypeData typeDataToProfile in Configuration.TypeData)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -185,15 +185,15 @@
                 typeResults.Add(typeMemberResults);
             }
 
-            if (typeResults.Any() && this.Configuration.IsDefaultLogOutputEnabled)
+            if (typeResults.Any() && Configuration.IsDefaultLogOutputEnabled)
             {
-                foreach (IProfilerLogger logger in this.DefaultLoggers)
+                foreach (IProfilerLogger logger in DefaultLoggers)
                 {
                     await logger.LogAsync(typeResults, cancellationToken);
                 }
             }
 
-            foreach (KeyValuePair<Runtime, ExecutionContext> entry in this.ExecutionContexts)
+            foreach (KeyValuePair<Runtime, ExecutionContext> entry in ExecutionContexts)
             {
                 ExecutionContext executionContext = entry.Value;
                 executionContext.Close();
@@ -294,12 +294,12 @@
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (memberInfo.TargetFramework != this.Configuration.Runtime)
+                if (memberInfo.TargetFramework != Configuration.Runtime)
                 {
-                    if (!this.ExecutionContexts.TryGetValue(memberInfo.TargetFramework, out ExecutionContext executionContext))
+                    if (!ExecutionContexts.TryGetValue(memberInfo.TargetFramework, out ExecutionContext executionContext))
                     {
                         executionContext = new ExecutionContext(memberInfo.TargetFramework);
-                        this.ExecutionContexts.Add(memberInfo.TargetFramework, executionContext);
+                        ExecutionContexts.Add(memberInfo.TargetFramework, executionContext);
                     }
 
                     if (!executionContext.IsRunning)
@@ -310,7 +310,7 @@
                         }
                     }
 
-                    var profilerConfiguration = new RuntimeContextProfilerConfiguration(memberInfo.TargetFramework, new[] { typeDataToProfile }, this.Configuration);
+                    var profilerConfiguration = new RuntimeContextProfilerConfiguration(memberInfo.TargetFramework, new[] { typeDataToProfile }, Configuration);
                     ProfiledTypeResultCollection resultCollection = await executionContext.ProfileTargetTypesInRuntimeContext(profilerConfiguration, cancellationToken);
                     IEnumerable<ProfilerBatchResultGroup> externalContextResultGroups = resultCollection.SelectMany(groupCollection => groupCollection);
                     foreach (ProfilerBatchResultGroup resultGroup in externalContextResultGroups)
@@ -346,12 +346,12 @@
                             method.MethodData,
                             method.SourceFilePath,
                             method.LineNumber,
-                            this.Configuration.WarmupIterations,
-                            this.Configuration.Iterations,
+                            Configuration.WarmupIterations,
+                            Configuration.Iterations,
                             method.TargetFramework,
-                            this.Configuration.BaseUnit,
-                            this.Configuration.ProfilerLogger,
-                            this.Configuration.AsyncProfilerLogger)
+                            Configuration.BaseUnit,
+                            Configuration.ProfilerLogger,
+                            Configuration.AsyncProfilerLogger)
                         {
                             ArgumentInfo = arguments
                         };
@@ -381,12 +381,12 @@
                             constructor.ConstructorData,
                             constructor.SourceFilePath,
                             constructor.LineNumber,
-                            this.Configuration.WarmupIterations,
-                            this.Configuration.Iterations,
+                            Configuration.WarmupIterations,
+                            Configuration.Iterations,
                             constructor.TargetFramework,
-                            this.Configuration.BaseUnit,
-                            this.Configuration.ProfilerLogger,
-                            this.Configuration.AsyncProfilerLogger)
+                            Configuration.BaseUnit,
+                            Configuration.ProfilerLogger,
+                            Configuration.AsyncProfilerLogger)
                         {
                             ArgumentInfo = arguments
                         };
@@ -418,12 +418,12 @@
                                 property.PropertyData,
                                 property.SourceFilePath,
                                 property.LineNumber,
-                                this.Configuration.WarmupIterations,
-                                this.Configuration.Iterations,
+                                Configuration.WarmupIterations,
+                                Configuration.Iterations,
                                 property.TargetFramework,
-                                this.Configuration.BaseUnit,
-                                this.Configuration.ProfilerLogger,
-                                this.Configuration.AsyncProfilerLogger)
+                                Configuration.BaseUnit,
+                                Configuration.ProfilerLogger,
+                                Configuration.AsyncProfilerLogger)
                             {
                                 ArgumentInfo = argument,
                                 IsProfilingGetter = true
@@ -455,12 +455,12 @@
                                 property.PropertyData,
                                 property.SourceFilePath,
                                 property.LineNumber,
-                                this.Configuration.WarmupIterations,
-                                this.Configuration.Iterations,
+                                Configuration.WarmupIterations,
+                                Configuration.Iterations,
                                 property.TargetFramework,
-                                this.Configuration.BaseUnit,
-                                this.Configuration.ProfilerLogger,
-                                this.Configuration.AsyncProfilerLogger)
+                                Configuration.BaseUnit,
+                                Configuration.ProfilerLogger,
+                                Configuration.AsyncProfilerLogger)
                             {
                                 ArgumentInfo = argument,
                                 IsProfilingGetter = false
@@ -643,7 +643,7 @@
                     cancellationToken.ThrowIfCancellationRequested();
 
                     if (profileAttribute == null
-                      || (profileAttribute.TargetFramework != Runtime.Current && profileAttribute.TargetFramework != Runtime.Default && profileAttribute.TargetFramework != this.Configuration.Runtime))
+                      || (profileAttribute.TargetFramework != Runtime.Current && profileAttribute.TargetFramework != Runtime.Default && profileAttribute.TargetFramework != Configuration.Runtime))
                     {
                         continue;
                     }
@@ -708,7 +708,7 @@
                     cancellationToken.ThrowIfCancellationRequested();
 
                     if (profileAttribute == null
-                      || (profileAttribute.TargetFramework != Runtime.Current && profileAttribute.TargetFramework != Runtime.Default && profileAttribute.TargetFramework != this.Configuration.Runtime))
+                      || (profileAttribute.TargetFramework != Runtime.Current && profileAttribute.TargetFramework != Runtime.Default && profileAttribute.TargetFramework != Configuration.Runtime))
                     {
                         continue;
                     }
@@ -774,7 +774,7 @@
                     cancellationToken.ThrowIfCancellationRequested();
 
                     if (profileAttribute == null
-                      || (profileAttribute.TargetFramework != Runtime.Current && profileAttribute.TargetFramework != Runtime.Default && profileAttribute.TargetFramework != this.Configuration.Runtime))
+                      || (profileAttribute.TargetFramework != Runtime.Current && profileAttribute.TargetFramework != Runtime.Default && profileAttribute.TargetFramework != Configuration.Runtime))
                     {
                         continue;
                     }

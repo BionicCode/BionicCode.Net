@@ -4,6 +4,6 @@
     {
         public ProfiledTypeResultCollection Results { get; }
 
-        public ProfilerResultMessage(ProfiledTypeResultCollection results) => this.Results = results;
+        public ProfilerResultMessage(ProfiledTypeResultCollection results) => Results = results;
     }
 }

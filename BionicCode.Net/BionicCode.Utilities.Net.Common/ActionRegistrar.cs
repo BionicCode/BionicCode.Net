@@ -22,7 +22,7 @@
         {
             if (TryGetClientHandler(out Delegate clientHandler))
             {
-                WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (Action<TSender, TEventArgs>)clientHandler, this.SynchronizationContext);
+                WeakEventManager<TEventSource>.AddEventHandler(eventSource, EventName, (Action<TSender, TEventArgs>)clientHandler, SynchronizationContext);
             }
         }
     }

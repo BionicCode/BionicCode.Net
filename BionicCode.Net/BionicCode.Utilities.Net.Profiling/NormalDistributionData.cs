@@ -8,20 +8,20 @@
     {
         public NormalDistributionData(int index, IEnumerable<TData> values, double mean, double standardDeviation, TimeUnit baseUnit, int originalProfilerResultCount)
         {
-            this.Index = index;
-            this.Values = values;
-            this.Mean = mean;
-            this.StandardDeviation = standardDeviation;
-            this.BaseUnit = baseUnit;
-            this.OriginalProfilerResultCount = originalProfilerResultCount;
+            Index = index;
+            Values = values;
+            Mean = mean;
+            StandardDeviation = standardDeviation;
+            BaseUnit = baseUnit;
+            OriginalProfilerResultCount = originalProfilerResultCount;
         }
 
-        public TData this[int index] => this.Values.ElementAt(index);
+        public TData this[int index] => Values.ElementAt(index);
 
         [JsonIgnore]
         public int Index { get; }
         [JsonIgnore]
-        public int Count => this.Values.Count();
+        public int Count => Values.Count();
 
         [JsonPropertyName("values")]
         public IEnumerable<TData> Values { get; }

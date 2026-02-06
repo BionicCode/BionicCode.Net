@@ -30,14 +30,14 @@ internal readonly struct WellKnownParameterDescriptor : IEquatable<WellKnownPara
         {
             ParameterData? disambiguatedPropertyData = SymbolReflectionInfoCache.ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(parameterInfo);
 
-            this.ParameterInfo = disambiguatedPropertyData.GetParameterInfo();
+            ParameterInfo = disambiguatedPropertyData.GetParameterInfo();
         }
         else
         {
-            this.ParameterInfo = parameterInfo;
+            ParameterInfo = parameterInfo;
         }
 
-        this.ParameterName = this.ParameterInfo.Name ?? string.Empty;
+        ParameterName = ParameterInfo.Name ?? string.Empty;
     }
 
     public static bool IsAnonymous
@@ -47,11 +47,11 @@ internal readonly struct WellKnownParameterDescriptor : IEquatable<WellKnownPara
 
     public ParameterInfo ParameterInfo { get; }
 
-    public bool Equals(WellKnownParameterDescriptor other) => ReferenceEquals(this.ParameterInfo, other.ParameterInfo)
+    public bool Equals(WellKnownParameterDescriptor other) => ReferenceEquals(ParameterInfo, other.ParameterInfo)
         && IsAnonymous == IsAnonymous
-        && this.ParameterName == other.ParameterName;
+        && ParameterName == other.ParameterName;
 
-    public override int GetHashCode() => HashCode.Combine(this.ParameterInfo, IsAnonymous, this.ParameterName);
+    public override int GetHashCode() => HashCode.Combine(ParameterInfo, IsAnonymous, ParameterName);
 
     public static bool operator ==(WellKnownParameterDescriptor left, WellKnownParameterDescriptor right)
         => left.Equals(right);

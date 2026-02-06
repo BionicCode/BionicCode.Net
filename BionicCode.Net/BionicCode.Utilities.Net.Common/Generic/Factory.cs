@@ -27,26 +27,26 @@
     ///  PersonFactory PersonFactory { get; }
     ///  public FactoryTest()
     ///  {
-    ///    this.PersonFactory = new PersonFactory();
+    ///    PersonFactory = new PersonFactory();
     ///  }
     ///  
     ///  public void FactoryExample()
     ///  {
     ///    // Configure factory to produce shared instances
-    ///    this.PersonFactory.FactoryMode = FactoryMode.Singleton;
+    ///    PersonFactory.FactoryMode = FactoryMode.Singleton;
     ///    
     ///    Person firstSharedInstanceInScope = null;
     ///    Person secondSharedInstanceInScope = null;
-    ///    Person sharedInstanceCreatedBeforeScope = this.PersonFactory.Create();
+    ///    Person sharedInstanceCreatedBeforeScope = PersonFactory.Create();
     ///    
     ///    // Create a new factory scope
-    ///    using (IDisposable factoryScope = this.PersonFactory.CreateScope())
+    ///    using (IDisposable factoryScope = PersonFactory.CreateScope())
     ///    {
-    ///      firstSharedInstanceInScope = this.PersonFactory.Create();
-    ///      secondSharedInstanceInScope = this.PersonFactory.Create();
+    ///      firstSharedInstanceInScope = PersonFactory.Create();
+    ///      secondSharedInstanceInScope = PersonFactory.Create();
     ///    }
     ///    
-    ///    Person sharedInstanceCreatedAfterScope = this.PersonFactory.Create();
+    ///    Person sharedInstanceCreatedAfterScope = PersonFactory.Create();
     ///      
     ///    bool isReferenceEqual = ReferenceEquals(firstSharedInstanceInScope, secondShartedInstanceInScope); // true
     ///    isReferenceEqual = ReferenceEquals(firstSharedInstanceInScope, sharedInstanceCreatedBeforeScope); // false
@@ -56,10 +56,10 @@
     ///    isReferenceEqual = ReferenceEquals(sharedInstanceCreatedBeforeScope, sharedInstanceCreatedAfterScope); // true
     ///    
     ///    // Configure factory to produce transient instances
-    ///    this.PersonFactory.FactoryMode = FactoryMode.Transient;
+    ///    PersonFactory.FactoryMode = FactoryMode.Transient;
     ///    
-    ///    Person firstTransientInstance = this.PersonFactory.Create();
-    ///    Person secondTransientInstance = this.PersonFactory.Create();
+    ///    Person firstTransientInstance = PersonFactory.Create();
+    ///    Person secondTransientInstance = PersonFactory.Create();
     ///    
     ///    isReferenceEqual = ReferenceEquals(firstTransientInstance, secondTransientInstance); // false
     ///  }
@@ -78,9 +78,9 @@
     ///{
     ///  public Person(string firstName, string lastName, int id)
     ///  {
-    ///    this.FirstName = firstName;
-    ///    this.LastName = lastName;
-    ///    this.Id = id;
+    ///    FirstName = firstName;
+    ///    LastName = lastName;
+    ///    Id = id;
     ///  }
     ///  
     ///  public string FirstName { get; }
@@ -102,7 +102,7 @@
         /// Initializes instance. 
         /// </summary>
         /// <param name="factoryMode">Describes the created objects lifetime using <see cref="FactoryMode"/>.</param>
-        protected Factory(FactoryMode factoryMode) => this.FactoryMode = factoryMode;
+        protected Factory(FactoryMode factoryMode) => FactoryMode = factoryMode;
 
         /// <summary>
         /// The shared instance which <see cref="Factory{TObject}"/> returns when <see cref="FactoryMode"/>
@@ -114,17 +114,17 @@
         /// <inheritdoc />
         public FactoryMode FactoryMode
         {
-            get => this.IsScoped
-              ? this.ScopedFactory.FactoryMode
-              : this.factoryMode;
+            get => IsScoped
+              ? ScopedFactory.FactoryMode
+              : factoryMode;
             set
             {
-                if (this.IsScoped)
+                if (IsScoped)
                 {
                     throw new InvalidOperationException(ExceptionMessages.InvalidOperationExceptionMessage_SetFactoryModeOnScopedFactory());
                 }
 
-                this.factoryMode = value;
+                factoryMode = value;
             }
         }
 
@@ -133,21 +133,21 @@
         /// <inheritdoc />
         public TObject Create()
         {
-            if (this.IsScoped)
+            if (IsScoped)
             {
-                return this.ScopedFactory.Create();
+                return ScopedFactory.Create();
             }
 
-            if (this.FactoryMode is FactoryMode.Singleton
-              || this.FactoryMode is FactoryMode.Scoped)
+            if (FactoryMode is FactoryMode.Singleton
+              || FactoryMode is FactoryMode.Scoped)
             {
-                if (!this.IsInitialized)
+                if (!IsInitialized)
                 {
-                    this.IsInitialized = true;
-                    this.SharedProductInstance = CreateInstance();
+                    IsInitialized = true;
+                    SharedProductInstance = CreateInstance();
                 }
 
-                return this.SharedProductInstance;
+                return SharedProductInstance;
             }
 
             return CreateInstance();
@@ -156,21 +156,21 @@
         /// <inheritdoc />
         public TObject Create(params object[] args)
         {
-            if (this.IsScoped)
+            if (IsScoped)
             {
-                return this.ScopedFactory.Create(args);
+                return ScopedFactory.Create(args);
             }
 
-            if (this.FactoryMode is FactoryMode.Singleton
-              || this.FactoryMode is FactoryMode.Scoped)
+            if (FactoryMode is FactoryMode.Singleton
+              || FactoryMode is FactoryMode.Scoped)
             {
-                if (!this.IsInitialized)
+                if (!IsInitialized)
                 {
-                    this.IsInitialized = true;
-                    this.SharedProductInstance = CreateInstance(args);
+                    IsInitialized = true;
+                    SharedProductInstance = CreateInstance(args);
                 }
 
-                return this.SharedProductInstance;
+                return SharedProductInstance;
             }
 
             return CreateInstance(args);
@@ -193,26 +193,26 @@
         ///  PersonFactory PersonFactory { get; }
         ///  public FactoryTest()
         ///  {
-        ///    this.PersonFactory = new PersonFactory();
+        ///    PersonFactory = new PersonFactory();
         ///  }
         ///  
         ///  public void FactoryExample()
         ///  {
         ///    // Configure factory to produce shared instances
-        ///    this.PersonFactory.FactoryMode = FactoryMode.Singleton;
+        ///    PersonFactory.FactoryMode = FactoryMode.Singleton;
         ///    
         ///    Person firstSharedInstanceInScope = null;
         ///    Person secondSharedInstanceInScope = null;
-        ///    Person sharedInstanceCreatedBeforeScope = this.PersonFactory.Create();
+        ///    Person sharedInstanceCreatedBeforeScope = PersonFactory.Create();
         ///    
         ///    // Create a new factory scope
-        ///    using (IDisposable factoryScope = this.PersonFactory.CreateScope())
+        ///    using (IDisposable factoryScope = PersonFactory.CreateScope())
         ///    {
-        ///      firstSharedInstanceInScope = this.PersonFactory.Create();
-        ///      secondSharedInstanceInScope = this.PersonFactory.Create();
+        ///      firstSharedInstanceInScope = PersonFactory.Create();
+        ///      secondSharedInstanceInScope = PersonFactory.Create();
         ///    }
         ///    
-        ///    Person sharedInstanceCreatedAfterScope = this.PersonFactory.Create();
+        ///    Person sharedInstanceCreatedAfterScope = PersonFactory.Create();
         ///      
         ///    bool isReferenceEqual = ReferenceEquals(firstSharedInstanceInScope, secondShartedInstanceInScope); // true
         ///    isReferenceEqual = ReferenceEquals(firstSharedInstanceInScope, sharedInstanceCreatedBeforeScope); // false
@@ -222,10 +222,10 @@
         ///    isReferenceEqual = ReferenceEquals(sharedInstanceCreatedBeforeScope, sharedInstanceCreatedAfterScope); // true
         ///    
         ///    // Configure factory to produce transient instances
-        ///    this.PersonFactory.FactoryMode = FactoryMode.Transient;
+        ///    PersonFactory.FactoryMode = FactoryMode.Transient;
         ///    
-        ///    Person firstTransientInstance = this.PersonFactory.Create();
-        ///    Person secondTransientInstance = this.PersonFactory.Create();
+        ///    Person firstTransientInstance = PersonFactory.Create();
+        ///    Person secondTransientInstance = PersonFactory.Create();
         ///    
         ///    isReferenceEqual = ReferenceEquals(firstTransientInstance, secondTransientInstance); // false
         ///  }
@@ -234,8 +234,8 @@
         /// </example>
         public IDisposable CreateScope()
         {
-            this.ScopedFactory = new ScopedFactory<TObject>(this);
-            return this.ScopedFactory;
+            ScopedFactory = new ScopedFactory<TObject>(this);
+            return ScopedFactory;
         }
 
         internal TObject CreateInstanceBase() => CreateInstance();

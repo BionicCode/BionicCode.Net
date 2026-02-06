@@ -49,8 +49,8 @@
 
         public Win32Caret(Window hostingWindow)
         {
-            this.HostingWindow = hostingWindow;
-            this.HostingWindowHandle = new WindowInteropHelper(hostingWindow).Handle;
+            HostingWindow = hostingWindow;
+            HostingWindowHandle = new WindowInteropHelper(hostingWindow).Handle;
         }
 
         /// <summary>
@@ -64,25 +64,25 @@
         public bool Show(CaretInfo caretInfo)
         {
             bool isCaretVisible;
-            switch (this.CaretVisibility)
+            switch (CaretVisibility)
             {
                 case CaretVisibility.Destroyed:
                     throw new InvalidOperationException("The caret was already destroyed.");
                 case CaretVisibility.Visible:
                     return false;
                 case CaretVisibility.Hidden:
-                    isCaretVisible = Win32Caret.ShowCaret(this.HostingWindowHandle);
+                    isCaretVisible = Win32Caret.ShowCaret(HostingWindowHandle);
                     break;
                 default:
-                    isCaretVisible = Win32Caret.CreateCaret(this.HostingWindowHandle, IntPtr.Zero, (int)this.CurrentCaretInfo.Width, (int)this.CurrentCaretInfo.Height)
-                      && Win32Caret.SetCaretPos((int)this.CurrentCaretInfo.Position.X, (int)this.CurrentCaretInfo.Position.Y)
-                      && Win32Caret.ShowCaret(this.HostingWindowHandle);
+                    isCaretVisible = Win32Caret.CreateCaret(HostingWindowHandle, IntPtr.Zero, (int)CurrentCaretInfo.Width, (int)CurrentCaretInfo.Height)
+                      && Win32Caret.SetCaretPos((int)CurrentCaretInfo.Position.X, (int)CurrentCaretInfo.Position.Y)
+                      && Win32Caret.ShowCaret(HostingWindowHandle);
                     break;
             }
 
-            this.CurrentCaretInfo = caretInfo;
+            CurrentCaretInfo = caretInfo;
 
-            this.CaretVisibility = isCaretVisible ? CaretVisibility.Visible : CaretVisibility.Undefined;
+            CaretVisibility = isCaretVisible ? CaretVisibility.Visible : CaretVisibility.Undefined;
             return isCaretVisible;
         }
 
@@ -95,12 +95,12 @@
         /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret">DestroyCaret function (winuser.h)</seealso>
         public bool Destroy()
         {
-            if (this.CaretVisibility == CaretVisibility.Destroyed)
+            if (CaretVisibility == CaretVisibility.Destroyed)
             {
                 throw new InvalidOperationException("The caret was already detroyed.");
             }
 
-            this.CaretVisibility = CaretVisibility.Destroyed;
+            CaretVisibility = CaretVisibility.Destroyed;
             return DisposeInternal();
         }
 
@@ -113,13 +113,13 @@
         /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-hidecaret">HideCaret function (winuser.h)</seealso>
         public bool Hide()
         {
-            if (this.CaretVisibility == CaretVisibility.Destroyed)
+            if (CaretVisibility == CaretVisibility.Destroyed)
             {
                 throw new InvalidOperationException("The caret was already detroyed.");
             }
 
-            this.CaretVisibility = CaretVisibility.Hidden;
-            return Win32Caret.HideCaret(this.HostingWindowHandle);
+            CaretVisibility = CaretVisibility.Hidden;
+            return Win32Caret.HideCaret(HostingWindowHandle);
         }
 
         /// <summary>
@@ -131,13 +131,13 @@
         /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setcaretpos">SetCaretPos function (winuser.h)</seealso>
         public bool ChangePosition(CaretInfo caretInfo)
         {
-            if (this.CaretVisibility == CaretVisibility.Destroyed)
+            if (CaretVisibility == CaretVisibility.Destroyed)
             {
                 throw new InvalidOperationException("The caret was already detroyed.");
             }
 
-            this.CurrentCaretInfo = caretInfo;
-            return SetCaretPos((int)this.CurrentCaretInfo.Position.X, (int)this.CurrentCaretInfo.Position.Y);
+            CurrentCaretInfo = caretInfo;
+            return SetCaretPos((int)CurrentCaretInfo.Position.X, (int)CurrentCaretInfo.Position.Y);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@
         protected virtual bool Dispose(bool disposing)
         {
             bool isCaretDestroyed = false;
-            if (!this.disposedValue)
+            if (!disposedValue)
             {
                 if (disposing)
                 {
@@ -202,10 +202,10 @@
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 isCaretDestroyed = DestroyCaret();
-                this.disposedValue = true;
+                disposedValue = true;
             }
 
-            return isCaretDestroyed || this.disposedValue;
+            return isCaretDestroyed || disposedValue;
         }
 
         // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources

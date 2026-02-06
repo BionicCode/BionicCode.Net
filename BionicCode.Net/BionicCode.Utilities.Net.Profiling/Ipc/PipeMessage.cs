@@ -18,48 +18,48 @@
             [JsonConstructor]
             public PipeMessage(TData data, Status status, ConversationId id, bool isValid)
             {
-                this.Data = data;
-                this.Status = status;
-                this.Id = id;
-                this.IsValid = isValid;
+                Data = data;
+                Status = status;
+                Id = id;
+                IsValid = isValid;
             }
 
             public PipeMessage(ConversationId conversationId, TData data)
             {
-                this.Id = conversationId;
-                this.Data = data;
-                this.IsValid = true;
+                Id = conversationId;
+                Data = data;
+                IsValid = true;
             }
 
             public void InvalidateMessage(InvalidMessageCondition messageCondition)
             {
-                this.IsValid = false;
+                IsValid = false;
 
                 switch (messageCondition)
                 {
                     case InvalidMessageCondition.Credentials:
-                        this.Status = Status.InvalidCredentials;
+                        Status = Status.InvalidCredentials;
                         break;
                     case InvalidMessageCondition.Undefined:
                         break;
                     case InvalidMessageCondition.ProtocolViolation:
-                        this.Status = Status.ProtocolViolation;
+                        Status = Status.ProtocolViolation;
                         break;
                     case InvalidMessageCondition.Disconnected:
-                        this.Status = Status.Disconnected;
+                        Status = Status.Disconnected;
                         break;
                     default:
-                        this.Status = Status.Undefined;
+                        Status = Status.Undefined;
                         break;
                 }
             }
 
             public Status Status { get; private set; }
             public TData Data { get; }
-            public bool HasData => this.Data != null;
+            public bool HasData => Data != null;
             public ConversationId Id { get; }
             public bool IsValid { get; private set; }
-            public bool IsEmpty => this.Id.Equals(ConversationId.Empty);
+            public bool IsEmpty => Id.Equals(ConversationId.Empty);
         }
     }
 }

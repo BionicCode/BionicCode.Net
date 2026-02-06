@@ -9,54 +9,54 @@
     {
         public FilteredExportServiceCollection(IServiceCollection services, IEnumerable<Type> source, ServiceLifetime serviceLifetime)
         {
-            this.Services = services;
-            this.Source = source;
-            this.ServiceLifetime = serviceLifetime;
+            Services = services;
+            Source = source;
+            ServiceLifetime = serviceLifetime;
         }
 
         public IFilteredExportServiceCollection WhereClassName(Func<string, bool> filter)
         {
-            this.Source = this.Source.Where(type => filter.Invoke(type.Name));
+            Source = Source.Where(type => filter.Invoke(type.Name));
             return this;
         }
 
         public IFilteredExportServiceCollection WhereClassType(Func<Type, bool> typeFilter)
         {
-            this.Source = this.Source.Where(typeFilter.Invoke);
+            Source = Source.Where(typeFilter.Invoke);
             return this;
         }
 
         public IFilteredExportServiceCollection WhereConstructor(Func<ConstructorInfo, bool> constructorFilter)
         {
-            this.Source = this.Source.Where(type => type.GetConstructors(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Any(constructorInfo => constructorFilter.Invoke(constructorInfo)));
+            Source = Source.Where(type => type.GetConstructors(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Any(constructorInfo => constructorFilter.Invoke(constructorInfo)));
             return this;
         }
 
         public IFilteredExportServiceCollection WhereClassAttribute(Func<Attribute, bool> attributeFilter)
         {
-            this.Source = this.Source.Where(type => type.GetCustomAttributes().Any(attribute => attributeFilter(attribute)));
+            Source = Source.Where(type => type.GetCustomAttributes().Any(attribute => attributeFilter(attribute)));
             return this;
         }
 
         public IMultiExportServiceCollection Register()
         {
-            foreach (Type tImplementation in this.Source)
+            foreach (Type tImplementation in Source)
             {
-                switch (this.ServiceLifetime)
+                switch (ServiceLifetime)
                 {
                     case ServiceLifetime.Transient:
-                        _ = this.Services.AddTransient(tImplementation);
+                        _ = Services.AddTransient(tImplementation);
                         break;
                     case ServiceLifetime.Scoped:
-                        _ = this.Services.AddScoped(tImplementation);
+                        _ = Services.AddScoped(tImplementation);
                         break;
                     case ServiceLifetime.Singleton:
-                        _ = this.Services.AddSingleton(tImplementation);
+                        _ = Services.AddSingleton(tImplementation);
                         break;
                 }
             }
 
-            return new MultiExportServiceCollection(this.Services, this.Source);
+            return new MultiExportServiceCollection(Services, Source);
         }
 
         private IServiceCollection Services { get; }

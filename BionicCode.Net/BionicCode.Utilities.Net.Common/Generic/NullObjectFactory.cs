@@ -29,7 +29,7 @@
         /// </summary>
         /// <param name="factoryMethod">The delegate to create instances of type <typeparamref name="TObject"/>.</param>
         /// <param name="factoryMode">The lifetime scope of the created instance.</param>
-        public NullObjectFactory(Func<TObject> factoryMethod, FactoryMode factoryMode) : base(factoryMode) => this.FactoryMethod = factoryMethod;
+        public NullObjectFactory(Func<TObject> factoryMethod, FactoryMode factoryMode) : base(factoryMode) => FactoryMethod = factoryMethod;
 
         /// <summary>
         /// Initializes the <see cref="NullObjectFactory{TObject}"/> using a <see cref="IFactory{TCreate}"/> and its <see cref="IFactory{TCreate}.FactoryMode"/> to set the <see cref="FactoryMode"/>.
@@ -44,7 +44,7 @@
         /// <inheritdoc />
         protected override TObject CreateInstance()
         {
-            TObject instance = this.FactoryMethod.Invoke();
+            TObject instance = FactoryMethod.Invoke();
             instance.IsNull = true;
             return instance;
         }

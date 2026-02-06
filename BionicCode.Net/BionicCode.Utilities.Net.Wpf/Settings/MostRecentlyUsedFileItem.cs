@@ -12,7 +12,7 @@
         /// MemberConstructor
         /// </summary>
         /// <param name="fileInfo">The underlying <see cref="FileInfo"/> of the item.</param>
-        public MostRecentlyUsedFileItem(FileInfo fileInfo) => this.FileInfo = fileInfo;
+        public MostRecentlyUsedFileItem(FileInfo fileInfo) => FileInfo = fileInfo;
 
         #region Overrides of Object
 
@@ -34,16 +34,16 @@
                 return true;
             }
 
-            if (this.FileInfo.FullName.Equals(other.FileInfo.FullName, StringComparison.OrdinalIgnoreCase))
+            if (FileInfo.FullName.Equals(other.FileInfo.FullName, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
 
-            return object.Equals(this.FileInfo, other.FileInfo);
+            return object.Equals(FileInfo, other.FileInfo);
         }
 
         /// <inheritdoc />
-        public override int GetHashCode() => this.FileInfo != null ? this.FileInfo.GetHashCode() : 0;
+        public override int GetHashCode() => FileInfo != null ? FileInfo.GetHashCode() : 0;
         /// <summary>
         /// Is equal operator.
         /// </summary>
@@ -71,10 +71,10 @@
         /// <summary>
         /// Returns the file name including the extension.
         /// </summary>
-        public string Name => this.FileInfo.Name;
+        public string Name => FileInfo.Name;
         /// <summary>
         /// Returns the full file path of the file.
         /// </summary>
-        public string FullName => this.FileInfo.FullName;
+        public string FullName => FileInfo.FullName;
     }
 }

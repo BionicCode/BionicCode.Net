@@ -32,46 +32,46 @@
 
         protected WeakEventManager()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
 
 #if DEBUG
-            this.InstanceNumber = ++InstanceCounter;
+            InstanceNumber = ++InstanceCounter;
 #endif
         }
 
         internal abstract void Purge();
 
 #if DEBUG
-        internal void LogDebug(string message) => Debug.WriteLine($"[ThreadID: {Thread.CurrentThread.ManagedThreadId}] [ID: {this.Id}] [{nameof(WeakEventManager)} instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}]: {message}");
+        internal void LogDebug(string message) => Debug.WriteLine($"[ThreadID: {Thread.CurrentThread.ManagedThreadId}] [ID: {Id}] [{nameof(WeakEventManager)} instance #{InstanceNumber} of {WeakEventManager.InstanceCounter}]: {message}");
 #endif
 
         internal void StartListeningInternal(object eventSource)
         {
-            if (this.IsListening)
+            if (IsListening)
             {
                 return;
             }
 
 #if DEBUG
-            string eventSourceTypeName = $"{this.EventSourceType.FullName} {(eventSource is null ? "(static event)" : string.Empty)}";
+            string eventSourceTypeName = $"{EventSourceType.FullName} {(eventSource is null ? "(static event)" : string.Empty)}";
             LogDebug($"Attaching proxy handler to {eventSourceTypeName}.");
             LogDebug($"Start listening to {eventSourceTypeName}.");
 #endif
 
-            this.EventSourceEventData.AddEventHandler(eventSource, this.ProxyEventHandler);
-            this.IsListening = true;
+            EventSourceEventData.AddEventHandler(eventSource, ProxyEventHandler);
+            IsListening = true;
         }
 
         internal void StopListeningInternal(object eventSource)
         {
 #if DEBUG
-            string eventSourceTypeName = $"{this.EventSourceType.FullName} {(eventSource is null ? "(static event)" : string.Empty)}";
+            string eventSourceTypeName = $"{EventSourceType.FullName} {(eventSource is null ? "(static event)" : string.Empty)}";
             LogDebug($"Detaching proxy handler from {eventSourceTypeName}.");
             LogDebug($"Stop listening to {eventSourceTypeName}.");
 #endif
 
-            this.EventSourceEventData.RemoveEventHandler(eventSource, this.ProxyEventHandler);
-            this.IsListening = false;
+            EventSourceEventData.RemoveEventHandler(eventSource, ProxyEventHandler);
+            IsListening = false;
         }
     }
 }

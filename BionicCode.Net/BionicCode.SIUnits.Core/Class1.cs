@@ -10,91 +10,91 @@
         public SIBaseDimensions IncrementLengthExponent(int increment)
         {
             return new SIBaseDimensions(
-                this.LengthExponent + increment,
-                this.MassExponent,
-                this.TimeExponent,
-                this.ElectricCurrentExponent,
-                this.ThermodynamicTemperatureExponent,
-                this.AmountOfSubstanceExponent,
-                this.LuminousIntensityExponent
+                LengthExponent + increment,
+                MassExponent,
+                TimeExponent,
+                ElectricCurrentExponent,
+                ThermodynamicTemperatureExponent,
+                AmountOfSubstanceExponent,
+                LuminousIntensityExponent
             );
         }
 
         public SIBaseDimensions IncrementMassExponent(int increment)
         {
             return new SIBaseDimensions(
-                this.LengthExponent,
-                this.MassExponent + increment,
-                this.TimeExponent,
-                this.ElectricCurrentExponent,
-                this.ThermodynamicTemperatureExponent,
-                this.AmountOfSubstanceExponent,
-                this.LuminousIntensityExponent
+                LengthExponent,
+                MassExponent + increment,
+                TimeExponent,
+                ElectricCurrentExponent,
+                ThermodynamicTemperatureExponent,
+                AmountOfSubstanceExponent,
+                LuminousIntensityExponent
             );
         }
 
         public SIBaseDimensions IncrementTimeExponent(int increment)
         {
             return new SIBaseDimensions(
-                this.LengthExponent,
-                this.MassExponent,
-                this.TimeExponent + increment,
-                this.ElectricCurrentExponent,
-                this.ThermodynamicTemperatureExponent,
-                this.AmountOfSubstanceExponent,
-                this.LuminousIntensityExponent
+                LengthExponent,
+                MassExponent,
+                TimeExponent + increment,
+                ElectricCurrentExponent,
+                ThermodynamicTemperatureExponent,
+                AmountOfSubstanceExponent,
+                LuminousIntensityExponent
             );
         }
 
         public SIBaseDimensions IncrementElectricCurrentExponent(int increment)
         {
             return new SIBaseDimensions(
-                this.LengthExponent,
-                this.MassExponent,
-                this.TimeExponent,
-                this.ElectricCurrentExponent + increment,
-                this.ThermodynamicTemperatureExponent,
-                this.AmountOfSubstanceExponent,
-                this.LuminousIntensityExponent
+                LengthExponent,
+                MassExponent,
+                TimeExponent,
+                ElectricCurrentExponent + increment,
+                ThermodynamicTemperatureExponent,
+                AmountOfSubstanceExponent,
+                LuminousIntensityExponent
             );
         }
 
         public SIBaseDimensions IncrementThermodynamicTemperatureExponent(int increment)
         {
             return new SIBaseDimensions(
-                this.LengthExponent,
-                this.MassExponent,
-                this.TimeExponent,
-                this.ElectricCurrentExponent,
-                this.ThermodynamicTemperatureExponent + increment,
-                this.AmountOfSubstanceExponent,
-                this.LuminousIntensityExponent
+                LengthExponent,
+                MassExponent,
+                TimeExponent,
+                ElectricCurrentExponent,
+                ThermodynamicTemperatureExponent + increment,
+                AmountOfSubstanceExponent,
+                LuminousIntensityExponent
             );
         }
 
         public SIBaseDimensions IncrementAmountOfSubstanceExponent(int increment)
         {
             return new SIBaseDimensions(
-                this.LengthExponent,
-                this.MassExponent,
-                this.TimeExponent,
-                this.ElectricCurrentExponent,
-                this.ThermodynamicTemperatureExponent,
-                this.AmountOfSubstanceExponent + increment,
-                this.LuminousIntensityExponent
+                LengthExponent,
+                MassExponent,
+                TimeExponent,
+                ElectricCurrentExponent,
+                ThermodynamicTemperatureExponent,
+                AmountOfSubstanceExponent + increment,
+                LuminousIntensityExponent
             );
         }
 
         public SIBaseDimensions IncrementLuminousIntensityExponent(int increment)
         {
             return new SIBaseDimensions(
-                this.LengthExponent,
-                this.MassExponent,
-                this.TimeExponent,
-                this.ElectricCurrentExponent,
-                this.ThermodynamicTemperatureExponent,
-                this.AmountOfSubstanceExponent,
-                this.LuminousIntensityExponent + increment
+                LengthExponent,
+                MassExponent,
+                TimeExponent,
+                ElectricCurrentExponent,
+                ThermodynamicTemperatureExponent,
+                AmountOfSubstanceExponent,
+                LuminousIntensityExponent + increment
             );
         }
 
@@ -106,44 +106,44 @@
         public SIBaseDimensions DecrementAmountOfSubstanceExponent(int decrement) => IncrementAmountOfSubstanceExponent(-decrement);
         public SIBaseDimensions DecrementLuminousIntensityExponent(int decrement) => IncrementLuminousIntensityExponent(-decrement);
 
-        public SIBaseDimensions MoveLengthToDenominator() => this with { LengthExponent = -Math.Abs(this.LengthExponent) };
-        public SIBaseDimensions MoveMassToDenominator() => this with { MassExponent = -Math.Abs(this.MassExponent) };
-        public SIBaseDimensions MoveTimeToDenominator() => this with { TimeExponent = -Math.Abs(this.TimeExponent) };
-        public SIBaseDimensions MoveElectricCurrentToDenominator() => this with { ElectricCurrentExponent = -Math.Abs(this.ElectricCurrentExponent) };
-        public SIBaseDimensions MoveThermodynamicTemperatureToDenominator() => this with { ThermodynamicTemperatureExponent = -Math.Abs(this.ThermodynamicTemperatureExponent) };
-        public SIBaseDimensions MoveAmountOfSubstanceToDenominator() => this with { AmountOfSubstanceExponent = -Math.Abs(this.AmountOfSubstanceExponent) };
-        public SIBaseDimensions MoveLuminousIntensityToDenominator() => this with { LuminousIntensityExponent = -Math.Abs(this.LuminousIntensityExponent) };
+        public SIBaseDimensions MoveLengthToDenominator() => this with { LengthExponent = -Math.Abs(LengthExponent) };
+        public SIBaseDimensions MoveMassToDenominator() => this with { MassExponent = -Math.Abs(MassExponent) };
+        public SIBaseDimensions MoveTimeToDenominator() => this with { TimeExponent = -Math.Abs(TimeExponent) };
+        public SIBaseDimensions MoveElectricCurrentToDenominator() => this with { ElectricCurrentExponent = -Math.Abs(ElectricCurrentExponent) };
+        public SIBaseDimensions MoveThermodynamicTemperatureToDenominator() => this with { ThermodynamicTemperatureExponent = -Math.Abs(ThermodynamicTemperatureExponent) };
+        public SIBaseDimensions MoveAmountOfSubstanceToDenominator() => this with { AmountOfSubstanceExponent = -Math.Abs(AmountOfSubstanceExponent) };
+        public SIBaseDimensions MoveLuminousIntensityToDenominator() => this with { LuminousIntensityExponent = -Math.Abs(LuminousIntensityExponent) };
 
         public SIBaseDimensions MoveAllToDenominator()
         {
             return new SIBaseDimensions(
-                -Math.Abs(this.LengthExponent),
-                -Math.Abs(this.MassExponent),
-                -Math.Abs(this.TimeExponent),
-                -Math.Abs(this.ElectricCurrentExponent),
-                -Math.Abs(this.ThermodynamicTemperatureExponent),
-                -Math.Abs(this.AmountOfSubstanceExponent),
-                -Math.Abs(this.LuminousIntensityExponent)
+                -Math.Abs(LengthExponent),
+                -Math.Abs(MassExponent),
+                -Math.Abs(TimeExponent),
+                -Math.Abs(ElectricCurrentExponent),
+                -Math.Abs(ThermodynamicTemperatureExponent),
+                -Math.Abs(AmountOfSubstanceExponent),
+                -Math.Abs(LuminousIntensityExponent)
             );
         }
 
-        public SIBaseDimensions MoveLengthToNumerator() => this with { LengthExponent = Math.Abs(this.LengthExponent) };
-        public SIBaseDimensions MoveMassToNumerator() => this with { MassExponent = Math.Abs(this.MassExponent) };
-        public SIBaseDimensions MoveTimeToNumerator() => this with { TimeExponent = Math.Abs(this.TimeExponent) };
-        public SIBaseDimensions MoveElectricCurrentToNumerator() => this with { ElectricCurrentExponent = Math.Abs(this.ElectricCurrentExponent) };
-        public SIBaseDimensions MoveThermodynamicTemperatureToNumerator() => this with { ThermodynamicTemperatureExponent = Math.Abs(this.ThermodynamicTemperatureExponent) };
-        public SIBaseDimensions MoveAmountOfSubstanceToNumerator() => this with { AmountOfSubstanceExponent = Math.Abs(this.AmountOfSubstanceExponent) };
-        public SIBaseDimensions MoveLuminousIntensityToNumerator() => this with { LuminousIntensityExponent = Math.Abs(this.LuminousIntensityExponent) };
+        public SIBaseDimensions MoveLengthToNumerator() => this with { LengthExponent = Math.Abs(LengthExponent) };
+        public SIBaseDimensions MoveMassToNumerator() => this with { MassExponent = Math.Abs(MassExponent) };
+        public SIBaseDimensions MoveTimeToNumerator() => this with { TimeExponent = Math.Abs(TimeExponent) };
+        public SIBaseDimensions MoveElectricCurrentToNumerator() => this with { ElectricCurrentExponent = Math.Abs(ElectricCurrentExponent) };
+        public SIBaseDimensions MoveThermodynamicTemperatureToNumerator() => this with { ThermodynamicTemperatureExponent = Math.Abs(ThermodynamicTemperatureExponent) };
+        public SIBaseDimensions MoveAmountOfSubstanceToNumerator() => this with { AmountOfSubstanceExponent = Math.Abs(AmountOfSubstanceExponent) };
+        public SIBaseDimensions MoveLuminousIntensityToNumerator() => this with { LuminousIntensityExponent = Math.Abs(LuminousIntensityExponent) };
         public SIBaseDimensions MoveAllToNumerator()
         {
             return new SIBaseDimensions(
-                Math.Abs(this.LengthExponent),
-                Math.Abs(this.MassExponent),
-                Math.Abs(this.TimeExponent),
-                Math.Abs(this.ElectricCurrentExponent),
-                Math.Abs(this.ThermodynamicTemperatureExponent),
-                Math.Abs(this.AmountOfSubstanceExponent),
-                Math.Abs(this.LuminousIntensityExponent)
+                Math.Abs(LengthExponent),
+                Math.Abs(MassExponent),
+                Math.Abs(TimeExponent),
+                Math.Abs(ElectricCurrentExponent),
+                Math.Abs(ThermodynamicTemperatureExponent),
+                Math.Abs(AmountOfSubstanceExponent),
+                Math.Abs(LuminousIntensityExponent)
             );
         }
 
@@ -164,13 +164,13 @@
             int amountOfSubstanceExponent,
             int luminousIntensityExponent)
         {
-            this.LengthExponent = lengthExponent;
-            this.MassExponent = massExponent;
-            this.TimeExponent = timeExponent;
-            this.ElectricCurrentExponent = electricCurrentExponent;
-            this.ThermodynamicTemperatureExponent = thermodynamicTemperatureExponent;
-            this.AmountOfSubstanceExponent = amountOfSubstanceExponent;
-            this.LuminousIntensityExponent = luminousIntensityExponent;
+            LengthExponent = lengthExponent;
+            MassExponent = massExponent;
+            TimeExponent = timeExponent;
+            ElectricCurrentExponent = electricCurrentExponent;
+            ThermodynamicTemperatureExponent = thermodynamicTemperatureExponent;
+            AmountOfSubstanceExponent = amountOfSubstanceExponent;
+            LuminousIntensityExponent = luminousIntensityExponent;
         }
     }
 

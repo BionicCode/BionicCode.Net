@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using BionicCode.Utilities.Net.Reflection.Exceptions;
 
 /// <summary>
 /// Represents a read-only list of <see cref="PropertyData"/> items that belong to the same declaring type.
@@ -22,72 +21,72 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
 
     public PropertyList(IEnumerable<PropertyData> items)
     {
-        this.Properties = items?.ToImmutableList() ?? ImmutableList<PropertyData>.Empty;
-        this._propertyNameIndex = this.Properties.ToDictionary(property => property.Name, StringComparer.Ordinal);
+        Properties = items?.ToImmutableList() ?? ImmutableList<PropertyData>.Empty;
+        _propertyNameIndex = Properties.ToDictionary(property => property.Name, StringComparer.Ordinal);
 
-        if (this.HasItems)
+        if (HasItems)
         {
-            this._declaringTypeCacheKey = this.Properties.First().DeclaringTypeData.CacheKey;
+            _declaringTypeCacheKey = Properties.First().DeclaringTypeData.CacheKey;
 
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Properties,
-                property => property.DeclaringTypeData.CacheKey != this.DeclaringTypeCacheKey,
+                Properties,
+                property => property.DeclaringTypeData.CacheKey != DeclaringTypeCacheKey,
                 nameof(items),
                 $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     internal PropertyList(IEnumerable<PropertyData> items, bool isIntegrityValidationEnabled)
     {
-        this.Properties = items?.ToImmutableList() ?? ImmutableList<PropertyData>.Empty;
-        this._propertyNameIndex = this.Properties.ToDictionary(property => property.Name);
-        this._declaringTypeCacheKey = this.HasItems
-            ? this.Properties.First().DeclaringTypeData.CacheKey
+        Properties = items?.ToImmutableList() ?? ImmutableList<PropertyData>.Empty;
+        _propertyNameIndex = Properties.ToDictionary(property => property.Name);
+        _declaringTypeCacheKey = HasItems
+            ? Properties.First().DeclaringTypeData.CacheKey
             : default;
 
-        if (isIntegrityValidationEnabled && this.HasItems)
+        if (isIntegrityValidationEnabled && HasItems)
         {
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Properties,
-                property => !property.DeclaringTypeHandle.Equals(this.DeclaringTypeCacheKey),
+                Properties,
+                property => !property.DeclaringTypeHandle.Equals(DeclaringTypeCacheKey),
                 nameof(items),
                 $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     private PropertyList()
     {
-        this.Properties = ImmutableList<PropertyData>.Empty;
-        this._propertyNameIndex = new Dictionary<string, PropertyData>(0);
+        Properties = ImmutableList<PropertyData>.Empty;
+        _propertyNameIndex = new Dictionary<string, PropertyData>(0);
     }
 
     public bool TryGetPropertyByName(string propertyName, out PropertyData? propertyData)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(propertyName);
-        return this._propertyNameIndex.TryGetValue(propertyName, out propertyData);
+        return _propertyNameIndex.TryGetValue(propertyName, out propertyData);
     }
 
-    public int Count => this.Properties.Count;
-    public bool IsEmpty => this.Properties.IsEmpty;
-    public bool HasItems => !this.IsEmpty;
+    public int Count => Properties.Count;
+    public bool IsEmpty => Properties.IsEmpty;
+    public bool HasItems => !IsEmpty;
     public ImmutableList<PropertyData> Properties { get; }
     public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
-        => this.HasItems
-            ? this._declaringTypeCacheKey
-            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeCacheKey)));
+        => HasItems
+            ? _declaringTypeCacheKey
+            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeCacheKey)));
 
     public TypeData DeclaringTypeData
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = this.DeclaringTypeCacheKey;
-            return this.HasItems
+            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
-                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeData)));
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeData)));
         }
     }
 
@@ -96,19 +95,19 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
         get
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
-            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Properties.Count, nameof(index));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Properties.Count, nameof(index));
 
-            return this.HasItems
-                ? this.Properties[index]
+            return HasItems
+                ? Properties[index]
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(PropertyList), ReflectionConstants.IndexerGetMethodName));
         }
     }
 
     public IEnumerator<PropertyData> GetEnumerator()
-        => ((IEnumerable<PropertyData>)this.Properties).GetEnumerator();
+        => ((IEnumerable<PropertyData>)Properties).GetEnumerator();
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => this.Properties.GetEnumerator();
+        => Properties.GetEnumerator();
 
     public bool Equals(PropertyList? other)
     {
@@ -117,19 +116,19 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
             return false;
         }
 
-        if (this.Count != other.Count)
+        if (Count != other.Count)
         {
             return false;
         }
 
-        if (this.DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
+        if (DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
         {
             return false;
         }
 
-        for (int index = 0; index < this.Count; index++)
+        for (int index = 0; index < Count; index++)
         {
-            if (!this.Properties[index].Equals(other.Properties[index]))
+            if (!Properties[index].Equals(other.Properties[index]))
             {
                 return false;
             }
@@ -142,18 +141,18 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
         => obj is PropertyList other && Equals(other);
 
     public override int GetHashCode()
-        => this._hashCode;
+        => _hashCode;
 
     private int ComputeHashCode()
     {
         unchecked
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.Count);
-            hashCode.Add(this.DeclaringTypeCacheKey);
-            for (int index = 0; index < this.Properties.Count; index++)
+            hashCode.Add(Count);
+            hashCode.Add(DeclaringTypeCacheKey);
+            for (int index = 0; index < Properties.Count; index++)
             {
-                hashCode.Add(this.Properties[index]);
+                hashCode.Add(Properties[index]);
             }
 
             return hashCode.ToHashCode();

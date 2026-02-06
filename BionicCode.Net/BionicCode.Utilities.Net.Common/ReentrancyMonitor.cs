@@ -8,30 +8,30 @@
 
     internal class ReentrancyMonitorEntry
     {
-        public int Count => this.cancellationTokenSourcesInternal.Count;
+        public int Count => cancellationTokenSourcesInternal.Count;
         public ReadOnlyCollection<CancellationTokenSource> CancellationTokenSources { get; }
         private readonly List<CancellationTokenSource> cancellationTokenSourcesInternal;
 
         public ReentrancyMonitorEntry()
         {
-            this.cancellationTokenSourcesInternal = new List<CancellationTokenSource>();
-            this.CancellationTokenSources = new ReadOnlyCollection<CancellationTokenSource>(this.cancellationTokenSourcesInternal);
+            cancellationTokenSourcesInternal = new List<CancellationTokenSource>();
+            CancellationTokenSources = new ReadOnlyCollection<CancellationTokenSource>(cancellationTokenSourcesInternal);
         }
 
         public void Add(CancellationTokenSource cancellationTokenSource)
-          => this.cancellationTokenSourcesInternal.Add(cancellationTokenSource);
+          => cancellationTokenSourcesInternal.Add(cancellationTokenSource);
 
         public void Remove(CancellationTokenSource cancellationTokenSource)
-          => this.cancellationTokenSourcesInternal.Remove(cancellationTokenSource);
+          => cancellationTokenSourcesInternal.Remove(cancellationTokenSource);
     }
 
     internal class ReentrancyMonitor : IDisposable
     {
         public ReentrancyMonitor(object owner, Action enterAction, Action leaveAction)
         {
-            this.owner = owner;
-            this.enterAction = enterAction;
-            this.leaveAction = leaveAction;
+            owner = owner;
+            enterAction = enterAction;
+            leaveAction = leaveAction;
             Enter();
         }
 
@@ -39,7 +39,7 @@
           => Cancel(false);
 
         public void Cancel(bool throwOnFirstException)
-          => this.CancellationTokenSource.Cancel(throwOnFirstException);
+          => CancellationTokenSource.Cancel(throwOnFirstException);
 
         public static void CancelAll(object monitorOwner)
           => CancelAll(monitorOwner, false);
@@ -62,29 +62,29 @@
 
         private void Enter()
         {
-            if (!ReentrancyMonitor.CancellationTokenSourceMap.TryGetValue(this.owner, out ReentrancyMonitorEntry reentrancyMonitorEntry))
+            if (!ReentrancyMonitor.CancellationTokenSourceMap.TryGetValue(owner, out ReentrancyMonitorEntry reentrancyMonitorEntry))
             {
                 reentrancyMonitorEntry = new ReentrancyMonitorEntry();
-                _ = ReentrancyMonitor.CancellationTokenSourceMap.TryAdd(this.owner, reentrancyMonitorEntry);
+                _ = ReentrancyMonitor.CancellationTokenSourceMap.TryAdd(owner, reentrancyMonitorEntry);
             }
 
-            this.CancellationTokenSource = new CancellationTokenSource();
-            reentrancyMonitorEntry.Add(this.CancellationTokenSource);
-            this.enterAction?.Invoke();
+            CancellationTokenSource = new CancellationTokenSource();
+            reentrancyMonitorEntry.Add(CancellationTokenSource);
+            enterAction?.Invoke();
         }
 
         private void Leave()
         {
-            if (ReentrancyMonitor.CancellationTokenSourceMap.TryGetValue(this.owner, out ReentrancyMonitorEntry reentrancyMonitorEntry))
+            if (ReentrancyMonitor.CancellationTokenSourceMap.TryGetValue(owner, out ReentrancyMonitorEntry reentrancyMonitorEntry))
             {
-                reentrancyMonitorEntry.Remove(this.CancellationTokenSource);
+                reentrancyMonitorEntry.Remove(CancellationTokenSource);
                 if (reentrancyMonitorEntry.Count == 0)
                 {
-                    _ = ReentrancyMonitor.CancellationTokenSourceMap.TryRemove(this.owner, out _);
+                    _ = ReentrancyMonitor.CancellationTokenSourceMap.TryRemove(owner, out _);
                 }
             }
 
-            this.leaveAction?.Invoke();
+            leaveAction?.Invoke();
         }
 
         private static ConcurrentDictionary<object, ReentrancyMonitorEntry> CancellationTokenSourceMap { get; }
@@ -99,18 +99,18 @@
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposedValue)
+            if (!disposedValue)
             {
                 if (disposing)
                 {
                     Leave();
-                    this.CancellationTokenSource.Dispose();
-                    this.CancellationTokenSource = null;
+                    CancellationTokenSource.Dispose();
+                    CancellationTokenSource = null;
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
-                this.disposedValue = true;
+                disposedValue = true;
             }
         }
 

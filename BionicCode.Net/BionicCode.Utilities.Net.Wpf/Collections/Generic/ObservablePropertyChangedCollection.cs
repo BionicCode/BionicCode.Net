@@ -33,7 +33,7 @@
         {
             CheckReentrancy();
 
-            TItem item = this.Items[index];
+            TItem item = Items[index];
             base.RemoveItem(index);
 
             if (item is INotifyPropertyChanged propertyChangedItem)
@@ -47,7 +47,7 @@
         {
             CheckReentrancy();
 
-            foreach (INotifyPropertyChanged item in this.Items.OfType<INotifyPropertyChanged>())
+            foreach (INotifyPropertyChanged item in Items.OfType<INotifyPropertyChanged>())
             {
                 StopListenToItemPropertyChanged(item);
             }
@@ -60,7 +60,7 @@
         {
             CheckReentrancy();
 
-            if (this.Items[index] is INotifyPropertyChanged oldPropertyChangedItem)
+            if (Items[index] is INotifyPropertyChanged oldPropertyChangedItem)
             {
                 StopListenToItemPropertyChanged(oldPropertyChangedItem);
             }
@@ -95,6 +95,6 @@
         public PropertyChangedEventHandler ItemPropertyChanged;
 
         private void OnItemPropertyChanged(object item, PropertyChangedEventArgs e)
-          => this.ItemPropertyChanged?.Invoke(item, e);
+          => ItemPropertyChanged?.Invoke(item, e);
     }
 }

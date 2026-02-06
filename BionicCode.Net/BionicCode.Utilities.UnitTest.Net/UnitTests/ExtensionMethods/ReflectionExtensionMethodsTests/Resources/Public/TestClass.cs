@@ -25,8 +25,8 @@
 
         public ref readonly int PublicMethodWithReadOnlyRefReturnValue(ref int parameter)
         {
-            ref int value = ref this.field;
-            return ref this.field;
+            ref int value = ref field;
+            return ref field;
         }
 
         public TValue PublicGenericMethodWithReturnValue<TValue>(TValue parameter) => default;
@@ -66,7 +66,7 @@
         {
             int i = 9;
             ref int j = ref i;
-            return ref this.refInteger;
+            return ref refInteger;
         }
 #endif
         public int integer;

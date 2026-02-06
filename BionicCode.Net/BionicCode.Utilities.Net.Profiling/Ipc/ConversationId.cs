@@ -13,20 +13,20 @@ namespace BionicCode.Utilities.Net.Profiling.Ipc
         [JsonConstructor]
         public ConversationId(Guid pipeId, Guid messageId)
         {
-            this.PipeId = pipeId;
-            this.MessageId = messageId;
+            PipeId = pipeId;
+            MessageId = messageId;
         }
 
         public Guid PipeId { get; }
         public Guid MessageId { get; }
         public string Value => ToString();
 
-        public bool Equals(ConversationId other) => this.Value.Equals(other.Value, StringComparison.OrdinalIgnoreCase);
+        public bool Equals(ConversationId other) => Value.Equals(other.Value, StringComparison.OrdinalIgnoreCase);
         public override bool Equals(object obj) => obj is ConversationId conversationId && Equals(conversationId);
 
-        public override int GetHashCode() => HashCode.Combine(this.PipeId, this.MessageId, this.Value);
+        public override int GetHashCode() => HashCode.Combine(PipeId, MessageId, Value);
 
-        public override string ToString() => $"{this.PipeId}:{this.MessageId}";
+        public override string ToString() => $"{PipeId}:{MessageId}";
 
         public static bool operator ==(ConversationId left, ConversationId right) => left.Equals(right);
         public static bool operator !=(ConversationId left, ConversationId right) => !left.Equals(right);

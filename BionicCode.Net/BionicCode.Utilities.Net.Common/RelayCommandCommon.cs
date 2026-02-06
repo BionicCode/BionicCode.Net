@@ -36,8 +36,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = cancellationToken => execute.Invoke();
-            this.canExecuteDelegate = () => true;
+            cancellableExecuteDelegate = cancellationToken => execute.Invoke();
+            canExecuteDelegate = () => true;
         }
 
         /// <summary>
@@ -50,8 +50,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = execute;
-            this.canExecuteDelegate = () => true;
+            cancellableExecuteDelegate = execute;
+            canExecuteDelegate = () => true;
         }
 
         /// <summary>
@@ -63,8 +63,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = cancellationToken => execute.Invoke();
-            this.canExecuteDelegate = canExecute is null ? () => true : canExecute;
+            cancellableExecuteDelegate = cancellationToken => execute.Invoke();
+            canExecuteDelegate = canExecute is null ? () => true : canExecute;
         }
 
         /// <summary>
@@ -76,8 +76,8 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
-            this.cancellableExecuteDelegate = execute;
-            this.canExecuteDelegate = canExecute is null ? () => true : canExecute;
+            cancellableExecuteDelegate = execute;
+            canExecuteDelegate = canExecute is null ? () => true : canExecute;
         }
 
         #endregion Constructors
@@ -86,7 +86,7 @@
         ///   Determines whether this AsyncRelayCommandCommon can execute.
         /// </summary>
         /// <returns><see langword="true"/> if this command can be executed, otherwise <see langword="false"/>.</returns>
-        public bool CanExecute() => this.canExecuteDelegate.Invoke();
+        public bool CanExecute() => canExecuteDelegate.Invoke();
 
         /// <inheritdoc />
         public void Execute() => Execute(Timeout.InfiniteTimeSpan, CancellationToken.None);
@@ -102,7 +102,7 @@
 
         /// <inheritdoc />
         public void Execute(TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken)
-          => ExecuteCore(this.cancellableExecuteDelegate, pendingTimeout, executingTimeout, cancellationToken);
+          => ExecuteCore(cancellableExecuteDelegate, pendingTimeout, executingTimeout, cancellationToken);
 
         #region ICommand implementation
 #if NET

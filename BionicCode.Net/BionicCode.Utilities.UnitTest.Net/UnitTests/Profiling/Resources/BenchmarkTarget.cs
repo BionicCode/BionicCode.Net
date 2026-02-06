@@ -31,7 +31,7 @@
             private set;
         }
 
-        public int Count => this.KeyValuePairs.Count;
+        public int Count => KeyValuePairs.Count;
 
         private Dictionary<string, int> KeyValuePairs { get; }
         private Dictionary<int, string> KeyValuePairsReverse { get; }
@@ -41,8 +41,8 @@
         [ProfilerPropertyArgument(20, IndexerArguments = new[] { "T" })]
         public int this[string key]
         {
-            get => this.KeyValuePairs[key];
-            set => this.KeyValuePairs[key] = value;
+            get => KeyValuePairs[key];
+            set => KeyValuePairs[key] = value;
         }
 
         [Profile]
@@ -50,23 +50,23 @@
         [ProfilerPropertyArgument("Twelve", IndexerArguments = new object[] { 12 })]
         public string this[int key]
         {
-            get => this.KeyValuePairsReverse[key];
-            set => this.KeyValuePairsReverse[key] = value;
+            get => KeyValuePairsReverse[key];
+            set => KeyValuePairsReverse[key] = value;
         }
 
         public BenchmarkTarget()
         {
-            this.KeyValuePairs = new Dictionary<string, int>();
-            this.KeyValuePairsReverse = new Dictionary<int, string>();
+            KeyValuePairs = new Dictionary<string, int>();
+            KeyValuePairsReverse = new Dictionary<int, string>();
             int numericValue = 0;
             for (int itemCount = 65; itemCount < 65 + 26; itemCount++, numericValue++)
             {
                 int smallLetterOffset = 32;
-                this.KeyValuePairs.Add(new string(new[] { (char)itemCount }), numericValue);
-                this.KeyValuePairsReverse.Add(numericValue, new string(new[] { (char)itemCount }));
+                KeyValuePairs.Add(new string(new[] { (char)itemCount }), numericValue);
+                KeyValuePairsReverse.Add(numericValue, new string(new[] { (char)itemCount }));
 
-                this.KeyValuePairs.Add(new string(new[] { (char)(itemCount + smallLetterOffset) }), numericValue + 26);
-                this.KeyValuePairsReverse.Add(numericValue + 26, new string(new[] { (char)(itemCount + smallLetterOffset) }));
+                KeyValuePairs.Add(new string(new[] { (char)(itemCount + smallLetterOffset) }), numericValue + 26);
+                KeyValuePairsReverse.Add(numericValue + 26, new string(new[] { (char)(itemCount + smallLetterOffset) }));
             }
         }
 
@@ -81,7 +81,7 @@
 
         //[Profile]
         [ProfilerMethodArgument(500)]
-        public BenchmarkTarget(int numericValue) : this() => this.NumericValue = numericValue;
+        public BenchmarkTarget(int numericValue) : this() => NumericValue = numericValue;
 
         //[Profile]
         [ProfilerMethodArgument(500, "1")]
@@ -127,7 +127,7 @@
             private set;
         }
 
-        public int Count => this.KeyValuePairs.Count;
+        public int Count => KeyValuePairs.Count;
 
         private Dictionary<string, int> KeyValuePairs { get; }
         private Dictionary<int, string> KeyValuePairsReverse { get; }
@@ -137,8 +137,8 @@
         [ProfilerPropertyArgument(20, IndexerArguments = new[] { "T" })]
         public int this[string key]
         {
-            get => this.KeyValuePairs[key];
-            set => this.KeyValuePairs[key] = value;
+            get => KeyValuePairs[key];
+            set => KeyValuePairs[key] = value;
         }
 
         //[Profile]
@@ -146,23 +146,23 @@
         [ProfilerPropertyArgument("Twelve", IndexerArguments = new object[] { 12 })]
         public string this[int key]
         {
-            get => this.KeyValuePairsReverse[key];
-            set => this.KeyValuePairsReverse[key] = value;
+            get => KeyValuePairsReverse[key];
+            set => KeyValuePairsReverse[key] = value;
         }
 
         public BenchmarkTargetAlternate()
         {
-            this.KeyValuePairs = new Dictionary<string, int>();
-            this.KeyValuePairsReverse = new Dictionary<int, string>();
+            KeyValuePairs = new Dictionary<string, int>();
+            KeyValuePairsReverse = new Dictionary<int, string>();
             int numericValue = 0;
             for (int itemCount = 65; itemCount < 65 + 26; itemCount++, numericValue++)
             {
                 int smallLetterOffset = 32;
-                this.KeyValuePairs.Add(new string(new[] { (char)itemCount }), numericValue);
-                this.KeyValuePairsReverse.Add(numericValue, new string(new[] { (char)itemCount }));
+                KeyValuePairs.Add(new string(new[] { (char)itemCount }), numericValue);
+                KeyValuePairsReverse.Add(numericValue, new string(new[] { (char)itemCount }));
 
-                this.KeyValuePairs.Add(new string(new[] { (char)(itemCount + smallLetterOffset) }), numericValue + 26);
-                this.KeyValuePairsReverse.Add(numericValue + 26, new string(new[] { (char)(itemCount + smallLetterOffset) }));
+                KeyValuePairs.Add(new string(new[] { (char)(itemCount + smallLetterOffset) }), numericValue + 26);
+                KeyValuePairsReverse.Add(numericValue + 26, new string(new[] { (char)(itemCount + smallLetterOffset) }));
             }
         }
 
@@ -177,7 +177,7 @@
 
         //[Profile]
         [ProfilerMethodArgument("Malcolm X")]
-        public BenchmarkTargetAlternate(string textValue) : this() => this.TextValue = textValue;
+        public BenchmarkTargetAlternate(string textValue) : this() => TextValue = textValue;
 
         //[Profile]
         [ProfilerMethodArgument(500, "1")]

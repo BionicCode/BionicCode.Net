@@ -4,9 +4,9 @@
     {
         public Person(string firstName, string lastName, int id)
         {
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.Id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            Id = id;
         }
 
         public string FirstName { get; set; }

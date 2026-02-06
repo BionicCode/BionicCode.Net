@@ -39,7 +39,7 @@
             }
 
             int maxLength = parameter == null
-              ? this.MaxLength
+              ? MaxLength
               : System.Convert.ToInt32(parameter);
 
             return maxLength >= path.Length ? path : InsertCharacterEllipsis(path, maxLength);

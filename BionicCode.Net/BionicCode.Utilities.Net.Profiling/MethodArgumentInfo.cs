@@ -6,8 +6,8 @@
     {
         public MethodArgumentInfo(ImmutableArray<object?>? arguments, int argumentListIndex)
         {
-            this.Arguments = arguments ?? ImmutableArray<object?>.Empty;
-            this.ArgumentListIndex = argumentListIndex;
+            Arguments = arguments ?? ImmutableArray<object?>.Empty;
+            ArgumentListIndex = argumentListIndex;
         }
 
         public ImmutableArray<object?> Arguments { get; }

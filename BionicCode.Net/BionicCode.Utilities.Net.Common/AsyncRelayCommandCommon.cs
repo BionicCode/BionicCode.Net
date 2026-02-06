@@ -60,8 +60,8 @@ namespace BionicCode.Utilities.Net
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(executeAsyncNoParam, nameof(executeAsyncNoParam));
 
-            this.cancellableAsyncNoParamExecuteDelegate = cancellationToken => executeAsyncNoParam.Invoke();
-            this.canExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
+            cancellableAsyncNoParamExecuteDelegate = cancellationToken => executeAsyncNoParam.Invoke();
+            canExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
         }
 
         /// <summary>
@@ -71,8 +71,8 @@ namespace BionicCode.Utilities.Net
         /// <param name="canExecute">The can execute handler.</param>
         protected AsyncRelayCommandCommon(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute)
         {
-            this.cancellableAsyncNoParamExecuteDelegate = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
-            this.canExecuteNoParamDelegate = canExecute ?? (() => true);
+            cancellableAsyncNoParamExecuteDelegate = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
+            canExecuteNoParamDelegate = canExecute ?? (() => true);
         }
 
         #endregion Constructors
@@ -81,7 +81,7 @@ namespace BionicCode.Utilities.Net
         ///   Determines whether this AsyncRelayCommandCommon can execute.
         /// </summary>
         /// <returns><see langword="true"/> if this command can be executed, otherwise <see langword="false"/>.</returns>
-        public bool CanExecute() => this.canExecuteNoParamDelegate?.Invoke() ?? true;
+        public bool CanExecute() => canExecuteNoParamDelegate?.Invoke() ?? true;
 
         /// <inheritdoc />
         public async Task ExecuteAsync() => await ExecuteAsync(Timeout.InfiniteTimeSpan, CancellationToken.None).ConfigureAwait(false);
@@ -107,7 +107,7 @@ namespace BionicCode.Utilities.Net
         public virtual async Task ExecuteAsync(TimeSpan timeout, CancellationToken cancellationToken) => await ExecuteAsync(Timeout.InfiniteTimeSpan, timeout, cancellationToken).ConfigureAwait(false);
 
         public virtual async Task ExecuteAsync(TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken)
-          => await ExecuteCoreAsync(this.cancellableAsyncNoParamExecuteDelegate, pendingTimeout, executingTimeout, cancellationToken).ConfigureAwait(false);
+          => await ExecuteCoreAsync(cancellableAsyncNoParamExecuteDelegate, pendingTimeout, executingTimeout, cancellationToken).ConfigureAwait(false);
 
         #region ICommand implementation
 

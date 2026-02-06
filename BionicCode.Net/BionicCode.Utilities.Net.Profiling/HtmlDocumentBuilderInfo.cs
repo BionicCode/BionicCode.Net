@@ -4,21 +4,21 @@
     {
         public HtmlDocumentBuilderInfo()
         {
-            this.DocumentTitle = string.Empty;
-            this.DocumentTemplate = string.Empty;
-            this.InPageNavigationElements = string.Empty;
-            this.DocumentFooterElements = string.Empty;
-            this.ResultNavigationElements = string.Empty;
-            this.ChartSection = string.Empty;
-            this.FileName = string.Empty;
-            this.MemberName = string.Empty;
-            this.ScriptCode = string.Empty;
-            this.TargetSignature = string.Empty;
-            this.TargetNamespace = string.Empty;
-            this.TargetAssemblyName = string.Empty;
-            this.TargetSourceFileName = string.Empty;
-            this.TargetSourceFileLineNumber = 0;
-            this.EnvironmentInfo = string.Empty;
+            DocumentTitle = string.Empty;
+            DocumentTemplate = string.Empty;
+            InPageNavigationElements = string.Empty;
+            DocumentFooterElements = string.Empty;
+            ResultNavigationElements = string.Empty;
+            ChartSection = string.Empty;
+            FileName = string.Empty;
+            MemberName = string.Empty;
+            ScriptCode = string.Empty;
+            TargetSignature = string.Empty;
+            TargetNamespace = string.Empty;
+            TargetAssemblyName = string.Empty;
+            TargetSourceFileName = string.Empty;
+            TargetSourceFileLineNumber = 0;
+            EnvironmentInfo = string.Empty;
         }
 
         public string ScriptCode { get; set; }

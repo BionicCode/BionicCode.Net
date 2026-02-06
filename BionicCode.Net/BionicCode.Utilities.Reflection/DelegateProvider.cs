@@ -7,6 +7,7 @@
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Threading.Tasks;
+    using BionicCode.Utilities.Net.Reflection;
     using BionicCode.Utilities.Net.Reflection.Exceptions;
     using Microsoft.CodeAnalysis;
 
@@ -2001,8 +2002,8 @@
                         typeof(string),
                     ])!;
 
-            TypeData helperExtensionsCommonTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
-            const string extensionMethodName = nameof(HelperExtensionsCommon.ToFullyQualifiedSignatureName);
+            TypeData helperExtensionsCommonTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(ReflectionHelperExtensions));
+            const string extensionMethodName = nameof(ReflectionHelperExtensions.ToFullyQualifiedSignatureName);
             var typeCacheKey = SymbolReflectionInfoCacheKey.CreateForType(typeof(Type));
             MethodData toFullyQualifiedSignatureNameExtensionMethodData = helperExtensionsCommonTypeData.Methods[extensionMethodName, new MethodParameterInfo(typeCacheKey)];
 

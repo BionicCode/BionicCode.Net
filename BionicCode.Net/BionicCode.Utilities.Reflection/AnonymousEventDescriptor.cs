@@ -73,9 +73,9 @@
                 [EventAccessors.None],
                 $"Invalid argument '{nameof(declaredEventAccessors)}'. The value '{declaredEventAccessors}' is not allowed.");
 
-            this.DeclaredAccessors = declaredEventAccessors;
-            this.HasAddDelegateEventAccessor = (this.DeclaredAccessors & EventAccessors.Add) != 0;
-            this.HasRemoveDelegateEventAccessor = (this.DeclaredAccessors & EventAccessors.Remove) != 0;
+            DeclaredAccessors = declaredEventAccessors;
+            HasAddDelegateEventAccessor = (DeclaredAccessors & EventAccessors.Add) != 0;
+            HasRemoveDelegateEventAccessor = (DeclaredAccessors & EventAccessors.Remove) != 0;
 
             if (isExplicitInterfaceImplementation)
             {
@@ -99,13 +99,13 @@
                     $"Invalid argument '{nameof(implementingTypeHandle)}'. The argument '{nameof(implementingTypeHandle)}' points to a interface type. Reason: Only non-interface types can provide the explicit interface implementations.");
             }
 
-            this.EventName = eventName;
-            this.ImplementingTypeHandle = declaringTypeHandle;
-            this.DeclaringInterfaceTypeHandle = isExplicitInterfaceImplementation
+            EventName = eventName;
+            ImplementingTypeHandle = declaringTypeHandle;
+            DeclaringInterfaceTypeHandle = isExplicitInterfaceImplementation
                 ? implementingTypeHandle!.Value
                 : default;
-            this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
-            this.IsAnonymous = true;
+            IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
+            IsAnonymous = true;
         }
 
         public string EventName { get; }
@@ -119,26 +119,26 @@
         public bool HasRemoveDelegateEventAccessor { get; }
 
         public bool Equals(AnonymousEventDescriptor other)
-            => this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-            && this.IsAnonymous == other.IsAnonymous
-            && this.ImplementingTypeHandle.Equals(other.ImplementingTypeHandle)
-            && this.DeclaringInterfaceTypeHandle.Equals(other.DeclaringInterfaceTypeHandle)
-            && this.HasAddDelegateEventAccessor == other.HasAddDelegateEventAccessor
-            && this.HasRemoveDelegateEventAccessor == other.HasRemoveDelegateEventAccessor
-            && this.DeclaredAccessors == other.DeclaredAccessors
-            && this.EventName.Equals(other.EventName, StringComparison.Ordinal);
+            => IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
+            && IsAnonymous == other.IsAnonymous
+            && ImplementingTypeHandle.Equals(other.ImplementingTypeHandle)
+            && DeclaringInterfaceTypeHandle.Equals(other.DeclaringInterfaceTypeHandle)
+            && HasAddDelegateEventAccessor == other.HasAddDelegateEventAccessor
+            && HasRemoveDelegateEventAccessor == other.HasRemoveDelegateEventAccessor
+            && DeclaredAccessors == other.DeclaredAccessors
+            && EventName.Equals(other.EventName, StringComparison.Ordinal);
 
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.IsExplicitInterfaceImplementation);
-            hashCode.Add(this.DeclaredAccessors);
-            hashCode.Add(this.HasAddDelegateEventAccessor);
-            hashCode.Add(this.HasRemoveDelegateEventAccessor);
-            hashCode.Add(this.IsAnonymous);
-            hashCode.Add(this.ImplementingTypeHandle);
-            hashCode.Add(this.DeclaringInterfaceTypeHandle);
-            hashCode.Add(this.EventName, StringComparer.Ordinal);
+            hashCode.Add(IsExplicitInterfaceImplementation);
+            hashCode.Add(DeclaredAccessors);
+            hashCode.Add(HasAddDelegateEventAccessor);
+            hashCode.Add(HasRemoveDelegateEventAccessor);
+            hashCode.Add(IsAnonymous);
+            hashCode.Add(ImplementingTypeHandle);
+            hashCode.Add(DeclaringInterfaceTypeHandle);
+            hashCode.Add(EventName, StringComparer.Ordinal);
 
             return hashCode.ToHashCode();
         }

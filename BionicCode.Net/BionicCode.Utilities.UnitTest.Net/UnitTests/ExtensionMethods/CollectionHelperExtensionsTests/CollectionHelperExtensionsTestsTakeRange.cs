@@ -1,48 +1,47 @@
-﻿namespace BionicCode.Utilities.Net.UnitTest.ExtensionMethodsTests
+﻿namespace BionicCode.Utilities.Net.UnitTest.ExtensionMethodsTests;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using BionicCode.Utilities.Net;
+using FluentAssertions;
+using Xunit;
+
+public class CollectionHelperExtensionsTestsTakeRange : IClassFixture<TestContext>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using BionicCode.Utilities.Net;
-    using FluentAssertions;
-    using Xunit;
+    private TestContext Context { get; }
 
-    public class CollectionHelperExtensionsTestsTakeRange : IClassFixture<TestContext>
+    public CollectionHelperExtensionsTestsTakeRange(TestContext context) => Context = context;
+
+    [Theory]
+    [InlineData(-2, 4)]
+    [InlineData(-1, -1)]
+    [InlineData(40, -4)]
+    [InlineData(TestContext.ItemsCapacity, 1)]
+    [InlineData(0, TestContext.ItemsCapacity + 1)]
+    [InlineData(1, TestContext.ItemsCapacity)]
+    public void TakeRange_MustThrow(int startIndex, int count)
     {
-        private TestContext Context { get; }
+        Action invalidAction = () => Context.Items.Take(startIndex, count).Should().HaveCount(count);
+        _ = invalidAction.Should().Throw<ArgumentOutOfRangeException>();
+    }
 
-        public CollectionHelperExtensionsTestsTakeRange(TestContext context) => this.Context = context;
+    [Theory]
+    [InlineData(2, 2)]
+    [InlineData(2, 0)]
+    [InlineData(45, 4)]
+    [InlineData(0, TestContext.ItemsCapacity)]
+    public void TakeRange_ReturnsNItems(int startIndex, int count) => Context.Items.Take(startIndex, count).Should().HaveCount(count);
 
-        [Theory]
-        [InlineData(-2, 4)]
-        [InlineData(-1, -1)]
-        [InlineData(40, -4)]
-        [InlineData(TestContext.ItemsCapacity, 1)]
-        [InlineData(0, TestContext.ItemsCapacity + 1)]
-        [InlineData(1, TestContext.ItemsCapacity)]
-        public void TakeRange_MustThrow(int startIndex, int count)
-        {
-            Action invalidAction = () => this.Context.Items.Take(startIndex, count).Should().HaveCount(count);
-            _ = invalidAction.Should().Throw<ArgumentOutOfRangeException>();
-        }
+    [Fact]
+    public void TakeRange_ReturnsItemRange_2To5()
+    {
+        int startIndex = 2;
+        int count = 4;
+        IEnumerable<int> reference = Context.Items.GetRange(startIndex, count);
 
-        [Theory]
-        [InlineData(2, 2)]
-        [InlineData(2, 0)]
-        [InlineData(45, 4)]
-        [InlineData(0, TestContext.ItemsCapacity)]
-        public void TakeRange_ReturnsNItems(int startIndex, int count) => this.Context.Items.Take(startIndex, count).Should().HaveCount(count);
+        IEnumerable<int> result = Context.Items.Take(startIndex, count);
 
-        [Fact]
-        public void TakeRange_ReturnsItemRange_2To5()
-        {
-            int startIndex = 2;
-            int count = 4;
-            IEnumerable<int> reference = this.Context.Items.GetRange(startIndex, count);
-
-            IEnumerable<int> result = this.Context.Items.Take(startIndex, count);
-
-            _ = result.Should().BeEquivalentTo(reference, $"StartIndex: {startIndex}; Count: {count}");
-        }
+        _ = result.Should().BeEquivalentTo(reference, $"StartIndex: {startIndex}; Count: {count}");
     }
 }

@@ -30,7 +30,7 @@
 //        {
 //        //var nt = newInterfaceImplementation.CreateType();
 //           var instance = (TObject)nullObjectsAssembly.CreateInstance(typeof(TObject).EventName + "Impl", true);
-//           var r =this.NullObjectModule.Assembly.CreateInstance(typeof(TObject).EventName + "Impl");
+//           var r =NullObjectModule.Assembly.CreateInstance(typeof(TObject).EventName + "Impl");
 //          return instance;
 //        }
 //      }
@@ -43,7 +43,7 @@
 //      nullObjectsAssembly = null;
 //      try
 //      {
-//        nullObjectsAssembly = Assembly.Load(this.NullObjectModule.Assembly.FullName);
+//        nullObjectsAssembly = Assembly.Load(NullObjectModule.Assembly.FullName);
 //        return true;
 //      }
 //      catch (Exception e)
@@ -57,16 +57,16 @@
 //    private void CreateAssembly()
 //    {
 //      AppDomain myDomain = Thread.GetDomain();
-//      AssemblyBuilder myAsmBuilder = myDomain.DefineDynamicAssembly(this.NullObjectsAssemblyName, AssemblyBuilderAccess.RunAndSave);
+//      AssemblyBuilder myAsmBuilder = myDomain.DefineDynamicAssembly(NullObjectsAssemblyName, AssemblyBuilderAccess.RunAndSave);
 
-//      this.NullObjectModule = myAsmBuilder.DefineDynamicModule(this.NullObjectsAssemblyName.FullName + "Module",
-//        this.NullObjectsAssemblyName.FullName + ".dll");
-//      myAsmBuilder.Save(this.NullObjectsAssemblyName.FullName + ".dll");
+//      NullObjectModule = myAsmBuilder.DefineDynamicModule(NullObjectsAssemblyName.FullName + "Module",
+//        NullObjectsAssemblyName.FullName + ".dll");
+//      myAsmBuilder.Save(NullObjectsAssemblyName.FullName + ".dll");
 //    }
 
 //    private TypeBuilder ImplementInterface()
 //    {
-//      TypeBuilder typeBuilder = this.NullObjectModule.DefineType(typeof(TObject).EventName + "Impl");
+//      TypeBuilder typeBuilder = NullObjectModule.DefineType(typeof(TObject).EventName + "Impl");
 //      NullObjectCreator<TObject>.ImplementINullObject(typeBuilder);
 //      return typeBuilder;
 //    }

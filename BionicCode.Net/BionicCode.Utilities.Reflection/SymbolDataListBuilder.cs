@@ -13,33 +13,33 @@
 
         protected SymbolDataListBuilder()
         {
-            this._symbols = new List<TSymbolInfoData>();
-            this._declaringTypeHandle = default;
-            this.isIntegrityValidationEnabled = false;
+            _symbols = new List<TSymbolInfoData>();
+            _declaringTypeHandle = default;
+            isIntegrityValidationEnabled = false;
         }
 
         protected SymbolDataListBuilder(RuntimeTypeHandle declaringTypeHandle)
         {
-            this._symbols = new List<TSymbolInfoData>();
-            this._declaringTypeHandle = declaringTypeHandle;
-            this.isIntegrityValidationEnabled = true;
+            _symbols = new List<TSymbolInfoData>();
+            _declaringTypeHandle = declaringTypeHandle;
+            isIntegrityValidationEnabled = true;
         }
 
         protected void Add(TSymbolInfoData symbolInfoData)
         {
-            if (this.isIntegrityValidationEnabled
+            if (isIntegrityValidationEnabled
                 && symbolInfoData is MemberData memberData
-                && !memberData.DeclaringTypeHandle.Equals(this._declaringTypeHandle))
+                && !memberData.DeclaringTypeHandle.Equals(_declaringTypeHandle))
             {
                 throw new ArgumentException(
                     $"The argument {nameof(symbolInfoData)} does not belong to the same declaring type that was specified during builder creation. All added members must belong to the same declaring type.",
                     nameof(symbolInfoData));
             }
 
-            this._symbols.Add(symbolInfoData);
+            _symbols.Add(symbolInfoData);
         }
 
         protected ImmutableList<TSymbolInfoData> Build()
-            => this._builderResult ??= this._symbols.ToImmutableList();
+            => _builderResult ??= _symbols.ToImmutableList();
     }
 }

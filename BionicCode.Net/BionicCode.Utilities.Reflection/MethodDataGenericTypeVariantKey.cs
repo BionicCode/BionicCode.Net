@@ -12,12 +12,12 @@
             ArgumentNullExceptionAdvanced.ThrowIfDefault(targetTypeHandle);
             ArgumentNullExceptionAdvanced.ThrowIfDefault(basicMethodFingerprint);
 
-            this.GenericMethodArguments = genericMethodArguments;
-            this.DesiredReturnTypeHandle = desiredReturnTypeHandle;
-            this.TargetTypeHandle = targetTypeHandle;
-            this.BasicMethodFingerprint = basicMethodFingerprint;
+            GenericMethodArguments = genericMethodArguments;
+            DesiredReturnTypeHandle = desiredReturnTypeHandle;
+            TargetTypeHandle = targetTypeHandle;
+            BasicMethodFingerprint = basicMethodFingerprint;
 
-            this._hashCode = ComputeHashCode();
+            _hashCode = ComputeHashCode();
         }
 
         public TypeList GenericMethodArguments { get; }
@@ -26,24 +26,24 @@
         public RuntimeTypeHandle TargetTypeHandle { get; }
         private readonly int _hashCode;
 
-        public bool Equals(MethodDataGenericTypeVariantKey other) => this.DesiredReturnTypeHandle.Equals(other.DesiredReturnTypeHandle)
-            && this.TargetTypeHandle.Equals(other.TargetTypeHandle)
-            && this.BasicMethodFingerprint == other.BasicMethodFingerprint
-            && this.GenericMethodArguments.Equals(other.GenericMethodArguments);
+        public bool Equals(MethodDataGenericTypeVariantKey other) => DesiredReturnTypeHandle.Equals(other.DesiredReturnTypeHandle)
+            && TargetTypeHandle.Equals(other.TargetTypeHandle)
+            && BasicMethodFingerprint == other.BasicMethodFingerprint
+            && GenericMethodArguments.Equals(other.GenericMethodArguments);
 
         public override bool Equals([NotNullWhen(true)] object? obj)
             => obj is MethodDataGenericTypeVariantKey other && Equals(other);
 
         public override int GetHashCode()
-            => this._hashCode;
+            => _hashCode;
 
         private int ComputeHashCode()
         {
             return HashCode.Combine(
-                this.GenericMethodArguments,
-                this.DesiredReturnTypeHandle,
-                this.TargetTypeHandle,
-                this.BasicMethodFingerprint);
+                GenericMethodArguments,
+                DesiredReturnTypeHandle,
+                TargetTypeHandle,
+                BasicMethodFingerprint);
         }
 
         public static bool operator ==(MethodDataGenericTypeVariantKey left, MethodDataGenericTypeVariantKey right) => left.Equals(right);

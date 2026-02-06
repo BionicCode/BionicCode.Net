@@ -6,21 +6,21 @@
     {
         protected internal ChartTableRowBuilder(ChartTable chartTable, int numberOfCells)
         {
-            this.ChartTable = chartTable;
-            this.CellCount = numberOfCells;
+            ChartTable = chartTable;
+            CellCount = numberOfCells;
         }
 
         public ChartTableRow CreateRow()
         {
-            var newRow = ChartTableRow.NewRow(this.CellCount);
-            this.ChartTable.AddRow(newRow);
+            var newRow = ChartTableRow.NewRow(CellCount);
+            ChartTable.AddRow(newRow);
             return newRow;
         }
 
         public ChartTableRow CreateRow(params object[] cellValues)
         {
-            var newRow = ChartTableRow.NewRow(this.CellCount, cellValues);
-            this.ChartTable.AddRow(newRow);
+            var newRow = ChartTableRow.NewRow(CellCount, cellValues);
+            ChartTable.AddRow(newRow);
             return newRow;
         }
 

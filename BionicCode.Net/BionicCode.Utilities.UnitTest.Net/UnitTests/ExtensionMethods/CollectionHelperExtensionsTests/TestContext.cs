@@ -18,47 +18,47 @@
         public IList<KeyValuePair<int, int>> NewTableItemsFromKeyValuePairCollection { get; }
         public List<int> NewItems { get; }
         public ICollection<int> EmptyItems { get; }
-        public Func<int, bool> FailContainsPredicate => item => item > this.Items.Last();
+        public Func<int, bool> FailContainsPredicate => item => item > Items.Last();
         public Func<int, bool> SuccessContainsPredicate => item => item < 5;
 
         public TestContext()
         {
-            this.Items = new List<int>();
-            this.ItemsBackup = new List<int>();
-            this.NewItems = new List<int>();
-            this.EmptyItems = new List<int>();
+            Items = new List<int>();
+            ItemsBackup = new List<int>();
+            NewItems = new List<int>();
+            EmptyItems = new List<int>();
 
-            this.ItemTable = new Dictionary<int, int>();
-            this.ItemTableBackup = new Dictionary<int, int>();
-            this.NewTableItemsFromDictionary = new Dictionary<int, int>();
-            this.NewTableItemsFromTupleCollection = new List<(int, int)>();
-            this.NewTableItemsFromKeyValuePairCollection = new List<KeyValuePair<int, int>>();
+            ItemTable = new Dictionary<int, int>();
+            ItemTableBackup = new Dictionary<int, int>();
+            NewTableItemsFromDictionary = new Dictionary<int, int>();
+            NewTableItemsFromTupleCollection = new List<(int, int)>();
+            NewTableItemsFromKeyValuePairCollection = new List<KeyValuePair<int, int>>();
 
             for (int count = 0; count < ItemsCapacity; count++)
             {
                 int key = count;
                 int value = count * 10;
-                this.ItemTable.Add(key, value);
-                this.Items.Add(count);
-                this.ItemTableBackup.Add(key, value);
-                this.ItemsBackup.Add(count);
+                ItemTable.Add(key, value);
+                Items.Add(count);
+                ItemTableBackup.Add(key, value);
+                ItemsBackup.Add(count);
             }
 
             for (int count = ItemsCapacity; count < ItemsCapacity + NewItemsCapacity; count++)
             {
                 int key = count;
                 int value = count * 10;
-                this.NewItems.Add(count);
-                this.NewTableItemsFromTupleCollection.Add((key, value));
-                this.NewTableItemsFromKeyValuePairCollection.Add(new KeyValuePair<int, int>(key, value));
-                this.NewTableItemsFromDictionary.Add(key, value);
+                NewItems.Add(count);
+                NewTableItemsFromTupleCollection.Add((key, value));
+                NewTableItemsFromKeyValuePairCollection.Add(new KeyValuePair<int, int>(key, value));
+                NewTableItemsFromDictionary.Add(key, value);
             }
         }
 
         public void Reset()
         {
-            this.Items = new List<int>(this.ItemsBackup);
-            this.ItemTable = new Dictionary<int, int>(this.ItemTableBackup);
+            Items = new List<int>(ItemsBackup);
+            ItemTable = new Dictionary<int, int>(ItemTableBackup);
         }
     }
 }

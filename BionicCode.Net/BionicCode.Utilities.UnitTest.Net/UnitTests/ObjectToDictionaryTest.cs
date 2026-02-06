@@ -35,21 +35,21 @@ namespace BionicCode.Utilities.Net.UnitTest
 
         public TestObject()
         {
-            this.ItemsCount = 1000;
+            ItemsCount = 1000;
 
-            this.Items = new List<int>();
-            this.EmptyItems = new List<int>();
-            this.Persons = new List<Person>();
+            Items = new List<int>();
+            EmptyItems = new List<int>();
+            Persons = new List<Person>();
 
-            this.ItemTable = new Dictionary<int, int>();
+            ItemTable = new Dictionary<int, int>();
 
-            for (int count = 0; count < this.ItemsCount; count++)
+            for (int count = 0; count < ItemsCount; count++)
             {
                 int key = count;
                 int value = count * 10;
-                this.ItemTable.Add(key, value);
-                this.Items.Add(count);
-                this.Persons.Add(new Person(((char)key).ToString(), ((char)value).ToString(), key));
+                ItemTable.Add(key, value);
+                Items.Add(count);
+                Persons.Add(new Person(((char)key).ToString(), ((char)value).ToString(), key));
             }
 
             Initialize();
@@ -57,8 +57,8 @@ namespace BionicCode.Utilities.Net.UnitTest
 
         public void Initialize()
         {
-            this.DeepObjectGraph = this.ToDictionary(includeNonPublicMembers: true);
-            this.FlatObjectGraph = this.ToFlatDictionary(includeNonPublicMembers: true);
+            DeepObjectGraph = ToDictionary(includeNonPublicMembers: true);
+            FlatObjectGraph = ToFlatDictionary(includeNonPublicMembers: true);
         }
 
         public int Return12() => 12;
@@ -67,96 +67,96 @@ namespace BionicCode.Utilities.Net.UnitTest
     public class ObjectToDictionaryTest : IClassFixture<TestObject>, IDisposable
     {
         private TestObject Object { get; }
-        public ObjectToDictionaryTest(TestObject context) => this.Object = context;
+        public ObjectToDictionaryTest(TestObject context) => Object = context;
 
         [Fact]
-        public void ReturnsDictionaryFromObject() => _ = this.Object.ToDictionary(includeNonPublicMembers: true)
+        public void ReturnsDictionaryFromObject() => _ = Object.ToDictionary(includeNonPublicMembers: true)
             .Should().BeOfType(typeof(Dictionary<string, object>));
 
         [Fact]
-        public void ReturnsDictionaryOfDictionariesFromObjectIgnoringDecoratedProperties() => _ = this.Object.DeepObjectGraph
-            .Should().NotContainKey(nameof(this.Object.IgnoredProperty));
+        public void ReturnsDictionaryOfDictionariesFromObjectIgnoringDecoratedProperties() => _ = Object.DeepObjectGraph
+            .Should().NotContainKey(nameof(Object.IgnoredProperty));
 
         [Fact]
-        public void ReturnsDictionaryOfDictionariesFromObjectIgnoringPrivateProperties() => _ = this.Object.DeepObjectGraph
+        public void ReturnsDictionaryOfDictionariesFromObjectIgnoringPrivateProperties() => _ = Object.DeepObjectGraph
             .Should().NotContainKey("PrivateProperty");
 
         [Fact]
-        public void ReturnsDictionaryOfDictionariesFromObjectIgnoringProtectedProperties() => _ = this.Object.DeepObjectGraph
+        public void ReturnsDictionaryOfDictionariesFromObjectIgnoringProtectedProperties() => _ = Object.DeepObjectGraph
             .Should().NotContainKey("ProtectedProperty");
 
         [Fact]
-        public void ReturnsDictionaryOfDictionariesFromObjectIgnoringInternalProperties() => _ = this.Object.DeepObjectGraph
-            .Should().NotContainKey(nameof(this.Object.InternalProperty));
+        public void ReturnsDictionaryOfDictionariesFromObjectIgnoringInternalProperties() => _ = Object.DeepObjectGraph
+            .Should().NotContainKey(nameof(Object.InternalProperty));
 
         [Fact]
-        public void ReturnsDictionaryOfDictionariesFromObjectIncludingStaticProperties() => _ = this.Object.DeepObjectGraph
+        public void ReturnsDictionaryOfDictionariesFromObjectIncludingStaticProperties() => _ = Object.DeepObjectGraph
             .Should().ContainKey(nameof(TestObject.StaticProperty));
 
         [Fact]
-        public void ReturnsDictionaryOfDictionariesFromObjectIncludingPublicProperties() => _ = this.Object.DeepObjectGraph
-            .Should().ContainKey(nameof(this.Object.PublicProperty));
+        public void ReturnsDictionaryOfDictionariesFromObjectIncludingPublicProperties() => _ = Object.DeepObjectGraph
+            .Should().ContainKey(nameof(Object.PublicProperty));
 
         [Fact]
-        public void ReturnsDictionaryOfDictionariesFromObject() => _ = this.Object.DeepObjectGraph[nameof(this.Object.Items)]
+        public void ReturnsDictionaryOfDictionariesFromObject() => _ = Object.DeepObjectGraph[nameof(Object.Items)]
             .Should().BeOfType(typeof(Dictionary<string, object>));
 
         [Fact]
         public void ReturnsDictionaryFromObjectAndInvokeDelegate()
         {
-            _ = this.Object.DeepObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
+            _ = Object.DeepObjectGraph[nameof(Object.SuceedingContainsPredicate)]
               .As<Func<int, bool>>()
               .Invoke(4)
               .Should().BeTrue();
-            _ = this.Object.DeepObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
+            _ = Object.DeepObjectGraph[nameof(Object.SuceedingContainsPredicate)]
               .As<Func<int, bool>>()
               .Invoke(100)
               .Should().BeFalse();
         }
 
         [Fact]
-        public void ReturnsDictionaryFromObjectAndCollectionsMustHaveOriginalCount() => _ = this.Object.DeepObjectGraph[nameof(this.Object.Items)]
+        public void ReturnsDictionaryFromObjectAndCollectionsMustHaveOriginalCount() => _ = Object.DeepObjectGraph[nameof(Object.Items)]
             .As<IDictionary<string, object>>()
-            .Should().HaveCount(this.Object.ItemsCount);
+            .Should().HaveCount(Object.ItemsCount);
 
         [Fact]
-        public void ReturnsDictionaryFromObjectAndCollectionsMustContain_4_AtIndex_5() => _ = this.Object.DeepObjectGraph[nameof(this.Object.Items)]
+        public void ReturnsDictionaryFromObjectAndCollectionsMustContain_4_AtIndex_5() => _ = Object.DeepObjectGraph[nameof(Object.Items)]
             .As<IDictionary<string, object>>()["5"]
-            .Should().BeEquivalentTo(this.Object.Items.ElementAt(5));
+            .Should().BeEquivalentTo(Object.Items.ElementAt(5));
 
         [Fact]
-        public void ReturnsDictionaryFromObjectAndCollectionsMustContain_DictionariesOfPerson() => _ = this.Object.DeepObjectGraph[nameof(this.Object.Persons)]
+        public void ReturnsDictionaryFromObjectAndCollectionsMustContain_DictionariesOfPerson() => _ = Object.DeepObjectGraph[nameof(Object.Persons)]
             .As<IDictionary<string, object>>()["5"]
             .As<IDictionary<string, object>>()["Id"]
-            .Should().BeEquivalentTo(this.Object.Persons[5].Id);
+            .Should().BeEquivalentTo(Object.Persons[5].Id);
 
         [Fact]
-        public void ReturnsFlattenedDictionaryFromObjectAndCollectionsMustContain_4_AtIndex_5() => _ = this.Object.FlatObjectGraph[nameof(this.Object.Items)]
+        public void ReturnsFlattenedDictionaryFromObjectAndCollectionsMustContain_4_AtIndex_5() => _ = Object.FlatObjectGraph[nameof(Object.Items)]
             .As<IList<int>>()[5]
-            .Should().Be(this.Object.Items.ElementAt(5));
+            .Should().Be(Object.Items.ElementAt(5));
 
         [Fact]
         public void ReturnsFlattenedDictionaryOfOriginalTypedValuesFromObject()
         {
-            _ = this.Object.FlatObjectGraph[nameof(this.Object.Items)]
-              .Should().BeOfType(this.Object.Items.GetType());
-            _ = this.Object.FlatObjectGraph[nameof(this.Object.Items)]
+            _ = Object.FlatObjectGraph[nameof(Object.Items)]
+              .Should().BeOfType(Object.Items.GetType());
+            _ = Object.FlatObjectGraph[nameof(Object.Items)]
               .Should().NotBeOfType(typeof(IDictionary<string, object>));
         }
 
         [Fact]
-        public void ReturnsFlattenedDictionaryFromObjectAndCollectionsMustContain_Persons() => _ = this.Object.FlatObjectGraph[nameof(this.Object.Persons)]
+        public void ReturnsFlattenedDictionaryFromObjectAndCollectionsMustContain_Persons() => _ = Object.FlatObjectGraph[nameof(Object.Persons)]
             .As<IList<Person>>()[5].Id
-            .Should().Be(this.Object.Persons[5].Id);
+            .Should().Be(Object.Persons[5].Id);
 
         [Fact]
         public void ReturnsFlattenedDictionaryFromObjectAndInvokeDelegate()
         {
-            _ = this.Object.FlatObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
+            _ = Object.FlatObjectGraph[nameof(Object.SuceedingContainsPredicate)]
               .As<Func<int, bool>>()
               .Invoke(4)
               .Should().BeTrue();
-            _ = this.Object.FlatObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
+            _ = Object.FlatObjectGraph[nameof(Object.SuceedingContainsPredicate)]
               .As<Func<int, bool>>()
               .Invoke(100)
               .Should().BeFalse();

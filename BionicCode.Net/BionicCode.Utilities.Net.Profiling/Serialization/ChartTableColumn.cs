@@ -6,11 +6,11 @@
     {
         public ChartTableColumn()
         {
-            this.Id = string.Empty;
-            this.Label = string.Empty;
-            this.Pattern = string.Empty;
-            this.Type = ColumnType.None;
-            this.Role = ColumnRole.None;
+            Id = string.Empty;
+            Label = string.Empty;
+            Pattern = string.Empty;
+            Type = ColumnType.None;
+            Role = ColumnRole.None;
         }
 
         [JsonPropertyName("id")]

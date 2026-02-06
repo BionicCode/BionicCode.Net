@@ -7,13 +7,13 @@
     {
         public ClientHandlerInfo(Delegate clientHandler, Action<object, object[], ClientHandlerInfo> clientAdapterHandler, SynchronizationContext clientContext)
         {
-            this.clientHandler = clientHandler;
-            this.ClientAdapterHandler = clientAdapterHandler;
-            this.ClientContext = clientContext;
+            clientHandler = clientHandler;
+            ClientAdapterHandler = clientAdapterHandler;
+            ClientContext = clientContext;
         }
 
         private void OnDisposed()
-          => this.Disposed?.Invoke(this, EventArgs.Empty);
+          => Disposed?.Invoke(this, EventArgs.Empty);
 
         public void Clear()
           => Dispose();
@@ -21,12 +21,12 @@
         public bool TryGetClientHandler(out Delegate handler)
         {
             handler = null;
-            if (this.IsDisposed || this.clientHandler is null)
+            if (IsDisposed || clientHandler is null)
             {
                 return false;
             }
 
-            handler = this.clientHandler;
+            handler = clientHandler;
 
             return true;
         }
@@ -35,21 +35,21 @@
         public bool IsDisposed { get; private set; }
         public Action<object, object[], ClientHandlerInfo> ClientAdapterHandler { get; }
         public SynchronizationContext ClientContext { get; }
-        public bool IsClientHandlerAlive => !this.IsDisposed && this.clientHandler != null;
+        public bool IsClientHandlerAlive => !IsDisposed && clientHandler != null;
         private Delegate clientHandler;
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.IsDisposed)
+            if (!IsDisposed)
             {
                 if (disposing)
                 {
-                    this.clientHandler = null;
+                    clientHandler = null;
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
-                this.IsDisposed = true;
+                IsDisposed = true;
                 OnDisposed();
             }
         }

@@ -20,10 +20,10 @@
 
         public CaretInfo(System.Windows.Point position, double width, double height, System.Windows.Point offset)
         {
-            this.Position = position;
-            this.Width = width;
-            this.Height = height;
-            this.Offset = offset;
+            Position = position;
+            Width = width;
+            Height = height;
+            Offset = offset;
         }
 
         public System.Windows.Point Position { get; }

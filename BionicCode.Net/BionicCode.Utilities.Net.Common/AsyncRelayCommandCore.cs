@@ -18,38 +18,38 @@
         private int pendingCount;
 
         /// <inheritdoc />
-        public bool CanBeCanceled => this.CurrentCancellationToken.CanBeCanceled;
+        public bool CanBeCanceled => CurrentCancellationToken.CanBeCanceled;
 
         /// <inheritdoc />
         public CancellationToken CurrentCancellationToken
         {
-            get => this.currentCancellationToken;
+            get => currentCancellationToken;
             internal set
             {
-                this.currentCancellationToken = value;
+                currentCancellationToken = value;
                 OnPropertyChanged();
             }
         }
 
         /// <inheritdoc/>
-        public bool HasPending => this.PendingCount > 0;
+        public bool HasPending => PendingCount > 0;
         /// <inheritdoc/>
         public bool IsCancelled
         {
-            get => this.isCancelled;
+            get => isCancelled;
             internal set
             {
-                this.isCancelled = value;
+                isCancelled = value;
                 OnPropertyChanged();
             }
         }
         /// <inheritdoc/>
         public bool IsExecuting
         {
-            get => this.isExecuting;
+            get => isExecuting;
             internal set
             {
-                this.isExecuting = value;
+                isExecuting = value;
                 OnPropertyChanged();
             }
         }
@@ -57,10 +57,10 @@
         /// <inheritdoc/>
         public int PendingCount
         {
-            get => this.pendingCount;
+            get => pendingCount;
             internal set
             {
-                this.pendingCount = value;
+                pendingCount = value;
                 OnPropertyChanged();
             }
         }
@@ -90,17 +90,17 @@
         {
             var pendingInfo = new PendingCommandInfo(pendingTimeout, DateTime.Now, asyncExecuteDelegate, executingTimeout, cancellationToken);
 
-            lock (this.syncLock)
+            lock (syncLock)
             {
-                if (this.IsExecuting)
+                if (IsExecuting)
                 {
-                    this.executeQueue.Enqueue(pendingInfo);
+                    executeQueue.Enqueue(pendingInfo);
                     IncrementPendingCount();
 
                     return;
                 }
 
-                this.IsExecuting = true;
+                IsExecuting = true;
             }
 
             await ExecuteInternalAsync(pendingInfo).ConfigureAwait(false);
@@ -124,19 +124,19 @@
                     return;
                 }
 
-                this.IsExecuting = true;
-                this.IsCancelled = false;
+                IsExecuting = true;
+                IsCancelled = false;
 
-                this.CommandCancellationTokenSource = new CancellationTokenSource(pendingCommandInfo.ExecutingTimeout);
-                this.MergedCommandCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
+                CommandCancellationTokenSource = new CancellationTokenSource(pendingCommandInfo.ExecutingTimeout);
+                MergedCommandCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
                     pendingCommandInfo.CancellationToken,
-                    this.CommandCancellationTokenSource.Token);
-                this.CurrentCancellationToken = this.MergedCommandCancellationTokenSource.Token;
+                    CommandCancellationTokenSource.Token);
+                CurrentCancellationToken = MergedCommandCancellationTokenSource.Token;
 
-                this.CurrentCancellationToken.ThrowIfCancellationRequested();
+                CurrentCancellationToken.ThrowIfCancellationRequested();
 
                 OnExecuting();
-                await (pendingCommandInfo.AsyncExecuteDelegate?.Invoke(this.CurrentCancellationToken)).ConfigureAwait(false);
+                await (pendingCommandInfo.AsyncExecuteDelegate?.Invoke(CurrentCancellationToken)).ConfigureAwait(false);
             }
             finally
             {
@@ -146,19 +146,19 @@
 
         internal async Task EndExecuteCoreAsync()
         {
-            this.CommandCancellationTokenSource?.Dispose();
-            this.CommandCancellationTokenSource = null;
-            this.MergedCommandCancellationTokenSource?.Dispose();
-            this.MergedCommandCancellationTokenSource = null;
+            CommandCancellationTokenSource?.Dispose();
+            CommandCancellationTokenSource = null;
+            MergedCommandCancellationTokenSource?.Dispose();
+            MergedCommandCancellationTokenSource = null;
             OnExecuted();
 
             PendingCommandInfo pendingInfo;
-            lock (this.syncLock)
+            lock (syncLock)
             {
-                if (!this.executeQueue.TryDequeue(out pendingInfo))
+                if (!executeQueue.TryDequeue(out pendingInfo))
                 {
-                    this.IsExecuting = false;
-                    this.IsCancelled = this.CurrentCancellationToken.IsCancellationRequested;
+                    IsExecuting = false;
+                    IsCancelled = CurrentCancellationToken.IsCancellationRequested;
 
                     return;
                 }
@@ -170,16 +170,16 @@
 
         internal void DecrementPendingCount()
         {
-            _ = Interlocked.Decrement(ref this.pendingCount);
-            OnPropertyChanged(nameof(this.PendingCount));
-            OnPropertyChanged(nameof(this.HasPending));
+            _ = Interlocked.Decrement(ref pendingCount);
+            OnPropertyChanged(nameof(PendingCount));
+            OnPropertyChanged(nameof(HasPending));
         }
 
         internal void IncrementPendingCount()
         {
-            _ = Interlocked.Increment(ref this.pendingCount);
-            OnPropertyChanged(nameof(this.PendingCount));
-            OnPropertyChanged(nameof(this.HasPending));
+            _ = Interlocked.Increment(ref pendingCount);
+            OnPropertyChanged(nameof(PendingCount));
+            OnPropertyChanged(nameof(HasPending));
         }
 
         /// <inheritdoc />
@@ -189,22 +189,22 @@
         /// <inheritdoc />
         public void Cancel(bool throwOnFirstException)
         {
-            if (!this.CanBeCanceled)
+            if (!CanBeCanceled)
             {
                 return;
             }
 
-            this.CommandCancellationTokenSource?.Cancel(throwOnFirstException);
-            this.IsCancelled = true;
+            CommandCancellationTokenSource?.Cancel(throwOnFirstException);
+            IsCancelled = true;
         }
 
         /// <inheritdoc />
         public bool CancelPending()
         {
-            lock (this.syncLock)
+            lock (syncLock)
             {
-                bool hasCancelledPending = this.HasPending;
-                while (this.executeQueue.TryDequeue(out _))
+                bool hasCancelledPending = HasPending;
+                while (executeQueue.TryDequeue(out _))
                 {
                     DecrementPendingCount();
                     OnPendingCommandCancelled();
@@ -223,7 +223,7 @@
         {
             bool hasCancelledActions = CancelPending();
 
-            if (this.CanBeCanceled && !this.IsCancelled)
+            if (CanBeCanceled && !IsCancelled)
             {
                 hasCancelledActions = true;
                 Cancel(throwOnFirstException);
@@ -240,42 +240,42 @@
         /// Raises the <see cref="ICommand.CanExecuteChanged"/> event.
         /// </summary>
         protected virtual void OnCanExecuteChanged()
-          => this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+          => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
         /// Raises the <see cref="ICommand.CanExecuteChanged"/> event.
         /// </summary>
         protected virtual void OnCanExecuteChanged(object source, EventArgs e)
-          => this.CanExecuteChanged?.Invoke(source, e);
+          => CanExecuteChanged?.Invoke(source, e);
 
         /// <summary>
         /// Raises the <see cref="INotifyPropertyChanged.PropertyChanged"/> event.
         /// </summary>
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-          => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+          => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         /// <summary>
         /// Raises the <see cref="IAsyncRelayCommandCore.PendingCommandCancelled"/> event.
         /// </summary>
         protected virtual void OnPendingCommandCancelled()
-          => this.PendingCommandCancelled?.Invoke(this, EventArgs.Empty);
+          => PendingCommandCancelled?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
         /// Raises the <see cref="IAsyncRelayCommandCore.ExecutingCommandCancelled"/> event.
         /// </summary>
         protected virtual void OnExecutingCommandCancelled()
-          => this.ExecutingCommandCancelled?.Invoke(this, EventArgs.Empty);
+          => ExecutingCommandCancelled?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
         /// Raises the <see cref="IAsyncRelayCommandCore.Executing"/> event.
         /// </summary>
         protected virtual void OnExecuting()
-          => this.Executing?.Invoke(this, EventArgs.Empty);
+          => Executing?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
         /// Raises the <see cref="IAsyncRelayCommandCore.Executed"/> event.
         /// </summary>
         protected virtual void OnExecuted()
-          => this.Executed?.Invoke(this, EventArgs.Empty);
+          => Executed?.Invoke(this, EventArgs.Empty);
     }
 }

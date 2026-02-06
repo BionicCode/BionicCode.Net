@@ -21,19 +21,19 @@ internal static class AssemblyLoadContextMonitor
         public AssemblyLoadContextInfo AssemblyLoadContextInfo { get; }
 
         public AssemblyLoadContextUnloadingEventArgs(AssemblyLoadContextInfo assemblyLoadContextInfo)
-            => this.AssemblyLoadContextInfo = assemblyLoadContextInfo;
+            => AssemblyLoadContextInfo = assemblyLoadContextInfo;
     }
 
     internal sealed class AssemblyLoadContextInfo
     {
         public AssemblyLoadContextInfo(AssemblyLoadContextInfoInternal assemblyLoadContextInfoInternal)
-            => this._assemblyLoadContextInfoInternal = assemblyLoadContextInfoInternal;
+            => _assemblyLoadContextInfoInternal = assemblyLoadContextInfoInternal;
 
         public uint Id
-            => this._assemblyLoadContextInfoInternal.Id;
+            => _assemblyLoadContextInfoInternal.Id;
 
         public bool IsUnloading
-            => this._assemblyLoadContextInfoInternal.IsUnloading;
+            => _assemblyLoadContextInfoInternal.IsUnloading;
 
         public object SyncLock { get; } = new object();
 
@@ -43,16 +43,16 @@ internal static class AssemblyLoadContextMonitor
     internal sealed class AssemblyLoadContextInfoInternal
     {
         public AssemblyLoadContextInfoInternal(uint assemblyLoadContextId)
-            => this.Id = assemblyLoadContextId;
+            => Id = assemblyLoadContextId;
 
         public void MarkAsUnloading()
-            => _ = Interlocked.Exchange(ref this._isUnloadingFlag, 1);
+            => _ = Interlocked.Exchange(ref _isUnloadingFlag, 1);
 
         public uint Id { get; }
 
         private int _isUnloadingFlag;
         public bool IsUnloading
-            => this._isUnloadingFlag == 1;
+            => _isUnloadingFlag == 1;
     }
 
     public static bool TryStartMonitoringAssembly(Assembly assembly, out AssemblyLoadContextInfo assemblyLoadContextInfo)

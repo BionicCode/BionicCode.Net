@@ -32,28 +32,28 @@
         public CollectionHelperExtensionsTestsInsertRange()
         {
             IEnumerable<int> firstRange = Enumerable.Range(FirstRangeStart, RangeCount);
-            this.CollectionWithFirstRange = firstRange.ToList();
+            CollectionWithFirstRange = firstRange.ToList();
             IEnumerable<int> secondRange = Enumerable.Range(SecondRangeStart, RangeCount);
 
-            this.EmptyList = new List<int>();
-            this.NullReferenceCollection = null;
-            this.ListWithSecondRange = secondRange.ToList();
-            this.ConcatenatedListResultOfOrderedAddRange = firstRange.Concat(secondRange).ToList();
+            EmptyList = new List<int>();
+            NullReferenceCollection = null;
+            ListWithSecondRange = secondRange.ToList();
+            ConcatenatedListResultOfOrderedAddRange = firstRange.Concat(secondRange).ToList();
 
-            this.NullReferenceDictionary = null;
+            NullReferenceDictionary = null;
             Dictionary<int, int> firstRangeDictionarySeed = firstRange.ToDictionary(value => value);
-            this.CollectionWithKeyValuePairItemsFirstRange = new List<KeyValuePair<int, int>>(firstRangeDictionarySeed);
-            this.DictionaryWithFirstRange = new Dictionary<int, int>(firstRangeDictionarySeed);
+            CollectionWithKeyValuePairItemsFirstRange = new List<KeyValuePair<int, int>>(firstRangeDictionarySeed);
+            DictionaryWithFirstRange = new Dictionary<int, int>(firstRangeDictionarySeed);
 
             Dictionary<int, int> secondRangeDictionarySeed = secondRange.ToDictionary(value => value);
-            this.DictionaryWithSecondRange = new Dictionary<int, int>(secondRangeDictionarySeed);
-            this.ConcatenatedDictionaryResultOfOrderedAddRange = firstRangeDictionarySeed.Concat(secondRangeDictionarySeed).ToDictionary(entry => entry.Key, entry => entry.Value);
+            DictionaryWithSecondRange = new Dictionary<int, int>(secondRangeDictionarySeed);
+            ConcatenatedDictionaryResultOfOrderedAddRange = firstRangeDictionarySeed.Concat(secondRangeDictionarySeed).ToDictionary(entry => entry.Key, entry => entry.Value);
 
-            this.EmptyArray = Array.Empty<int>();
-            this.NullReferenceArray = null;
-            this.ArrayWithFirstRange = firstRange.ToArray();
-            this.ArrayWithSecondRange = secondRange.ToArray();
-            this.ConcatenatedArrayResultOfOrderedAddRange = firstRange.Concat(secondRange).ToArray();
+            EmptyArray = Array.Empty<int>();
+            NullReferenceArray = null;
+            ArrayWithFirstRange = firstRange.ToArray();
+            ArrayWithSecondRange = secondRange.ToArray();
+            ConcatenatedArrayResultOfOrderedAddRange = firstRange.Concat(secondRange).ToArray();
         }
 
         #region InsertRange ICollection
@@ -61,23 +61,23 @@
         [Fact]
         public void AddList_ToCollectionAddRange_MustAppendItemsOrdered()
         {
-            this.CollectionWithFirstRange.AddRange(this.ListWithSecondRange);
+            CollectionWithFirstRange.AddRange(ListWithSecondRange);
 
-            _ = this.CollectionWithFirstRange.Should().ContainInConsecutiveOrder(this.ConcatenatedListResultOfOrderedAddRange);
+            _ = CollectionWithFirstRange.Should().ContainInConsecutiveOrder(ConcatenatedListResultOfOrderedAddRange);
         }
 
         [Fact]
         public void AddDictionary_ToKeyValuePairCollectionAddRange_MustAppendItemsOrdered()
         {
-            this.CollectionWithKeyValuePairItemsFirstRange.AddRange(this.DictionaryWithSecondRange);
+            CollectionWithKeyValuePairItemsFirstRange.AddRange(DictionaryWithSecondRange);
 
-            _ = this.CollectionWithKeyValuePairItemsFirstRange.Should().ContainInConsecutiveOrder(this.ConcatenatedDictionaryResultOfOrderedAddRange);
+            _ = CollectionWithKeyValuePairItemsFirstRange.Should().ContainInConsecutiveOrder(ConcatenatedDictionaryResultOfOrderedAddRange);
         }
 
         [Fact]
         public void AddKeyValuePairsWithDuplicateKeys_ToCollection_MustNotThrow()
         {
-            Action action = () => this.CollectionWithKeyValuePairItemsFirstRange.AddRange(this.DictionaryWithSecondRange);
+            Action action = () => CollectionWithKeyValuePairItemsFirstRange.AddRange(DictionaryWithSecondRange);
 
             _ = action.Should().NotThrow("because duplicate keys are allowed in collections");
         }
@@ -85,7 +85,7 @@
         [Fact]
         public void CallICollectionExtensionMethodDirectly_PassingNull_MustThrow()
         {
-            Action action = () => HelperExtensionsCommon.AddRange(this.NullReferenceCollection, this.ListWithSecondRange);
+            Action action = () => HelperExtensionsCommon.AddRange(NullReferenceCollection, ListWithSecondRange);
 
             _ = action.Should().ThrowExactly<ArgumentNullException>();
         }
@@ -93,7 +93,7 @@
         [Fact]
         public void CallICollectionExtensionMethod_AddNull_MustThrow()
         {
-            Action action = () => this.CollectionWithFirstRange.AddRange(this.NullReferenceCollection);
+            Action action = () => CollectionWithFirstRange.AddRange(NullReferenceCollection);
 
             _ = action.Should().ThrowExactly<ArgumentNullException>();
         }
@@ -105,17 +105,17 @@
         [Fact]
         public void AddArray_ToArrayAddRange_MustReturnEnlargedArray()
         {
-            int[] result = this.ArrayWithFirstRange.AddRange(this.ArrayWithSecondRange);
+            int[] result = ArrayWithFirstRange.AddRange(ArrayWithSecondRange);
 
-            _ = result.Length.Should().BeGreaterThan(this.ArrayWithFirstRange.Length);
+            _ = result.Length.Should().BeGreaterThan(ArrayWithFirstRange.Length);
         }
 
         [Fact]
         public void AddArray_ToArrayAddRange_MustAppendItemsOrdered()
         {
-            int[] result = this.ArrayWithFirstRange.AddRange(this.ArrayWithSecondRange);
+            int[] result = ArrayWithFirstRange.AddRange(ArrayWithSecondRange);
 
-            _ = result.Should().ContainInConsecutiveOrder(this.ConcatenatedArrayResultOfOrderedAddRange);
+            _ = result.Should().ContainInConsecutiveOrder(ConcatenatedArrayResultOfOrderedAddRange);
         }
 
         [Theory]
@@ -128,7 +128,7 @@
         [InlineData(1, RangeCount - 1, 2)]
         public void InsertArrayInvalidRange_ToArray_MustThrow(int destinationStartIndex, int sourceStartIndex, int sourceCount)
         {
-            Action action = () => this.ArrayWithFirstRange.InsertRange(destinationStartIndex, this.ArrayWithSecondRange, sourceStartIndex, sourceCount);
+            Action action = () => ArrayWithFirstRange.InsertRange(destinationStartIndex, ArrayWithSecondRange, sourceStartIndex, sourceCount);
 
             _ = action.Should().Throw<ArgumentOutOfRangeException>();
         }
@@ -136,80 +136,80 @@
         [Fact]
         public void AddIEnumerable_ToArrayAddRange_MustAppendItemsOrdered()
         {
-            IEnumerable<int> range = this.ArrayWithSecondRange.Select(item => item);
+            IEnumerable<int> range = ArrayWithSecondRange.Select(item => item);
 
-            int[] result = this.ArrayWithFirstRange.AddRange(range);
+            int[] result = ArrayWithFirstRange.AddRange(range);
 
-            _ = result.Should().ContainInConsecutiveOrder(this.ConcatenatedArrayResultOfOrderedAddRange);
+            _ = result.Should().ContainInConsecutiveOrder(ConcatenatedArrayResultOfOrderedAddRange);
         }
 
         [Fact]
         public void AddList_ToArrayAddRange_MustAppendItemsOrdered()
         {
-            List<int> range = this.ArrayWithSecondRange.ToList();
+            List<int> range = ArrayWithSecondRange.ToList();
 
-            int[] result = this.ArrayWithFirstRange.AddRange(range);
+            int[] result = ArrayWithFirstRange.AddRange(range);
 
-            _ = result.Should().ContainInConsecutiveOrder(this.ConcatenatedArrayResultOfOrderedAddRange);
+            _ = result.Should().ContainInConsecutiveOrder(ConcatenatedArrayResultOfOrderedAddRange);
         }
 
         [Fact]
         public void AddIEnumerable_ToEmptyArrayAddRange_MustReturnNewArray()
         {
-            IEnumerable<int> range = this.ArrayWithSecondRange.Select(item => item);
+            IEnumerable<int> range = ArrayWithSecondRange.Select(item => item);
 
-            int[] result = this.EmptyArray.AddRange(range);
+            int[] result = EmptyArray.AddRange(range);
 
-            _ = result.Should().ContainInConsecutiveOrder(this.ArrayWithSecondRange);
+            _ = result.Should().ContainInConsecutiveOrder(ArrayWithSecondRange);
         }
 
         [Fact]
         public void AddList_ToEmptyArrayAddRange_MustReturnNewArray()
         {
-            List<int> range = this.ArrayWithSecondRange.ToList();
+            List<int> range = ArrayWithSecondRange.ToList();
 
-            int[] result = this.EmptyArray.AddRange(range);
+            int[] result = EmptyArray.AddRange(range);
 
-            _ = result.Should().ContainInConsecutiveOrder(this.ArrayWithSecondRange);
+            _ = result.Should().ContainInConsecutiveOrder(ArrayWithSecondRange);
         }
 
         [Fact]
         public void AddArray_ToEmptyArrayAddRange_MustReturnAddedArray()
         {
-            int[] result = this.EmptyArray.AddRange(this.ArrayWithSecondRange);
+            int[] result = EmptyArray.AddRange(ArrayWithSecondRange);
 
-            _ = result.Should().BeSameAs(this.ArrayWithSecondRange);
+            _ = result.Should().BeSameAs(ArrayWithSecondRange);
         }
 
         [Fact]
         public void AddEmptyArray_ToArrayAddRange_MustReturnOriginalArray()
         {
-            int[] result = this.ArrayWithFirstRange.AddRange(this.EmptyArray);
+            int[] result = ArrayWithFirstRange.AddRange(EmptyArray);
 
-            _ = result.Should().BeSameAs(this.ArrayWithFirstRange);
+            _ = result.Should().BeSameAs(ArrayWithFirstRange);
         }
 
         [Fact]
         public void AddEmptyList_ToArrayAddRange_MustReturnOriginalArray()
         {
-            int[] result = this.ArrayWithFirstRange.AddRange(this.EmptyList);
+            int[] result = ArrayWithFirstRange.AddRange(EmptyList);
 
-            _ = result.Should().BeSameAs(this.ArrayWithFirstRange);
+            _ = result.Should().BeSameAs(ArrayWithFirstRange);
         }
 
         [Fact]
         public void AddEmptyIEnumerable_ToArrayAddRange_MustReturnOriginalArray()
         {
-            int[] result = this.ArrayWithFirstRange.AddRange(Enumerable.Empty<int>());
+            int[] result = ArrayWithFirstRange.AddRange(Enumerable.Empty<int>());
 
-            _ = result.Should().BeSameAs(this.ArrayWithFirstRange);
+            _ = result.Should().BeSameAs(ArrayWithFirstRange);
         }
 
         [Fact]
         public void CallIEnumerableKeyValuePairExtensionMethodDirectly_PassingNull_MustThrow()
         {
-            IEnumerable<KeyValuePair<int, int>> range = this.DictionaryWithSecondRange.ToList();
-            Action action = () => HelperExtensionsCommon.AddRange(this.NullReferenceDictionary, range);
+            IEnumerable<KeyValuePair<int, int>> range = DictionaryWithSecondRange.ToList();
+            Action action = () => HelperExtensionsCommon.AddRange(NullReferenceDictionary, range);
 
             _ = action.Should().ThrowExactly<ArgumentNullException>();
         }
@@ -218,7 +218,7 @@
         public void CallIEnumerableKeyValuePairExtensionMethod_AddNull_MustThrow()
         {
             IEnumerable<KeyValuePair<int, int>> range = null;
-            Action action = () => this.DictionaryWithFirstRange.AddRange(range);
+            Action action = () => DictionaryWithFirstRange.AddRange(range);
 
             _ = action.Should().ThrowExactly<ArgumentNullException>();
         }

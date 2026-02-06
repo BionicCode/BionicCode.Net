@@ -7,14 +7,14 @@
 
     internal class ClientHandlerInfoCollection : IEnumerable<ClientHandlerInfo>
     {
-        public int Count => this.items.Count;
+        public int Count => items.Count;
         private readonly List<ClientHandlerInfo> items;
 
-        public ClientHandlerInfoCollection() => this.items = new List<ClientHandlerInfo>();
+        public ClientHandlerInfoCollection() => items = new List<ClientHandlerInfo>();
 
         public IEnumerable<ClientHandlerInfo> EnumerateSafe()
         {
-            var itemsCopy = this.items.ToList();
+            var itemsCopy = items.ToList();
             for (int index = itemsCopy.Count - 1; index >= 0; index--)
             {
                 ClientHandlerInfo item = itemsCopy[index];
@@ -28,7 +28,7 @@
         public void Add(ClientHandlerInfo clientHandlerInfo)
         {
             StartListeningToItem(clientHandlerInfo);
-            this.items.Add(clientHandlerInfo);
+            items.Add(clientHandlerInfo);
         }
 
         public void Remove(ClientHandlerInfo clientHandlerInfo)
@@ -36,12 +36,12 @@
 
         public void Clear()
         {
-            for (int index = this.items.Count - 1; index >= 0; index--)
+            for (int index = items.Count - 1; index >= 0; index--)
             {
-                ClientHandlerInfo item = this.items[index];
+                ClientHandlerInfo item = items[index];
                 StopListeningToItem(item);
                 item.Dispose();
-                this.items.RemoveAt(index);
+                items.RemoveAt(index);
             }
         }
 
@@ -49,7 +49,7 @@
         {
             var item = (ClientHandlerInfo)sender;
             StopListeningToItem(item);
-            _ = this.items.Remove(item);
+            _ = items.Remove(item);
         }
 
         private void StartListeningToItem(ClientHandlerInfo clientHandlerInfo)

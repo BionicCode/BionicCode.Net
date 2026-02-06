@@ -27,10 +27,10 @@
         /// <param name="baseUnit">The desired base unit.</param>
         public ProfilerOptions(int iterations, int warmupIterations, ProfilerLoggerDelegate logger, TimeUnit baseUnit)
         {
-            this.Iterations = iterations;
-            this.WarmupIterations = warmupIterations;
-            this.Logger = logger;
-            this.BaseUnit = baseUnit;
+            Iterations = iterations;
+            WarmupIterations = warmupIterations;
+            Logger = logger;
+            BaseUnit = baseUnit;
         }
 
         /// <summary>

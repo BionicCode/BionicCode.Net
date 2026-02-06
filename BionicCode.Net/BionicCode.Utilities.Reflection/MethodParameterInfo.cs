@@ -14,9 +14,9 @@
         /// uniquely identified by name, position, or handle. This property can be used to determine if additional
         /// disambiguation logic may be required when resolving parameters or members.</remarks>
         public bool IsAmbiguityExpected
-            => (!this.ParameterDescriptor.HasParameterName
-                && !this.ParameterDescriptor.HasParameterPosition)
-                || !this.DeclaringMemberDescriptor.HasMemberHandle;
+            => (!ParameterDescriptor.HasParameterName
+                && !ParameterDescriptor.HasParameterPosition)
+                || !DeclaringMemberDescriptor.HasMemberHandle;
 
         ///// <summary>
         ///// Gets a value indicating whether the type parameter is declared by a generic method definition.
@@ -38,12 +38,12 @@
                 ? methodData.ReturnTypeData.Handle
                 : default;
 
-            this.ParameterDescriptor = new CacheKeyWellKnownParameterDescriptor(
+            ParameterDescriptor = new CacheKeyWellKnownParameterDescriptor(
                 parameterData.Name,
                 parameterData.Position,
                 parameterData.ParameterKind,
                 parameterData.ParameterTypeHandle);
-            this.DeclaringMemberDescriptor = new ParameterMemberDescriptor(
+            DeclaringMemberDescriptor = new ParameterMemberDescriptor(
                 parameterData.DeclaringTypeHandle,
                 parameterData.MemberData.Handle,
                 parameterData.MemberData.Name,
@@ -71,16 +71,16 @@
 
             WellKnownParameterDescriptor parameterDescriptor = parameterInfoDataCacheKey.ParameterDescriptor;
             ParameterMemberDescriptor declaringMemberDescriptor = parameterInfoDataCacheKey.ParameterMemberDescriptor;
-            this.ParameterDescriptor = parameterDescriptor;
-            this.DeclaringMemberDescriptor = declaringMemberDescriptor;
+            ParameterDescriptor = parameterDescriptor;
+            DeclaringMemberDescriptor = declaringMemberDescriptor;
         }
 
         public override bool Equals(object? obj) => obj is MethodParameterInfo info && Equals(info);
-        public bool Equals(MethodParameterInfo other) => this.ParameterDescriptor == other.ParameterDescriptor
-            && this.DeclaringMemberDescriptor == other.DeclaringMemberDescriptor;
+        public bool Equals(MethodParameterInfo other) => ParameterDescriptor == other.ParameterDescriptor
+            && DeclaringMemberDescriptor == other.DeclaringMemberDescriptor;
 
         public override int GetHashCode()
-            => HashCode.Combine(this.ParameterDescriptor, this.DeclaringMemberDescriptor);
+            => HashCode.Combine(ParameterDescriptor, DeclaringMemberDescriptor);
 
         public static bool operator ==(MethodParameterInfo left, MethodParameterInfo right) => left.Equals(right);
         public static bool operator !=(MethodParameterInfo left, MethodParameterInfo right) => !(left == right);

@@ -11,31 +11,31 @@
     {
         public WeakEventManagerExceptionTest()
         {
-            this.registrationManager = new EventHandlerRegistrationManager();
-            this.EventSource1 = new TestEventSource1();
-            this.EventSource2 = new TestEventSource2();
+            registrationManager = new EventHandlerRegistrationManager();
+            EventSource1 = new TestEventSource1();
+            EventSource2 = new TestEventSource2();
             eventHandlerInvocationCount = 0;
         }
 
         #region Event validation
 
         [Fact]
-        public async Task RegisterEvent_SpecifiyUndefinedEvent_ShouldThrowException() => _ = this.Invoking(testEnvironment => this.registrationManager.RegisterEventHandler(this.EventSource1, "Undefined Event", OnNonGenericTestEventFromTestEventSource1)).Should().Throw<ArgumentException>();
+        public async Task RegisterEvent_SpecifiyUndefinedEvent_ShouldThrowException() => _ = Invoking(testEnvironment => registrationManager.RegisterEventHandler(EventSource1, "Undefined Event", OnNonGenericTestEventFromTestEventSource1)).Should().Throw<ArgumentException>();
 
         [Fact]
-        public async Task RegisterEvent_EventHandlerWithInvalidSignatureWrongParameterCount_ShouldThrowException() => _ = this.Invoking(testEnvironment => this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.CustomSignatureThreeParametersTestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("parameter count");
+        public async Task RegisterEvent_EventHandlerWithInvalidSignatureWrongParameterCount_ShouldThrowException() => _ = Invoking(testEnvironment => registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.CustomSignatureThreeParametersTestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("parameter count");
 
         [Fact]
-        public async Task RegisterEvent_EventHandlerWithCustomSignatureTooManyParameters_MustNotThrowException() => _ = this.Invoking(testEnvironment => this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.CustomSignatureThreeParametersTestEvent), OnTestEventFromTestEventSourceThreeParameterSignature)).Should().NotThrow();
+        public async Task RegisterEvent_EventHandlerWithCustomSignatureTooManyParameters_MustNotThrowException() => _ = Invoking(testEnvironment => registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.CustomSignatureThreeParametersTestEvent), OnTestEventFromTestEventSourceThreeParameterSignature)).Should().NotThrow();
 
         [Fact]
-        public async Task RegisterEvent_EventHandlerWithInvalidSignatureWrongSenderType_ShouldThrowException() => _ = this.Invoking(testEnvironment => this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.CustomSignatureTwoParametersTestEvent), OnInvalidSender)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter of type").And.Contain("at parameter index '0'");
+        public async Task RegisterEvent_EventHandlerWithInvalidSignatureWrongSenderType_ShouldThrowException() => _ = Invoking(testEnvironment => registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.CustomSignatureTwoParametersTestEvent), OnInvalidSender)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter of type").And.Contain("at parameter index '0'");
 
         [Fact]
-        public async Task RegisterEvent_EventHandlerWithInvalidSignatureWrongEventArgsType_ShouldThrowException() => _ = this.Invoking(testEnvironment => this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource1)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter of type").And.Contain("at parameter index '1'");
+        public async Task RegisterEvent_EventHandlerWithInvalidSignatureWrongEventArgsType_ShouldThrowException() => _ = Invoking(testEnvironment => registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.TestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource1)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter of type").And.Contain("at parameter index '1'");
 
         [Fact]
-        public async Task RegisterEvent_EventHandlerWithWrongTEventArgs_ShouldThrowEventDelegateMismatchException() => _ = this.Invoking(testEnvironment => this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnInvalidEventArgs)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter of type").And.Contain("at parameter index '1'");
+        public async Task RegisterEvent_EventHandlerWithWrongTEventArgs_ShouldThrowEventDelegateMismatchException() => _ = Invoking(testEnvironment => registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.GenericTestEvent), OnInvalidEventArgs)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter of type").And.Contain("at parameter index '1'");
 
         #endregion Event validation
 
@@ -44,25 +44,25 @@
         //[Fact]
         //public async Task RegisterEvent_EventHandlerWithInvalidSignatureTooManyParameters_ShouldThrowException()
         //{
-        //  _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1, TestEventArgs>.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnTestEventFromTestEventSourceWrongSignature)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Invalid parameter count");
+        //  _ = Invoking(testEnvironment => WeakEventManager<TestEventSource1, TestEventArgs>.RegisterEventHandler(EventSource1, nameof(TestEventSource1.GenericTestEvent), OnTestEventFromTestEventSourceWrongSignature)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Invalid parameter count");
         //}
 
         //[Fact]
         //public void RegisterEventHandler_WithMoreDerivedSenderThanEventDelegate_ShouldThrowException()
         //{
-        //  _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1, EventArgs>.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter");
+        //  _ = Invoking(testEnvironment => WeakEventManager<TestEventSource1, EventArgs>.RegisterEventHandler(EventSource1, nameof(TestEventSource1.TestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter");
         //}
 
         //[Fact]
         //public async Task RegisterEvent_EventHandlerWithInvalidSignatureWrongEventArgsType_ShouldThrowException()
         //{
-        //  _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1, EventArgs>.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource1)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter");
+        //  _ = Invoking(testEnvironment => WeakEventManager<TestEventSource1, EventArgs>.RegisterEventHandler(EventSource1, nameof(TestEventSource1.TestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource1)).Should().Throw<EventHandlerMismatchException>().Which.Message.Should().Contain("Unable to cast parameter");
         //}
 
         //[Fact]
         //public async Task RegisterEvent_EventHandlerNonGenericWithWrongEventArgsType_ShouldThrowHandlerDelegateMismatchException()
         //{
-        //  _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1, EventArgs>.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource1)).Should().Throw<EventHandlerMismatchException>();
+        //  _ = Invoking(testEnvironment => WeakEventManager<TestEventSource1, EventArgs>.RegisterEventHandler(EventSource1, nameof(TestEventSource1.TestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource1)).Should().Throw<EventHandlerMismatchException>();
         //}
 
         #endregion Event handler validation
@@ -257,16 +257,16 @@
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposedValue)
+            if (!disposedValue)
             {
                 if (disposing)
                 {
-                    this.registrationManager.UnregisterAllEventHandlers();
+                    registrationManager.UnregisterAllEventHandlers();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
-                this.disposedValue = true;
+                disposedValue = true;
             }
         }
 

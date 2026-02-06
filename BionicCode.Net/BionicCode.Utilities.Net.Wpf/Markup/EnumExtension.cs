@@ -30,19 +30,19 @@ namespace BionicCode.Utilities.Net
         /// MemberConstructor to initialize the <see cref="EnumType"/> property.
         /// </summary>
         /// <param name="enumType"></param>
-        public EnumExtension(Type enumType) => this.EnumType = enumType;
+        public EnumExtension(Type enumType) => EnumType = enumType;
 
         #region Overrides of MarkupExtension
 
         /// <inheritdoc />
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            if (this.EnumType == null)
+            if (EnumType == null)
             {
                 throw new ArgumentException("The property 'EnumType' of markup extension 'EnumExtension' must be set.");
             }
 
-            return Enum.GetNames(this.EnumType);
+            return Enum.GetNames(EnumType);
         }
 
         #endregion

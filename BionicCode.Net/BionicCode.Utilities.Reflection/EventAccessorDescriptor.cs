@@ -66,11 +66,11 @@
                     $"Invalid argument '{nameof(methodHandle)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type of the accessor method represented by the argument '{nameof(methodHandle)}' is an interface type. Reason: Only non-interface types can provide the explicit implementation.");
             }
 
-            this.MethodHandle = methodHandle;
-            this.EventName = eventName;
-            this.AccessorKind = accessorKind;
-            this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
-            this.IsAnonymous = false;
+            MethodHandle = methodHandle;
+            EventName = eventName;
+            AccessorKind = accessorKind;
+            IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
+            IsAnonymous = false;
         }
 
         public RuntimeMethodHandle MethodHandle { get; }
@@ -80,20 +80,20 @@
         public bool IsAnonymous { get; }
 
         public bool Equals(EventAccessorDescriptor other)
-            => this.MethodHandle.Equals(other.MethodHandle)
-            && this.EventName.Equals(other.EventName, StringComparison.Ordinal)
-            && this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-            && this.AccessorKind.Equals(other.AccessorKind)
-            && this.IsAnonymous == other.IsAnonymous;
+            => MethodHandle.Equals(other.MethodHandle)
+            && EventName.Equals(other.EventName, StringComparison.Ordinal)
+            && IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
+            && AccessorKind.Equals(other.AccessorKind)
+            && IsAnonymous == other.IsAnonymous;
 
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.MethodHandle);
-            hashCode.Add(this.EventName);
-            hashCode.Add(this.IsExplicitInterfaceImplementation);
-            hashCode.Add(this.AccessorKind);
-            hashCode.Add(this.IsAnonymous);
+            hashCode.Add(MethodHandle);
+            hashCode.Add(EventName);
+            hashCode.Add(IsExplicitInterfaceImplementation);
+            hashCode.Add(AccessorKind);
+            hashCode.Add(IsAnonymous);
 
             return hashCode.ToHashCode();
         }

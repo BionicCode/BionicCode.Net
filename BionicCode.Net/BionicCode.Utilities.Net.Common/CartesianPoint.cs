@@ -14,19 +14,19 @@
         /// <param name="y">The value for the Y coordinate of the new Point</param>
         public CartesianPoint(double x, double y)
         {
-            this.X = x;
-            this.Y = y;
-            this.IsSpecialValue = false;
-            this.SpecialValueId = -1;
+            X = x;
+            Y = y;
+            IsSpecialValue = false;
+            SpecialValueId = -1;
         }
 
         internal CartesianPoint(double x, double y, bool isSpecialValue, int specialValueId)
         {
-            this.X = x;
-            this.Y = y;
-            this.IsSpecialValue = isSpecialValue;
-            this.SpecialValueId = 0;
-            this.SpecialValueId = specialValueId;
+            X = x;
+            Y = y;
+            IsSpecialValue = isSpecialValue;
+            SpecialValueId = 0;
+            SpecialValueId = specialValueId;
         }
 
         /// <summary>
@@ -36,8 +36,8 @@
         /// <param name="yOffset"> The offset in the y dimension </param>
         public void Offset(double xOffset, double yOffset)
         {
-            this.X += xOffset;
-            this.Y += yOffset;
+            X += xOffset;
+            Y += yOffset;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@
         internal int SpecialValueId { get; private set; }
 
         /// <inheritdoc/>
-        public bool Equals(CartesianPoint other) => other.X == this.X && other.Y == this.Y;
+        public bool Equals(CartesianPoint other) => other.X == X && other.Y == Y;
 
         /// <inheritdoc/>
         public override bool Equals(object obj) => Equals((CartesianPoint)obj);
@@ -63,12 +63,12 @@
         /// <inheritdoc/>
         public override int GetHashCode()
 #if NET || NETSTANDARD2_1_OR_GREATER
-           => HashCode.Combine(this.X, this.Y);
+           => HashCode.Combine(X, Y);
 #else
     {
       int hashCode = 1861411795;
-      hashCode = (hashCode * -1521134295) + this.X.GetHashCode();
-      hashCode = (hashCode * -1521134295) + this.Y.GetHashCode();
+      hashCode = (hashCode * -1521134295) + X.GetHashCode();
+      hashCode = (hashCode * -1521134295) + Y.GetHashCode();
       return hashCode;
     }
 #endif
@@ -79,11 +79,11 @@
         public string ToString(string format, IFormatProvider formatProvider) => ConvertToString(format, formatProvider);
 
         private string ConvertToString(string formatString, IFormatProvider formatProvider)
-          => string.Format(formatProvider, $"{{1:{formatString}}}{{0}}{{2:{formatString}}}", ";", this.X, this.Y);
+          => string.Format(formatProvider, $"{{1:{formatString}}}{{0}}{{2:{formatString}}}", ";", X, Y);
 
         /// <inheritdoc/>
         /// <remarks>This method compares the <see cref="X"/> value. When the <see cref="X"/> value of the current instance is smaller the value of <paramref name="other"/> then the current instance precedes <paramref name="other"/>.</remarks>
-        public int CompareTo(CartesianPoint other) => this.X.CompareTo(other.X);
+        public int CompareTo(CartesianPoint other) => X.CompareTo(other.X);
 
         /// <summary>
         /// Compares two Point instances for exact equality.

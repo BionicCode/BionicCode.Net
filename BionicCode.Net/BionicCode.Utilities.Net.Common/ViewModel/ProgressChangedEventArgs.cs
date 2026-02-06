@@ -31,9 +31,9 @@
         /// <param name="progressText">A text message to summarize the progress.</param>
         public ProgressChangedEventArgs(double oldValue, double newValue, string progressText)
         {
-            this.OldValue = oldValue;
-            this.NewValue = newValue;
-            this.ProgressText = progressText;
+            OldValue = oldValue;
+            NewValue = newValue;
+            ProgressText = progressText;
         }
 
         /// <summary>

@@ -9,15 +9,15 @@
         // This is a positional argument
         public TestAttribute(double numericPositionalParameter, [CallerMemberName] string positionalString = null)
         {
-            this.PositionalString = positionalString;
-            this.TestClassPositionalParameter = numericPositionalParameter;
+            PositionalString = positionalString;
+            TestClassPositionalParameter = numericPositionalParameter;
 
             // TODO: Implement code here
 
         }
 
         // This is a positional argument
-        public TestAttribute(string positionalString) => this.PositionalString = positionalString;// TODO: Implement code here
+        public TestAttribute(string positionalString) => PositionalString = positionalString;// TODO: Implement code here
         public double TestClassPositionalParameter { get; }
 
         public string PositionalString { get; }

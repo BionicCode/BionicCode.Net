@@ -55,7 +55,7 @@
     //  /// </remarks>
     //  protected IDisposable BlockReentrancy()
     //  {
-    //    this.blockReentrancyCount++;
+    //    blockReentrancyCount++;
     //    return EnsureMonitorInitialized();
     //  }
 
@@ -64,7 +64,7 @@
     //  /// while another collection change is still being notified to other listeners </exception>
     //  protected void CheckReentrancy()
     //  {
-    //    if (this.blockReentrancyCount > 0)
+    //    if (blockReentrancyCount > 0)
     //    {
     //      // we can allow changes if there's only one listener - the problem
     //      // only arises if reentrant changes make the original event args

@@ -65,8 +65,8 @@ namespace BionicCode.Utilities.Net
                 throw new ArgumentNullException(nameof(executeAsync));
             }
 
-            this.cancellableAsyncExecuteDelegate = (commandParameter, cancellationToken) => executeAsync.Invoke(commandParameter);
-            this.canExecuteDelegate = canExecute;
+            cancellableAsyncExecuteDelegate = (commandParameter, cancellationToken) => executeAsync.Invoke(commandParameter);
+            canExecuteDelegate = canExecute;
         }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace BionicCode.Utilities.Net
                 throw new ArgumentNullException(nameof(executeAsync));
             }
 
-            this.cancellableAsyncExecuteDelegate = executeAsync;
-            this.canExecuteDelegate = canExecute;
+            cancellableAsyncExecuteDelegate = executeAsync;
+            canExecuteDelegate = canExecute;
         }
 
         #endregion Constructors
@@ -94,7 +94,7 @@ namespace BionicCode.Utilities.Net
         ///   Data used by the command. 
         /// </param>
         /// <returns><see langword="true"/> if this command can be executed, otherwise <see langword="false"/>.</returns>
-        public bool CanExecute(TParam parameter) => this.canExecuteDelegate?.Invoke(parameter) ?? true;
+        public bool CanExecute(TParam parameter) => canExecuteDelegate?.Invoke(parameter) ?? true;
 
         /// <inheritdoc />
         public async Task ExecuteAsync(TParam parameter) => await ExecuteAsync(parameter, Timeout.InfiniteTimeSpan, CancellationToken.None).ConfigureAwait(false);
@@ -109,7 +109,7 @@ namespace BionicCode.Utilities.Net
         public async Task ExecuteAsync(TParam parameter, TimeSpan timeout, CancellationToken cancellationToken) => await ExecuteAsync(parameter, Timeout.InfiniteTimeSpan, timeout, cancellationToken).ConfigureAwait(false);
 
         public async Task ExecuteAsync(TParam parameter, TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken)
-          => await ExecuteCoreAsync(ct => this.cancellableAsyncExecuteDelegate(parameter, ct), pendingTimeout, executingTimeout, cancellationToken).ConfigureAwait(false);
+          => await ExecuteCoreAsync(ct => cancellableAsyncExecuteDelegate(parameter, ct), pendingTimeout, executingTimeout, cancellationToken).ConfigureAwait(false);
 
         #region ICommand implementation
 #if NET

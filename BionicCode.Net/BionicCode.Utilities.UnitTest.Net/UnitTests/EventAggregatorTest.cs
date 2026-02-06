@@ -11,63 +11,63 @@
         [Obsolete]
         public EventAggregatorTest()
         {
-            this.NonGenericEventInvocationCount = 0;
-            this.GenericEventInvocationCount = 0;
-            this.EventManager = new EventAggregator();
-            this.EventSource1 = new TestEventSource1();
-            this.EventSource2 = new TestEventSource2();
+            NonGenericEventInvocationCount = 0;
+            GenericEventInvocationCount = 0;
+            EventManager = new EventAggregator();
+            EventSource1 = new TestEventSource1();
+            EventSource2 = new TestEventSource2();
 
-            _ = this.EventManager.TryRegisterObservable(this.EventSource1, new[] { nameof(this.EventSource1.TestEvent), nameof(this.EventSource1.GenericTestEvent) });
+            _ = EventManager.TryRegisterObservable(EventSource1, new[] { nameof(EventSource1.TestEvent), nameof(EventSource1.GenericTestEvent) });
 
-            _ = this.EventManager.TryRegisterObservable(this.EventSource2, new[] { nameof(this.EventSource2.TestEvent), nameof(this.EventSource2.GenericTestEvent) });
+            _ = EventManager.TryRegisterObservable(EventSource2, new[] { nameof(EventSource2.TestEvent), nameof(EventSource2.GenericTestEvent) });
         }
 
         [Fact]
         [Obsolete]
         public void RegisterWrongDelegateSignatureThrowsException()
         {
-            _ = this.EventManager.TryRegisterObserver(nameof(this.EventSource1.TestEvent), typeof(ITestEventSource), new EventHandler<TestEventArgs>(OnTestEvent));
-            _ = this.EventSource1.Invoking(eventSource => eventSource.RaiseAll()).Should().ThrowExactly<WrongEventHandlerSignatureException>();
+            _ = EventManager.TryRegisterObserver(nameof(EventSource1.TestEvent), typeof(ITestEventSource), new EventHandler<TestEventArgs>(OnTestEvent));
+            _ = EventSource1.Invoking(eventSource => eventSource.RaiseAll()).Should().ThrowExactly<WrongEventHandlerSignatureException>();
         }
 
         [Fact]
         [Obsolete]
         public void RegisterWrongDelegateSignatureThrowsExceptionUsingActionDelegate()
         {
-            _ = this.EventManager.TryRegisterObserver<TestEventArgs>(nameof(this.EventSource1.TestEvent), typeof(ITestEventSource), OnTestEvent);
-            _ = this.EventSource1.Invoking(eventSource => eventSource.RaiseAll()).Should().ThrowExactly<WrongEventHandlerSignatureException>();
+            _ = EventManager.TryRegisterObserver<TestEventArgs>(nameof(EventSource1.TestEvent), typeof(ITestEventSource), OnTestEvent);
+            _ = EventSource1.Invoking(eventSource => eventSource.RaiseAll()).Should().ThrowExactly<WrongEventHandlerSignatureException>();
         }
 
         [Fact]
         [Obsolete]
         public void Handle2EventsOfSpecificEventOfKnownInterfaceSource()
         {
-            _ = this.EventManager.TryRegisterObserver(nameof(this.EventSource1.TestEvent), typeof(ITestEventSource), new EventHandler<EventArgs>(OnTestEvent));
+            _ = EventManager.TryRegisterObserver(nameof(EventSource1.TestEvent), typeof(ITestEventSource), new EventHandler<EventArgs>(OnTestEvent));
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(2);
-            _ = this.GenericEventInvocationCount.Should().Be(0);
+            _ = NonGenericEventInvocationCount.Should().Be(2);
+            _ = GenericEventInvocationCount.Should().Be(0);
         }
 
         [Fact]
         [Obsolete]
         public void Handle2EventsOfSpecificEventOfKnownInterfaceSourceUsingActionDelegate()
         {
-            _ = this.EventManager.TryRegisterObserver<EventArgs>(nameof(this.EventSource1.TestEvent), typeof(ITestEventSource), OnTestEvent);
+            _ = EventManager.TryRegisterObserver<EventArgs>(nameof(EventSource1.TestEvent), typeof(ITestEventSource), OnTestEvent);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(2);
-            _ = this.GenericEventInvocationCount.Should().Be(0);
+            _ = NonGenericEventInvocationCount.Should().Be(2);
+            _ = GenericEventInvocationCount.Should().Be(0);
         }
 
         [Fact]
@@ -76,14 +76,14 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate();
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(2);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(2);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
@@ -92,83 +92,83 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate();
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(2);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(2);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
         [Obsolete]
         public void Handle4EventsOfSpecificEventOfUnknownSource()
         {
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource1.TestEvent), new EventHandler<EventArgs>(
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource1.TestEvent), new EventHandler<EventArgs>(
               OnTestEvent));
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource1.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource1.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(2);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(2);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
         [Obsolete]
         public void Handle4EventsOfSpecificEventOfUnknownSourceUsingActionDelegate()
         {
-            _ = this.EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(this.EventSource1.TestEvent), OnTestEvent);
-            _ = this.EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(this.EventSource1.GenericTestEvent), OnGenericTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(EventSource1.TestEvent), OnTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(EventSource1.GenericTestEvent), OnGenericTestEvent);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(2);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(2);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
         [Obsolete]
         public void Handle4EventsOfUnspecificEventOfUnknownSourceButSpecificHandler()
         {
-            _ = this.EventManager.TryRegisterGlobalObserver(new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRegisterGlobalObserver(new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(new EventHandler<EventArgs>(OnTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(2);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(2);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
         [Obsolete]
         public void Handle4EventsOfUnspecificEventOfUnknownSourceButSpecificHandlerUsingActionDelegate()
         {
-            _ = this.EventManager.TryRegisterGlobalObserver<EventArgs>(OnTestEvent);
-            _ = this.EventManager.TryRegisterGlobalObserver<TestEventArgs>(OnGenericTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<EventArgs>(OnTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<TestEventArgs>(OnGenericTestEvent);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(2);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(2);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
@@ -177,20 +177,20 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate();
 
-            _ = this.EventManager.TryRemoveObserver(
-              nameof(this.EventSource1.TestEvent),
-              this.EventSource1.GetType(),
+            _ = EventManager.TryRemoveObserver(
+              nameof(EventSource1.TestEvent),
+              EventSource1.GetType(),
               new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRemoveObserver(nameof(this.EventSource1.GenericTestEvent), this.EventSource1.GetType(), new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRemoveObserver(nameof(EventSource1.GenericTestEvent), EventSource1.GetType(), new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(1);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(1);
         }
 
         [Fact]
@@ -199,118 +199,118 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate();
 
-            _ = this.EventManager.TryRemoveObserver<EventArgs>(
-              nameof(this.EventSource1.TestEvent),
-              this.EventSource1.GetType(),
+            _ = EventManager.TryRemoveObserver<EventArgs>(
+              nameof(EventSource1.TestEvent),
+              EventSource1.GetType(),
               OnTestEvent);
-            _ = this.EventManager.TryRemoveObserver<TestEventArgs>(nameof(this.EventSource1.GenericTestEvent), this.EventSource1.GetType(), OnGenericTestEvent);
+            _ = EventManager.TryRemoveObserver<TestEventArgs>(nameof(EventSource1.GenericTestEvent), EventSource1.GetType(), OnGenericTestEvent);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(1);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(1);
         }
 
         [Fact]
         [Obsolete]
         public void HandleNoEventsAfterUnsubscribingFromSpecificEventsOfAllUnknownSource()
         {
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource1.TestEvent), new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource1.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource1.TestEvent), new EventHandler<EventArgs>(OnTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource1.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource2.TestEvent), new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource2.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource2.TestEvent), new EventHandler<EventArgs>(OnTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource2.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            _ = this.EventManager.TryRemoveGlobalObserver(
-              nameof(this.EventSource1.TestEvent),
+            _ = EventManager.TryRemoveGlobalObserver(
+              nameof(EventSource1.TestEvent),
               new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRemoveGlobalObserver(nameof(this.EventSource1.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRemoveGlobalObserver(nameof(EventSource1.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(0);
-            _ = this.GenericEventInvocationCount.Should().Be(0);
+            _ = NonGenericEventInvocationCount.Should().Be(0);
+            _ = GenericEventInvocationCount.Should().Be(0);
         }
 
         [Fact]
         [Obsolete]
         public void HandleNoEventsAfterUnsubscribingFromSpecificEventsOfAllUnknownSourceUsingActionDelegate()
         {
-            _ = this.EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(this.EventSource1.TestEvent), OnTestEvent);
-            _ = this.EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(this.EventSource1.GenericTestEvent), OnGenericTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(EventSource1.TestEvent), OnTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(EventSource1.GenericTestEvent), OnGenericTestEvent);
 
-            _ = this.EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(this.EventSource2.TestEvent), OnTestEvent);
-            _ = this.EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(this.EventSource2.GenericTestEvent), OnGenericTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(EventSource2.TestEvent), OnTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(EventSource2.GenericTestEvent), OnGenericTestEvent);
 
-            _ = this.EventManager.TryRemoveGlobalObserver<EventArgs>(
-              nameof(this.EventSource1.TestEvent),
+            _ = EventManager.TryRemoveGlobalObserver<EventArgs>(
+              nameof(EventSource1.TestEvent),
               OnTestEvent);
-            _ = this.EventManager.TryRemoveGlobalObserver<TestEventArgs>(nameof(this.EventSource1.GenericTestEvent), OnGenericTestEvent);
+            _ = EventManager.TryRemoveGlobalObserver<TestEventArgs>(nameof(EventSource1.GenericTestEvent), OnGenericTestEvent);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(0);
-            _ = this.GenericEventInvocationCount.Should().Be(0);
+            _ = NonGenericEventInvocationCount.Should().Be(0);
+            _ = GenericEventInvocationCount.Should().Be(0);
         }
 
         [Fact]
         [Obsolete]
         public void HandleNoEventsAfterUnsubscribingFromUnspecificEventOfAllUnknownSourcesButSpecificHandlers()
         {
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource1.TestEvent), new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource1.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource1.TestEvent), new EventHandler<EventArgs>(OnTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource1.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource2.TestEvent), new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRegisterGlobalObserver(nameof(this.EventSource2.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource2.TestEvent), new EventHandler<EventArgs>(OnTestEvent));
+            _ = EventManager.TryRegisterGlobalObserver(nameof(EventSource2.GenericTestEvent), new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            _ = this.EventManager.TryRemoveGlobalObserver(
+            _ = EventManager.TryRemoveGlobalObserver(
               new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRemoveGlobalObserver(new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRemoveGlobalObserver(new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(0);
-            _ = this.GenericEventInvocationCount.Should().Be(0);
+            _ = NonGenericEventInvocationCount.Should().Be(0);
+            _ = GenericEventInvocationCount.Should().Be(0);
         }
 
         [Fact]
         [Obsolete]
         public void HandleNoEventsAfterUnsubscribingFromUnspecificEventOfAllUnknownSourcesButSpecificHandlersUsingActionDelegate()
         {
-            _ = this.EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(this.EventSource1.TestEvent), OnTestEvent);
-            _ = this.EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(this.EventSource1.GenericTestEvent), OnGenericTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(EventSource1.TestEvent), OnTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(EventSource1.GenericTestEvent), OnGenericTestEvent);
 
-            _ = this.EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(this.EventSource2.TestEvent), OnTestEvent);
-            _ = this.EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(this.EventSource2.GenericTestEvent), OnGenericTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<EventArgs>(nameof(EventSource2.TestEvent), OnTestEvent);
+            _ = EventManager.TryRegisterGlobalObserver<TestEventArgs>(nameof(EventSource2.GenericTestEvent), OnGenericTestEvent);
 
-            _ = this.EventManager.TryRemoveGlobalObserver<EventArgs>(
+            _ = EventManager.TryRemoveGlobalObserver<EventArgs>(
               OnTestEvent);
-            _ = this.EventManager.TryRemoveGlobalObserver<TestEventArgs>(OnGenericTestEvent);
+            _ = EventManager.TryRemoveGlobalObserver<TestEventArgs>(OnGenericTestEvent);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(0);
-            _ = this.GenericEventInvocationCount.Should().Be(0);
+            _ = NonGenericEventInvocationCount.Should().Be(0);
+            _ = GenericEventInvocationCount.Should().Be(0);
         }
 
         [Fact]
@@ -319,16 +319,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate();
 
-            _ = this.EventManager.TryRemoveAllObservers(this.EventSource1.GetType());
+            _ = EventManager.TryRemoveAllObservers(EventSource1.GetType());
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(1);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(1);
         }
 
         [Fact]
@@ -337,16 +337,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate();
 
-            _ = this.EventManager.TryRemoveAllObservers(this.EventSource1.GetType());
+            _ = EventManager.TryRemoveAllObservers(EventSource1.GetType());
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(1);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(1);
         }
 
         [Fact]
@@ -355,16 +355,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate();
 
-            _ = this.EventManager.TryRemoveAllObservers(nameof(this.EventSource1.TestEvent));
+            _ = EventManager.TryRemoveAllObservers(nameof(EventSource1.TestEvent));
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(0);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(0);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
@@ -373,16 +373,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate();
 
-            _ = this.EventManager.TryRemoveAllObservers(nameof(this.EventSource1.TestEvent));
+            _ = EventManager.TryRemoveAllObservers(nameof(EventSource1.TestEvent));
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(0);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(0);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
@@ -391,16 +391,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate();
 
-            _ = this.EventManager.TryRemoveAllObservers(nameof(this.EventSource1.TestEvent), this.EventSource1.GetType());
+            _ = EventManager.TryRemoveAllObservers(nameof(EventSource1.TestEvent), EventSource1.GetType());
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
@@ -409,16 +409,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate();
 
-            _ = this.EventManager.TryRemoveAllObservers(nameof(this.EventSource1.TestEvent), this.EventSource1.GetType());
+            _ = EventManager.TryRemoveAllObservers(nameof(EventSource1.TestEvent), EventSource1.GetType());
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
@@ -427,16 +427,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate();
 
-            _ = this.EventManager.TryRemoveObservable(this.EventSource1, new[] { nameof(this.EventSource1.TestEvent) });
+            _ = EventManager.TryRemoveObservable(EventSource1, new[] { nameof(EventSource1.TestEvent) });
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
@@ -445,16 +445,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate();
 
-            _ = this.EventManager.TryRemoveObservable(this.EventSource1, new[] { nameof(this.EventSource1.TestEvent) });
+            _ = EventManager.TryRemoveObservable(EventSource1, new[] { nameof(EventSource1.TestEvent) });
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
@@ -463,16 +463,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate();
 
-            _ = this.EventManager.TryRemoveObservable(this.EventSource1);
+            _ = EventManager.TryRemoveObservable(EventSource1);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(1);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(1);
         }
 
         [Fact]
@@ -481,16 +481,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate();
 
-            _ = this.EventManager.TryRemoveObservable(this.EventSource1);
+            _ = EventManager.TryRemoveObservable(EventSource1);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(1);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(1);
         }
 
         [Fact]
@@ -499,16 +499,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate();
 
-            _ = this.EventManager.TryRemoveObservable(this.EventSource1, true);
+            _ = EventManager.TryRemoveObservable(EventSource1, true);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(1);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(1);
         }
 
         [Fact]
@@ -517,16 +517,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate();
 
-            _ = this.EventManager.TryRemoveObservable(this.EventSource1, true);
+            _ = EventManager.TryRemoveObservable(EventSource1, true);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(1);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(1);
         }
 
         [Fact]
@@ -535,16 +535,16 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate();
 
-            _ = this.EventManager.TryRemoveObservable(this.EventSource1, new[] { nameof(this.EventSource1.TestEvent) }, true);
+            _ = EventManager.TryRemoveObservable(EventSource1, new[] { nameof(EventSource1.TestEvent) }, true);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Fact]
@@ -553,62 +553,62 @@
         {
             RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate();
 
-            _ = this.EventManager.TryRemoveObservable(this.EventSource1, new[] { nameof(this.EventSource1.TestEvent) }, true);
+            _ = EventManager.TryRemoveObservable(EventSource1, new[] { nameof(EventSource1.TestEvent) }, true);
 
-            this.SenderType = this.EventSource1.GetType();
-            this.EventSource1.RaiseAll();
+            SenderType = EventSource1.GetType();
+            EventSource1.RaiseAll();
 
-            this.SenderType = this.EventSource2.GetType();
-            this.EventSource2.RaiseAll();
+            SenderType = EventSource2.GetType();
+            EventSource2.RaiseAll();
 
-            _ = this.NonGenericEventInvocationCount.Should().Be(1);
-            _ = this.GenericEventInvocationCount.Should().Be(2);
+            _ = NonGenericEventInvocationCount.Should().Be(1);
+            _ = GenericEventInvocationCount.Should().Be(2);
         }
 
         [Obsolete]
         private void RegisterAllEventsUsingConcreteEventSourceTypeAndExplicitDelegate()
         {
-            _ = this.EventManager.TryRegisterObserver(nameof(this.EventSource1.TestEvent), this.EventSource1.GetType(), new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRegisterObserver(nameof(this.EventSource1.GenericTestEvent), this.EventSource1.GetType(), new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRegisterObserver(nameof(EventSource1.TestEvent), EventSource1.GetType(), new EventHandler<EventArgs>(OnTestEvent));
+            _ = EventManager.TryRegisterObserver(nameof(EventSource1.GenericTestEvent), EventSource1.GetType(), new EventHandler<TestEventArgs>(OnGenericTestEvent));
 
-            _ = this.EventManager.TryRegisterObserver(nameof(this.EventSource2.TestEvent), this.EventSource2.GetType(), new EventHandler<EventArgs>(OnTestEvent));
-            _ = this.EventManager.TryRegisterObserver(nameof(this.EventSource2.GenericTestEvent), this.EventSource2.GetType(), new EventHandler<TestEventArgs>(OnGenericTestEvent));
+            _ = EventManager.TryRegisterObserver(nameof(EventSource2.TestEvent), EventSource2.GetType(), new EventHandler<EventArgs>(OnTestEvent));
+            _ = EventManager.TryRegisterObserver(nameof(EventSource2.GenericTestEvent), EventSource2.GetType(), new EventHandler<TestEventArgs>(OnGenericTestEvent));
         }
 
         [Obsolete]
         private void RegisterAllEventsUsingConcreteEventSourceTypeAndActionDelegate()
         {
-            _ = this.EventManager.TryRegisterObserver<EventArgs>(
-              nameof(this.EventSource1.TestEvent),
-              this.EventSource1.GetType(),
+            _ = EventManager.TryRegisterObserver<EventArgs>(
+              nameof(EventSource1.TestEvent),
+              EventSource1.GetType(),
               OnTestEvent);
-            _ = this.EventManager.TryRegisterObserver<TestEventArgs>(
-              nameof(this.EventSource1.GenericTestEvent),
-              this.EventSource1.GetType(),
+            _ = EventManager.TryRegisterObserver<TestEventArgs>(
+              nameof(EventSource1.GenericTestEvent),
+              EventSource1.GetType(),
               OnGenericTestEvent);
 
-            _ = this.EventManager.TryRegisterObserver<EventArgs>(
-              nameof(this.EventSource2.TestEvent),
-              this.EventSource2.GetType(),
+            _ = EventManager.TryRegisterObserver<EventArgs>(
+              nameof(EventSource2.TestEvent),
+              EventSource2.GetType(),
               OnTestEvent);
-            _ = this.EventManager.TryRegisterObserver<TestEventArgs>(
-              nameof(this.EventSource2.GenericTestEvent),
-              this.EventSource2.GetType(),
+            _ = EventManager.TryRegisterObserver<TestEventArgs>(
+              nameof(EventSource2.GenericTestEvent),
+              EventSource2.GetType(),
               OnGenericTestEvent);
         }
 
         private void OnTestEvent(object sender, EventArgs e)
         {
-            this.NonGenericEventInvocationCount++;
+            NonGenericEventInvocationCount++;
 
-            _ = sender.Should().BeOfType(this.SenderType);
+            _ = sender.Should().BeOfType(SenderType);
         }
 
         private void OnGenericTestEvent(object sender, TestEventArgs e)
         {
-            this.GenericEventInvocationCount++;
+            GenericEventInvocationCount++;
 
-            _ = sender.Should().BeOfType(this.SenderType);
+            _ = sender.Should().BeOfType(SenderType);
         }
 
         private delegate void TestEventHandler(object sender, EventArgs e);

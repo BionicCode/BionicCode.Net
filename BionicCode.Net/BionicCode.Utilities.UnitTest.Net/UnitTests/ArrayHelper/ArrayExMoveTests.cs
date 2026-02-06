@@ -13,21 +13,21 @@
 
         public ArrayExMoveTests()
         {
-            this.array = Enumerable.Range(RangeStart, ArrayLength).ToArray();
-            this.referenceArray = Enumerable.Range(RangeStart, ArrayLength).ToArray();
+            array = Enumerable.Range(RangeStart, ArrayLength).ToArray();
+            referenceArray = Enumerable.Range(RangeStart, ArrayLength).ToArray();
         }
 
         [Fact]
         public void MoveSingleElement_LastToBeginning_MustShiftAllElementsBy1()
         {
-            int[] expectedResult = this.referenceArray
+            int[] expectedResult = referenceArray
               .Select(element => element - 1)
               .ToArray();
-            expectedResult[0] = this.referenceArray.Last();
+            expectedResult[0] = referenceArray.Last();
 
-            ArrayEx.Move(ref this.array, ArrayLength - 1, 0);
+            ArrayEx.Move(ref array, ArrayLength - 1, 0);
 
-            _ = this.array.Should().BeEquivalentTo(expectedResult);
+            _ = array.Should().BeEquivalentTo(expectedResult);
         }
     }
 }

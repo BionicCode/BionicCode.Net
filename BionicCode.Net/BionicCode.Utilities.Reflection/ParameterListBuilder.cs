@@ -135,7 +135,7 @@
         }
 
         ParameterList IParameterListBuilder.Build()
-            => this._builderResult ??= new ParameterList(Build(), isIntegrityValidationEnabled: false);
+            => _builderResult ??= new ParameterList(Build(), isIntegrityValidationEnabled: false);
 
         private enum PropertyParameterSource
         {

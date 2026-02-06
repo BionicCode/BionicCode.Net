@@ -51,10 +51,10 @@
                 $"Invalid argument '{nameof(accessorKind)}'. The argument '{nameof(accessorKind)}' has an undefined value. The value '{accessorKind}' is not allowed.");
 
             indexerParameters = indexerParameters.OrEmpty();
-            this.IsIndexerPropertyAccessor = indexerParameters.HasItems;
-            this.IsPropertyAccessor = !this.IsIndexerPropertyAccessor;
+            IsIndexerPropertyAccessor = indexerParameters.HasItems;
+            IsPropertyAccessor = !IsIndexerPropertyAccessor;
 
-            if (this.IsIndexerPropertyAccessor)
+            if (IsIndexerPropertyAccessor)
             {
                 propertyName = string.Empty;
             }
@@ -80,13 +80,13 @@
                     $"Invalid argument '{nameof(methodHandle)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type of the accessor method represented by the argument '{nameof(methodHandle)}' is an interface type. Reason: Only non-interface types can provide the explicit implementation.");
             }
 
-            this.IndexerParameters = indexerParameters.OrEmpty();
-            this.MethodHandle = methodHandle;
-            this.PropertyName = propertyName;
-            this.PropertyAccessorKind = accessorKind;
-            this.MethodParameterInfoList = MethodParameterInfoList.Empty;
-            this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
-            this.IsAnonymous = false;
+            IndexerParameters = indexerParameters.OrEmpty();
+            MethodHandle = methodHandle;
+            PropertyName = propertyName;
+            PropertyAccessorKind = accessorKind;
+            MethodParameterInfoList = MethodParameterInfoList.Empty;
+            IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
+            IsAnonymous = false;
         }
 
         /// <summary>
@@ -129,10 +129,10 @@
                 $"Invalid argument '{nameof(accessorKind)}'. The argument '{nameof(accessorKind)}' has an undefined value. The value '{accessorKind}' is not allowed.");
 
             indexerParameters = indexerParameters.OrEmpty();
-            this.IsIndexerPropertyAccessor = indexerParameters.HasItems;
-            this.IsPropertyAccessor = !this.IsIndexerPropertyAccessor;
+            IsIndexerPropertyAccessor = indexerParameters.HasItems;
+            IsPropertyAccessor = !IsIndexerPropertyAccessor;
 
-            if (this.IsIndexerPropertyAccessor)
+            if (IsIndexerPropertyAccessor)
             {
                 propertyName = string.Empty;
             }
@@ -158,13 +158,13 @@
                     $"Invalid argument '{nameof(methodHandle)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type of the accessor method represented by the argument '{nameof(methodHandle)}' is an interface type. Reason: Only non-interface types can provide the explicit implementation.");
             }
 
-            this.IndexerParameters = ParameterList.Empty;
-            this.MethodHandle = methodHandle;
-            this.PropertyName = propertyName;
-            this.PropertyAccessorKind = accessorKind;
-            this.MethodParameterInfoList = indexerParameters.OrEmpty();
-            this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
-            this.IsAnonymous = false;
+            IndexerParameters = ParameterList.Empty;
+            MethodHandle = methodHandle;
+            PropertyName = propertyName;
+            PropertyAccessorKind = accessorKind;
+            MethodParameterInfoList = indexerParameters.OrEmpty();
+            IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
+            IsAnonymous = false;
         }
 
         public RuntimeMethodHandle MethodHandle { get; }
@@ -178,28 +178,28 @@
         public bool IsAnonymous { get; }
 
         public bool Equals(PropertyAccessorDescriptor other)
-            => this.MethodHandle.Equals(other.MethodHandle)
-            && this.PropertyName.Equals(other.PropertyName, StringComparison.Ordinal)
-            && this.IndexerParameters.Equals(other.IndexerParameters)
-            && this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-            && this.MethodParameterInfoList.Equals(other.MethodParameterInfoList)
-            && this.PropertyAccessorKind.Equals(other.PropertyAccessorKind)
-            && this.IsPropertyAccessor.Equals(other.IsPropertyAccessor)
-            && this.IsIndexerPropertyAccessor.Equals(other.IsIndexerPropertyAccessor)
-            && this.IsAnonymous == other.IsAnonymous;
+            => MethodHandle.Equals(other.MethodHandle)
+            && PropertyName.Equals(other.PropertyName, StringComparison.Ordinal)
+            && IndexerParameters.Equals(other.IndexerParameters)
+            && IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
+            && MethodParameterInfoList.Equals(other.MethodParameterInfoList)
+            && PropertyAccessorKind.Equals(other.PropertyAccessorKind)
+            && IsPropertyAccessor.Equals(other.IsPropertyAccessor)
+            && IsIndexerPropertyAccessor.Equals(other.IsIndexerPropertyAccessor)
+            && IsAnonymous == other.IsAnonymous;
 
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.MethodHandle);
-            hashCode.Add(this.PropertyName);
-            hashCode.Add(this.IndexerParameters);
-            hashCode.Add(this.IsIndexerPropertyAccessor);
-            hashCode.Add(this.IsExplicitInterfaceImplementation);
-            hashCode.Add(this.MethodParameterInfoList);
-            hashCode.Add(this.PropertyAccessorKind);
-            hashCode.Add(this.IsPropertyAccessor);
-            hashCode.Add(this.IsAnonymous);
+            hashCode.Add(MethodHandle);
+            hashCode.Add(PropertyName);
+            hashCode.Add(IndexerParameters);
+            hashCode.Add(IsIndexerPropertyAccessor);
+            hashCode.Add(IsExplicitInterfaceImplementation);
+            hashCode.Add(MethodParameterInfoList);
+            hashCode.Add(PropertyAccessorKind);
+            hashCode.Add(IsPropertyAccessor);
+            hashCode.Add(IsAnonymous);
 
             return hashCode.ToHashCode();
         }

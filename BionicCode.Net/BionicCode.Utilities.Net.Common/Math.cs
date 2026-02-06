@@ -160,32 +160,32 @@
     {
         public IndexedNumber(double value, int index)
         {
-            this.Value = value;
-            this.Index = index;
+            Value = value;
+            Index = index;
         }
 
         public IndexedNumber(double value)
         {
-            this.Value = value;
-            this.Index = -1;
+            Value = value;
+            Index = -1;
         }
 
         public double Value { get; private set; }
         public int Index { get; private set; }
 
-        public bool Equals(IndexedNumber other) => this.Value.Equals(other.Value) && this.Index.Equals(other.Index);
+        public bool Equals(IndexedNumber other) => Value.Equals(other.Value) && Index.Equals(other.Index);
 
         public override int GetHashCode()
         {
             int hashCode = 995152453;
-            hashCode = (hashCode * -1521134295) + this.Value.GetHashCode();
-            hashCode = (hashCode * -1521134295) + this.Index.GetHashCode();
+            hashCode = (hashCode * -1521134295) + Value.GetHashCode();
+            hashCode = (hashCode * -1521134295) + Index.GetHashCode();
             return hashCode;
         }
 
         public override bool Equals(object obj) => obj is IndexedNumber indexedNumber && Equals(indexedNumber);
-        public override string ToString() => $"ExecuteDelegate: {this.Value}; Index: {this.Index}";
-        public int CompareTo(IndexedNumber other) => this.Value.CompareTo(other.Value);
+        public override string ToString() => $"ExecuteDelegate: {Value}; Index: {Index}";
+        public int CompareTo(IndexedNumber other) => Value.CompareTo(other.Value);
 
         public static bool operator <(IndexedNumber left, IndexedNumber right) => left.CompareTo(right) < 0;
         public static bool operator <=(IndexedNumber left, IndexedNumber right) => left.CompareTo(right) <= 0;

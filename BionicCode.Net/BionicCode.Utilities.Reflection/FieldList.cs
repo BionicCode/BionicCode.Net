@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using BionicCode.Utilities.Net.Reflection.Exceptions;
 
 internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList>
 {
@@ -19,71 +18,71 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
 
     public FieldList(IEnumerable<FieldData> items)
     {
-        this.Fields = items?.ToImmutableList() ?? ImmutableList<FieldData>.Empty;
-        this._fieldNameIndex = this.Fields.ToDictionary(fieldData => fieldData.Name, StringComparer.Ordinal);
+        Fields = items?.ToImmutableList() ?? ImmutableList<FieldData>.Empty;
+        _fieldNameIndex = Fields.ToDictionary(fieldData => fieldData.Name, StringComparer.Ordinal);
 
-        if (this.HasItems)
+        if (HasItems)
         {
-            this._declaringTypeCacheKey = this.Fields.First()!.DeclaringTypeData.CacheKey;
+            _declaringTypeCacheKey = Fields.First()!.DeclaringTypeData.CacheKey;
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Fields,
-                fieldData => fieldData.DeclaringTypeData.CacheKey != this._declaringTypeCacheKey,
+                Fields,
+                fieldData => fieldData.DeclaringTypeData.CacheKey != _declaringTypeCacheKey,
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(FieldData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All fields must belong to the same declaring type.");
 
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     internal FieldList(IEnumerable<FieldData> items, bool isIntegrityValidationEnabled)
     {
-        this.Fields = items?.ToImmutableList() ?? ImmutableList<FieldData>.Empty;
-        this._fieldNameIndex = this.Fields.ToDictionary(fieldData => fieldData.Name, StringComparer.Ordinal);
-        this._declaringTypeCacheKey = this.Fields.FirstOrDefault()?.DeclaringTypeData.CacheKey ?? default;
+        Fields = items?.ToImmutableList() ?? ImmutableList<FieldData>.Empty;
+        _fieldNameIndex = Fields.ToDictionary(fieldData => fieldData.Name, StringComparer.Ordinal);
+        _declaringTypeCacheKey = Fields.FirstOrDefault()?.DeclaringTypeData.CacheKey ?? default;
 
-        if (isIntegrityValidationEnabled && this.HasItems)
+        if (isIntegrityValidationEnabled && HasItems)
         {
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Fields,
-                fieldData => fieldData.DeclaringTypeData.CacheKey != this._declaringTypeCacheKey,
+                Fields,
+                fieldData => fieldData.DeclaringTypeData.CacheKey != _declaringTypeCacheKey,
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(FieldData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All fields must belong to the same declaring type.");
 
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     private FieldList()
     {
-        this.Fields = ImmutableList<FieldData>.Empty;
-        this._fieldNameIndex = new Dictionary<string, FieldData>(0, StringComparer.Ordinal);
+        Fields = ImmutableList<FieldData>.Empty;
+        _fieldNameIndex = new Dictionary<string, FieldData>(0, StringComparer.Ordinal);
     }
 
     public bool TryGetFieldByName(string fieldName, out FieldData? fieldData)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(fieldName);
-        return this._fieldNameIndex.TryGetValue(fieldName, out fieldData!);
+        return _fieldNameIndex.TryGetValue(fieldName, out fieldData!);
     }
 
-    public int Count => this.Fields.Count;
-    public bool IsEmpty => this.Fields.IsEmpty;
-    public bool HasItems => !this.IsEmpty;
+    public int Count => Fields.Count;
+    public bool IsEmpty => Fields.IsEmpty;
+    public bool HasItems => !IsEmpty;
     public ImmutableList<FieldData> Fields { get; }
     public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
-        => this.HasItems
-            ? this._declaringTypeCacheKey
-            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeCacheKey)));
+        => HasItems
+            ? _declaringTypeCacheKey
+            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeCacheKey)));
 
     public TypeData DeclaringTypeData
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = this.DeclaringTypeCacheKey;
-            return this.HasItems
+            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
-                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeData)));
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeData)));
         }
     }
 
@@ -92,19 +91,19 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
         get
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
-            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Fields.Count, nameof(index));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Fields.Count, nameof(index));
 
-            return this.HasItems
-                ? this.Fields[index]
+            return HasItems
+                ? Fields[index]
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(FieldList), ReflectionConstants.IndexerGetMethodName));
         }
     }
 
     public IEnumerator<FieldData> GetEnumerator()
-        => ((IEnumerable<FieldData>)this.Fields).GetEnumerator();
+        => ((IEnumerable<FieldData>)Fields).GetEnumerator();
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => this.Fields.GetEnumerator();
+        => Fields.GetEnumerator();
 
     public bool Equals(FieldList? other)
     {
@@ -113,20 +112,20 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
             return false;
         }
 
-        if (this.Count != other.Count)
+        if (Count != other.Count)
         {
             return false;
         }
 
-        if (this.DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
+        if (DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
         {
             return false;
         }
 
         bool isEqual = false;
-        for (int index = 0; index < this.Count && !isEqual; index++)
+        for (int index = 0; index < Count && !isEqual; index++)
         {
-            if (!this.Fields[index].Equals(other.Fields[index]))
+            if (!Fields[index].Equals(other.Fields[index]))
             {
                 return false;
             }
@@ -138,18 +137,18 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
     public override bool Equals(object? obj)
         => obj is FieldList other && Equals(other);
 
-    public override int GetHashCode() => this._hashCode;
+    public override int GetHashCode() => _hashCode;
 
     private int ComputeHashCode()
     {
         unchecked
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.Count);
-            hashCode.Add(this.DeclaringTypeCacheKey);
-            for (int index = 0; index < this.Fields.Count; index++)
+            hashCode.Add(Count);
+            hashCode.Add(DeclaringTypeCacheKey);
+            for (int index = 0; index < Fields.Count; index++)
             {
-                hashCode.Add(this.Fields[index]);
+                hashCode.Add(Fields[index]);
             }
 
             return hashCode.ToHashCode();

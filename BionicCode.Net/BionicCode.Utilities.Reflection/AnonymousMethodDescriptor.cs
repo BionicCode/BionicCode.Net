@@ -87,15 +87,15 @@
                     $"Invalid argument '{nameof(implementingTypeHandle)}'. The argument '{nameof(implementingTypeHandle)}' points to a interface type. Reason: Only non-interface types can provide the explicit interface implementations.");
             }
 
-            this.DeclaringInterfaceTypeHandle = isExplicitInterfaceImplementation
+            DeclaringInterfaceTypeHandle = isExplicitInterfaceImplementation
                 ? implementingTypeHandle!.Value
                 : default;
-            this.ImplementingTypeHandle = declaringTypeHandle;
-            this.MethodName = methodName;
-            this.MethodParameterList = methodParameters.OrEmpty();
-            this.GenericMethodParameters = genericMethodParameters.OrEmpty();
-            this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
-            this.IsAnonymous = true;
+            ImplementingTypeHandle = declaringTypeHandle;
+            MethodName = methodName;
+            MethodParameterList = methodParameters.OrEmpty();
+            GenericMethodParameters = genericMethodParameters.OrEmpty();
+            IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
+            IsAnonymous = true;
         }
 
         public RuntimeTypeHandle ImplementingTypeHandle { get; }
@@ -107,24 +107,24 @@
         public bool IsAnonymous { get; }
 
         public bool Equals(AnonymousMethodDescriptor other)
-            => this.ImplementingTypeHandle.Equals(other.ImplementingTypeHandle)
-            && this.DeclaringInterfaceTypeHandle.Equals(other.DeclaringInterfaceTypeHandle)
-            && this.MethodName.Equals(other.MethodName, StringComparison.Ordinal)
-            && this.GenericMethodParameters.Equals(other.GenericMethodParameters)
-            && this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-            && this.MethodParameterList.Equals(other.MethodParameterList)
-            && this.IsAnonymous == other.IsAnonymous;
+            => ImplementingTypeHandle.Equals(other.ImplementingTypeHandle)
+            && DeclaringInterfaceTypeHandle.Equals(other.DeclaringInterfaceTypeHandle)
+            && MethodName.Equals(other.MethodName, StringComparison.Ordinal)
+            && GenericMethodParameters.Equals(other.GenericMethodParameters)
+            && IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
+            && MethodParameterList.Equals(other.MethodParameterList)
+            && IsAnonymous == other.IsAnonymous;
 
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.ImplementingTypeHandle);
-            hashCode.Add(this.DeclaringInterfaceTypeHandle);
-            hashCode.Add(this.MethodName);
-            hashCode.Add(this.GenericMethodParameters);
-            hashCode.Add(this.IsExplicitInterfaceImplementation);
-            hashCode.Add(this.MethodParameterList);
-            hashCode.Add(this.IsAnonymous);
+            hashCode.Add(ImplementingTypeHandle);
+            hashCode.Add(DeclaringInterfaceTypeHandle);
+            hashCode.Add(MethodName);
+            hashCode.Add(GenericMethodParameters);
+            hashCode.Add(IsExplicitInterfaceImplementation);
+            hashCode.Add(MethodParameterList);
+            hashCode.Add(IsAnonymous);
 
             return hashCode.ToHashCode();
         }

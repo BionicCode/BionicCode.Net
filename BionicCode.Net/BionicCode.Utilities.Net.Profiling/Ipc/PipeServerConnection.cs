@@ -14,15 +14,15 @@
         }
 
         public PipeServerConnection(Guid serverClientLinkId) : base(serverClientLinkId)
-          => this.Pipe = new NamedPipeServerStream(this.PipeIdString, PipeDirection.InOut, 1);
+          => Pipe = new NamedPipeServerStream(PipeIdString, PipeDirection.InOut, 1);
 
-        public override void Disconnect() => this.Pipe.Disconnect();
+        public override void Disconnect() => Pipe.Disconnect();
         public override async Task<bool> TryConnectAsync(CancellationToken cancellationToken)
         {
-            if (!this.IsConnected)
+            if (!IsConnected)
             {
                 Debug.WriteLine("Waiting for client to connect...");
-                await this.Pipe.WaitForConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await Pipe.WaitForConnectionAsync(cancellationToken).ConfigureAwait(false);
                 Debug.WriteLine("Client connected.");
                 return true;
             }
@@ -32,25 +32,25 @@
 
         public override async Task WriteToPipeAsync<TData>(IPipeMessage<TData> message)
         {
-            if (!this.IsConnected)
+            if (!IsConnected)
             {
                 throw new InvalidOperationException("Not connected to a client.");
             }
 
             string jsonRequest = JsonSerializer.Serialize(message);
-            this.Pipe.WaitForPipeDrain();
-            await this.PipeWriter.WriteLineAsync(jsonRequest).ConfigureAwait(false);
+            Pipe.WaitForPipeDrain();
+            await PipeWriter.WriteLineAsync(jsonRequest).ConfigureAwait(false);
         }
 
         protected override async Task DisposeAsync(bool disposing)
         {
-            if (!this.IsDisposed && disposing)
+            if (!IsDisposed && disposing)
             {
-                this.Pipe.Disconnect();
+                Pipe.Disconnect();
 #if NET6_0_OR_GREATER
-                await this.Pipe.DisposeAsync().ConfigureAwait(false);
+                await Pipe.DisposeAsync().ConfigureAwait(false);
 #else
-        this.Pipe.Dispose();
+        Pipe.Dispose();
 #endif
             }
 
@@ -58,7 +58,7 @@
         }
 
         private NamedPipeServerStream Pipe { get; }
-        protected override PipeStream PipeStream => this.Pipe;
-        public override bool IsConnected => this.Pipe.IsConnected;
+        protected override PipeStream PipeStream => Pipe;
+        public override bool IsConnected => Pipe.IsConnected;
     }
 }

@@ -6,8 +6,8 @@
     {
         public Pixel(double value)
         {
-            this.Value = value;
-            this.Unit = LengthUnit.Pixel;
+            Value = value;
+            Unit = LengthUnit.Pixel;
         }
 
         public static Pixel ToPixel(double value, LengthUnit unit)
@@ -34,26 +34,26 @@
             {
                 case LengthUnit.Default:
                 case LengthUnit.Millimeter:
-                    return Millimeter.FromPixel(this.Value);
+                    return Millimeter.FromPixel(Value);
                 case LengthUnit.Inch:
-                    return Inch.FromPixel(this.Value);
+                    return Inch.FromPixel(Value);
                 case LengthUnit.Point:
-                    return Point.FromPixel(this.Value);
+                    return Point.FromPixel(Value);
                 case LengthUnit.Pixel:
-                    return this.Value;
+                    return Value;
                 default:
                     throw new NotImplementedException();
             }
         }
 
         public Inch ToInch()
-          => this.Value * Inch.InchesPerPixel;
+          => Value * Inch.InchesPerPixel;
 
         public Millimeter ToMillimeter()
-          => this.Value * Millimeter.MillimetersPerPixel;
+          => Value * Millimeter.MillimetersPerPixel;
 
         public Point ToPoint()
-          => this.Value * (Inch.InchesPerPixel / Inch.InchesPerPoint);
+          => Value * (Inch.InchesPerPixel / Inch.InchesPerPoint);
 
         public static Pixel FromInch(double inch)
           => new Inch(inch);
@@ -68,27 +68,27 @@
 
         public LengthUnit Unit { get; }
 
-        public bool Equals(Pixel other) => this.Value.Equals(other.Value);
+        public bool Equals(Pixel other) => Value.Equals(other.Value);
 
         /// <inheritdoc/>
 #if NET || NETSTANDARD2_1_OR_GREATER
-        public override int GetHashCode() => HashCode.Combine(this.Value, this.Unit);
+        public override int GetHashCode() => HashCode.Combine(Value, Unit);
 #else
     public override int GetHashCode()
     {
       int hashCode = -177567199;
-      hashCode = (hashCode * -1521134295) + this.Value.GetHashCode();
-      hashCode = (hashCode * -1521134295) + this.Unit.GetHashCode();
+      hashCode = (hashCode * -1521134295) + Value.GetHashCode();
+      hashCode = (hashCode * -1521134295) + Unit.GetHashCode();
       return hashCode;
     }
 #endif
 
         public override bool Equals(object obj) => obj is Pixel value && Equals(value);
-        public override string ToString() => this.Value.ToString();
+        public override string ToString() => Value.ToString();
 
         #region IComparable
 
-        public int CompareTo(Pixel other) => this.Value.CompareTo(other.Value);
+        public int CompareTo(Pixel other) => Value.CompareTo(other.Value);
         public int CompareTo(Point other) => CompareTo(other.ToPixel());
         public int CompareTo(Inch other) => CompareTo(other.ToPixel());
         public int CompareTo(Millimeter other) => CompareTo(other.ToPixel());
@@ -110,20 +110,20 @@
         TypeCode IConvertible.GetTypeCode() => throw new NotImplementedException();
         bool IConvertible.ToBoolean(IFormatProvider provider) => throw new InvalidCastException();
         char IConvertible.ToChar(IFormatProvider provider) => throw new InvalidCastException();
-        sbyte IConvertible.ToSByte(IFormatProvider provider) => Convert.ToSByte(this.Value);
-        byte IConvertible.ToByte(IFormatProvider provider) => Convert.ToByte(this.Value);
-        short IConvertible.ToInt16(IFormatProvider provider) => Convert.ToInt16(this.Value);
-        ushort IConvertible.ToUInt16(IFormatProvider provider) => Convert.ToUInt16(this.Value);
-        int IConvertible.ToInt32(IFormatProvider provider) => Convert.ToInt32(this.Value);
-        uint IConvertible.ToUInt32(IFormatProvider provider) => Convert.ToUInt32(this.Value);
-        long IConvertible.ToInt64(IFormatProvider provider) => Convert.ToInt64(this.Value);
-        ulong IConvertible.ToUInt64(IFormatProvider provider) => Convert.ToUInt64(this.Value);
-        float IConvertible.ToSingle(IFormatProvider provider) => Convert.ToSingle(this.Value);
-        double IConvertible.ToDouble(IFormatProvider provider) => this.Value;
-        decimal IConvertible.ToDecimal(IFormatProvider provider) => Convert.ToDecimal(this.Value);
+        sbyte IConvertible.ToSByte(IFormatProvider provider) => Convert.ToSByte(Value);
+        byte IConvertible.ToByte(IFormatProvider provider) => Convert.ToByte(Value);
+        short IConvertible.ToInt16(IFormatProvider provider) => Convert.ToInt16(Value);
+        ushort IConvertible.ToUInt16(IFormatProvider provider) => Convert.ToUInt16(Value);
+        int IConvertible.ToInt32(IFormatProvider provider) => Convert.ToInt32(Value);
+        uint IConvertible.ToUInt32(IFormatProvider provider) => Convert.ToUInt32(Value);
+        long IConvertible.ToInt64(IFormatProvider provider) => Convert.ToInt64(Value);
+        ulong IConvertible.ToUInt64(IFormatProvider provider) => Convert.ToUInt64(Value);
+        float IConvertible.ToSingle(IFormatProvider provider) => Convert.ToSingle(Value);
+        double IConvertible.ToDouble(IFormatProvider provider) => Value;
+        decimal IConvertible.ToDecimal(IFormatProvider provider) => Convert.ToDecimal(Value);
         DateTime IConvertible.ToDateTime(IFormatProvider provider) => throw new InvalidCastException();
         string IConvertible.ToString(IFormatProvider provider) => ToString();
-        object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Convert.ChangeType(this.Value, conversionType, provider);
+        object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Convert.ChangeType(Value, conversionType, provider);
 
         #endregion IConvertible
 

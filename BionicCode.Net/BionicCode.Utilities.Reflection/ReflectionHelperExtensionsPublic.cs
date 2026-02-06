@@ -1,48 +1,18 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BionicCode.Utilities.Net.Reflection")]
-namespace BionicCode.Utilities.Net;
+﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
-using System.CodeDom;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.CSharp;
+using BionicCode.Utilities.Net;
 
 /// <summary>
 /// A collection of extension methods for various default constraintTypes
 /// </summary>
-public static partial class HelperExtensionsCommon
+public static partial class ReflectionHelperExtensions
 {
-    private const string ParameterSeparator = ", ";
-
-    internal static CSharpCodeProvider CodeProvider { get; } = new CSharpCodeProvider();
-    internal static Type ExtensionAttributeType { get; } = typeof(ExtensionAttribute);
-    internal static Type IsReadOnlyAttributeType { get; } = typeof(IsReadOnlyAttribute);
-
-    /// <summary>
-    /// Specifies binding flags that include all instance and static members, regardless of visibility, declared
-    /// only on the current targetType.
-    /// </summary>
-    /// <remarks>This combination of flags is typically used when reflecting over a targetType to retrieve
-    /// all of its members, including public, non-public, static, and instance members, but excluding inherited
-    /// members from base types.</remarks>
-    public const BindingFlags AllDeclaredMembersFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
-    /// <summary>
-    /// Specifies binding flags that include all instance and static members, both public and non-public, across the
-    /// entire inheritance hierarchy except for members inherited from System.Object.
-    /// </summary>
-    /// <remarks>This constant is intended for use with reflection methods that require a
-    /// comprehensive set of binding flags to access all members of a targetType, including those declared in base
-    /// classes. It does not include the DeclaredOnly flag, so inherited members are included. Members inherited
-    /// from System.Object may still be excluded depending on the reflection API used.</remarks>
-    public const BindingFlags AllMembersFullHierarchyFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
-
     /// <summary>
     /// Extension method to convert generic and non-generic symbols to a readable signature.
     /// <br/>The Signature will be generated without namespace and the declaring targetType (in case of a member), but with attributes and the resolved runtime generic targetType argument names.
@@ -733,87 +703,6 @@ public static partial class HelperExtensionsCommon
         return eventData.RuntimeSignature;
     }
 
-    internal static PooledStringBuilder AppendCustomAttributes(this PooledStringBuilder nameBuilder, IEnumerable<CustomAttributeData> attributes, bool isAppendNewLineEnabled)
-    {
-        foreach (CustomAttributeData attribute in attributes)
-        {
-            bool hasAttributeArguments = false;
-
-            if (SymbolSignatureGenerator.IgnorableParameterAttributes.Contains(attribute.AttributeType.Name))
-            {
-                continue;
-            }
-
-            _ = nameBuilder.Append('[')
-              .Append(attribute.AttributeType.Name)
-              .Append('(');
-
-            foreach (CustomAttributeTypedArgument constructorPositionalArgument in attribute.ConstructorArguments)
-            {
-                hasAttributeArguments = true;
-
-                _ = nameBuilder.Append(constructorPositionalArgument.Value.ToArgumentDisplayValue())
-                  .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-
-            foreach (CustomAttributeNamedArgument constructorNamedArgument in attribute.NamedArguments)
-            {
-                hasAttributeArguments = true;
-
-                _ = nameBuilder.Append(constructorNamedArgument.MemberName)
-                  .Append(" = ")
-                  .Append(constructorNamedArgument.TypedValue.Value.ToArgumentDisplayValue())
-                  .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-
-            if (!hasAttributeArguments)
-            {
-                // Remove trailing opening parenthesis
-                _ = nameBuilder.Remove(nameBuilder.Length - 1, 1)
-                  .Append(']');
-            }
-            else
-            {
-                // Remove trailing comma and whitespace
-                _ = nameBuilder.Remove(nameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length)
-                  .Append(')')
-                  .Append(']');
-            }
-
-            if (isAppendNewLineEnabled)
-            {
-                _ = nameBuilder.AppendLine();
-            }
-            else
-            {
-                _ = nameBuilder.Append(' ');
-            }
-        }
-
-        return nameBuilder;
-    }
-
-    internal static string ToArgumentDisplayValue(this object value)
-    {
-        switch (value)
-        {
-            case string stringValue:
-                return $"\"{stringValue}\"";
-            case char charValue:
-                return $"'{charValue}'";
-            case double doubleValue:
-                return string.Format(CultureInfo.InvariantCulture, "{0}", doubleValue);
-            case Enum enumValue:
-                return $"{value.GetType().ToDisplayName()}.{enumValue.ToString()}";
-            case Type type:
-                return $"typeof({type.ToDisplayName()})";
-            case IEnumerable enumerableValue:
-                return $"new[] {{ {string.Join(", ", enumerableValue.OfType<object>().Select(val => val.ToArgumentDisplayValue()))} }}";
-            default:
-                return value.ToString();
-        }
-    }
-
     /// <summary>
     /// Gets the access modifier for <see cref="MemberInfo"/> symbolAttributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
     /// </summary>
@@ -1223,503 +1112,6 @@ public static partial class HelperExtensionsCommon
         return eventData.FullyQualifiedDisplayName;
     }
 
-    /// <summary>
-    /// Appends a human-readable display name for the specified targetType to the provided StringBuilder instance.
-    /// </summary>
-    /// <remarks>The display name includes targetType information in a format suitable for display in user
-    /// interfaces or logs. If the targetType is a generic targetType and isGenericTypeParameterIncluded is true, the generic
-    /// targetType parameters are included in the display name.</remarks>
-    /// <param name="nameBuilder">The StringBuilder to which the display name of the targetType will be appended. Cannot be null.</param>
-    /// <param name="type">The targetType whose display name is to be appended. Cannot be null.</param>
-    /// <param name="isGenericTypeParameterIncluded">true to include generic targetType parameter names in the display name; otherwise, false. The default is true.</param>
-    /// <returns>The StringBuilder instance with the appended display name.</returns>
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
-
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded);
-        return nameBuilder;
-    }
-
-    /// <summary>
-    /// Appends a display-friendly name for the specified method to the provided StringBuilder instance.
-    /// </summary>
-    /// <remarks>This method is useful for generating human-readable representations of method
-    /// signatures, such as for logging or diagnostic purposes. The format of the display name may vary depending on
-    /// the method's characteristics and the value of isDeclaringTypeIncluded.</remarks>
-    /// <param name="nameBuilder">The StringBuilder to which the display name of the method will be appended. Cannot be null.</param>
-    /// <param name="methodInfo">The MethodInfo representing the method whose display name is to be appended. Cannot be null.</param>
-    /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
-    /// <returns>The StringBuilder instance with the method's display name appended.</returns>
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isDeclaringTypeIncluded = false)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-
-        MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    /// <summary>
-    /// Appends a display-friendly name for the specified event to the provided StringBuilder instance.
-    /// </summary>
-    /// <remarks>This method does not clear or reset the contents of the StringBuilder. It appends the
-    /// event's display name to the existing content. The format of the display name may include the declaring targetType
-    /// if isDeclaringTypeIncluded is set to true.</remarks>
-    /// <param name="nameBuilder">The StringBuilder to which the event's display name will be appended. Cannot be null.</param>
-    /// <param name="eventInfo">The EventInfo representing the event whose display name is to be appended. Cannot be null.</param>
-    /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
-    /// <returns>The same StringBuilder instance provided in nameBuilder, with the event's display name appended.</returns>
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
-
-        EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    /// <summary>
-    /// Appends the display name of the specified constructor to the provided StringBuilder instance.
-    /// </summary>
-    /// <remarks>The display name includes the constructor's signature and, optionally, the declaring
-    /// targetType if specified. This method does not clear or reset the StringBuilder; it appends to its existing
-    /// content.</remarks>
-    /// <param name="nameBuilder">The StringBuilder to which the constructor's display name will be appended. Cannot be null.</param>
-    /// <param name="constructorInfo">The ConstructorInfo representing the constructor whose display name is to be appended. Cannot be null.</param>
-    /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
-    /// <returns>The StringBuilder instance with the constructor's display name appended.</returns>
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
-
-        ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    /// <summary>
-    /// Appends a display-friendly name for the specified property to the provided StringBuilder instance.
-    /// </summary>
-    /// <remarks>This method is useful for generating human-readable representations of property
-    /// names, such as for logging or UI display. The format of the display name may vary depending on whether the
-    /// declaring targetType is included.</remarks>
-    /// <param name="nameBuilder">The StringBuilder to which the property's display name will be appended. Cannot be null.</param>
-    /// <param name="propertyInfo">The PropertyInfo representing the property whose display name is to be appended. Cannot be null.</param>
-    /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
-    /// <returns>The same StringBuilder instance provided in nameBuilder, with the property's display name appended.</returns>
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
-
-        PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    /// <summary>
-    /// Appends a display-friendly name for the specified parameter to the provided StringBuilder instance.
-    /// </summary>
-    /// <param name="nameBuilder">The StringBuilder to which the display name will be appended. Cannot be null.</param>
-    /// <param name="parameterInfo">The ParameterInfo representing the parameter whose display name is to be appended. Cannot be null.</param>
-    /// <returns>The same StringBuilder instance with the display name of the parameter appended.</returns>
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
-
-        ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, parameterData);
-        return nameBuilder;
-    }
-
-    /// <summary>
-    /// Appends the display name of the specified field to the provided StringBuilder instance.
-    /// </summary>
-    /// <remarks>The display name includes the field's name and, optionally, its declaring targetType if
-    /// isDeclaringTypeIncluded is set to true. This method does not clear or reset the StringBuilder; it appends to
-    /// its existing content.</remarks>
-    /// <param name="nameBuilder">The StringBuilder to which the display name will be appended. Cannot be null.</param>
-    /// <param name="fieldInfo">The FieldInfo representing the field whose display name is to be appended. Cannot be null.</param>
-    /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
-    /// <returns>The same StringBuilder instance with the field's display name appended.</returns>
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
-
-        FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    /// <summary>
-    /// Appends the fully qualified display name of the specified targetType to the provided StringBuilder instance.
-    /// </summary>
-    /// <remarks>This method appends the namespace and targetType name, including generic targetType parameters if
-    /// specified, to the end of the provided StringBuilder. The method does not clear or modify the existing
-    /// contents of the StringBuilder except to append the targetType's display name.</remarks>
-    /// <param name="nameBuilder">The StringBuilder to which the fully qualified display name will be appended. Cannot be null.</param>
-    /// <param name="type">The targetType whose fully qualified display name is to be appended. Cannot be null.</param>
-    /// <param name="isGenericTypeParameterIncluded">true to include generic targetType parameter names in the display name; otherwise, false. The default is true.</param>
-    /// <returns>The StringBuilder instance with the fully qualified display name of the specified targetType appended.</returns>
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
-
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded);
-        return nameBuilder;
-    }
-
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isDeclaringTypeIncluded = true)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-
-        MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, methodData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = true)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
-
-        EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = true)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
-
-        ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = true)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
-
-        PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
-
-        ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, parameterData);
-        return nameBuilder;
-    }
-
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = true)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-        ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
-
-        FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
-        using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
-        _ = AppendDisplayNameInternal(pooledStringBuilder, fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
-        return nameBuilder;
-    }
-
-    internal static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, TypeData typeData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded)
-    {
-        Type type = typeData.UnwrapType();
-        if (typeData.IsByRef)
-        {
-            typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type.GetElementType());
-            type = typeData.UnwrapType();
-        }
-
-        var typeReference = new CodeTypeReference(type);
-        ReadOnlySpan<char> typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference).AsSpan();
-
-        if (typeData.IsGenericType)
-        {
-            int startIndexOfGenericTypeParameters = typeName.IndexOf('<');
-            typeName = typeName[..startIndexOfGenericTypeParameters];
-        }
-
-        if (!isFullyQualifiedName)
-        {
-            int startIndexOfUnqualifiedTypeName = typeName.LastIndexOf('.') + 1;
-            if (startIndexOfUnqualifiedTypeName > 0)
-            {
-                typeName = typeName[startIndexOfUnqualifiedTypeName..];
-            }
-        }
-
-        _ = nameBuilder.Append(typeName.ToArray());
-
-        if (isGenericTypeParameterIncluded && typeData.IsGenericType)
-        {
-            _ = nameBuilder.AppendGenericTypeArguments(typeData, isFullyQualifiedName);
-        }
-
-        return nameBuilder;
-    }
-
-    internal static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, ParameterData parameterData)
-    {
-        _ = nameBuilder.Append(parameterData.Name);
-        if (parameterData.IsOptional)
-        {
-            _ = nameBuilder.Append(" = ");
-
-            object defaultValue = parameterData.DefaultValue;
-            _ = defaultValue switch
-            {
-                string stringValue => nameBuilder.Append(CultureInfo.InvariantCulture, $"""{stringValue}"""),
-                char charValue => nameBuilder.Append(CultureInfo.InvariantCulture, $"'{charValue}'"),
-                null => nameBuilder.Append("null"),
-                bool boolValue => nameBuilder.Append(boolValue ? "true" : "false"),
-                _ => nameBuilder.Append(defaultValue.ToString()),
-            };
-        }
-
-        return nameBuilder;
-    }
-
-    internal static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, MemberData memberInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
-    {
-        if (isFullyQualifiedName || isDeclaringTypeIncluded)
-        {
-            _ = nameBuilder.AppendDisplayNameInternal(memberInfoData.DeclaringTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
-              .Append('.');
-        }
-
-        if (memberInfoData.SymbolAttributes.HasFlag(SymbolAttributes.Constructor))
-        {
-            _ = nameBuilder.AppendDisplayNameInternal(memberInfoData.DeclaringTypeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: false);
-        }
-        else if (memberInfoData is PropertyData propertyData)
-        {
-            _ = nameBuilder.Append(propertyData.Name);
-
-            if (propertyData.IsIndexer)
-            {
-                _ = nameBuilder.Append('[');
-
-                foreach (ParameterData indexerParameter in propertyData.PropertyGetMethodParameters)
-                {
-                    _ = nameBuilder.Append(indexerParameter.ParameterTypeData.ShortDisplayName);
-                }
-
-                _ = nameBuilder.Append(']');
-            }
-        }
-        else
-        {
-            _ = nameBuilder.Append(memberInfoData.Name);
-
-            if (isGenericTypeParameterIncluded
-              && memberInfoData.SymbolAttributes.HasFlag(SymbolAttributes.GenericMethod)
-              && memberInfoData is MethodData methodData)
-            {
-                _ = nameBuilder.AppendGenericTypeArguments(methodData, isFullyQualifiedName);
-            }
-        }
-
-        return nameBuilder;
-    }
-
-    internal static PooledStringBuilder AppendGenericTypeArguments(this PooledStringBuilder nameBuilder, MethodData methodData, bool isFullyQualified)
-    {
-        if (!methodData.IsGenericMethod)
-        {
-            return nameBuilder;
-        }
-
-        // Could be an open generic valueType. Therefore we need to obtain all definitions.
-        TypeList genericTypeArguments = methodData.GenericMethodParameters;
-        TypeList genericTypeParameterDefinitions = methodData.IsGenericMethodDefinition
-          ? methodData.GenericMethodParameters
-          : TypeList.Empty;
-
-        AppendGenericParameters(nameBuilder, isFullyQualified, genericTypeParameterDefinitions, genericTypeArguments);
-        return nameBuilder;
-    }
-
-    internal static PooledStringBuilder AppendGenericTypeArguments(this PooledStringBuilder nameBuilder, TypeData typeData, bool isFullyQualified)
-    {
-        if (!typeData.IsGenericType)
-        {
-            return nameBuilder;
-        }
-
-        // Could be an open generic valueType. Therefore we need to obtain all definitions.
-        TypeList genericTypeArguments = typeData.GenericTypeArguments;
-        TypeList genericTypeParameterDefinitions = typeData.IsGenericTypeDefinition
-          ? typeData.GenericTypeArguments
-          : TypeList.Empty;
-
-        AppendGenericParameters(nameBuilder, isFullyQualified, genericTypeParameterDefinitions, genericTypeArguments);
-        return nameBuilder;
-    }
-
-    private static void AppendGenericParameters(PooledStringBuilder nameBuilder, bool isFullyQualified, TypeList genericTypeParameterDefinitions, TypeList genericTypeArguments)
-    {
-        _ = nameBuilder.Append('<');
-        for (int typeArgumentIndex = 0; typeArgumentIndex < genericTypeArguments.Count; typeArgumentIndex++)
-        {
-            TypeData genericParameterTypeData = genericTypeArguments[typeArgumentIndex];
-            if (genericTypeParameterDefinitions.Count > 0)
-            {
-                TypeData genericTypeParameterDefinitionData = genericTypeParameterDefinitions[typeArgumentIndex];
-                if ((genericTypeParameterDefinitionData.GenericParameterAttributes & GenericParameterAttributes.Covariant) != 0)
-                {
-                    _ = nameBuilder.Append("out")
-                      .Append(' ');
-                }
-                else if ((genericTypeParameterDefinitionData.GenericParameterAttributes & GenericParameterAttributes.Contravariant) != 0)
-                {
-                    _ = nameBuilder.Append("in")
-                      .Append(' ');
-                }
-            }
-
-            _ = nameBuilder.AppendDisplayNameInternal(genericParameterTypeData, isFullyQualified, isGenericTypeParameterIncluded: true)
-              .Append(HelperExtensionsCommon.ParameterSeparator);
-        }
-
-        // Remove trailing comma and whitespace
-        _ = nameBuilder.Remove(nameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length)
-          .Append('>');
-    }
-
-    internal static PooledStringBuilder AppendGenericTypeConstraints(this PooledStringBuilder constraintBuilder, TypeList genericTypeDefinitionsData, bool isFullyQualified, bool isSingleLine, ReadOnlySpan<char> lineIndentation)
-    {
-        bool hasSingleNewLine = false;
-        for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Count; genericTypeArgumentIndex++)
-        {
-            TypeData genericTypeDefinitionData = genericTypeDefinitionsData[genericTypeArgumentIndex];
-            TypeList constraints = genericTypeDefinitionData.GenericParameterConstraintsData;
-            if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None
-              && constraints.Count == 0)
-            {
-                continue;
-            }
-
-            if (isSingleLine)
-            {
-                if (!hasSingleNewLine)
-                {
-                    _ = constraintBuilder.AppendLine()
-                    .Append(lineIndentation);
-                    hasSingleNewLine = true;
-                }
-                else
-                {
-                    _ = constraintBuilder.Append(' ');
-                }
-            }
-            else
-            {
-                _ = constraintBuilder.AppendLine()
-                  .Append(lineIndentation);
-            }
-
-            _ = constraintBuilder.Append("where")
-              .Append(' ')
-              .Append(genericTypeDefinitionData.Name)
-              .Append(" : ");
-
-            if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
-            {
-                _ = constraintBuilder.Append("class")
-                  .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-
-            if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
-            {
-                _ = constraintBuilder.Append("struct")
-                  .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-
-            foreach (TypeData constraintData in constraints)
-            {
-                _ = constraintBuilder.AppendDisplayNameInternal(constraintData, isFullyQualified, isGenericTypeParameterIncluded: true)
-                  .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-
-            if (!genericTypeDefinitionData.IsValueType && (genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
-            {
-                _ = constraintBuilder.Append("new()")
-                  .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-
-            _ = constraintBuilder.Remove(constraintBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
-        }
-
-        return constraintBuilder;
-    }
-
-    internal static PooledStringBuilder AppendInheritanceSignature(this PooledStringBuilder memberNameBuilder, TypeData typeData, bool isFullyQualified)
-    {
-        if (typeData.IsDelegate)
-        {
-            return memberNameBuilder;
-        }
-
-        bool isSubclass = typeData.IsSubclass;
-        TypeList interfaces = typeData.InterfacesData;
-        bool hasInterfaces = interfaces.Count > 0;
-        if (isSubclass || hasInterfaces)
-        {
-            _ = memberNameBuilder.Append(" : ");
-        }
-
-        if (isSubclass)
-        {
-            _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseTypeData.UnwrapType().FullName : typeData.BaseTypeData.Name)
-              .Append(HelperExtensionsCommon.ParameterSeparator);
-        }
-
-        foreach (TypeData interfaceData in interfaces)
-        {
-            _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.UnwrapType().FullName : interfaceData.Name)
-              .Append(HelperExtensionsCommon.ParameterSeparator);
-        }
-
-        if (isSubclass || hasInterfaces)
-        {
-            _ = memberNameBuilder.Remove(memberNameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
-        }
-
-        return memberNameBuilder;
-    }
-
     // TODO::Test if checking get() is enough to determine if a property is overridden
     /// <summary>
     /// Determines whether the specified targetType represents a delegate targetType.
@@ -1775,7 +1167,11 @@ public static partial class HelperExtensionsCommon
     }
 
     public static bool IsPropertyIndexer(this PropertyInfo propertyInfo)
-        => propertyInfo.GetIndexParameters().Length != 0;
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo);
+
+        return propertyInfo.GetIndexParameters().Length != 0;
+    }
 
     /// <summary>
     /// Checks whether the provided <see cref="MethodBase"/> represents the setter accessor of an indexer property.
@@ -1793,7 +1189,11 @@ public static partial class HelperExtensionsCommon
     /// The default is <see langword="false"/>.</param>
     /// <returns><see langword="true"/> if the method associates with an indexer property's setter. Otherwise, <see langword="false"/>.</returns>
     public static bool IsIndexerPropertySetter(this MethodInfo methodInfo, bool isValidationEnabled = false)
-        => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsIndexerPropertySetMethod;
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
+
+        return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsIndexerPropertySetMethod;
+    }
 
     /// <summary>
     /// Checks whether the provided <see cref="MethodBase"/> represents the getter accessor of an indexer property.
@@ -1811,7 +1211,11 @@ public static partial class HelperExtensionsCommon
     /// The default is <see langword="false"/>.</param>
     /// <returns><see langword="true"/> if the method associates with an indexer property's setter. Otherwise, <see langword="false"/>.</returns>
     public static bool IsIndexerPropertyGetter(this MethodInfo methodInfo, bool isValidationEnabled = false)
-        => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsIndexerPropertyGetMethod;
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
+
+        return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsIndexerPropertyGetMethod;
+    }
 
     /// <summary>
     /// Determines whether the specified method represents a non-indexer property setter.
@@ -1821,7 +1225,11 @@ public static partial class HelperExtensionsCommon
     /// <param name="methodInfo">The method to evaluate. Typically obtained from reflection on a type's members.</param>
     /// <returns>true if the method is a property setter for a non-indexer property; otherwise, false.</returns>
     public static bool IsPropertySetter(this MethodInfo methodInfo)
-        => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsPropertySetMethod;
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
+
+        return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsPropertySetMethod;
+    }
 
     /// <summary>
     /// Determines whether the specified method represents a property getter.
@@ -1833,42 +1241,49 @@ public static partial class HelperExtensionsCommon
     public static bool IsPropertyGetter(this MethodInfo methodInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
+
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsPropertyGetMethod;
     }
 
     public static bool IsEventAccessor(this MethodInfo methodInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
+
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsEventAccessorMethod;
     }
 
     public static bool IsEventAddAccessor(this MethodInfo methodInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
+
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsEventAddMethod;
     }
 
     public static bool IsEventRemoveAccessor(this MethodInfo methodInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
+
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsEventRemoveMethod;
     }
 
     public static bool IsOperatorOverload(this MethodInfo methodInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
+
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsOperatorOverload;
     }
 
     public static bool IsDelegateMethod(this MethodInfo methodInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
+
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsDelegateMethod;
     }
 
     public static bool IsDelegateInvokeMethod(this MethodInfo methodInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
+
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsDelegateInvokeMethod;
     }
 
@@ -1881,6 +1296,7 @@ public static partial class HelperExtensionsCommon
     public static bool IsDelegateEndInvokeMethod(this MethodInfo methodInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
+
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsDelegateEndInvokeMethod;
     }
 
@@ -2045,38 +1461,6 @@ public static partial class HelperExtensionsCommon
         return methodData.IsExtensionMethod;
     }
 
-    internal static bool IsExtensionMethodInternalUncached(MethodInfo methodInfo)
-    {
-        // Check if the declaring class satisfies the constraints to declare extension methods
-        Type declaringType = methodInfo.DeclaringType;
-        if (!declaringType.CanDeclareExtensionMethods())
-        {
-            return false;
-        }
-
-        /* Check if the method satisfies the constraints to act as an extension methods */
-
-        if (!methodInfo.IsStatic)
-        {
-            return false;
-        }
-
-        Attribute methodExtensionAttribute = methodInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
-        if (methodExtensionAttribute == null)
-        {
-            return false;
-        }
-
-        // Must have at least the 'this' parameter
-        ParameterInfo[] parameterInfoData = methodInfo.GetParameters();
-        if (parameterInfoData.Length < 1)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     /// <summary>
     /// Determines whether the specified method is an extension method whose first parameter is compatible with the
     /// given instance targetType.
@@ -2138,10 +1522,10 @@ public static partial class HelperExtensionsCommon
             return false;
         }
 
-        ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-        if (parameterInfos.Length > 0)
+        ParameterInfo[] parameters = methodInfo.GetParameters();
+        if (parameters.Length > 0)
         {
-            ParameterInfo firstParameterInfo = parameterInfos[0];
+            ParameterInfo firstParameterInfo = parameters[0];
             if (firstParameterInfo.ParameterType.IsAssignableFrom(typeToExtend))
             {
                 return true;
@@ -2171,94 +1555,6 @@ public static partial class HelperExtensionsCommon
         return fieldData.IsReadonly;
     }
 
-    //public static object GetAwaiter(this object obj)
-    //{
-    //  MethodInfo getAwaiterMethodInfo = obj.GetType().GetMethod(nameof(Task.GetAwaiter));
-    //  if (getAwaiterMethodInfo != null)
-    //  {
-    //    return (Task)getAwaiterMethodInfo.Invoke(obj, null);
-    //  }
-
-    //  // The return valueType of the method is not directly returning an awaitable valueType.
-    //  // So search for an extension method named "GetAwaiter" for the return valueType that effectively converts the valueType into an awaitable object.
-    //  foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-    //  {
-    //    foreach (TypeInfo targetType in assembly.GetExportedTypes())
-    //    {
-    //      if (!targetType.IsSealed || targetType.IsGenericType)
-    //      {
-    //        continue;
-    //      }
-
-    //      getAwaiterMethodInfo = targetType.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public, null, new[] { obj.GetType() }, null);
-    //      if (getAwaiterMethodInfo != null)
-    //      {
-    //        return (Task)getAwaiterMethodInfo.Invoke(obj, null);
-    //      }
-
-    //      //foreach (MethodInfo extensionMethodCandidate in targetType.GetMethods(BindingFlags.Static | BindingFlags.Public))
-    //      //{
-    //      //  if (!extensionMethodCandidate.EventName.Equals(nameof(Task.GetAwaiter), StringComparison.Ordinal))
-    //      //  {
-    //      //    continue;
-    //      //  }
-
-    //      //  ParameterInfo[] parameterInfos = extensionMethodCandidate.GetParameters();
-    //      //  if (parameterInfos.Length == 1 && parameterInfos[0].ParameterType == getAwaiterMethodInfo.ReturnType)
-    //      //  {
-    //      //    return true;
-    //      //  }
-    //      //}
-    //    }
-    //  }
-
-    //  return null;
-    //}
-
-    //private static MethodData? CastMethodData;
-    ///// <summary>
-    ///// Casts the specified source object to the given target type at runtime using reflection.
-    ///// </summary>
-    ///// <remarks>This method performs a dynamic cast at runtime by locating and invoking a generic
-    ///// cast method via reflection. Use this method when the target type is not known at compile time. Both the
-    ///// source object and target type must be non-null. The returned object should be used with care, as runtime
-    ///// casting errors may occur if the types are incompatible.</remarks>
-    ///// <typeparam name="TSource">The type of the source object to cast.</typeparam>
-    ///// <param name="source">The object instance to cast to the specified target type. Cannot be null.</param>
-    ///// <param name="targetType">The type to which the source object will be cast. Cannot be null.</param>
-    ///// <returns>A dynamic object representing the source cast to the specified target type.</returns>
-    ///// <exception cref="InvalidOperationException">Thrown if the generic cast method cannot be located in the HelperExtensionsCommon type.</exception>
-    //public static object Cast<TSource>(this TSource source, Type targetType)
-    //{
-    //    ArgumentNullExceptionAdvanced.ThrowIfNull(source, nameof(source));
-    //    ArgumentNullExceptionAdvanced.ThrowIfNull(targetType, nameof(targetType));
-
-    //    if (HelperExtensionsCommon.CastMethodData is null)
-    //    {
-    //        TypeData reflectionExtensionsTypeData = SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(typeof(HelperExtensionsCommon));
-    //        foreach (MethodData methodData in reflectionExtensionsTypeData.EnumerateMethods())
-    //        {
-    //            if (methodData.Name.Equals(nameof(HelperExtensionsCommon.Cast), StringComparison.Ordinal)
-    //            && methodData.IsGenericMethodDefinition
-    //            && methodData.Types.Count == 1
-    //            && methodData.Types.GenericTypeParameterCount == 2)
-    //            {
-    //                HelperExtensionsCommon.CastMethodData = methodData;
-    //                break;
-    //            }
-    //        }
-    //    }
-
-    //    MethodData finalizedCastMethodData = HelperExtensionsCommon.CastMethodData?.MakeGenericMethodData(source.GetType(), targetType);
-    //    return finalizedCastMethodData.Invoke<TSource, TSource[], TResult>(source, [source]) ?? throw new InvalidOperationException($"Failed to locate generic method '{nameof(HelperExtensionsCommon.Cast)}' in type '{typeof(HelperExtensionsCommon).FullName}'.");
-    //}
-
-    //// Reflection-invoked generic method for dynamic casting
-    //private static TDestination Cast<TSource, TDestination>(this TSource obj)
-    //    => obj is TDestination destination
-    //    ? destination
-    //    : throw new InvalidCastException($"Cannot cast object of targetType '{typeof(TSource).FullName}' to targetType '{typeof(TDestination).FullName}'.");
-
     /// <summary>
     /// Converts the specified string to an HTML-encoded representation suitable for display in web pages.
     /// </summary>
@@ -2267,14 +1563,18 @@ public static partial class HelperExtensionsCommon
     /// injection when rendering user-supplied text in HTML content.</remarks>
     /// <param name="text">The input string to encode. Can be null or empty.</param>
     /// <returns>A string containing the HTML-encoded representation of the input. If the input is null, returns null.</returns>
-    internal static string ToHtmlEncodedString(this string text)
-      => text.Replace("&", "&amp;", StringComparison.OrdinalIgnoreCase)
-      .Replace("<", "&lt;", StringComparison.OrdinalIgnoreCase)
-      .Replace(">", "&gt;", StringComparison.OrdinalIgnoreCase)
-      .Replace("\"", "&quot;", StringComparison.OrdinalIgnoreCase)
-      .Replace("'", "&apos;", StringComparison.OrdinalIgnoreCase)
-      .Replace(System.Environment.NewLine, "<br>", StringComparison.OrdinalIgnoreCase)
-      .Replace(" ", "&nbsp;", StringComparison.OrdinalIgnoreCase);
+    public static string ToHtmlEncodedString(this string text)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(text);
+
+        return text.Replace("&", "&amp;", StringComparison.OrdinalIgnoreCase)
+          .Replace("<", "&lt;", StringComparison.OrdinalIgnoreCase)
+          .Replace(">", "&gt;", StringComparison.OrdinalIgnoreCase)
+          .Replace("\"", "&quot;", StringComparison.OrdinalIgnoreCase)
+          .Replace("'", "&apos;", StringComparison.OrdinalIgnoreCase)
+          .Replace(System.Environment.NewLine, "<br>", StringComparison.OrdinalIgnoreCase)
+          .Replace(" ", "&nbsp;", StringComparison.OrdinalIgnoreCase);
+    }
 
     /// <summary>
     /// Returns a read-only span containing the HTML-encoded representation of the specified string.
@@ -2282,9 +1582,13 @@ public static partial class HelperExtensionsCommon
     /// <param name="text">The input string to encode as HTML. Can be null or empty.</param>
     /// <returns>A read-only span of characters containing the HTML-encoded form of the input string. If the input is null or
     /// empty, the returned span will be empty.</returns>
-    internal static ReadOnlySpan<char> ToHtmlEncodedReadOnlySpan(this string text)
-      => text.ToHtmlEncodedString()
-      .AsSpan();
+    public static ReadOnlySpan<char> ToHtmlEncodedReadOnlySpan(this string text)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(text);
+
+        return text.ToHtmlEncodedString()
+          .AsSpan();
+    }
 
     /// <summary>
     /// Converts the specified character to its corresponding HTML-encoded string representation.
@@ -2343,28 +1647,34 @@ public static partial class HelperExtensionsCommon
     /// <param name="character">The character to encode as HTML.</param>
     /// <returns>A read-only span of characters containing the HTML-encoded form of the input character. If the character
     /// does not require encoding, the span contains the original character.</returns>
-    internal static ReadOnlySpan<char> ToHtmlEncodedReadOnlySpan(this char character)
-      => character.ToHtmlEncodedString()
-      .AsSpan();
+    public static ReadOnlySpan<char> ToHtmlEncodedReadOnlySpan(this char character)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(character);
+
+        return character.ToHtmlEncodedString()
+          .AsSpan();
+    }
 
     /// <summary>
-    /// Inserts HTML <wbr> elements into the specified text to indicate potential line break opportunities based on
+    /// Inserts HTML &lt;wbr&gt; elements into the specified text to indicate potential line break opportunities based on
     /// the given wrap style and delimiters.
     /// </summary>
     /// <remarks>This method is intended for generating HTML output that allows browsers to break long
-    /// words or identifiers at appropriate locations. The inserted <wbr> elements are safe for use in HTML and do
+    /// words or identifiers at appropriate locations. The inserted &lt;wbr&gt; elements are safe for use in HTML and do
     /// not affect the visible content.</remarks>
     /// <param name="text">The input string to process for line break opportunities.</param>
-    /// <param name="wrapStyle">The strategy used to determine where to insert <wbr> elements, such as wrapping at casing changes or at
+    /// <param name="wrapStyle">The strategy used to determine where to insert &lt;wbr&gt; elements, such as wrapping at casing changes or at
     /// specified delimiters.</param>
-    /// <param name="delimiters">A set of characters at which to consider inserting <wbr> elements. If empty, only the wrap style is used.</param>
-    /// <returns>A string containing the original text with <wbr> elements inserted at positions determined by the wrap style
+    /// <param name="delimiters">A set of characters at which to consider inserting &lt;wbr&gt; elements. If empty, only the wrap style is used.</param>
+    /// <returns>A string containing the original text with &lt;wbr&gt; elements inserted at positions determined by the wrap style
     /// and delimiters.</returns>
-    internal static string ToWrappingHtml(this string text, WrapStyle wrapStyle, params char[] delimiters)
+    public static string ToWrappingHtml(this string text, WrapStyle wrapStyle, params char[] delimiters)
     {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(text);
+
         bool isWrappingAtCasing = wrapStyle is WrapStyle.Casing;
         var delimiterSet = new HashSet<char>(delimiters);
-        PooledStringBuilder resultBuilder = StringBuilderFactory.GetOrCreate(text);
+        using PooledStringBuilder resultBuilder = PooledStringBuilder.GetOrCreate(text);
         for (int characterIndex = text.Length - 1; characterIndex >= 0; characterIndex--)
         {
             bool hasNextCharacter = resultBuilder.Length > characterIndex + 1;
@@ -2381,308 +1691,7 @@ public static partial class HelperExtensionsCommon
         }
 
         string result = resultBuilder.ToString();
-        resultBuilder.Recycle();
 
         return result;
-    }
-
-    /// <summary>
-    /// Appends an HTML-formatted representation of the specified symbol component, including attributes, modifiers,
-    /// targetType, name, parameters, and constraints, to the provided string builder.
-    /// </summary>
-    /// <remarks>The generated HTML includes semantic CSS classes for syntax highlighting and is
-    /// intended for use in documentation or code display scenarios. The method does not encode user-provided
-    /// values; callers should ensure that all symbol component data is safe for HTML output.</remarks>
-    /// <param name="signatureBuilder">The string builder to which the HTML-formatted symbol signature will be appended.</param>
-    /// <param name="symbolComponentInfo">The symbol component information describing the structure and metadata to render as inline HTML.</param>
-    /// <returns>The same <see cref="PooledStringBuilder"/> instance with the appended HTML-formatted symbol signature.</returns>
-    internal static PooledStringBuilder AppendInlineHtml(this PooledStringBuilder signatureBuilder, SymbolComponentInfo symbolComponentInfo)
-    {
-        if (symbolComponentInfo.CustomAttributes.Any())
-        {
-            foreach (SymbolComponentInfo attribute in symbolComponentInfo.CustomAttributes)
-            {
-                _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">[</span>")
-                  .Append($"<span class=\"syntax-targetType\">")
-                  .Append(attribute.Name);
-
-                bool hasConstructorArgs = symbolComponentInfo.CustomAttributeConstructorArgs.Any();
-                bool hasNamedArgs = symbolComponentInfo.CustomAttributeNamedArgs.Any();
-                bool hasArguments = hasConstructorArgs || hasNamedArgs;
-                if (hasArguments)
-                {
-                    _ = signatureBuilder.Append('(');
-                }
-
-                if (hasConstructorArgs)
-                {
-                    _ = signatureBuilder.AppendJoin(", ", symbolComponentInfo.CustomAttributeConstructorArgs);
-                }
-
-                if (hasNamedArgs)
-                {
-                    _ = signatureBuilder.Append(' ');
-                    foreach ((string PropertyName, string PropertyValue) in symbolComponentInfo.CustomAttributeNamedArgs)
-                    {
-                        _ = signatureBuilder.Append(PropertyName)
-                          .Append(" = ")
-                          .Append(PropertyValue)
-                          .Append(", ");
-                    }
-
-                    _ = signatureBuilder.Remove(signatureBuilder.Length - 2, 2);
-                }
-
-                if (hasArguments)
-                {
-                    _ = signatureBuilder.Append($"<span class=\"syntax-targetType\">")
-                      .Append(')');
-                }
-
-                _ = signatureBuilder.Append("</span>")
-                  .Append($"<span class=\"syntax-delimiter\">]</span>");
-
-                if (symbolComponentInfo.HasInlineAttributes)
-                {
-                    _ = signatureBuilder.Append(' ');
-                }
-                else
-                {
-                    _ = signatureBuilder.Append("<br>");
-                }
-            }
-        }
-
-        if (!symbolComponentInfo.IsParameter && symbolComponentInfo.Modifiers.Any())
-        {
-            _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">");
-            foreach (string modifier in symbolComponentInfo.Modifiers)
-            {
-                _ = signatureBuilder.Append(modifier)
-                  .Append(' ');
-            }
-
-            _ = signatureBuilder.Append($"</span>");
-        }
-
-        if (symbolComponentInfo.ReturnType != null)
-        {
-            _ = signatureBuilder.AppendInlineHtml(symbolComponentInfo.ReturnType)
-                .Append(' ');
-        }
-
-        if (symbolComponentInfo.Name.Length > 0)
-        {
-            if (symbolComponentInfo.IsKeyword)
-            {
-                _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">");
-            }
-            else if (symbolComponentInfo.IsSymbol && !symbolComponentInfo.IsParameter)
-            {
-                _ = signatureBuilder.Append($"<span class=\"syntax-symbol\">");
-            }
-            else
-            {
-                _ = signatureBuilder.Append($"<span class=\"syntax-targetType\">");
-            }
-
-            _ = signatureBuilder.Append(symbolComponentInfo.Name)
-              .Append("</span>");
-        }
-
-        if (symbolComponentInfo.ValueName.Length > 0)
-        {
-            _ = signatureBuilder.Append($"<span class=\"syntax-value\">")
-              .Append(' ')
-              .Append(symbolComponentInfo.ValueName)
-              .Append("</span>");
-        }
-
-        if (symbolComponentInfo.IsIndexer)
-        {
-            _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">")
-              .Append("this").
-              Append("</span>");
-        }
-
-        if (symbolComponentInfo.GenericTypeParameters.Any())
-        {
-            _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">")
-              .Append('<'.ToHtmlEncodedReadOnlySpan())
-              .Append("</span>")
-              .Append($"<span class=\"syntax-targetType\">");
-
-            foreach (SymbolComponentInfo typeParameter in symbolComponentInfo.GenericTypeParameters)
-            {
-                _ = signatureBuilder.AppendInlineHtml(typeParameter)
-                  .Append(',')
-                  .Append(' ');
-            }
-
-            _ = signatureBuilder.Remove(signatureBuilder.Length - 2, 2)
-              .Append("</span>")
-              .Append($"<span class=\"syntax-delimiter\">")
-              .Append('>'.ToHtmlEncodedReadOnlySpan())
-              .Append("</span>");
-        }
-
-        if (symbolComponentInfo.Parameters.Any())
-        {
-            _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">");
-            if (symbolComponentInfo.IsIndexer)
-            {
-                _ = signatureBuilder.Append('['.ToHtmlEncodedReadOnlySpan());
-            }
-            else
-            {
-                _ = signatureBuilder.Append('('.ToHtmlEncodedReadOnlySpan());
-            }
-
-            _ = signatureBuilder.Append("</span>")
-              .Append($"<span class=\"syntax-targetType\">");
-
-            foreach (SymbolComponentInfo parameter in symbolComponentInfo.Parameters)
-            {
-                if (parameter.IsExtensionMethodParameter)
-                {
-                    _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">")
-                      .Append("this")
-                      .Append("</span>")
-                      .Append(' ');
-                }
-
-                _ = signatureBuilder.AppendInlineHtml(parameter)
-                  .Append(',')
-                  .Append(' ');
-            }
-
-            _ = signatureBuilder.Remove(signatureBuilder.Length - 2, 2)
-              .Append($"<span class=\"syntax-delimiter\">");
-
-            if (symbolComponentInfo.IsIndexer)
-            {
-                _ = signatureBuilder.Append(']'.ToHtmlEncodedReadOnlySpan())
-                .Append("</span>");
-            }
-            else
-            {
-                _ = signatureBuilder.Append(')'.ToHtmlEncodedReadOnlySpan())
-                .Append("</span>");
-            }
-        }
-
-        if (symbolComponentInfo.PropertyGet != null)
-        {
-            _ = signatureBuilder.Append(' ')
-              .Append('{')
-              .Append(' ')
-              .AppendInlineHtml(symbolComponentInfo.PropertyGet)
-              .Append(';')
-              .Append(' ')
-              .Append('}');
-        }
-
-        if (symbolComponentInfo.PropertySet != null)
-        {
-            _ = signatureBuilder.Append(' ')
-              .Append('{')
-              .Append(' ')
-              .AppendInlineHtml(symbolComponentInfo.PropertySet)
-              .Append(';')
-              .Append(' ')
-              .Append('}');
-        }
-
-        if (symbolComponentInfo.GenericTypeConstraints.Any())
-        {
-            foreach (SymbolComponentInfo constraintInfo in symbolComponentInfo.GenericTypeConstraints)
-            {
-                _ = signatureBuilder.Append(System.Environment.NewLine.ToHtmlEncodedReadOnlySpan())
-                  .Append(symbolComponentInfo.IndentationString.ToHtmlEncodedReadOnlySpan())
-                  .Append($"<span class=\"syntax-keyword\">")
-                  .Append("where")
-                  .Append(' ')
-                  .Append("</span>")
-                  .Append($"<span class=\"syntax-targetType\">")
-                  .Append(constraintInfo.Name)
-                  .Append(' ')
-                  .Append("</span>")
-                  .Append($"<span class=\"syntax-delimiter\">")
-                  .Append(':')
-                  .Append(' ')
-                  .Append("</span>");
-
-                foreach (SymbolComponentInfo constraint in constraintInfo.GenericTypeConstraints)
-                {
-                    if (constraint.IsKeyword)
-                    {
-                        _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">")
-                          .Append(constraint.Name)
-                          .Append(',')
-                          .Append(' ')
-                          .Append("</span>");
-                    }
-                    else
-                    {
-                        _ = signatureBuilder.Append($"<span class=\"syntax-targetType\">")
-                          .Append(constraint.Name)
-                          .Append(',')
-                          .Append(' ')
-                          .Append("</span>");
-                    }
-
-                    _ = signatureBuilder.Remove(signatureBuilder.Length - ", </span>".Length, ", </span>".Length);
-                }
-            }
-        }
-
-        if (symbolComponentInfo.HasExpressionTerminator)
-        {
-            _ = signatureBuilder
-                .Append($"<span class=\"syntax-delimiter\">")
-                .Append(';')
-                .Append("</span>");
-        }
-
-        return signatureBuilder;
-    }
-
-    /// <summary>
-    /// Determines whether the specified delegate is compatible with the signature of the given event.
-    /// </summary>
-    /// <remarks>This method checks whether the delegate can be used as an event handler for the
-    /// specified event by comparing the parameter types of the delegate's method and the event's handler targetType.
-    /// MemberParameter types must match in number and be assignable according to .NET targetType compatibility rules.</remarks>
-    /// <param name="clientHandler">The delegate to test for compatibility with the event's handler signature.</param>
-    /// <param name="eventData">The event whose handler signature is used for compatibility comparison. Cannot be null.</param>
-    /// <returns>true if the delegate's method parameters are assignable to the event handler's parameters; otherwise, false.</returns>
-    internal static bool IsAssignable(this Delegate clientHandler, EventData eventData)
-    {
-        ArgumentNullException.ThrowIfNull(clientHandler, nameof(clientHandler));
-        ArgumentNullException.ThrowIfNull(eventData, nameof(eventData));
-
-        MethodData eventDelegateInvokeMethod = eventData.EventHandlerTypeData.DelegateInvokeMethodData;
-        ParameterList eventDelegateParameters = eventDelegateInvokeMethod.Parameters;
-        MethodInfo eventHandlerMethod = clientHandler.Method;
-        ParameterInfo[] clientHandlerParameters = eventHandlerMethod.GetParameters();
-
-        /* Validate the event EventHandler */
-
-        if (eventDelegateParameters.Count != clientHandlerParameters.Length)
-        {
-            return false;
-        }
-
-        for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Count; parameterIndex++)
-        {
-            Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterTypeData.UnwrapType();
-            Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
-            if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

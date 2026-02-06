@@ -1,307 +1,307 @@
-﻿namespace BionicCode.Utilities.Net.Profiling
+﻿namespace BionicCode.Utilities.Net.Profiling;
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using BionicCode.Utilities.Net;
+using Microsoft.Extensions.Caching.Memory;
+using Environment = Environment;
+
+internal class HtmlLogger : IProfilerLogger
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text.Json;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using BionicCode.Utilities.Net;
-    using Microsoft.Extensions.Caching.Memory;
-    using Environment = Environment;
+    private const string JavaScriptSourceFileName = @"HtmlLogger.js";
+    private const string HtmlSourceFileName = @"HtmlLogger.html";
+    private const int DoublePrecision = 3;
+    private const double GraphIntervalResolution = 0.01;
+    private readonly MemoryCache fileContentCache;
+    private readonly TimeSpan FileContentCacheExpiration = TimeSpan.FromMinutes(5);
 
-    internal class HtmlLogger : IProfilerLogger
+    public HtmlLogger()
     {
-        private const string JavaScriptSourceFileName = @"HtmlLogger.js";
-        private const string HtmlSourceFileName = @"HtmlLogger.html";
-        private const int DoublePrecision = 3;
-        private const double GraphIntervalResolution = 0.01;
-        private readonly MemoryCache fileContentCache;
-        private readonly TimeSpan FileContentCacheExpiration = TimeSpan.FromMinutes(5);
-
-        public HtmlLogger()
+        var cacheOptions = new MemoryCacheOptions()
         {
-            var cacheOptions = new MemoryCacheOptions()
-            {
-                // Item based
-                SizeLimit = 100,
-            };
-            this.fileContentCache = new MemoryCache(cacheOptions);
-        }
+            // Item based
+            SizeLimit = 100,
+        };
+        fileContentCache = new MemoryCache(cacheOptions);
+    }
 
-        //public async Task LogAsync(ProfilerBatchResult batchResult, Types profiledType)
-        //  => await LogAsync(new ProfilerBatchResultGroupCollection(new[] { new ProfilerBatchResultGroup(batchResult.Context.TargetType, new[] { batchResult }) }, profiledType));
+    //public async Task LogAsync(ProfilerBatchResult batchResult, Types profiledType)
+    //  => await LogAsync(new ProfilerBatchResultGroupCollection(new[] { new ProfilerBatchResultGroup(batchResult.Context.TargetType, new[] { batchResult }) }, profiledType));
 
-        //public async Task LogAsync(ProfilerBatchResultGroup batchResultGroup, Types profiledType)
-        //  => await LogAsync(new ProfilerBatchResultGroupCollection(new[] { batchResultGroup }, profiledType));
-        //
-        //public async Task LogAsync(ProfilerBatchResultGroupCollection batchResultGroups)
-        //  => await LogAsync(new ProfiledTypeResultCollection(new[] { batchResultGroups }));
+    //public async Task LogAsync(ProfilerBatchResultGroup batchResultGroup, Types profiledType)
+    //  => await LogAsync(new ProfilerBatchResultGroupCollection(new[] { batchResultGroup }, profiledType));
+    //
+    //public async Task LogAsync(ProfilerBatchResultGroupCollection batchResultGroups)
+    //  => await LogAsync(new ProfiledTypeResultCollection(new[] { batchResultGroups }));
 
-        public async Task LogAsync(ProfiledTypeResultCollection typeResults, CancellationToken cancellationToken)
+    public async Task LogAsync(ProfiledTypeResultCollection typeResults, CancellationToken cancellationToken)
+    {
+        using PooledStringBuilder htmlTypeNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
+        var documentBuilderInfoMap = new Dictionary<ProfilerBatchResultGroupCollection, IEnumerable<HtmlDocumentBuilderInfo>>();
+        foreach (ProfilerBatchResultGroupCollection batchResultGroups in typeResults)
         {
-            using PooledStringBuilder htmlTypeNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
-            var documentBuilderInfoMap = new Dictionary<ProfilerBatchResultGroupCollection, IEnumerable<HtmlDocumentBuilderInfo>>();
-            foreach (ProfilerBatchResultGroupCollection batchResultGroups in typeResults)
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (!batchResultGroups.Any())
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (!batchResultGroups.Any())
-                {
-                    continue;
-                }
-
-                IEnumerable<HtmlDocumentBuilderInfo> htmlDocumentBuilderInfos = await CreateHtmlDocumentsAsync(batchResultGroups, cancellationToken);
-                if (htmlDocumentBuilderInfos.IsEmpty())
-                {
-                    continue;
-                }
-
-                documentBuilderInfoMap.Add(batchResultGroups, htmlDocumentBuilderInfos);
-                string indexPageNameOfCurrentType = htmlDocumentBuilderInfos.First().FileName;
-                _ = htmlTypeNavigationIndexBuilder.AppendLine(CultureInfo.InvariantCulture, $@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{batchResultGroups.ProfiledTypeData.ShortCompactSignature.ToHtmlEncodedString()}</a></li>");
+                continue;
             }
 
-            string htmlTypeNavigationIndexTemplate = htmlTypeNavigationIndexBuilder.ToString();
-            var htmlFilePaths = new List<string>();
-            for (int typeResultGroupsIndex = 0; typeResultGroupsIndex < typeResults.Count; typeResultGroupsIndex++)
+            IEnumerable<HtmlDocumentBuilderInfo> htmlDocumentBuilderInfos = await CreateHtmlDocumentsAsync(batchResultGroups, cancellationToken);
+            if (htmlDocumentBuilderInfos.IsEmpty())
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                continue;
+            }
 
-                ProfilerBatchResultGroupCollection batchResultGroups = typeResults[typeResultGroupsIndex];
-                if (!documentBuilderInfoMap.TryGetValue(batchResultGroups, out IEnumerable<HtmlDocumentBuilderInfo> documentBuilderInfos))
-                {
-                    continue;
-                }
+            documentBuilderInfoMap.Add(batchResultGroups, htmlDocumentBuilderInfos);
+            string indexPageNameOfCurrentType = htmlDocumentBuilderInfos.First().FileName;
+            _ = htmlTypeNavigationIndexBuilder.AppendLine(CultureInfo.InvariantCulture, $@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{batchResultGroups.ProfiledTypeData.ShortCompactSignature.ToHtmlEncodedString()}</a></li>");
+        }
 
-                _ = htmlTypeNavigationIndexBuilder.Clear();
-                string globalNavigationIndexForCurrentType = await CreateGlobalNavigationIndexAsync(htmlTypeNavigationIndexBuilder, typeResults.Count, typeResultGroupsIndex, htmlTypeNavigationIndexTemplate, cancellationToken);
+        string htmlTypeNavigationIndexTemplate = htmlTypeNavigationIndexBuilder.ToString();
+        var htmlFilePaths = new List<string>();
+        for (int typeResultGroupsIndex = 0; typeResultGroupsIndex < typeResults.Count; typeResultGroupsIndex++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
 
-                foreach (HtmlDocumentBuilderInfo htmlDocumentBuilderInfo in documentBuilderInfos)
-                {
-                    string htmlFilePath = Path.Combine(Path.GetTempPath(), htmlDocumentBuilderInfo.FileName);
-                    htmlFilePaths.Add(htmlFilePath);
+            ProfilerBatchResultGroupCollection batchResultGroups = typeResults[typeResultGroupsIndex];
+            if (!documentBuilderInfoMap.TryGetValue(batchResultGroups, out IEnumerable<HtmlDocumentBuilderInfo> documentBuilderInfos))
+            {
+                continue;
+            }
 
-                    string encodedCurrentProfiledTypeSignature = $"{batchResultGroups.ProfiledTypeData.ShortDisplayName.ToHtmlEncodedString()} ({batchResultGroups.ProfiledTypeData.SymbolAttributes.ToDisplayTypeKind()})";
-                    string htmlDocument = string.Format(
-                      htmlDocumentBuilderInfo.DocumentTemplate,
-                      encodedCurrentProfiledTypeSignature,
-                      globalNavigationIndexForCurrentType,
-                      htmlDocumentBuilderInfo.MemberName,
-                      htmlDocumentBuilderInfo.ResultNavigationElements,
-                      htmlDocumentBuilderInfo.InPageNavigationElements,
-                      htmlDocumentBuilderInfo.DocumentTitle,
-                      htmlDocumentBuilderInfo.ChartSection,
-                      htmlDocumentBuilderInfo.ScriptCode,
-                      htmlDocumentBuilderInfo.DocumentFooterElements,
-                      htmlFilePath,
-                      htmlDocumentBuilderInfo.TargetSignature,
-                      htmlDocumentBuilderInfo.TargetNamespace,
-                      htmlDocumentBuilderInfo.TargetAssemblyName,
-                      htmlDocumentBuilderInfo.TargetSourceFileName,
-                      htmlDocumentBuilderInfo.TargetSourceFileLineNumber,
-                      htmlDocumentBuilderInfo.EnvironmentInfo);
+            _ = htmlTypeNavigationIndexBuilder.Clear();
+            string globalNavigationIndexForCurrentType = await CreateGlobalNavigationIndexAsync(htmlTypeNavigationIndexBuilder, typeResults.Count, typeResultGroupsIndex, htmlTypeNavigationIndexTemplate, cancellationToken);
+
+            foreach (HtmlDocumentBuilderInfo htmlDocumentBuilderInfo in documentBuilderInfos)
+            {
+                string htmlFilePath = Path.Combine(Path.GetTempPath(), htmlDocumentBuilderInfo.FileName);
+                htmlFilePaths.Add(htmlFilePath);
+
+                string encodedCurrentProfiledTypeSignature = $"{batchResultGroups.ProfiledTypeData.ShortDisplayName.ToHtmlEncodedString()} ({batchResultGroups.ProfiledTypeData.SymbolAttributes.ToDisplayTypeKind()})";
+                string htmlDocument = string.Format(
+                  htmlDocumentBuilderInfo.DocumentTemplate,
+                  encodedCurrentProfiledTypeSignature,
+                  globalNavigationIndexForCurrentType,
+                  htmlDocumentBuilderInfo.MemberName,
+                  htmlDocumentBuilderInfo.ResultNavigationElements,
+                  htmlDocumentBuilderInfo.InPageNavigationElements,
+                  htmlDocumentBuilderInfo.DocumentTitle,
+                  htmlDocumentBuilderInfo.ChartSection,
+                  htmlDocumentBuilderInfo.ScriptCode,
+                  htmlDocumentBuilderInfo.DocumentFooterElements,
+                  htmlFilePath,
+                  htmlDocumentBuilderInfo.TargetSignature,
+                  htmlDocumentBuilderInfo.TargetNamespace,
+                  htmlDocumentBuilderInfo.TargetAssemblyName,
+                  htmlDocumentBuilderInfo.TargetSourceFileName,
+                  htmlDocumentBuilderInfo.TargetSourceFileLineNumber,
+                  htmlDocumentBuilderInfo.EnvironmentInfo);
 
 #if NETCOREAPP || NET
-                    await using var streamWriter = new StreamWriter(htmlFilePath, false);
-                    await streamWriter.WriteAsync(htmlDocument);
+                await using var streamWriter = new StreamWriter(htmlFilePath, false);
+                await streamWriter.WriteAsync(htmlDocument);
 #else
-          using (var streamWriter = new StreamWriter(htmlFilePath, false))
-          {
-            await streamWriter.WriteAsync(htmlDocument);
-          }
+      using (var streamWriter = new StreamWriter(htmlFilePath, false))
+      {
+        await streamWriter.WriteAsync(htmlDocument);
+      }
 #endif
-                }
             }
-
-            if (htmlFilePaths.IsEmpty())
-            {
-                return;
-            }
-
-            string indexFilePath = htmlFilePaths.First();
-            var startInfo = new ProcessStartInfo(indexFilePath) { UseShellExecute = true };
-            _ = Process.Start(startInfo);
         }
 
-        private async Task<IEnumerable<HtmlDocumentBuilderInfo>> CreateHtmlDocumentsAsync(ProfilerBatchResultGroupCollection batchResultGroups, CancellationToken cancellationToken)
+        if (htmlFilePaths.IsEmpty())
         {
-            var filePaths = new List<string>();
-            var runningTasks = new List<Task<ChartTableCollection>>();
-            var htmlDocumentBuilderValues = new Dictionary<ProfilerBatchResultGroup, HtmlDocumentBuilderInfo>();
-            using PooledStringBuilder htmlTypeMemberNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
-            var chartDataConverter = new GoogleChartsDataConverter();
-
-            string scriptCode = await GetEncodedJavaScriptCodeTextAsync();
-
-            foreach (ProfilerBatchResultGroup batchResultGroup in batchResultGroups)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                Task<ChartTableCollection> task = Task.Run(() => chartDataConverter.CreateChartAsync(batchResultGroup, HtmlLogger.GraphIntervalResolution, cancellationToken), cancellationToken);
-                runningTasks.Add(task);
-                string resultHtmlTable = await CreateHtmlTableAsync(batchResultGroup, cancellationToken);
-
-                DateTime timeStamp = DateTime.Now;
-                string htmlFileName = $"profiler_result_{timeStamp.ToString("MM-dd-yyyy_hhmmss.fffffff")}.html";
-                _ = htmlTypeMemberNavigationIndexBuilder.AppendLine(CultureInfo.InvariantCulture, $@"<li><a class=""dropdown-item {{0}}"" style=""white-space: pre-wrap; "" {{1}} href=""{htmlFileName}"">{batchResultGroup.TargetShortCompactSignature.ToHtmlEncodedString()}</a></li>");
-                string htmlSourceCodeTemplate = await GetEncodedHtmlCodeTextAsync();
-                string pageTitle = $"{batchResultGroup.TargetName.ToHtmlEncodedString().ToWrappingHtml(WrapStyle.Casing, '.', '<', '>', '&', ':', '(', '[')} {batchResultGroup.TargetType.ToDisplayStringValue(toUpperCase: true, toBaseType: true)}";
-                string inPageNavigationHtmlElements = CreateHtmlInPageNavigationElements(batchResultGroup);
-                //string pageFooterElements = CreateHtmlInPageFooterElements(batchResultGroup);
-
-                EnvironmentInfo environmentInfo = await Environment.GetEnvironmentInfoAsync();
-                var builderInfo = new HtmlDocumentBuilderInfo()
-                {
-                    ChartSection = resultHtmlTable,
-                    DocumentTemplate = htmlSourceCodeTemplate,
-                    DocumentTitle = pageTitle,
-                    TargetSignature = batchResultGroup.TargetSignatureComponentInfo.ToHtml(),
-                    TargetNamespace = batchResultGroup.TargetNamespace,
-                    TargetAssemblyName = batchResultGroup.TargetAssemblyName,
-                    TargetSourceFileName = batchResultGroup.TargetSourceFileName,
-                    TargetSourceFileLineNumber = batchResultGroup.TargetSourceFileLineNumber,
-                    InPageNavigationElements = inPageNavigationHtmlElements,
-                    //DocumentFooterElements = pageFooterElements,
-                    FileName = htmlFileName,
-                    MemberName = $"{batchResultGroup.TargetShortName} ({batchResultGroup.TargetType.ToDisplayStringValue(toBaseType: true)})".ToHtmlEncodedString(),
-                    EnvironmentInfo = $"<div style=\"height: 100%; width: auto; border-left: 1px solid black; padding: 12px 0px 12px 12px;\">\r\n           <span class=\"label-span\">Computer: </span><span class=\"valueSpan\">{environmentInfo.MachineName}</span><br> <span class=\"label-span\">Timer: </span><span class=\"valueSpan\">{(environmentInfo.HasHighPrecisionTimer ? $"High precision counter" : "System timer (normal precision)")}</span><br>     \t\r\n          <span class=\"label-span\">Timer resolution: </span><span class=\"valueSpan\">{environmentInfo.NanosecondsPerTick} ns</span><br>     \t\r\n        \t<span class=\"label-span\">OS version: </span><span class=\"valueSpan\">{environmentInfo.OperatingSystemName}</span><br>   \t\r\n        \t<span class=\"label-span\">OS architecture: </span><span class=\"valueSpan\">{environmentInfo.OperatingSystemArchitecture}</span><br>   \r\n        \t   \r\n      \t  <span class=\"label-span\">Processor: </span><span class=\"valueSpan\">{environmentInfo.ProcessorName}</span><br>   \r\n        \t<span class=\"label-span\">Clock: </span><span class=\"valueSpan\">{environmentInfo.ProcessorSpeed / 1000d} GHz</span><br> \r\n      \t  <span class=\"label-span\">Physical cores: </span><span class=\"valueSpan\">{environmentInfo.ProcessorCoreCount}</span><br>   \r\n      \t  <span class=\"label-span\">Logical cores: </span><span class=\"valueSpan\">{environmentInfo.ProcessorLogicalCoreCount}</span><br>   \r\n        \t<span class=\"label-span\">Threads: </span><span class=\"valueSpan\">{environmentInfo.ThreadCount}</span><br>   \r\n        </div>"
-                };
-
-                htmlDocumentBuilderValues.Add(batchResultGroup, builderInfo);
-            }
-
-            ChartTableCollection[] scriptChartData = await Task.WhenAll(runningTasks);
-
-            string htmlNavigationIndexTemplate = htmlTypeMemberNavigationIndexBuilder.ToString();
-
-            for (int groupIndex = 0; groupIndex < batchResultGroups.Count; groupIndex++)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                ProfilerBatchResultGroup resultGroup = batchResultGroups[groupIndex];
-
-                _ = htmlTypeMemberNavigationIndexBuilder.Clear();
-                string globalNavigationIndexForCurrentResult = await CreateGlobalNavigationIndexAsync(htmlTypeMemberNavigationIndexBuilder, batchResultGroups.Count, groupIndex, htmlNavigationIndexTemplate, cancellationToken);
-                HtmlDocumentBuilderInfo htmlDocumentBuilderInfo = htmlDocumentBuilderValues[resultGroup];
-                htmlDocumentBuilderInfo.ResultNavigationElements = globalNavigationIndexForCurrentResult;
-
-                ChartTableCollection chartTables = scriptChartData[groupIndex];
-                string jsonDataValues = await ConvertToJsonAsync(chartTables);
-                string finalScriptCode = string.Format(scriptCode, jsonDataValues);
-                htmlDocumentBuilderInfo.ScriptCode = finalScriptCode;
-            }
-
-            return htmlDocumentBuilderValues.Values.ToList();
+            return;
         }
 
-        private async Task<string> CreateGlobalNavigationIndexAsync(PooledStringBuilder htmlDocumentNavigationIndexBuilder, int totalResultCount, int currentResultIndex, string htmlTypeNavigationIndexTemplate, CancellationToken cancellationToken)
+        string indexFilePath = htmlFilePaths.First();
+        var startInfo = new ProcessStartInfo(indexFilePath) { UseShellExecute = true };
+        _ = Process.Start(startInfo);
+    }
+
+    private async Task<IEnumerable<HtmlDocumentBuilderInfo>> CreateHtmlDocumentsAsync(ProfilerBatchResultGroupCollection batchResultGroups, CancellationToken cancellationToken)
+    {
+        var filePaths = new List<string>();
+        var runningTasks = new List<Task<ChartTableCollection>>();
+        var htmlDocumentBuilderValues = new Dictionary<ProfilerBatchResultGroup, HtmlDocumentBuilderInfo>();
+        using PooledStringBuilder htmlTypeMemberNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
+        var chartDataConverter = new GoogleChartsDataConverter();
+
+        string scriptCode = await GetEncodedJavaScriptCodeTextAsync();
+
+        foreach (ProfilerBatchResultGroup batchResultGroup in batchResultGroups)
         {
-            int lineIndex = 0;
+            cancellationToken.ThrowIfCancellationRequested();
 
-            using (var templateReader = new StringReader(htmlTypeNavigationIndexTemplate))
+            Task<ChartTableCollection> task = Task.Run(() => chartDataConverter.CreateChartAsync(batchResultGroup, HtmlLogger.GraphIntervalResolution, cancellationToken), cancellationToken);
+            runningTasks.Add(task);
+            string resultHtmlTable = await CreateHtmlTableAsync(batchResultGroup, cancellationToken);
+
+            DateTime timeStamp = DateTime.Now;
+            string htmlFileName = $"profiler_result_{timeStamp.ToString("MM-dd-yyyy_hhmmss.fffffff")}.html";
+            _ = htmlTypeMemberNavigationIndexBuilder.AppendLine(CultureInfo.InvariantCulture, $@"<li><a class=""dropdown-item {{0}}"" style=""white-space: pre-wrap; "" {{1}} href=""{htmlFileName}"">{batchResultGroup.TargetShortCompactSignature.ToHtmlEncodedString()}</a></li>");
+            string htmlSourceCodeTemplate = await GetEncodedHtmlCodeTextAsync();
+            string pageTitle = $"{batchResultGroup.TargetName.ToHtmlEncodedString().ToWrappingHtml(WrapStyle.Casing, '.', '<', '>', '&', ':', '(', '[')} {batchResultGroup.TargetType.ToDisplayStringValue(toUpperCase: true, toBaseType: true)}";
+            string inPageNavigationHtmlElements = CreateHtmlInPageNavigationElements(batchResultGroup);
+            //string pageFooterElements = CreateHtmlInPageFooterElements(batchResultGroup);
+
+            EnvironmentInfo environmentInfo = await Environment.GetEnvironmentInfoAsync();
+            var builderInfo = new HtmlDocumentBuilderInfo()
             {
-                string line = string.Empty;
-                string rawLine = string.Empty;
-                while (lineIndex++ < currentResultIndex)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
+                ChartSection = resultHtmlTable,
+                DocumentTemplate = htmlSourceCodeTemplate,
+                DocumentTitle = pageTitle,
+                TargetSignature = batchResultGroup.TargetSignatureComponentInfo.ToHtml(),
+                TargetNamespace = batchResultGroup.TargetNamespace,
+                TargetAssemblyName = batchResultGroup.TargetAssemblyName,
+                TargetSourceFileName = batchResultGroup.TargetSourceFileName,
+                TargetSourceFileLineNumber = batchResultGroup.TargetSourceFileLineNumber,
+                InPageNavigationElements = inPageNavigationHtmlElements,
+                //DocumentFooterElements = pageFooterElements,
+                FileName = htmlFileName,
+                MemberName = $"{batchResultGroup.TargetShortName} ({batchResultGroup.TargetType.ToDisplayStringValue(toBaseType: true)})".ToHtmlEncodedString(),
+                EnvironmentInfo = $"<div style=\"height: 100%; width: auto; border-left: 1px solid black; padding: 12px 0px 12px 12px;\">\r\n           <span class=\"label-span\">Computer: </span><span class=\"valueSpan\">{environmentInfo.MachineName}</span><br> <span class=\"label-span\">Timer: </span><span class=\"valueSpan\">{(environmentInfo.HasHighPrecisionTimer ? $"High precision counter" : "System timer (normal precision)")}</span><br>     \t\r\n          <span class=\"label-span\">Timer resolution: </span><span class=\"valueSpan\">{environmentInfo.NanosecondsPerTick} ns</span><br>     \t\r\n        \t<span class=\"label-span\">OS version: </span><span class=\"valueSpan\">{environmentInfo.OperatingSystemName}</span><br>   \t\r\n        \t<span class=\"label-span\">OS architecture: </span><span class=\"valueSpan\">{environmentInfo.OperatingSystemArchitecture}</span><br>   \r\n        \t   \r\n      \t  <span class=\"label-span\">Processor: </span><span class=\"valueSpan\">{environmentInfo.ProcessorName}</span><br>   \r\n        \t<span class=\"label-span\">Clock: </span><span class=\"valueSpan\">{environmentInfo.ProcessorSpeed / 1000d} GHz</span><br> \r\n      \t  <span class=\"label-span\">Physical cores: </span><span class=\"valueSpan\">{environmentInfo.ProcessorCoreCount}</span><br>   \r\n      \t  <span class=\"label-span\">Logical cores: </span><span class=\"valueSpan\">{environmentInfo.ProcessorLogicalCoreCount}</span><br>   \r\n        \t<span class=\"label-span\">Threads: </span><span class=\"valueSpan\">{environmentInfo.ThreadCount}</span><br>   \r\n        </div>"
+            };
 
-                    rawLine = await templateReader.ReadLineAsync();
-                    line = StringEncoder.EncodeFormatString(rawLine);
-                    _ = htmlDocumentNavigationIndexBuilder.AppendFormat(line, string.Empty, string.Empty);
-                }
+            htmlDocumentBuilderValues.Add(batchResultGroup, builderInfo);
+        }
+
+        ChartTableCollection[] scriptChartData = await Task.WhenAll(runningTasks);
+
+        string htmlNavigationIndexTemplate = htmlTypeMemberNavigationIndexBuilder.ToString();
+
+        for (int groupIndex = 0; groupIndex < batchResultGroups.Count; groupIndex++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            ProfilerBatchResultGroup resultGroup = batchResultGroups[groupIndex];
+
+            _ = htmlTypeMemberNavigationIndexBuilder.Clear();
+            string globalNavigationIndexForCurrentResult = await CreateGlobalNavigationIndexAsync(htmlTypeMemberNavigationIndexBuilder, batchResultGroups.Count, groupIndex, htmlNavigationIndexTemplate, cancellationToken);
+            HtmlDocumentBuilderInfo htmlDocumentBuilderInfo = htmlDocumentBuilderValues[resultGroup];
+            htmlDocumentBuilderInfo.ResultNavigationElements = globalNavigationIndexForCurrentResult;
+
+            ChartTableCollection chartTables = scriptChartData[groupIndex];
+            string jsonDataValues = await ConvertToJsonAsync(chartTables);
+            string finalScriptCode = string.Format(scriptCode, jsonDataValues);
+            htmlDocumentBuilderInfo.ScriptCode = finalScriptCode;
+        }
+
+        return htmlDocumentBuilderValues.Values.ToList();
+    }
+
+    private async Task<string> CreateGlobalNavigationIndexAsync(PooledStringBuilder htmlDocumentNavigationIndexBuilder, int totalResultCount, int currentResultIndex, string htmlTypeNavigationIndexTemplate, CancellationToken cancellationToken)
+    {
+        int lineIndex = 0;
+
+        using (var templateReader = new StringReader(htmlTypeNavigationIndexTemplate))
+        {
+            string line = string.Empty;
+            string rawLine = string.Empty;
+            while (lineIndex++ < currentResultIndex)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
                 rawLine = await templateReader.ReadLineAsync();
                 line = StringEncoder.EncodeFormatString(rawLine);
-                _ = htmlDocumentNavigationIndexBuilder.AppendFormat(line, "active", "aria-current=\"page\"");
-
-                while (lineIndex++ < totalResultCount)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    rawLine = await templateReader.ReadLineAsync();
-                    line = StringEncoder.EncodeFormatString(rawLine);
-                    _ = htmlDocumentNavigationIndexBuilder.AppendFormat(line, string.Empty, string.Empty);
-                }
+                _ = htmlDocumentNavigationIndexBuilder.AppendFormat(line, string.Empty, string.Empty);
             }
 
-            return htmlDocumentNavigationIndexBuilder.ToString();
-        }
+            rawLine = await templateReader.ReadLineAsync();
+            line = StringEncoder.EncodeFormatString(rawLine);
+            _ = htmlDocumentNavigationIndexBuilder.AppendFormat(line, "active", "aria-current=\"page\"");
 
-        private string CreateHtmlInPageNavigationElements(ProfilerBatchResultGroup profilerBatchResultGroup)
-        {
-            if (profilerBatchResultGroup.Count < 2)
-            {
-                return string.Empty;
-            }
-
-            using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
-            foreach (ProfilerBatchResult? result in profilerBatchResultGroup)
-            {
-                if (result is null)
-                {
-                    continue;
-                }
-
-                _ = htmlDocumentBuilder
-                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" width=""20px"" href=""#{result.Index}"">'{result.Context.SymbolInfoData?.ShortDisplayName}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()})</a>");
-            }
-
-            string htmlDocumentContent = htmlDocumentBuilder.ToString();
-
-            return htmlDocumentContent;
-        }
-
-        private string CreateHtmlInPageFooterElements(ProfilerBatchResultGroup profilerBatchResultGroup)
-        {
-            using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
-            foreach (ProfilerBatchResult? result in profilerBatchResultGroup)
-            {
-                if (result is null)
-                {
-                    continue;
-
-                }
-
-                _ = htmlDocumentBuilder
-                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" href=""#{result.Index}"">'{result.Context.SymbolInfoData?.ShortDisplayName}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()}) results</a>");
-            }
-
-            string htmlDocumentContent = htmlDocumentBuilder.ToString();
-
-            return htmlDocumentContent;
-        }
-
-        private static async Task<string> ConvertToJsonAsync<TData>(TData chartTable)
-        {
-            using var memStream = new MemoryStream();
-            await JsonSerializer.SerializeAsync(memStream, chartTable);
-            _ = memStream.Seek(0L, SeekOrigin.Begin);
-            using var streamReader = new StreamReader(memStream);
-            string jsonDataValues = await streamReader.ReadToEndAsync();
-            return jsonDataValues;
-        }
-
-        private async Task<string> CreateHtmlTableAsync(ProfilerBatchResultGroup batchResultGroup, CancellationToken cancellationToken)
-        {
-            using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
-            EnvironmentInfo environmentInfo = await Environment.GetEnvironmentInfoAsync();
-
-            foreach (ProfilerBatchResult? batchResult in batchResultGroup)
+            while (lineIndex++ < totalResultCount)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (batchResult is null)
-                {
-                    continue;
-                }
+                rawLine = await templateReader.ReadLineAsync();
+                line = StringEncoder.EncodeFormatString(rawLine);
+                _ = htmlDocumentNavigationIndexBuilder.AppendFormat(line, string.Empty, string.Empty);
+            }
+        }
 
-                _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
+        return htmlDocumentNavigationIndexBuilder.ToString();
+    }
+
+    private string CreateHtmlInPageNavigationElements(ProfilerBatchResultGroup profilerBatchResultGroup)
+    {
+        if (profilerBatchResultGroup.Count < 2)
+        {
+            return string.Empty;
+        }
+
+        using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
+        foreach (ProfilerBatchResult? result in profilerBatchResultGroup)
+        {
+            if (result is null)
+            {
+                continue;
+            }
+
+            _ = htmlDocumentBuilder
+              .Append($@"<a class=""list-group-item list-group-item-action nav-link"" width=""20px"" href=""#{result.Index}"">'{result.Context.SymbolInfoData?.ShortDisplayName}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()})</a>");
+        }
+
+        string htmlDocumentContent = htmlDocumentBuilder.ToString();
+
+        return htmlDocumentContent;
+    }
+
+    private string CreateHtmlInPageFooterElements(ProfilerBatchResultGroup profilerBatchResultGroup)
+    {
+        using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
+        foreach (ProfilerBatchResult? result in profilerBatchResultGroup)
+        {
+            if (result is null)
+            {
+                continue;
+
+            }
+
+            _ = htmlDocumentBuilder
+              .Append($@"<a class=""list-group-item list-group-item-action nav-link"" href=""#{result.Index}"">'{result.Context.SymbolInfoData?.ShortDisplayName}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()}) results</a>");
+        }
+
+        string htmlDocumentContent = htmlDocumentBuilder.ToString();
+
+        return htmlDocumentContent;
+    }
+
+    private static async Task<string> ConvertToJsonAsync<TData>(TData chartTable)
+    {
+        using var memStream = new MemoryStream();
+        await JsonSerializer.SerializeAsync(memStream, chartTable);
+        _ = memStream.Seek(0L, SeekOrigin.Begin);
+        using var streamReader = new StreamReader(memStream);
+        string jsonDataValues = await streamReader.ReadToEndAsync();
+        return jsonDataValues;
+    }
+
+    private async Task<string> CreateHtmlTableAsync(ProfilerBatchResultGroup batchResultGroup, CancellationToken cancellationToken)
+    {
+        using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
+        EnvironmentInfo environmentInfo = await Environment.GetEnvironmentInfoAsync();
+
+        foreach (ProfilerBatchResult? batchResult in batchResultGroup)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (batchResult is null)
+            {
+                continue;
+            }
+
+            _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
     <article id=""{batchResult.Index}"" style=""padding-top: 48px;"">
       <div style=""margin: 12px 0px 24px 0px; width: 100%; display: grid; grid-template-columns: auto auto; overflow: auto;"">
         
@@ -338,10 +338,10 @@
             </thead>
             <tbody>");
 
-                int resultIndex = 0;
-                foreach (ProfilerResult result in batchResult.Results)
-                {
-                    _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
+            int resultIndex = 0;
+            foreach (ProfilerResult result in batchResult.Results)
+            {
+                _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
               <tr class=""data-row"">
                 <td class=""row-data"">{++resultIndex} (argument list {result.ArgumentListIndex})</td>
                 <td class=""row-data"">{result.ElapsedTimeConverted}</td>
@@ -350,9 +350,9 @@
                 <td class=""row-data"">{batchResult.StandardDeviationConverted}</td>
                 <td class=""row-data"">{batchResult.Variance}</td>
               </tr>");
-                }
+            }
 
-                _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
+            _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
             </tbody>
             <tfoot>
               <tr>
@@ -381,62 +381,61 @@
         <div style=""width:50%; float: left;"">
           <div id=""chart-{batchResult.Index}"" class=""line-chart""></div>
         </div>")
-                .Append($@"<a class=""navigation-link"" href=""#top"">Go to top 🡡</a>")
-                .Append("</article>");
-            }
-
-            string htmlDocumentContent = htmlDocumentBuilder.ToString();
-
-            return htmlDocumentContent;
+            .Append($@"<a class=""navigation-link"" href=""#top"">Go to top 🡡</a>")
+            .Append("</article>");
         }
 
-        private async Task<string> GetEncodedJavaScriptCodeTextAsync()
+        string htmlDocumentContent = htmlDocumentBuilder.ToString();
+
+        return htmlDocumentContent;
+    }
+
+    private async Task<string> GetEncodedJavaScriptCodeTextAsync()
+    {
+        if (fileContentCache.Get(HtmlLogger.JavaScriptSourceFileName) is not string scriptCode)
         {
-            if (this.fileContentCache.Get(HtmlLogger.JavaScriptSourceFileName) is not string scriptCode)
+            var assembly = Assembly.GetAssembly(GetType());
+            string resourceName = assembly.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith(HtmlLogger.JavaScriptSourceFileName, StringComparison.OrdinalIgnoreCase));
+            if (string.IsNullOrWhiteSpace(resourceName))
             {
-                var assembly = Assembly.GetAssembly(GetType());
-                string resourceName = assembly.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith(HtmlLogger.JavaScriptSourceFileName, StringComparison.OrdinalIgnoreCase));
-                if (string.IsNullOrWhiteSpace(resourceName))
-                {
-                    return string.Empty;
-                }
-
-                using Stream resourceStream = assembly.GetManifestResourceStream(resourceName);
-                using var streamReader = new StreamReader(resourceStream);
-                string rawScriptCode = await streamReader.ReadToEndAsync();
-                scriptCode = StringEncoder.EncodeFormatString(rawScriptCode);
-                ICacheEntry entry = this.fileContentCache.CreateEntry(HtmlLogger.JavaScriptSourceFileName)
-                  .SetValue(scriptCode)
-                  .SetSize(1)
-                  .SetSlidingExpiration(this.FileContentCacheExpiration);
+                return string.Empty;
             }
 
-            return scriptCode;
+            using Stream resourceStream = assembly.GetManifestResourceStream(resourceName);
+            using var streamReader = new StreamReader(resourceStream);
+            string rawScriptCode = await streamReader.ReadToEndAsync();
+            scriptCode = StringEncoder.EncodeFormatString(rawScriptCode);
+            ICacheEntry entry = fileContentCache.CreateEntry(HtmlLogger.JavaScriptSourceFileName)
+              .SetValue(scriptCode)
+              .SetSize(1)
+              .SetSlidingExpiration(FileContentCacheExpiration);
         }
 
-        private async Task<string> GetEncodedHtmlCodeTextAsync()
+        return scriptCode;
+    }
+
+    private async Task<string> GetEncodedHtmlCodeTextAsync()
+    {
+        if (fileContentCache.Get(HtmlLogger.HtmlSourceFileName) is not string htmlCode)
         {
-            if (this.fileContentCache.Get(HtmlLogger.HtmlSourceFileName) is not string htmlCode)
+            var assembly = Assembly.GetAssembly(GetType());
+            string resourceName = assembly.GetManifestResourceNames()
+              .FirstOrDefault(name => name.EndsWith(HtmlLogger.HtmlSourceFileName, StringComparison.OrdinalIgnoreCase));
+            if (string.IsNullOrWhiteSpace(resourceName))
             {
-                var assembly = Assembly.GetAssembly(GetType());
-                string resourceName = assembly.GetManifestResourceNames()
-                  .FirstOrDefault(name => name.EndsWith(HtmlLogger.HtmlSourceFileName, StringComparison.OrdinalIgnoreCase));
-                if (string.IsNullOrWhiteSpace(resourceName))
-                {
-                    return string.Empty;
-                }
-
-                using Stream resourceStream = assembly.GetManifestResourceStream(resourceName);
-                using var streamReader = new StreamReader(resourceStream);
-                string rawHtmlCode = await streamReader.ReadToEndAsync();
-                htmlCode = StringEncoder.EncodeFormatString(rawHtmlCode);
-                ICacheEntry entry = this.fileContentCache.CreateEntry(HtmlLogger.HtmlSourceFileName)
-                  .SetValue(htmlCode)
-                  .SetSize(1)
-                  .SetSlidingExpiration(this.FileContentCacheExpiration);
+                return string.Empty;
             }
 
-            return htmlCode;
+            using Stream resourceStream = assembly.GetManifestResourceStream(resourceName);
+            using var streamReader = new StreamReader(resourceStream);
+            string rawHtmlCode = await streamReader.ReadToEndAsync();
+            htmlCode = StringEncoder.EncodeFormatString(rawHtmlCode);
+            ICacheEntry entry = fileContentCache.CreateEntry(HtmlLogger.HtmlSourceFileName)
+              .SetValue(htmlCode)
+              .SetSize(1)
+              .SetSlidingExpiration(FileContentCacheExpiration);
         }
+
+        return htmlCode;
     }
 }

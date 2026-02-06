@@ -8,26 +8,26 @@
 
         public new FactoryMode FactoryMode => FactoryMode.Scoped;
 
-        protected override TCreate CreateInstance() => this.Factory.CreateInstanceBase();
+        protected override TCreate CreateInstance() => Factory.CreateInstanceBase();
 
-        protected override TCreate CreateInstance(params object[] args) => this.Factory.CreateInstanceBase(args);
+        protected override TCreate CreateInstance(params object[] args) => Factory.CreateInstanceBase(args);
 
         private Factory<TCreate> Factory { get; }
 
         public ScopedFactory(Factory<TCreate> factory) : base(FactoryMode.Scoped)
         {
-            this.Factory = factory;
-            this.Factory.IsScoped = true;
+            Factory = factory;
+            Factory.IsScoped = true;
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposedValue)
+            if (!disposedValue)
             {
                 if (disposing)
                 {
-                    this.Factory.IsScoped = false;
-                    if (this.SharedProductInstance is IDisposable disposable)
+                    Factory.IsScoped = false;
+                    if (SharedProductInstance is IDisposable disposable)
                     {
                         disposable.Dispose();
                     }
@@ -35,7 +35,7 @@
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
-                this.disposedValue = true;
+                disposedValue = true;
             }
         }
 

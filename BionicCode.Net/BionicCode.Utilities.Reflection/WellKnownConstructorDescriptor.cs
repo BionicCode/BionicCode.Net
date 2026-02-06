@@ -27,10 +27,17 @@ internal readonly struct WellKnownConstructorDescriptor : IEquatable<WellKnownCo
         ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo);
 
         ConstructorHandle = constructorInfo.MethodHandle;
+        Type? declaringType = constructorInfo.DeclaringType;
+        ArgumentNullExceptionAdvanced.ThrowIfNull(
+            declaringType, 
+            nameof(constructorInfo), 
+            $"The '{nameof(ConstructorInfo)}.{nameof(ConstructorInfo.DeclaringType)}' property of the argument '{nameof(constructorInfo)}' returned null. A valid declaring type is required to create a well-known constructor descriptor.");
+        DeclaringTypeHandle = declaringType.TypeHandle;
         IsAnonymous = false;
     }
 
     public RuntimeMethodHandle ConstructorHandle { get; }
+    public RuntimeTypeHandle DeclaringTypeHandle { get; }
     public bool IsAnonymous { get; }
 
     public bool Equals(WellKnownConstructorDescriptor other)

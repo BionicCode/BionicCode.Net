@@ -33,7 +33,7 @@
         /// <param name="warmupIterations">The number of warmup iterations.</param>
         /// <param name="asyncLogger">An asynchronous logging delegate.</param>
         /// <param name="baseUnit">The desired base unit.</param>
-        public AsyncProfilerOptions(int iterations, int warmupIterations, ProfilerLoggerAsyncDelegate asyncLogger, TimeUnit baseUnit) : base(iterations, warmupIterations, null, baseUnit) => this.AsyncLogger = asyncLogger;
+        public AsyncProfilerOptions(int iterations, int warmupIterations, ProfilerLoggerAsyncDelegate asyncLogger, TimeUnit baseUnit) : base(iterations, warmupIterations, null, baseUnit) => AsyncLogger = asyncLogger;
 
         /// <summary>
         /// MemberConstructor.
@@ -43,7 +43,7 @@
         /// <param name="logger">A synchronous logging delegate.</param>
         /// <param name="asyncLogger">An asynchronous logging delegate.</param>
         /// <param name="baseUnit">The desired base unit.</param>
-        public AsyncProfilerOptions(int iterations, int warmupIterations, ProfilerLoggerDelegate logger, ProfilerLoggerAsyncDelegate asyncLogger, TimeUnit baseUnit) : base(iterations, warmupIterations, logger, baseUnit) => this.AsyncLogger = asyncLogger;
+        public AsyncProfilerOptions(int iterations, int warmupIterations, ProfilerLoggerDelegate logger, ProfilerLoggerAsyncDelegate asyncLogger, TimeUnit baseUnit) : base(iterations, warmupIterations, logger, baseUnit) => AsyncLogger = asyncLogger;
 
         /// <summary>
         /// An asynchronous delegate to handle the result.

@@ -11,8 +11,8 @@
         /// <param name="progress">The progress value.</param>
         public ProgressData(string message, double progress)
         {
-            this.Message = message;
-            this.Progress = progress;
+            Message = message;
+            Progress = progress;
         }
 
         /// <summary>

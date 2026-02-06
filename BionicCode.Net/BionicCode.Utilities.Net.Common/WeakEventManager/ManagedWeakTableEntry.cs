@@ -9,7 +9,7 @@
         public string EventName { get; }
         public bool IsRecycled { get; private set; }
         public abstract bool IsPurged { get; protected set; }
-        public bool IsAlive => this.ReferenceTarget?.TryGetTarget(out _) ?? false;
+        public bool IsAlive => ReferenceTarget?.TryGetTarget(out _) ?? false;
         public Guid Id { get; }
 
         protected ManagedWeakTableEntry(object referenceTarget, Type referenceTargetType, Guid id)
@@ -17,13 +17,13 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(referenceTargetType, nameof(referenceTargetType));
             ArgumentNullExceptionAdvanced.ThrowIfNull(referenceTarget, nameof(referenceTarget));
 
-            this.ReferenceTarget = InitializeWeakReference(referenceTarget);
-            this.ReferenceTargetType = referenceTargetType;
-            this.Id = id;
+            ReferenceTarget = InitializeWeakReference(referenceTarget);
+            ReferenceTargetType = referenceTargetType;
+            Id = id;
         }
 
         public bool TryGetReferenceTarget(out object referenceTarget)
-          => this.ReferenceTarget.TryGetTarget(out referenceTarget);
+          => ReferenceTarget.TryGetTarget(out referenceTarget);
 
         public abstract bool TryPurge(bool isForced);
 
@@ -38,9 +38,9 @@
 
         private void RecycleInternal()
         {
-            RecycleWeakReference(this.ReferenceTarget);
-            this.ReferenceTarget = null;
-            this.IsRecycled = true;
+            RecycleWeakReference(ReferenceTarget);
+            ReferenceTarget = null;
+            IsRecycled = true;
         }
 
         protected void RecycleWeakReference(WeakReference<object> weakReference)

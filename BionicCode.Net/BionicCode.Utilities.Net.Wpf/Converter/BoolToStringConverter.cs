@@ -93,11 +93,11 @@
             if (value is bool isTrue)
             {
                 return isTrue
-                  ? this.TrueValue
-                  : this.FalseValue;
+                  ? TrueValue
+                  : FalseValue;
             }
 
-            return this.NullValue;
+            return NullValue;
         }
 
         /// <inheritdoc />
@@ -106,7 +106,7 @@
           Type targetType,
           object parameter,
           CultureInfo culture)
-          => (value as string)?.Equals(this.TrueValue, StringComparison.OrdinalIgnoreCase) ?? false;
+          => (value as string)?.Equals(TrueValue, StringComparison.OrdinalIgnoreCase) ?? false;
 
         #endregion
     }

@@ -18,40 +18,40 @@
 
         public TestEnvironmentSynchronizationContext()
         {
-            this.syncLock = new object();
-            this.completionSource = new TaskCompletionSource();
-            this.unitOfWorkExecutedCompletionSource = new TaskCompletionSource<bool>();
-            this.unitOfWorkExecutedCompletionSource.SetResult(true);
-            this.unitOfWorkItems = new BlockingCollection<Action>();
+            syncLock = new object();
+            completionSource = new TaskCompletionSource();
+            unitOfWorkExecutedCompletionSource = new TaskCompletionSource<bool>();
+            unitOfWorkExecutedCompletionSource.SetResult(true);
+            unitOfWorkItems = new BlockingCollection<Action>();
 
             var mainThread = new Thread(OnMessageLoopStarted);
-            this.ManagedThreadId = mainThread.ManagedThreadId;
+            ManagedThreadId = mainThread.ManagedThreadId;
             mainThread.Start();
         }
 
         public async Task ShutdownAsync()
         {
-            this.unitOfWorkItems.CompleteAdding();
-            await this.completionSource.Task;
+            unitOfWorkItems.CompleteAdding();
+            await completionSource.Task;
         }
 
         private void OnMessageLoopStarted(object obj)
         {
-            while (!this.unitOfWorkItems.IsCompleted)
+            while (!unitOfWorkItems.IsCompleted)
             {
-                lock (this.syncLock)
+                lock (syncLock)
                 {
-                    if (this.canExecuteUnitOfWork && this.unitOfWorkItems.TryTake(out Action unitOfWorkItem))
+                    if (canExecuteUnitOfWork && unitOfWorkItems.TryTake(out Action unitOfWorkItem))
                     {
                         unitOfWorkItem.Invoke();
-                        this.unitOfWorkExecuted = true;
+                        unitOfWorkExecuted = true;
                     }
                 }
             }
 
-            this.isShutdown = true;
-            this.unitOfWorkItems.Dispose();
-            this.completionSource.SetResult();
+            isShutdown = true;
+            unitOfWorkItems.Dispose();
+            completionSource.SetResult();
         }
 
         public override SynchronizationContext CreateCopy() => base.CreateCopy();
@@ -59,34 +59,34 @@
         public override void OperationStarted() => base.OperationStarted();
         public override void Post(SendOrPostCallback d, object state)
         {
-            if (this.isShutdown)
+            if (isShutdown)
             {
                 throw new InvalidOperationException("SynchronizationContext has been shutdown.");
             }
 
-            this.unitOfWorkItems.Add(() => d.Invoke(state));
+            unitOfWorkItems.Add(() => d.Invoke(state));
         }
 
         public override void Send(SendOrPostCallback d, object state)
         {
-            if (this.isShutdown)
+            if (isShutdown)
             {
                 throw new InvalidOperationException("SynchronizationContext has been shutdown.");
             }
 
-            lock (this.syncLock)
+            lock (syncLock)
             {
-                this.canExecuteUnitOfWork = false;
-                this.unitOfWorkExecuted = false;
+                canExecuteUnitOfWork = false;
+                unitOfWorkExecuted = false;
             }
 
-            this.unitOfWorkItems.Add(() => d.Invoke(state));
-            lock (this.syncLock)
+            unitOfWorkItems.Add(() => d.Invoke(state));
+            lock (syncLock)
             {
-                this.canExecuteUnitOfWork = true;
+                canExecuteUnitOfWork = true;
             }
 
-            while (!this.unitOfWorkExecuted)
+            while (!unitOfWorkExecuted)
             {
                 ;
             }

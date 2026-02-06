@@ -6,9 +6,9 @@
     {
         public EventHandlerInfo(TEventsSource eventSource, string eventName, Delegate eventHandler)
         {
-            this.EventSource = eventSource;
-            this.EventHandler = eventHandler;
-            this.EventName = eventName;
+            EventSource = eventSource;
+            EventHandler = eventHandler;
+            EventName = eventName;
         }
 
         public TEventsSource EventSource { get; }

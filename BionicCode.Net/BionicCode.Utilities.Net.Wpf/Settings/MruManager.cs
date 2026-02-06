@@ -21,9 +21,9 @@
         public MruManager()
         {
             if (!(AppSettingsConnector.TryReadString(MruManager.MaxRecentlyUsedCountKey, out string mruCount) &&
-                  int.TryParse(mruCount, out this.maxMostRecentlyUsedCount)))
+                  int.TryParse(mruCount, out maxMostRecentlyUsedCount)))
             {
-                this.maxMostRecentlyUsedCount = 10;
+                maxMostRecentlyUsedCount = 10;
             }
 
             IEnumerable<MostRecentlyUsedFileItem> mru = new List<MostRecentlyUsedFileItem>();
@@ -36,9 +36,9 @@
                   .Select(validPath => new MostRecentlyUsedFileItem(new FileInfo(validPath)));
             }
 
-            this.InternalMostRecentlyUsedFiles = new ObservableCollection<MostRecentlyUsedFileItem>(mru);
-            this.MostRecentlyUsedFiles = new ReadOnlyObservableCollection<MostRecentlyUsedFileItem>(this.InternalMostRecentlyUsedFiles);
-            AddMostRecentlyUsedFile(this.InternalMostRecentlyUsedFiles.LastOrDefault()?.FullName ?? string.Empty);
+            InternalMostRecentlyUsedFiles = new ObservableCollection<MostRecentlyUsedFileItem>(mru);
+            MostRecentlyUsedFiles = new ReadOnlyObservableCollection<MostRecentlyUsedFileItem>(InternalMostRecentlyUsedFiles);
+            AddMostRecentlyUsedFile(InternalMostRecentlyUsedFiles.LastOrDefault()?.FullName ?? string.Empty);
         }
 
         /// <inheritdoc />
@@ -50,27 +50,27 @@
             }
 
             MostRecentlyUsedFileItem existingMruItem;
-            if ((existingMruItem = this.InternalMostRecentlyUsedFiles.FirstOrDefault(mruItem => mruItem.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase))) != null)
+            if ((existingMruItem = InternalMostRecentlyUsedFiles.FirstOrDefault(mruItem => mruItem.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase))) != null)
             {
-                int indexOfExistingMruItem = this.InternalMostRecentlyUsedFiles.IndexOf(existingMruItem);
-                this.InternalMostRecentlyUsedFiles.Move(indexOfExistingMruItem, this.InternalMostRecentlyUsedFiles.Count - 1);
+                int indexOfExistingMruItem = InternalMostRecentlyUsedFiles.IndexOf(existingMruItem);
+                InternalMostRecentlyUsedFiles.Move(indexOfExistingMruItem, InternalMostRecentlyUsedFiles.Count - 1);
             }
             else
             {
                 MostRecentlyUsedFileItem oldItem = null;
-                if (this.InternalMostRecentlyUsedFiles.Count >= this.MaxMostRecentlyUsedCount)
+                if (InternalMostRecentlyUsedFiles.Count >= MaxMostRecentlyUsedCount)
                 {
-                    oldItem = this.InternalMostRecentlyUsedFiles.FirstOrDefault();
-                    this.InternalMostRecentlyUsedFiles.RemoveAt(0);
+                    oldItem = InternalMostRecentlyUsedFiles.FirstOrDefault();
+                    InternalMostRecentlyUsedFiles.RemoveAt(0);
                 }
 
                 var newItem = new MostRecentlyUsedFileItem(new FileInfo(filePath));
-                this.InternalMostRecentlyUsedFiles.Add(newItem);
+                InternalMostRecentlyUsedFiles.Add(newItem);
 
                 OnFileAdded(oldItem, newItem);
             }
 
-            this.MostRecentlyUsedFile = this.InternalMostRecentlyUsedFiles.Last();
+            MostRecentlyUsedFile = InternalMostRecentlyUsedFiles.Last();
 
             SaveInternalMruListToSettingsFile();
         }
@@ -79,14 +79,14 @@
         {
             string mruListString = string.Join(
               MruManager.MostRecentlyUsedKeyStringSeparator,
-              this.InternalMostRecentlyUsedFiles.Select(mruItem => mruItem.FullName));
+              InternalMostRecentlyUsedFiles.Select(mruItem => mruItem.FullName));
             AppSettingsConnector.WriteString(MruManager.MostRecentlyUsedKey, mruListString);
         }
 
         /// <inheritdoc />
         public void Clear()
         {
-            this.InternalMostRecentlyUsedFiles.Clear();
+            InternalMostRecentlyUsedFiles.Clear();
             SaveInternalMruListToSettingsFile();
         }
 
@@ -94,28 +94,28 @@
         /// <inheritdoc />  
         public ReadOnlyObservableCollection<MostRecentlyUsedFileItem> MostRecentlyUsedFiles
         {
-            get => this.mostRecentlyUsedFiles;
-            private set => TrySetValue(value, ref this.mostRecentlyUsedFiles);
+            get => mostRecentlyUsedFiles;
+            private set => TrySetValue(value, ref mostRecentlyUsedFiles);
         }
 
         private MostRecentlyUsedFileItem mostRecentlyUsedFile;
         /// <inheritdoc />
         public MostRecentlyUsedFileItem MostRecentlyUsedFile
         {
-            get => this.mostRecentlyUsedFile;
-            private set => TrySetValue(value, ref this.mostRecentlyUsedFile);
+            get => mostRecentlyUsedFile;
+            private set => TrySetValue(value, ref mostRecentlyUsedFile);
         }
 
         private int maxMostRecentlyUsedCount;
         /// <inheritdoc />
         public int MaxMostRecentlyUsedCount
         {
-            get => this.maxMostRecentlyUsedCount;
+            get => maxMostRecentlyUsedCount;
             set
             {
-                if (TrySetValue(value, IsMruCountValid, ref this.maxMostRecentlyUsedCount))
+                if (TrySetValue(value, IsMruCountValid, ref maxMostRecentlyUsedCount))
                 {
-                    AppSettingsConnector.WriteString(MruManager.MaxRecentlyUsedCountKey, this.MaxMostRecentlyUsedCount.ToString());
+                    AppSettingsConnector.WriteString(MruManager.MaxRecentlyUsedCountKey, MaxMostRecentlyUsedCount.ToString());
                 }
             }
         }
@@ -146,6 +146,6 @@
         /// </summary>
         /// <param name="oldItem">The removed <see cref="MostRecentlyUsedFileItem"/> item.</param>
         /// <param name="newItem">The newly added <see cref="MostRecentlyUsedFileItem"/> item.</param>
-        protected virtual void OnFileAdded(MostRecentlyUsedFileItem oldItem, MostRecentlyUsedFileItem newItem) => this.FileAdded?.Invoke(this, new ValueChangedEventArgs<MostRecentlyUsedFileItem>(oldItem, newItem));
+        protected virtual void OnFileAdded(MostRecentlyUsedFileItem oldItem, MostRecentlyUsedFileItem newItem) => FileAdded?.Invoke(this, new ValueChangedEventArgs<MostRecentlyUsedFileItem>(oldItem, newItem));
     }
 }

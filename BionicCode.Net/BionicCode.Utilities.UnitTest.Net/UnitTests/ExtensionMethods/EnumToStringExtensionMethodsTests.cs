@@ -2,6 +2,7 @@
 {
     using System;
     using BionicCode.Utilities.Net.Profiling;
+    using BionicCode.Utilities.Net.Profiling.Extensions;
     using FluentAssertions;
     using Xunit;
 

@@ -13,57 +13,57 @@
     {
         public WeakEventManagerTest()
         {
-            this.EventSource1 = new TestEventSource1();
-            this.EventSource2 = new TestEventSource2();
+            EventSource1 = new TestEventSource1();
+            EventSource2 = new TestEventSource2();
             eventHandlerInvocationCount = 0;
             eventHandlerInvocationThreadId = -1;
-            this.registrationManager = new EventHandlerRegistrationManager();
+            registrationManager = new EventHandlerRegistrationManager();
         }
 
         [Fact]
         public void RegisterAllEventHandlersEventSource1()
         {
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnNonGenericTestEventFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.TestEvent), OnNonGenericTestEventFromTestEventSource1);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.CustomSignatureTwoParametersTestEvent), OnCustomSignatureTwoParametersTestEvent);
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.CustomSignatureThreeParametersTestEvent), OnCustomSignatureThreeParametersTestEvent1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.CustomSignatureTwoParametersTestEvent), OnCustomSignatureTwoParametersTestEvent);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.CustomSignatureThreeParametersTestEvent), OnCustomSignatureThreeParametersTestEvent1);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEventForStaticHandlers), OnGenericTestEventFromTestEventSource1Static);
-            _ = this.registrationManager.RegisterEventHandler((TestEventSource1)null, nameof(TestEventSource1.StaticGenericTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1Static);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.GenericTestEventForStaticHandlers), OnGenericTestEventFromTestEventSource1Static);
+            _ = registrationManager.RegisterEventHandler((TestEventSource1)null, nameof(TestEventSource1.StaticGenericTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1Static);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.CustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource1);
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.CustomHandlerTestEventForStaticHandlers), OnStronglyTypedEventArgsTestEventFromTestEventSource1Static);
-            _ = this.registrationManager.RegisterEventHandler((TestEventSource1)null, nameof(TestEventSource1.StaticCustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1Static);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.CustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.CustomHandlerTestEventForStaticHandlers), OnStronglyTypedEventArgsTestEventFromTestEventSource1Static);
+            _ = registrationManager.RegisterEventHandler((TestEventSource1)null, nameof(TestEventSource1.StaticCustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1Static);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1);
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEventForStaticHandlers), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1Static);
-            _ = this.registrationManager.RegisterEventHandler((TestEventSource1)null, nameof(TestEventSource1.StaticStronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1Static);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEventForStaticHandlers), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1Static);
+            _ = registrationManager.RegisterEventHandler((TestEventSource1)null, nameof(TestEventSource1.StaticStronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1Static);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.StringEventArgsTestEvent), OnStronglyTypedSenderAndStringEventArgsFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.StringEventArgsTestEvent), OnStronglyTypedSenderAndStringEventArgsFromTestEventSource1);
         }
 
         [Fact]
         public void RegisterAllEventHandlersEventSource2()
         {
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.TestEvent), OnNonGenericTestEventFromTestEventSource2);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.TestEvent), OnNonGenericTestEventFromTestEventSource2);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.CustomSignatureTwoParametersTestEvent), OnCustomSignatureTwoParametersTestEvent);
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.CustomSignatureThreeParametersTestEvent), OnCustomSignatureThreeParametersTestEvent2);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.CustomSignatureTwoParametersTestEvent), OnCustomSignatureTwoParametersTestEvent);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.CustomSignatureThreeParametersTestEvent), OnCustomSignatureThreeParametersTestEvent2);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.GenericTestEvent), OnGenericTestEventFromTestEventSource2);
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.GenericTestEventForStaticHandlers), OnGenericTestEventFromTestEventSource2Static);
-            _ = this.registrationManager.RegisterEventHandler((TestEventSource2)null, nameof(TestEventSource2.StaticGenericTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2Static);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.GenericTestEvent), OnGenericTestEventFromTestEventSource2);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.GenericTestEventForStaticHandlers), OnGenericTestEventFromTestEventSource2Static);
+            _ = registrationManager.RegisterEventHandler((TestEventSource2)null, nameof(TestEventSource2.StaticGenericTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2Static);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.CustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource2);
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.CustomHandlerTestEventForStaticHandlers), OnStronglyTypedEventArgsTestEventFromTestEventSource2Static);
-            _ = this.registrationManager.RegisterEventHandler((TestEventSource2)null, nameof(TestEventSource2.StaticCustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2Static);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.CustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromTestEventSource2);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.CustomHandlerTestEventForStaticHandlers), OnStronglyTypedEventArgsTestEventFromTestEventSource2Static);
+            _ = registrationManager.RegisterEventHandler((TestEventSource2)null, nameof(TestEventSource2.StaticCustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2Static);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2);
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEventForStaticHandlers), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2Static);
-            _ = this.registrationManager.RegisterEventHandler((TestEventSource2)null, nameof(TestEventSource2.StaticStronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2Static);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEventForStaticHandlers), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2Static);
+            _ = registrationManager.RegisterEventHandler((TestEventSource2)null, nameof(TestEventSource2.StaticStronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2Static);
 
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource2, nameof(TestEventSource2.StringEventArgsTestEvent), OnStronglyTypedSenderAndStringEventArgsFromTestEventSource2);
+            _ = registrationManager.RegisterEventHandler(EventSource2, nameof(TestEventSource2.StringEventArgsTestEvent), OnStronglyTypedSenderAndStringEventArgsFromTestEventSource2);
         }
 
         [Fact]
@@ -71,10 +71,10 @@
         {
             RegisterAllEventHandlersEventSource1();
             RegisterAllEventHandlersEventSource2();
-            this.registrationManager.UnregisterAllEventHandlers();
+            registrationManager.UnregisterAllEventHandlers();
 
-            this.EventSource1.RaiseAll();
-            this.EventSource2.RaiseAll();
+            EventSource1.RaiseAll();
+            EventSource2.RaiseAll();
 
             _ = eventHandlerInvocationCount.Should().Be(0);
         }
@@ -85,14 +85,14 @@
             InitializeGcTest(nameof(TestEventSource1.TestEvent), out WeakReference<TestEventListener> weakReferenceToListener, out TestEventListener strongReferenceToListener);
 
             GcEx.ForceFullGC();
-            this.EventSource1?.OnTestEvent();
+            EventSource1?.OnTestEvent();
             GC.KeepAlive(strongReferenceToListener);
 
             // Garbage collect the listener by discarding the strong reference
             GcEx.ForceFullGC();
 
             // This must not raise any events as the listener is expected to be garbage collected at this point
-            this.EventSource1?.OnTestEvent();
+            EventSource1?.OnTestEvent();
 
             _ = weakReferenceToListener.TryGetTarget(out _).Should().BeFalse();
             _ = eventHandlerInvocationCount.Should().Be(1);
@@ -101,13 +101,13 @@
         [Fact]
         public async Task InvokeEventOnBackgroundThread_PassingSynchronizationContext_MustInvokeEventHandlerOnOriginalThread()
         {
-            this.currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(this.currentSynchronizationContext);
-            _ = this.registrationManager.RegisterEventHandlerWithSynchronizationContext(this.EventSource1, nameof(this.EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1, this.currentSynchronizationContext);
-            int currentThreadId = this.currentSynchronizationContext.ManagedThreadId;
+            currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(currentSynchronizationContext);
+            _ = registrationManager.RegisterEventHandlerWithSynchronizationContext(EventSource1, nameof(EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1, currentSynchronizationContext);
+            int currentThreadId = currentSynchronizationContext.ManagedThreadId;
 
-            await Task.Run(this.EventSource1.OnGenericTestEvent);
-            await this.currentSynchronizationContext?.ShutdownAsync();
+            await Task.Run(EventSource1.OnGenericTestEvent);
+            await currentSynchronizationContext?.ShutdownAsync();
 
             _ = eventHandlerInvocationThreadId.Should().Be(currentThreadId);
         }
@@ -115,13 +115,13 @@
         [Fact]
         public async Task InvokeEventOnBackgroundThread_CapturingSynchronizationContext_MustInvokeEventHandlerOnOriginalThread()
         {
-            this.currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(this.currentSynchronizationContext);
-            this.currentSynchronizationContext.Send(state => _ = this.registrationManager.RegisterEventHandlerWithCurrentSynchronizationContext(this.EventSource1, nameof(this.EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1), null);
-            int currentThreadId = this.currentSynchronizationContext.ManagedThreadId;
+            currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(currentSynchronizationContext);
+            currentSynchronizationContext.Send(state => _ = registrationManager.RegisterEventHandlerWithCurrentSynchronizationContext(EventSource1, nameof(EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1), null);
+            int currentThreadId = currentSynchronizationContext.ManagedThreadId;
 
-            await Task.Factory.StartNew(this.EventSource1.OnGenericTestEvent, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
-            await this.currentSynchronizationContext?.ShutdownAsync();
+            await Task.Factory.StartNew(EventSource1.OnGenericTestEvent, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+            await currentSynchronizationContext?.ShutdownAsync();
 
             _ = eventHandlerInvocationThreadId.Should().Be(currentThreadId);
         }
@@ -129,11 +129,11 @@
         [Fact]
         public async Task InvokeEventOnBackgroundThread_NotPassingSynchronizationContext_MustInvokeEventHandlerOnEventInvocatorThread()
         {
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(this.EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
 
             int invocatorThreadId = await Task.Run(() =>
             {
-                this.EventSource1.OnGenericTestEvent();
+                EventSource1.OnGenericTestEvent();
 
                 return invocatorThreadId = Thread.CurrentThread.ManagedThreadId;
             });
@@ -147,15 +147,15 @@
             Action invocationCounterInvocator = WeakEventManagerTest.OnEventInvoked;
             strongReferenceToListener = new TestEventListener();
             weakReferenceToListener = new WeakReference<TestEventListener>(strongReferenceToListener);
-            strongReferenceToListener.InitializeWeakEventTest(invocationCounterInvocator, this.registrationManager, this.EventSource1, eventName);
+            strongReferenceToListener.InitializeWeakEventTest(invocationCounterInvocator, registrationManager, EventSource1, eventName);
         }
 
         [Fact]
         public async Task RegisterEvent_EventDelegateWithEventArgsTypeNotDeriveFromEventArgsClass_ShouldInvokeClientHandlerOnce()
         {
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.StringEventArgsTestEvent), OnStronglyTypedSenderAndStringEventArgsFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.StringEventArgsTestEvent), OnStronglyTypedSenderAndStringEventArgsFromTestEventSource1);
 
-            this.EventSource1.OnStringEventArgsTestEvent();
+            EventSource1.OnStringEventArgsTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -163,11 +163,11 @@
         [Fact]
         public async Task HandleEvent_EventHandlerGeneric_ShouldInvokeHandlerOnce()
         {
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
-            WeakEventManager<TestEventSource1>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
-            WeakEventManager<TestEventSource1>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
+            WeakEventManager<TestEventSource1>.AddEventHandler(EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
+            WeakEventManager<TestEventSource1>.RemoveEventHandler(EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
 
-            this.EventSource1.OnGenericTestEvent();
+            EventSource1.OnGenericTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -175,9 +175,9 @@
         [Fact]
         public async Task HandleEvent_EventHandlerNonGeneric_ShouldInvokeHandlerOnce()
         {
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnNonGenericTestEventFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.TestEvent), OnNonGenericTestEventFromTestEventSource1);
 
-            this.EventSource1.OnTestEvent();
+            EventSource1.OnTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -232,7 +232,7 @@
             RegisterAllEventHandlersEventSource1();
             RegisterAllEventHandlersEventSource2();
 
-            this.EventSource1.OnTestEvent();
+            EventSource1.OnTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -243,7 +243,7 @@
             RegisterAllEventHandlersEventSource1();
             RegisterAllEventHandlersEventSource2();
 
-            this.EventSource1.OnGenericTestEvent();
+            EventSource1.OnGenericTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -254,7 +254,7 @@
             RegisterAllEventHandlersEventSource1();
             RegisterAllEventHandlersEventSource2();
 
-            this.EventSource1.OnCustomHandlerTestEvent();
+            EventSource1.OnCustomHandlerTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -265,7 +265,7 @@
             RegisterAllEventHandlersEventSource1();
             RegisterAllEventHandlersEventSource2();
 
-            this.EventSource1.OnCustomSignatureThreeParametersTestEvent();
+            EventSource1.OnCustomSignatureThreeParametersTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -276,7 +276,7 @@
             RegisterAllEventHandlersEventSource1();
             RegisterAllEventHandlersEventSource2();
 
-            this.EventSource1.OnStringEventArgsTestEvent();
+            EventSource1.OnStringEventArgsTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -287,7 +287,7 @@
             RegisterAllEventHandlersEventSource1();
             RegisterAllEventHandlersEventSource2();
 
-            this.EventSource1.OnStronglyTypedCustomHandlerTestEvent();
+            EventSource1.OnStronglyTypedCustomHandlerTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -298,7 +298,7 @@
             RegisterAllEventHandlersEventSource1();
             RegisterAllEventHandlersEventSource2();
 
-            this.EventSource1.OnStronglyTypedCustomHandlerTestEventForStaticHandlers();
+            EventSource1.OnStronglyTypedCustomHandlerTestEventForStaticHandlers();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -306,9 +306,9 @@
         [Fact]
         public void RegisterEventHandler_WithLessDerivedEventArgsThanEventDelegate_MustInvokeHandlerOnce()
         {
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnNonGenericTestEventFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.GenericTestEvent), OnNonGenericTestEventFromTestEventSource1);
 
-            this.EventSource1.OnGenericTestEvent();
+            EventSource1.OnGenericTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -316,9 +316,9 @@
         [Fact]
         public void RegisterEventHandler_WithLessDerivedSenderThanEventDelegate_MustInvokeHandlerOnce()
         {
-            _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), OnNonGenericTestEventFromTestEventSource1);
+            _ = registrationManager.RegisterEventHandler(EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), OnNonGenericTestEventFromTestEventSource1);
 
-            this.EventSource1.OnStronglyTypedCustomHandlerTestEvent();
+            EventSource1.OnStronglyTypedCustomHandlerTestEvent();
 
             _ = eventHandlerInvocationCount.Should().Be(1);
         }
@@ -326,7 +326,7 @@
         [Fact]
         public void RegisterEventHandler_StaticHandlerWithLessDerivedEventArgsThanStaticEventDelegate_MustInvokeHandlerOnce()
         {
-            _ = this.registrationManager.RegisterEventHandler((TestEventSource1)null, nameof(TestEventSource1.StaticGenericTestEvent), OnGenericTestEventFromStaticTestEventSource1Static);
+            _ = registrationManager.RegisterEventHandler((TestEventSource1)null, nameof(TestEventSource1.StaticGenericTestEvent), OnGenericTestEventFromStaticTestEventSource1Static);
 
             TestEventSource1.OnStaticGenericTestEvent();
 
@@ -601,19 +601,19 @@
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposedValue)
+            if (!disposedValue)
             {
                 WeakEventManagerTest.IsDisposing = true;
                 if (disposing)
                 {
-                    this.currentSynchronizationContext = null;
-                    this.registrationManager.UnregisterAllEventHandlers();
+                    currentSynchronizationContext = null;
+                    registrationManager.UnregisterAllEventHandlers();
                     eventHandlerInvocationCount = 0;
                     eventHandlerInvocationThreadId = -1;
                     GcEx.ForceFullGC();
                 }
 
-                this.disposedValue = true;
+                disposedValue = true;
                 WeakEventManagerTest.IsDisposing = false;
             }
         }

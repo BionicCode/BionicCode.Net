@@ -69,7 +69,7 @@
 
         public static PropertyList CreateInternal(Type declaringType)
         {
-            PropertyInfo[] propertyInfoList = declaringType.GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            PropertyInfo[] propertyInfoList = declaringType.GetProperties(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             if (propertyInfoList.IsEmpty())
             {
                 return PropertyList.Empty;
@@ -87,7 +87,7 @@
         }
 
         PropertyList IPropertyListBuilder.Build()
-            => this._builderResult ??= new PropertyList(Build(), isIntegrityValidationEnabled: false);
+            => _builderResult ??= new PropertyList(Build(), isIntegrityValidationEnabled: false);
     }
 
     internal static class PropertyListBuilderExtensions

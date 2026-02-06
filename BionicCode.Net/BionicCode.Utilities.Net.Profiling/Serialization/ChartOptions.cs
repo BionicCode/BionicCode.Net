@@ -7,18 +7,18 @@
     {
         public ChartOptions()
         {
-            this.Series = new List<ChartSeries>();
-            //this.HorizontalAxis = new List<ChartAxis>();
-            this.VerticalAxis = new List<ChartAxis>();
+            Series = new List<ChartSeries>();
+            //HorizontalAxis = new List<ChartAxis>();
+            VerticalAxis = new List<ChartAxis>();
         }
         public void AddSeries(ChartSeries chartSeries)
-          => this.Series.Add(chartSeries);
+          => Series.Add(chartSeries);
         //public void AddHorizontalAxis(ChartAxis chartAxis)
-        //  => this.HorizontalAxis.Add(chartAxis);
+        //  => HorizontalAxis.Add(chartAxis);
         public void AddHorizontalAxis(ChartAxis chartAxis)
-          => this.HorizontalAxis = chartAxis;
+          => HorizontalAxis = chartAxis;
         public void AddVerticalAxis(ChartAxis chartAxis)
-          => this.VerticalAxis.Add(chartAxis);
+          => VerticalAxis.Add(chartAxis);
 
         [JsonPropertyName("series")]
         [JsonConverter(typeof(ChartOptionsSeriesJsonConveter))]

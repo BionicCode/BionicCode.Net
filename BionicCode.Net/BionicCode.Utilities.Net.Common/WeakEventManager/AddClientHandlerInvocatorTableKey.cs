@@ -7,21 +7,21 @@
     {
         public AddClientHandlerInvocatorTableKey(Type eventSourceType, Type eventHandlerType)
         {
-            this.EventSourceType = eventSourceType;
-            this.EventHandlerType = eventHandlerType;
+            EventSourceType = eventSourceType;
+            EventHandlerType = eventHandlerType;
         }
 
         public Type EventHandlerType { get; }
         public Type EventSourceType { get; }
 
-        public bool Equals(AddClientHandlerInvocatorTableKey other) => other.EventHandlerType.Equals(this.EventHandlerType) && other.EventSourceType.Equals(this.EventSourceType);
+        public bool Equals(AddClientHandlerInvocatorTableKey other) => other.EventHandlerType.Equals(EventHandlerType) && other.EventSourceType.Equals(EventSourceType);
         public override bool Equals(object obj) => obj is AddClientHandlerInvocatorTableKey key && Equals(key);
 
         public override int GetHashCode()
         {
             int hashCode = 433094870;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<Type>.Default.GetHashCode(this.EventHandlerType);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<Type>.Default.GetHashCode(this.EventSourceType);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<Type>.Default.GetHashCode(EventHandlerType);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<Type>.Default.GetHashCode(EventSourceType);
             return hashCode;
         }
 

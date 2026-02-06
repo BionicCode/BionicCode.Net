@@ -26,9 +26,9 @@
             /// <param name="isRejectEqualValuesEnabled">Controls if the equality check before setting the value is enabled. See <see cref="IsRejectEqualValuesEnabled"/>.</param>
             public SetValueOptions(bool isRejectInvalidValueEnabled, bool isThrowExceptionOnValidationErrorEnable, bool isRejectEqualValuesEnabled)
             {
-                this.IsRejectInvalidValueEnabled = isRejectInvalidValueEnabled;
-                this.IsThrowExceptionOnValidationErrorEnabled = isThrowExceptionOnValidationErrorEnable;
-                this.IsRejectEqualValuesEnabled = isRejectEqualValuesEnabled;
+                IsRejectInvalidValueEnabled = isRejectInvalidValueEnabled;
+                IsThrowExceptionOnValidationErrorEnabled = isThrowExceptionOnValidationErrorEnable;
+                IsRejectEqualValuesEnabled = isRejectEqualValuesEnabled;
             }
 
             private SetValueOptions() : this(false, false, true)

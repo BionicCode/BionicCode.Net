@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using BionicCode.Utilities.Net.Reflection.Exceptions;
 
 internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatable<ConstructorList>
 {
@@ -18,61 +17,61 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
 
     public ConstructorList(IEnumerable<ConstructorData> items)
     {
-        this.Constructors = items?.ToImmutableList() ?? ImmutableList<ConstructorData>.Empty;
+        Constructors = items?.ToImmutableList() ?? ImmutableList<ConstructorData>.Empty;
 
-        if (this.HasItems)
+        if (HasItems)
         {
-            this._declaringTypeCacheKey = this.Constructors.First().DeclaringTypeData.CacheKey;
+            _declaringTypeCacheKey = Constructors.First().DeclaringTypeData.CacheKey;
 
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Constructors,
-                constructorData => constructorData.DeclaringTypeData.CacheKey != this.DeclaringTypeCacheKey,
+                Constructors,
+                constructorData => constructorData.DeclaringTypeData.CacheKey != DeclaringTypeCacheKey,
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ConstructorData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All constructors must belong to the same declaring type.");
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     internal ConstructorList(IEnumerable<ConstructorData> items, bool isIntegrityValidationEnabled)
     {
-        this.Constructors = items?.ToImmutableList() ?? ImmutableList<ConstructorData>.Empty;
-        this._declaringTypeCacheKey = this.HasItems
-            ? this.Constructors.First().DeclaringTypeData.CacheKey
+        Constructors = items?.ToImmutableList() ?? ImmutableList<ConstructorData>.Empty;
+        _declaringTypeCacheKey = HasItems
+            ? Constructors.First().DeclaringTypeData.CacheKey
             : default;
 
-        if (isIntegrityValidationEnabled && this.HasItems)
+        if (isIntegrityValidationEnabled && HasItems)
         {
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Constructors,
-                constructorData => constructorData.DeclaringTypeData.CacheKey != this.DeclaringTypeCacheKey,
+                Constructors,
+                constructorData => constructorData.DeclaringTypeData.CacheKey != DeclaringTypeCacheKey,
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ConstructorData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All constructors must belong to the same declaring type.");
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     private ConstructorList()
-        => this.Constructors = ImmutableList<ConstructorData>.Empty;
+        => Constructors = ImmutableList<ConstructorData>.Empty;
 
-    public int Count => this.Constructors.Count;
-    public bool IsEmpty => this.Constructors.IsEmpty;
-    public bool HasItems => !this.IsEmpty;
+    public int Count => Constructors.Count;
+    public bool IsEmpty => Constructors.IsEmpty;
+    public bool HasItems => !IsEmpty;
     public ImmutableList<ConstructorData> Constructors { get; }
     public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
-        => this.HasItems
-            ? this._declaringTypeCacheKey
-            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeCacheKey)));
+        => HasItems
+            ? _declaringTypeCacheKey
+            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeCacheKey)));
 
     public TypeData DeclaringTypeData
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = this.DeclaringTypeCacheKey;
-            return this.HasItems
+            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
-                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeData)));
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeData)));
         }
     }
 
@@ -81,19 +80,19 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
         get
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
-            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Constructors.Count, nameof(index));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Constructors.Count, nameof(index));
 
-            return this.HasItems
-                ? this.Constructors[index]
+            return HasItems
+                ? Constructors[index]
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(ConstructorList), ReflectionConstants.IndexerGetMethodName));
         }
     }
 
     public IEnumerator<ConstructorData> GetEnumerator()
-        => ((IEnumerable<ConstructorData>)this.Constructors).GetEnumerator();
+        => ((IEnumerable<ConstructorData>)Constructors).GetEnumerator();
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => this.Constructors.GetEnumerator();
+        => Constructors.GetEnumerator();
 
     public bool Equals(ConstructorList? other)
     {
@@ -102,19 +101,19 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
             return false;
         }
 
-        if (this.Count != other.Count)
+        if (Count != other.Count)
         {
             return false;
         }
 
-        if (this.DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
+        if (DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
         {
             return false;
         }
 
-        for (int index = 0; index < this.Count; index++)
+        for (int index = 0; index < Count; index++)
         {
-            if (!this.Constructors[index].Equals(other.Constructors[index]))
+            if (!Constructors[index].Equals(other.Constructors[index]))
             {
                 return false;
             }
@@ -127,18 +126,18 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
         => obj is ConstructorList other && Equals(other);
 
     public override int GetHashCode()
-        => this._hashCode;
+        => _hashCode;
 
     private int ComputeHashCode()
     {
         unchecked
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.Count);
-            hashCode.Add(this.DeclaringTypeCacheKey);
-            for (int index = 0; index < this.Constructors.Count; index++)
+            hashCode.Add(Count);
+            hashCode.Add(DeclaringTypeCacheKey);
+            for (int index = 0; index < Constructors.Count; index++)
             {
-                hashCode.Add(this.Constructors[index]);
+                hashCode.Add(Constructors[index]);
             }
 
             return hashCode.ToHashCode();

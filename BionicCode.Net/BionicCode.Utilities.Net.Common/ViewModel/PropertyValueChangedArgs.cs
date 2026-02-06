@@ -21,9 +21,9 @@ namespace BionicCode.Utilities.Net
         /// <param name="newValue">The value that caused the change.</param>
         public PropertyValueChangedArgs(string propertyName, TValue oldValue, TValue newValue)
         {
-            this.PropertyName = propertyName;
-            this.OldValue = oldValue;
-            this.NewValue = newValue;
+            PropertyName = propertyName;
+            OldValue = oldValue;
+            NewValue = newValue;
         }
 
         /// <summary>

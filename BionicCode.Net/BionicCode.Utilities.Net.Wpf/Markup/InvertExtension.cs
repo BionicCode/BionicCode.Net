@@ -48,9 +48,9 @@ namespace BionicCode.Utilities.Net
         /// <param name="value">Any value that can be converted by the provided <see cref="ValueInverter"/>. Can be any <see cref="MarkupExtension"/> like <see cref="BindingBase"/> that can provide a valid value.</param>
         public InvertExtension(object value)
         {
-            this.Value = value;
-            this.ValueInverter = new DefaultValueInverter();
-            this.Mode = InversionMode.Default;
+            Value = value;
+            ValueInverter = new DefaultValueInverter();
+            Mode = InversionMode.Default;
         }
 
         #region Overrides of MarkupExtension
@@ -59,7 +59,7 @@ namespace BionicCode.Utilities.Net
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             object valueToInvert;
-            if (this.Value is MarkupExtension innerMarkupExtension)
+            if (Value is MarkupExtension innerMarkupExtension)
             {
                 valueToInvert = GetValueToInvertFromMarkupExtension(innerMarkupExtension, serviceProvider);
                 if (valueToInvert is BindingBase bindingMarkupExtension)
@@ -69,7 +69,7 @@ namespace BionicCode.Utilities.Net
             }
             else
             {
-                valueToInvert = this.Value;
+                valueToInvert = Value;
             }
 
             var provideValueTargetService = serviceProvider.GetService(typeof(IProvideValueTarget)) as IProvideValueTarget;
@@ -77,7 +77,7 @@ namespace BionicCode.Utilities.Net
 
             return valueToInvert == DependencyProperty.UnsetValue
               ? valueToInvert
-              : this.ValueInverter.TryInvertValue(valueToInvert, out object invertedValue)
+              : ValueInverter.TryInvertValue(valueToInvert, out object invertedValue)
                 ? targetPropertyType.Equals(typeof(string))
                   ? invertedValue.ToString()
                   : invertedValue
@@ -123,12 +123,12 @@ namespace BionicCode.Utilities.Net
         }
 
         private object InvertBindingTarget(object resolvedValue)
-          => this.Mode != InversionMode.OneWay && this.ValueInverter.TryInvertValue(resolvedValue, out object invertedValue)
+          => Mode != InversionMode.OneWay && ValueInverter.TryInvertValue(resolvedValue, out object invertedValue)
             ? invertedValue
             : resolvedValue;
 
         private object InvertBindingSource(object resolvedValue)
-          => this.Mode != InversionMode.OneWayToSource && this.ValueInverter.TryInvertValue(resolvedValue, out object invertedValue)
+          => Mode != InversionMode.OneWayToSource && ValueInverter.TryInvertValue(resolvedValue, out object invertedValue)
             ? invertedValue
             : resolvedValue;
     }

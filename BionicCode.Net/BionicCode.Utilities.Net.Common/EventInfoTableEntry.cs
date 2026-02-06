@@ -1,14 +1,13 @@
-﻿namespace BionicCode.Utilities.Net
+﻿namespace BionicCode.Utilities.Net;
+
+#region Info
+// //  
+// BionicUtilities.Net.Standard
+#endregion
+
+internal class EventInfoTableEntry
 {
-    #region Info
-    // //  
-    // BionicUtilities.Net.Standard
-    #endregion
+    public EventInfoTableEntry(EventData eventData) => EventData = eventData;
 
-    internal class EventInfoTableEntry
-    {
-        public EventInfoTableEntry(EventData eventData) => this.EventData = eventData;
-
-        public EventData EventData { get; }
-    }
+    public EventData EventData { get; }
 }

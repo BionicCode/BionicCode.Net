@@ -23,8 +23,8 @@
         /// <param name="arguments">The argument list ordered by their position.</param>
         public ProfilerPropertyArgumentAttribute()
         {
-            this.Value = null;
-            this.Accessor = PropertyAccessor.GetAndSet;
+            Value = null;
+            Accessor = PropertyAccessor.GetAndSet;
         }
 
         /// <summary>
@@ -33,8 +33,8 @@
         /// <param name="arguments">The argument list ordered by their position.</param>
         public ProfilerPropertyArgumentAttribute(object? value = null)
         {
-            this.Value = value;
-            this.Accessor = PropertyAccessor.GetAndSet;
+            Value = value;
+            Accessor = PropertyAccessor.GetAndSet;
         }
 
         /// <summary>

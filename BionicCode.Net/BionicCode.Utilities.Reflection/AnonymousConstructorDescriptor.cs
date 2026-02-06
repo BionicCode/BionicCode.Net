@@ -38,9 +38,9 @@
                 nameof(declaringTypeHandle),
                 $"Invalid argument '{nameof(declaringTypeHandle)}'. The provided declaring type handle does not resolve to a runtime type.");
 
-            this.DeclaringTypeHandle = declaringTypeHandle;
-            this.ConstructorParameterList = constructorParameters.OrEmpty();
-            this.IsAnonymous = true;
+            DeclaringTypeHandle = declaringTypeHandle;
+            ConstructorParameterList = constructorParameters.OrEmpty();
+            IsAnonymous = true;
         }
 
         public RuntimeTypeHandle DeclaringTypeHandle { get; }
@@ -48,17 +48,17 @@
         public bool IsAnonymous { get; }
 
         public bool Equals(AnonymousConstructorDescriptor other)
-            => this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
-            && this.ConstructorParameterList.Equals(other.ConstructorParameterList)
-            && this.IsAnonymous == other.IsAnonymous;
+            => DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
+            && ConstructorParameterList.Equals(other.ConstructorParameterList)
+            && IsAnonymous == other.IsAnonymous;
 
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.DeclaringTypeHandle);
-            hashCode.Add(this.ConstructorParameterList);
-            hashCode.Add(this.IsAnonymous);
-            hashCode.Add(this.DeclaringTypeHandle);
+            hashCode.Add(DeclaringTypeHandle);
+            hashCode.Add(ConstructorParameterList);
+            hashCode.Add(IsAnonymous);
+            hashCode.Add(DeclaringTypeHandle);
 
             return hashCode.ToHashCode();
         }

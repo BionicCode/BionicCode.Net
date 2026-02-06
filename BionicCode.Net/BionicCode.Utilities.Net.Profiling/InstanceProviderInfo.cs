@@ -7,87 +7,87 @@
     {
         public InstanceProviderInfo(MethodData factoryMethod, object[]? argumentList = null)
         {
-            this.factoryMethodData = factoryMethod;
-            this.ArgumentList = argumentList;
-            this.IsAwaitable = factoryMethod.IsAwaitable;
+            factoryMethodData = factoryMethod;
+            ArgumentList = argumentList;
+            IsAwaitable = factoryMethod.IsAwaitable;
         }
 
         public InstanceProviderInfo(ConstructorData constructor, object[]? argumentList = null)
         {
-            this.constructorData = constructor;
-            this.ArgumentList = argumentList;
-            this.IsAwaitable = false;
+            constructorData = constructor;
+            ArgumentList = argumentList;
+            IsAwaitable = false;
         }
 
         public InstanceProviderInfo(FieldData field, object[]? argumentList = null)
         {
-            this.fieldData = field;
-            this.ArgumentList = argumentList;
-            this.IsAwaitable = false;
+            fieldData = field;
+            ArgumentList = argumentList;
+            IsAwaitable = false;
         }
 
         public InstanceProviderInfo(PropertyData property, object[]? argumentList = null)
         {
-            this.propertyData = property;
-            this.ArgumentList = argumentList;
-            this.IsAwaitable = false;
+            propertyData = property;
+            ArgumentList = argumentList;
+            IsAwaitable = false;
         }
 
         public object CreateTargetInstance(object target)
         {
-            if (this.IsAwaitable)
+            if (IsAwaitable)
             {
-                throw new InvalidOperationException($"The factory method is awaitable. Check {nameof(this.IsAwaitable)} to ensure that the instance provider is not an awaitable method.");
+                throw new InvalidOperationException($"The factory method is awaitable. Check {nameof(IsAwaitable)} to ensure that the instance provider is not an awaitable method.");
             }
 
-            if (this.instance is null)
+            if (instance is null)
             {
-                if (this.factoryMethodData != null)
+                if (factoryMethodData != null)
                 {
-                    this.instance = this.factoryMethodData.Invoke(target, ReadOnlySpan<object>.Empty);
+                    instance = factoryMethodData.Invoke(target, ReadOnlySpan<object>.Empty);
                 }
-                else if (this.constructorData != null)
+                else if (constructorData != null)
                 {
-                    this.instance = this.constructorData.Invoke(this.ArgumentList);
+                    instance = constructorData.Invoke(ArgumentList);
                 }
-                else if (this.fieldData != null)
+                else if (fieldData != null)
                 {
-                    this.instance = this.fieldData.GetValue(target);
+                    instance = fieldData.GetValue(target);
                 }
-                else if (this.propertyData != null)
+                else if (propertyData != null)
                 {
-                    this.instance = this.propertyData.IsIndexer
-                        ? this.propertyData.GetIndexerValue(target, this.ArgumentList)
-                        : this.propertyData.GetValue(target);
+                    instance = propertyData.IsIndexer
+                        ? propertyData.GetIndexerValue(target, ArgumentList)
+                        : propertyData.GetValue(target);
                 }
             }
 
-            return this.instance ?? throw new InvalidOperationException(InstanceProviderInfo.UnableToCreateInstanceMessage);
+            return instance ?? throw new InvalidOperationException(InstanceProviderInfo.UnableToCreateInstanceMessage);
         }
 
         public async ValueTask<object> CreateTargetInstanceAsync(object target)
         {
-            if (!this.IsAwaitable)
+            if (!IsAwaitable)
             {
-                throw new InvalidOperationException($"The factory method is not awaitable. Check {nameof(this.IsAwaitable)} to ensure that the instance provider is an awaitable method.");
+                throw new InvalidOperationException($"The factory method is not awaitable. Check {nameof(IsAwaitable)} to ensure that the instance provider is an awaitable method.");
             }
 
-            if (this.instance is null)
+            if (instance is null)
             {
-                if (this.factoryMethodData != null)
+                if (factoryMethodData != null)
                 {
-                    if (this.factoryMethodData.IsAwaitableTask)
+                    if (factoryMethodData.IsAwaitableTask)
                     {
-                        this.instance = await this.factoryMethodData.InvokeAwaitableTaskWithResultAsync(target, this.ArgumentList);
+                        instance = await factoryMethodData.InvokeAwaitableTaskWithResultAsync(target, ArgumentList);
                     }
-                    else if (this.factoryMethodData.IsAwaitableGenericValueTask)
+                    else if (factoryMethodData.IsAwaitableGenericValueTask)
                     {
-                        this.instance = await this.factoryMethodData.InvokeAwaitableValueTaskWithResultAsync(target, this.ArgumentList);
+                        instance = await factoryMethodData.InvokeAwaitableValueTaskWithResultAsync(target, ArgumentList);
                     }
                 }
             }
 
-            return this.instance ?? throw new InvalidOperationException(InstanceProviderInfo.UnableToCreateInstanceMessage);
+            return instance ?? throw new InvalidOperationException(InstanceProviderInfo.UnableToCreateInstanceMessage);
         }
 
         public object[] ArgumentList { get; }

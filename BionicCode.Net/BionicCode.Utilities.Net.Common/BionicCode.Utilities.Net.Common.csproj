@@ -216,6 +216,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Examples\HelperExtensionsCommon\" />
 	  <Folder Include="Profiling\" />
 	</ItemGroup>
 

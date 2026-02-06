@@ -46,10 +46,10 @@ namespace BionicCode.Utilities.Net
         /// <param name="sendResponseCallbackAsync">The call back to invoke when the dialog was closed</param>
         protected DialogViewModel(string message, string title, ImageSource titleBarIcon, Func<IDialogViewModel, Task> sendResponseCallbackAsync)
         {
-            this.ResponseCallbackAsync = sendResponseCallbackAsync;
-            this.Message = message;
-            this.Title = title;
-            this.TitleBarIcon = titleBarIcon;
+            ResponseCallbackAsync = sendResponseCallbackAsync;
+            Message = message;
+            Title = title;
+            TitleBarIcon = titleBarIcon;
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace BionicCode.Utilities.Net
         /// <returns>A <c>Task</c> instance to make this method awaitable.</returns>
         protected virtual async Task ExecuteSendResponseCommandAsync(DialogResult result)
         {
-            this.DialogResult = result;
-            await this.ResponseCallbackAsync.Invoke(this);
+            DialogResult = result;
+            await ResponseCallbackAsync.Invoke(this);
             OnInteractionCompleted();
         }
 
@@ -70,15 +70,15 @@ namespace BionicCode.Utilities.Net
 
         private string title;
         /// <inheritdoc />
-        public string Title { get => this.title; set => TrySetValue(value, ref this.title); }
+        public string Title { get => title; set => TrySetValue(value, ref title); }
 
         private string message;
         /// <inheritdoc />
-        public string Message { get => this.message; set => TrySetValue(value, ref this.message); }
+        public string Message { get => message; set => TrySetValue(value, ref message); }
 
         private ImageSource titleBarIcon;
         /// <inheritdoc />
-        public ImageSource TitleBarIcon { get => this.titleBarIcon; set => TrySetValue(value, ref this.titleBarIcon); }
+        public ImageSource TitleBarIcon { get => titleBarIcon; set => TrySetValue(value, ref titleBarIcon); }
 
         /// <inheritdoc />
         public IAsyncRelayCommand<DialogResult> SendResponseAsyncCommand => new AsyncRelayCommand<DialogResult>(ExecuteSendResponseCommandAsync, CanExecuteSendResponseCommand);
@@ -88,8 +88,8 @@ namespace BionicCode.Utilities.Net
         /// <inheritdoc />
         public DialogResult DialogResult
         {
-            get => this.dialogResult;
-            set => TrySetValue(value, ref this.dialogResult);
+            get => dialogResult;
+            set => TrySetValue(value, ref dialogResult);
         }
 
         private Func<IDialogViewModel, Task> responseCallbackAsync;
@@ -97,8 +97,8 @@ namespace BionicCode.Utilities.Net
         /// <inheritdoc />
         public Func<IDialogViewModel, Task> ResponseCallbackAsync
         {
-            get => this.responseCallbackAsync;
-            set => TrySetValue(value, ref this.responseCallbackAsync);
+            get => responseCallbackAsync;
+            set => TrySetValue(value, ref responseCallbackAsync);
         }
 
         /// <inheritdoc />
@@ -115,7 +115,7 @@ namespace BionicCode.Utilities.Net
         /// <param name="cancelEventArgs">When setting the property <see cref="CancelEventArgs.Cancel"/> of the event's <see cref="CancelEventArgs"/> to <c>true</c> will cancel the dialog close process.</param>
         /// <remarks>When the dialog close process was cancelled e.g., by overriding the <see cref="OnInteractionCompleting(CancelEventArgs)"/> method and by setting the <paramref name="cancelEventArgs"/> to <c>true</c>, a new close process can be triggered either by invoking the <see cref="OnInteractionCompleted"/> method or by invoking the <see cref="SendResponseAsyncCommand"/>.</remarks>
         protected virtual void OnInteractionCompleting(CancelEventArgs cancelEventArgs)
-          => this.InteractionCompleting?.Invoke(this, cancelEventArgs);
+          => InteractionCompleting?.Invoke(this, cancelEventArgs);
 
         /// <summary>
         /// Event invocator of the <see cref="InteractionCompleted"/> event. Raising this event will request the dialog to be closed.
@@ -127,7 +127,7 @@ namespace BionicCode.Utilities.Net
 
             if (!cancelEventArgs.Cancel)
             {
-                this.InteractionCompleted?.Invoke(this, EventArgs.Empty);
+                InteractionCompleted?.Invoke(this, EventArgs.Empty);
             }
         }
     }

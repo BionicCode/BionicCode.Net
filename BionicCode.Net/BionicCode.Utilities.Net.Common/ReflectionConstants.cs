@@ -1,5 +1,8 @@
 ﻿namespace BionicCode.Utilities.Net;
 
+/// <summary>
+/// Provides a set of constant string values that are commonly used in reflection scenarios, particularly when working with properties, indexers, events, delegates, and operator methods in .NET. These constants can be used to ensure consistency and avoid hardcoding string literals throughout the codebase when performing reflection operations or generating code dynamically.
+/// </summary>
 public static class ReflectionConstants
 {
 
@@ -75,7 +78,7 @@ public static class ReflectionConstants
     /// represent operator overloads, such as addition or equality operators, in .NET type metadata. The value
     /// corresponds to the standard prefix applied to operator methods by the compiler.</remarks>
     /// <value>"op_" which is the prefix for operator methods in .NET.</value>
-    internal const string OperatorMethodNamePrefix = "op_";
+    public const string OperatorMethodNamePrefix = "op_";
 
-    internal const string PropertySetterValueParameterName = "value";
+    public const string PropertySetterValueParameterName = "value";
 }

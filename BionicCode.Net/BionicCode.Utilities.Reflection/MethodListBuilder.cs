@@ -68,7 +68,7 @@
 
         private static MethodList CreateInternal(Type declaringType)
         {
-            MethodInfo[] methodInfoList = declaringType.GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            MethodInfo[] methodInfoList = declaringType.GetMethods(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             if (methodInfoList.IsEmpty())
             {
                 return MethodList.Empty;
@@ -86,7 +86,7 @@
         }
 
         MethodList IMethodListBuilder.Build()
-            => this._builderResult ??= new MethodList(Build(), isIntegrityValidationEnabled: false);
+            => _builderResult ??= new MethodList(Build(), isIntegrityValidationEnabled: false);
     }
 
     internal static class MethodListBuilderExtensions

@@ -46,16 +46,16 @@
             Type? declaringType = propertyInfo.DeclaringType;
             ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
 
-            this.HasPropertyGetAccessor = propertyInfo.CanRead;
-            if (this.HasPropertyGetAccessor)
+            HasPropertyGetAccessor = propertyInfo.CanRead;
+            if (HasPropertyGetAccessor)
             {
-                this.DeclaredPropertyAccessors = PropertyAccessors.Get;
+                DeclaredPropertyAccessors = PropertyAccessors.Get;
             }
 
-            this.HasPropertySetAccessor = propertyInfo.CanWrite;
-            if (this.HasPropertySetAccessor)
+            HasPropertySetAccessor = propertyInfo.CanWrite;
+            if (HasPropertySetAccessor)
             {
-                this.DeclaredPropertyAccessors |= PropertyAccessors.Set;
+                DeclaredPropertyAccessors |= PropertyAccessors.Set;
             }
 
             if (isExplicitInterfaceImplementation)
@@ -75,11 +75,11 @@
                     $"Invalid argument '{nameof(declaringInterfaceTypeHandle)}'. The argument '{nameof(declaringInterfaceTypeHandle)}' points to a non-interface type. Reason: Only interface types can provide the declaration of explicit interface implementations.");
             }
 
-            this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
-            this.IsIndexerProperty = isIndexerProperty;
-            this.IsAnonymous = false;
-            this.PropertyInfo = propertyInfo;
-            this.PropertyName = propertyInfo.Name;
+            IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
+            IsIndexerProperty = isIndexerProperty;
+            IsAnonymous = false;
+            PropertyInfo = propertyInfo;
+            PropertyName = propertyInfo.Name;
         }
 
         public string PropertyName { get; }
@@ -92,26 +92,26 @@
         public PropertyInfo PropertyInfo { get; }
 
         public bool Equals(WellKnownPropertyDescriptor other)
-            => this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-            && this.IsIndexerProperty == other.IsIndexerProperty
-            && this.IsAnonymous == other.IsAnonymous
-            && ReferenceEquals(this.PropertyInfo, other.PropertyInfo)
-            && this.HasPropertyGetAccessor == other.HasPropertyGetAccessor
-            && this.HasPropertySetAccessor == other.HasPropertySetAccessor
-            && this.PropertyName.Equals(other.PropertyName, StringComparison.Ordinal)
-            && this.DeclaredPropertyAccessors == other.DeclaredPropertyAccessors;
+            => IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
+            && IsIndexerProperty == other.IsIndexerProperty
+            && IsAnonymous == other.IsAnonymous
+            && ReferenceEquals(PropertyInfo, other.PropertyInfo)
+            && HasPropertyGetAccessor == other.HasPropertyGetAccessor
+            && HasPropertySetAccessor == other.HasPropertySetAccessor
+            && PropertyName.Equals(other.PropertyName, StringComparison.Ordinal)
+            && DeclaredPropertyAccessors == other.DeclaredPropertyAccessors;
 
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.IsExplicitInterfaceImplementation);
-            hashCode.Add(this.IsIndexerProperty);
-            hashCode.Add(this.HasPropertyGetAccessor);
-            hashCode.Add(this.HasPropertySetAccessor);
-            hashCode.Add(this.IsAnonymous);
-            hashCode.Add(this.PropertyInfo);
-            hashCode.Add(this.PropertyName, StringComparer.Ordinal);
-            hashCode.Add(this.DeclaredPropertyAccessors);
+            hashCode.Add(IsExplicitInterfaceImplementation);
+            hashCode.Add(IsIndexerProperty);
+            hashCode.Add(HasPropertyGetAccessor);
+            hashCode.Add(HasPropertySetAccessor);
+            hashCode.Add(IsAnonymous);
+            hashCode.Add(PropertyInfo);
+            hashCode.Add(PropertyName, StringComparer.Ordinal);
+            hashCode.Add(DeclaredPropertyAccessors);
 
             return hashCode.ToHashCode();
         }

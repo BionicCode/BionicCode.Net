@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using BionicCode.Utilities.Net.Profiling.Extensions;
 
     internal class GoogleChartsDataConverter
     {

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using BionicCode.Utilities.Net.Reflection.Exceptions;
 
 internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodList>
 {
@@ -19,80 +18,80 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
 
     public MethodList(IEnumerable<MethodData> items)
     {
-        this.Methods = items?.ToImmutableList() ?? ImmutableList<MethodData>.Empty;
-        this._methodNameIndex = this.Methods.ToLookup(method => method.Name, StringComparer.Ordinal); // allow duplicate method names (overloads)
+        Methods = items?.ToImmutableList() ?? ImmutableList<MethodData>.Empty;
+        _methodNameIndex = Methods.ToLookup(method => method.Name, StringComparer.Ordinal); // allow duplicate method names (overloads)
 
-        if (this.HasItems)
+        if (HasItems)
         {
-            this._declaringTypeCacheKey = this.Methods.First().DeclaringTypeData.CacheKey;
+            _declaringTypeCacheKey = Methods.First().DeclaringTypeData.CacheKey;
 
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Methods,
-                methodData => methodData.DeclaringTypeData.CacheKey != this.DeclaringTypeCacheKey,
+                Methods,
+                methodData => methodData.DeclaringTypeData.CacheKey != DeclaringTypeCacheKey,
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All methods must belong to the same declaring type.");
 
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     internal MethodList(IEnumerable<MethodData> items, bool isIntegrityValidationEnabled)
     {
-        this.Methods = items?.ToImmutableList() ?? ImmutableList<MethodData>.Empty;
+        Methods = items?.ToImmutableList() ?? ImmutableList<MethodData>.Empty;
 
         // allow duplicate method names (overloads)
-        this._methodNameIndex = this.Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
+        _methodNameIndex = Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
 
-        this._declaringTypeCacheKey = this.HasItems
-            ? this.Methods.First().DeclaringTypeData.CacheKey
+        _declaringTypeCacheKey = HasItems
+            ? Methods.First().DeclaringTypeData.CacheKey
             : default;
 
-        if (isIntegrityValidationEnabled && this.HasItems)
+        if (isIntegrityValidationEnabled && HasItems)
         {
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Methods,
-                methodData => methodData.DeclaringTypeData.CacheKey != this.DeclaringTypeCacheKey,
+                Methods,
+                methodData => methodData.DeclaringTypeData.CacheKey != DeclaringTypeCacheKey,
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All methods must belong to the same declaring type.");
 
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     private MethodList()
     {
-        this.Methods = ImmutableList<MethodData>.Empty;
-        this._methodNameIndex = this.Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
+        Methods = ImmutableList<MethodData>.Empty;
+        _methodNameIndex = Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
     }
 
     public bool TryGetMethodsByName(string methodName, out MethodList methodList)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(methodName);
-        methodList = this._methodNameIndex[methodName]
+        methodList = _methodNameIndex[methodName]
             .ToMethodList();
 
         return methodList.HasItems;
     }
 
-    public int Count => this.Methods.Count;
-    public bool IsEmpty => this.Methods.IsEmpty;
-    public bool HasItems => !this.IsEmpty;
+    public int Count => Methods.Count;
+    public bool IsEmpty => Methods.IsEmpty;
+    public bool HasItems => !IsEmpty;
     public ImmutableList<MethodData> Methods { get; }
     public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
-        => this.HasItems
-            ? this._declaringTypeCacheKey
-            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeCacheKey)));
+        => HasItems
+            ? _declaringTypeCacheKey
+            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeCacheKey)));
 
     public TypeData DeclaringTypeData
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = this.DeclaringTypeCacheKey;
-            return this.HasItems
+            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
-                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeData)));
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeData)));
         }
     }
 
@@ -101,10 +100,10 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
         get
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
-            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Methods.Count, nameof(index));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Methods.Count, nameof(index));
 
-            return this.HasItems
-                ? this.Methods[index]
+            return HasItems
+                ? Methods[index]
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), ReflectionConstants.IndexerGetMethodName));
         }
     }
@@ -126,12 +125,12 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
     {
         get
         {
-            if (this._methodNameIndex == null)
+            if (_methodNameIndex == null)
             {
                 throw new InvalidOperationException("Method index is not initialized.");
             }
 
-            MethodList methods = this._methodNameIndex[methodName].ToMethodList();
+            MethodList methods = _methodNameIndex[methodName].ToMethodList();
             if (methods.IsEmpty)
             {
                 throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
@@ -181,10 +180,10 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
     }
 
     public IEnumerator<MethodData> GetEnumerator()
-        => ((IEnumerable<MethodData>)this.Methods).GetEnumerator();
+        => ((IEnumerable<MethodData>)Methods).GetEnumerator();
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => this.Methods.GetEnumerator();
+        => Methods.GetEnumerator();
 
     public bool Equals(MethodList? other)
     {
@@ -193,19 +192,19 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
             return false;
         }
 
-        if (this.Count != other.Count)
+        if (Count != other.Count)
         {
             return false;
         }
 
-        if (this.DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
+        if (DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
         {
             return false;
         }
 
-        for (int index = 0; index < this.Count; index++)
+        for (int index = 0; index < Count; index++)
         {
-            if (!this.Methods[index].Equals(other.Methods[index]))
+            if (!Methods[index].Equals(other.Methods[index]))
             {
                 return false;
             }
@@ -218,18 +217,18 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
         => obj is MethodList other && Equals(other);
 
     public override int GetHashCode()
-        => this._hashCode;
+        => _hashCode;
 
     private int ComputeHashCode()
     {
         unchecked
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.Count);
-            hashCode.Add(this.DeclaringTypeCacheKey);
-            for (int index = 0; index < this.Methods.Count; index++)
+            hashCode.Add(Count);
+            hashCode.Add(DeclaringTypeCacheKey);
+            for (int index = 0; index < Methods.Count; index++)
             {
-                hashCode.Add(this.Methods[index]);
+                hashCode.Add(Methods[index]);
             }
 
             return hashCode.ToHashCode();

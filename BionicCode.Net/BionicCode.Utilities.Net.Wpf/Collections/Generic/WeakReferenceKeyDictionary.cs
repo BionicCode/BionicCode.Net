@@ -16,11 +16,11 @@
 //      }
 //      public Entry(int hashCode, KeyValuePair<TKey, TValue> keyValuePair)
 //      {
-//        this.Id = Guid.NewGuid();
-//        this.HashCode = hashCode;
-//        this.Key = keyValuePair.Key;
-//        this.ExecuteDelegate = keyValuePair.ExecuteDelegate;
-//        this.KeyValuePair = keyValuePair;
+//        Id = Guid.NewGuid();
+//        HashCode = hashCode;
+//        Key = keyValuePair.Key;
+//        ExecuteDelegate = keyValuePair.ExecuteDelegate;
+//        KeyValuePair = keyValuePair;
 //      }
 
 //      public int HashCode { get; set; }
@@ -35,10 +35,10 @@
 
 //    public WeakReferenceKeyDictionary(bool isReadOnly, bool isAutoPurgeFinalizedItemsEnabled)
 //    {
-//      this.IsReadOnly = isReadOnly;
-//      this.IsAutoPurgeFinalizedItemsEnabled = isAutoPurgeFinalizedItemsEnabled;
-//      this.TargetTable = new Dictionary<int, List<Entry>>();
-//      this.Entries = new Dictionary<TKey, Entry>();
+//      IsReadOnly = isReadOnly;
+//      IsAutoPurgeFinalizedItemsEnabled = isAutoPurgeFinalizedItemsEnabled;
+//      TargetTable = new Dictionary<int, List<Entry>>();
+//      Entries = new Dictionary<TKey, Entry>();
 //    }
 
 //    public bool IsAutoPurgeFinalizedItemsEnabled { get; set; }
@@ -50,7 +50,7 @@
 //    /// <inheritdoc />
 //    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
 //    {
-//      foreach (KeyValuePair<TKey, Entry> keyValuePair in this.Entries)
+//      foreach (KeyValuePair<TKey, Entry> keyValuePair in Entries)
 //      {
 //        yield return keyValuePair.ExecuteDelegate.KeyValuePair;
 //      }
@@ -66,7 +66,7 @@
 //    /// <inheritdoc />
 //    public void Add(KeyValuePair<TKey, TValue> item)
 //    {
-//      if (this.IsReadOnly)
+//      if (IsReadOnly)
 //      {
 //        throw new NotSupportedException("Trying to modify a read-only collection.");
 //      }
@@ -79,17 +79,17 @@
 //      int hashCode = target.GetHashCode();
 //      var entry = new Entry(hashCode, item);
 
-//      this.Entries.Add(item.Key, entry);
+//      Entries.Add(item.Key, entry);
 
-//      if (this.TargetTable.TryGetValue(hashCode, out List<Entry> bucket))
+//      if (TargetTable.TryGetValue(hashCode, out List<Entry> bucket))
 //      {
 //        bucket.Add(entry);
 //      }
 //      else
 //      {
-//        this.TargetTable.Add(hashCode, new List<Entry>() { entry });
+//        TargetTable.Add(hashCode, new List<Entry>() { entry });
 //      }
-//      if (this.IsAutoPurgeFinalizedItemsEnabled)
+//      if (IsAutoPurgeFinalizedItemsEnabled)
 //      {
 //        PurgeFinalizedItems();
 //      }
@@ -98,12 +98,12 @@
 //    /// <inheritdoc />
 //    public void Clear()
 //    {
-//      if (this.IsReadOnly)
+//      if (IsReadOnly)
 //      {
 //        throw new NotSupportedException("Trying to modify a read-only collection.");
 //      }
-//      this.TargetTable.Clear();
-//      this.Entries.Clear();
+//      TargetTable.Clear();
+//      Entries.Clear();
 //    }
 
 //    /// <inheritdoc />
@@ -112,12 +112,12 @@
 //    /// <inheritdoc />
 //    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 //    {
-//      for (var index = arrayIndex; index < this.Entries.Count; index++)
+//      for (var index = arrayIndex; index < Entries.Count; index++)
 //      {
-//        Entry entry = this.Entries.ElementAt(index).ExecuteDelegate;
+//        Entry entry = Entries.ElementAt(index).ExecuteDelegate;
 //        array[index] = entry.KeyValuePair;
 //      }
-//      if (this.IsAutoPurgeFinalizedItemsEnabled)
+//      if (IsAutoPurgeFinalizedItemsEnabled)
 //      {
 //        PurgeFinalizedItems();
 //      }
@@ -127,7 +127,7 @@
 //    public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
 
 //    /// <inheritdoc />
-//    public int Count => this.Entries.Count;
+//    public int Count => Entries.Count;
 
 //    /// <inheritdoc />
 //    public bool IsReadOnly { get; }
@@ -141,12 +141,12 @@
 //    {
 //      object keyValue = key.Target;
 //      int hashCode = keyValue.GetHashCode();
-//      if (this.IsAutoPurgeFinalizedItemsEnabled)
+//      if (IsAutoPurgeFinalizedItemsEnabled)
 //      {
 //        PurgeFinalizedItems();
 //      }
-//      return this.Entries.ContainsKey(key) 
-//             || this.TargetTable.TryGetValue(hashCode, out List<Entry> bucket)
+//      return Entries.ContainsKey(key) 
+//             || TargetTable.TryGetValue(hashCode, out List<Entry> bucket)
 //               && bucket.Any(entry => entry.Key.Target == keyValue);
 //    }
 
@@ -156,7 +156,7 @@
 //    /// <inheritdoc />
 //    public bool Remove(TKey key)
 //    {
-//      if (this.IsReadOnly)
+//      if (IsReadOnly)
 //      {
 //        throw new NotSupportedException("Trying to modify a read-only collection.");
 //      }
@@ -166,13 +166,13 @@
 
 //    public bool RemoveTarget(object target)
 //    {
-//      if (this.IsReadOnly)
+//      if (IsReadOnly)
 //      {
 //        throw new NotSupportedException("Trying to modify a read-only collection.");
 //      }
 //      if (target == null)
 //      {
-//        if (this.IsAutoPurgeFinalizedItemsEnabled)
+//        if (IsAutoPurgeFinalizedItemsEnabled)
 //        {
 //          PurgeFinalizedItems();
 //        }
@@ -181,12 +181,12 @@
 
 //      int hashCode = target.GetHashCode();
 //      bool hasRemovedItem = false;
-//      if (this.TargetTable.TryGetValue(hashCode, out List<Entry> bucket))
+//      if (TargetTable.TryGetValue(hashCode, out List<Entry> bucket))
 //      {
 //        if (bucket.Count == 1)
 //        {
 //          Entry entry = bucket.First();
-//          hasRemovedItem = this.TargetTable.Remove(hashCode) || this.Entries.Remove(entry.Key);
+//          hasRemovedItem = TargetTable.Remove(hashCode) || Entries.Remove(entry.Key);
 //        }
 //        else
 //        {
@@ -196,14 +196,14 @@
 //            if (entry.Key.Target.Equals(target))
 //            {
 //              bucket.RemoveAt(index);
-//              this.Entries.Remove(entry.Key);
+//              Entries.Remove(entry.Key);
 //              hasRemovedItem = true;
 //            }
 //          }
 //        }
 //      }
 
-//      if (this.IsAutoPurgeFinalizedItemsEnabled)
+//      if (IsAutoPurgeFinalizedItemsEnabled)
 //      {
 //        PurgeFinalizedItems();
 //      }
@@ -213,7 +213,7 @@
 //    /// <inheritdoc />
 //    public bool TryGetValue(TKey key, out TValue value)
 //    {
-//      if (this.Entries.TryGetValue(key, out Entry entry))
+//      if (Entries.TryGetValue(key, out Entry entry))
 //      {
 //        value = entry.ExecuteDelegate;
 //        return true;
@@ -227,7 +227,7 @@
 //      value = default;
 //      if (target == null)
 //      {
-//        if (this.IsAutoPurgeFinalizedItemsEnabled)
+//        if (IsAutoPurgeFinalizedItemsEnabled)
 //        {
 //          PurgeFinalizedItems();
 //        }
@@ -235,7 +235,7 @@
 //      }
 
 //      int hashCode = target.GetHashCode();
-//      if (this.TargetTable.TryGetValue(hashCode, out List<Entry> bucket))
+//      if (TargetTable.TryGetValue(hashCode, out List<Entry> bucket))
 //      {
 //        value = bucket.FirstOrDefault(entry => entry.Key.Target.Equals(target)).ExecuteDelegate;
 //        return true;
@@ -256,7 +256,7 @@
 //      }
 //      set
 //      {
-//        if (this.IsReadOnly)
+//        if (IsReadOnly)
 //        {
 //          throw new NotSupportedException("Trying to modify a read-only collection.");
 //        }
@@ -266,20 +266,20 @@
 //    }
 
 //    /// <inheritdoc />
-//    public ICollection<TKey> Keys => this.Entries.Keys;
+//    public ICollection<TKey> Keys => Entries.Keys;
 
 //    /// <inheritdoc />
 //    public ICollection<TValue> Values => new ReadOnlyCollection<TValue>(
-//      this.Entries.Values.Select(entry => entry.ExecuteDelegate).ToList());
+//      Entries.Values.Select(entry => entry.ExecuteDelegate).ToList());
 
 //    #endregion
 
 //    private bool TryRemoveAllFinalizedItems()
 //    {
 //      int removedCount = 0;
-//      for (var index = this.TargetTable.Count - 1; index >= 0; index--)
+//      for (var index = TargetTable.Count - 1; index >= 0; index--)
 //      {
-//        KeyValuePair<int, List<Entry>> keyValuePair = this.TargetTable.ElementAt(index);
+//        KeyValuePair<int, List<Entry>> keyValuePair = TargetTable.ElementAt(index);
 //        List<Entry> bucket = keyValuePair.ExecuteDelegate;
 //        for (var bucketIndex = bucket.Count - 1; bucketIndex >= 0; bucketIndex--)
 //        {
@@ -287,13 +287,13 @@
 //          if (entry.Key.Target == null)
 //          {
 //            bucket.RemoveAt(bucketIndex);
-//            this.Entries.Remove(entry.Key);
+//            Entries.Remove(entry.Key);
 //            removedCount++;
 //          }
 //        }
 //        if (!bucket.Any())
 //        {
-//          this.TargetTable.Remove(keyValuePair.Key);
+//          TargetTable.Remove(keyValuePair.Key);
 //        }
 //      }
 

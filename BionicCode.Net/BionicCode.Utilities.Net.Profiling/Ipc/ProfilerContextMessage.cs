@@ -4,6 +4,6 @@
     {
         public IAttributeProfilerConfiguration ProfilerConfiguration { get; }
 
-        public ProfilerContextMessage(IAttributeProfilerConfiguration profilerConfiguration) => this.ProfilerConfiguration = profilerConfiguration;
+        public ProfilerContextMessage(IAttributeProfilerConfiguration profilerConfiguration) => ProfilerConfiguration = profilerConfiguration;
     }
 }

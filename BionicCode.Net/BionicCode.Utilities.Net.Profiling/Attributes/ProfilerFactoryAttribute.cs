@@ -24,12 +24,12 @@
         /// <summary>
         /// MemberConstructor without any required parameters.
         /// </summary>
-        public ProfilerFactoryAttribute() => this.ArgumentList = Array.Empty<object>();
+        public ProfilerFactoryAttribute() => ArgumentList = Array.Empty<object>();
 
         /// <summary>
         /// MemberConstructor without any required parameters.
         /// </summary>
-        public ProfilerFactoryAttribute(params object[] argumentList) => this.ArgumentList = argumentList;
+        public ProfilerFactoryAttribute(params object[] argumentList) => ArgumentList = argumentList;
 
         public object[] ArgumentList { get; }
     }

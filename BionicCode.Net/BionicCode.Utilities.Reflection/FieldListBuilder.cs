@@ -69,7 +69,7 @@
 
         private static FieldList CreateInternal(Type declaringType)
         {
-            FieldInfo[] fieldInfoList = declaringType.GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            FieldInfo[] fieldInfoList = declaringType.GetFields(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             if (fieldInfoList.IsEmpty())
             {
                 return FieldList.Empty;
@@ -87,7 +87,7 @@
         }
 
         FieldList IFieldListBuilder.Build()
-            => this._builderResult ??= new FieldList(Build(), isIntegrityValidationEnabled: false);
+            => _builderResult ??= new FieldList(Build(), isIntegrityValidationEnabled: false);
     }
 
     internal static class FieldListBuilderExtensions

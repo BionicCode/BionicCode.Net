@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-using BionicCode.Utilities.Net.Reflection.Exceptions;
 
 /// <summary>
 /// A read-only list of <see cref="ParameterData"/> items sorted by parameter position in ascending order.
@@ -22,8 +21,8 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
 
     private ParameterList()
     {
-        this.Parameters = ImmutableList<ParameterData>.Empty;
-        this._parameterNameIndex = new Dictionary<string, ParameterData>(0, StringComparer.Ordinal);
+        Parameters = ImmutableList<ParameterData>.Empty;
+        _parameterNameIndex = new Dictionary<string, ParameterData>(0, StringComparer.Ordinal);
     }
 
     public ParameterList(ParameterData[] items) : this((IEnumerable<ParameterData>)items)
@@ -32,101 +31,101 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
 
     public ParameterList(IEnumerable<ParameterData> items)
     {
-        this.Parameters = items?.OrderBy(parameter => parameter.Position).ToImmutableList()
+        Parameters = items?.OrderBy(parameter => parameter.Position).ToImmutableList()
             ?? ImmutableList<ParameterData>.Empty;
-        this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.Name, StringComparer.Ordinal);
+        _parameterNameIndex = Parameters.ToDictionary(parameter => parameter.Name, StringComparer.Ordinal);
 
-        if (this.HasItems)
+        if (HasItems)
         {
-            ParameterizedMemberData declaringMember = this.Parameters.First().MemberData;
+            ParameterizedMemberData declaringMember = Parameters.First().MemberData;
             ArgumentNullExceptionAdvanced.ThrowIfNull(
                 declaringMember,
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has no value for the '{nameof(ParameterData)}.{nameof(ParameterData.MemberData)}' declaring member. All parameters must belong to the same member of the same declaring type.");
 
-            this._declaringMemberCacheKey = declaringMember.CacheKey;
+            _declaringMemberCacheKey = declaringMember.CacheKey;
             RuntimeMethodHandle declaringMemberHandle = declaringMember.Handle;
             RuntimeTypeHandle declaringTypeHandle = declaringMember.DeclaringTypeHandle;
 
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Parameters,
+                Parameters,
                 parameterData => parameterData.MemberData.Handle != declaringMemberHandle || !parameterData.MemberData.DeclaringTypeHandle.Equals(declaringTypeHandle),
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ParameterData)}.{nameof(ParameterData.MemberData)}' declaring member handle. All parameters must belong to the same member of the same declaring type.");
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     internal ParameterList(IEnumerable<ParameterData> items, bool isIntegrityValidationEnabled)
     {
-        this.Parameters = items?.OrderBy(parameter => parameter.Position)
+        Parameters = items?.OrderBy(parameter => parameter.Position)
             .ToImmutableList()
             ?? ImmutableList<ParameterData>.Empty;
-        this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.Name, StringComparer.Ordinal);
+        _parameterNameIndex = Parameters.ToDictionary(parameter => parameter.Name, StringComparer.Ordinal);
 
         ParameterizedMemberData? declaringMember = null;
-        if (this.HasItems)
+        if (HasItems)
         {
-            declaringMember = this.Parameters.First().MemberData;
+            declaringMember = Parameters.First().MemberData;
             ArgumentNullExceptionAdvanced.ThrowIfNull(
                 declaringMember,
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has no value for the '{nameof(ParameterData)}.{nameof(ParameterData.MemberData)}' declaring member. All parameters must belong to the same member of the same declaring type.");
 
-            this._declaringMemberCacheKey = declaringMember.CacheKey;
+            _declaringMemberCacheKey = declaringMember.CacheKey;
         }
 
-        if (isIntegrityValidationEnabled && this.HasItems)
+        if (isIntegrityValidationEnabled && HasItems)
         {
             RuntimeMethodHandle declaringMemberHandle = declaringMember!.Handle;
             RuntimeTypeHandle declaringTypeHandle = declaringMember!.DeclaringTypeHandle;
 
             ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Parameters,
+                Parameters,
                 parameterData => parameterData.MemberData.Handle != declaringMemberHandle || !parameterData.MemberData.DeclaringTypeHandle.Equals(declaringTypeHandle),
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ParameterData)}.{nameof(ParameterData.MemberData)}' declaring member handle. All parameters must belong to the same member of the same declaring type.");
         }
 
-        this._hashCode = ComputeHashCode();
+        _hashCode = ComputeHashCode();
     }
 
     public ImmutableList<ParameterInfo> AsParameterInfoList()
-        => this.Parameters
+        => Parameters
             .Select(parameterData => parameterData.GetParameterInfo())
             .ToImmutableList();
 
     public ImmutableArray<ParameterInfo> AsParameterInfoArray()
-        => this.Parameters
+        => Parameters
             .Select(parameterData => parameterData.GetParameterInfo())
             .ToImmutableArray();
 
     public bool TryGetParameterByName(string parameterName, out ParameterData? parameterData)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(parameterName);
-        return this._parameterNameIndex.TryGetValue(parameterName, out parameterData);
+        return _parameterNameIndex.TryGetValue(parameterName, out parameterData);
     }
 
-    public int Count => this.Parameters.Count;
-    public bool IsEmpty => this.Parameters.IsEmpty;
-    public bool HasItems => !this.IsEmpty;
+    public int Count => Parameters.Count;
+    public bool IsEmpty => Parameters.IsEmpty;
+    public bool HasItems => !IsEmpty;
     public ImmutableList<ParameterData> Parameters { get; }
     public SymbolReflectionInfoCacheKey DeclaringMemberCacheKey
-        => this.HasItems
-            ? this._declaringMemberCacheKey
-            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringMemberCacheKey)));
+        => HasItems
+            ? _declaringMemberCacheKey
+            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringMemberCacheKey)));
 
     public ParameterizedMemberData DeclaringMemberData
     {
         get
         {
-            if (this.IsEmpty)
+            if (IsEmpty)
             {
-                throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringMemberData)));
+                throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringMemberData)));
             }
 
-            SymbolReflectionInfoCacheKey cacheKey = this.DeclaringMemberCacheKey;
+            SymbolReflectionInfoCacheKey cacheKey = DeclaringMemberCacheKey;
             return cacheKey.SymbolKind == SymbolKind.MemberMethod
                     ? SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref cacheKey)
                     : SymbolReflectionInfoCache.GetOrCreateConstructorDataCacheEntry(ref cacheKey);
@@ -138,19 +137,19 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
         get
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
-            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Parameters.Count, nameof(index));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Parameters.Count, nameof(index));
 
-            return this.HasItems
-                ? this.Parameters[index]
+            return HasItems
+                ? Parameters[index]
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(ParameterList), ReflectionConstants.IndexerGetMethodName));
         }
     }
 
     public IEnumerator<ParameterData> GetEnumerator()
-        => ((IEnumerable<ParameterData>)this.Parameters).GetEnumerator();
+        => ((IEnumerable<ParameterData>)Parameters).GetEnumerator();
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => this.Parameters.GetEnumerator();
+        => Parameters.GetEnumerator();
 
     public bool Equals(ParameterList? other)
     {
@@ -159,19 +158,19 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
             return false;
         }
 
-        if (this.Count != other.Count)
+        if (Count != other.Count)
         {
             return false;
         }
 
-        if (!this.DeclaringMemberCacheKey.Equals(other.DeclaringMemberCacheKey))
+        if (!DeclaringMemberCacheKey.Equals(other.DeclaringMemberCacheKey))
         {
             return false;
         }
 
-        for (int index = 0; index < this.Count; index++)
+        for (int index = 0; index < Count; index++)
         {
-            if (!this.Parameters[index].Equals(other.Parameters[index]))
+            if (!Parameters[index].Equals(other.Parameters[index]))
             {
                 return false;
             }
@@ -184,18 +183,18 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
         => obj is ParameterList other && Equals(other);
 
     public override int GetHashCode()
-        => this._hashCode;
+        => _hashCode;
 
     private int ComputeHashCode()
     {
         unchecked
         {
             var hashCode = new HashCode();
-            hashCode.Add(this.Count);
-            hashCode.Add(this.DeclaringMemberCacheKey);
-            for (int index = 0; index < this.Parameters.Count; index++)
+            hashCode.Add(Count);
+            hashCode.Add(DeclaringMemberCacheKey);
+            for (int index = 0; index < Parameters.Count; index++)
             {
-                hashCode.Add(this.Parameters[index]);
+                hashCode.Add(Parameters[index]);
             }
 
             return hashCode.ToHashCode();

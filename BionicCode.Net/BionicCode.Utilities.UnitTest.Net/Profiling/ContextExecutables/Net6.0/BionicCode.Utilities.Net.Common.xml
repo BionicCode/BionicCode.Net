@@ -2731,26 +2731,26 @@
               PersonFactory PersonFactory { get; }
               public FactoryTest()
               {
-                this.PersonFactory = new PersonFactory();
+                PersonFactory = new PersonFactory();
               }
               
               public void FactoryExample()
               {
                 // Configure factory to produce shared instances
-                this.PersonFactory.FactoryMode = FactoryMode.Singleton;
+                PersonFactory.FactoryMode = FactoryMode.Singleton;
                 
                 Person firstSharedInstanceInScope = null;
                 Person secondSharedInstanceInScope = null;
-                Person sharedInstanceCreatedBeforeScope = this.PersonFactory.Create();
+                Person sharedInstanceCreatedBeforeScope = PersonFactory.Create();
                 
                 // Create a new factory scope
-                using (IDisposable factoryScope = this.PersonFactory.CreateScope())
+                using (IDisposable factoryScope = PersonFactory.CreateScope())
                 {
-                  firstSharedInstanceInScope = this.PersonFactory.Create();
-                  secondSharedInstanceInScope = this.PersonFactory.Create();
+                  firstSharedInstanceInScope = PersonFactory.Create();
+                  secondSharedInstanceInScope = PersonFactory.Create();
                 }
                 
-                Person sharedInstanceCreatedAfterScope = this.PersonFactory.Create();
+                Person sharedInstanceCreatedAfterScope = PersonFactory.Create();
                   
                 bool isReferenceEqual = ReferenceEquals(firstSharedInstanceInScope, secondShartedInstanceInScope); // true
                 isReferenceEqual = ReferenceEquals(firstSharedInstanceInScope, sharedInstanceCreatedBeforeScope); // false
@@ -2760,10 +2760,10 @@
                 isReferenceEqual = ReferenceEquals(sharedInstanceCreatedBeforeScope, sharedInstanceCreatedAfterScope); // true
                 
                 // Configure factory to produce transient instances
-                this.PersonFactory.FactoryMode = FactoryMode.Transient;
+                PersonFactory.FactoryMode = FactoryMode.Transient;
                 
-                Person firstTransientInstance = this.PersonFactory.Create();
-                Person secondTransientInstance = this.PersonFactory.Create();
+                Person firstTransientInstance = PersonFactory.Create();
+                Person secondTransientInstance = PersonFactory.Create();
                 
                 isReferenceEqual = ReferenceEquals(firstTransientInstance, secondTransientInstance); // false
               }
@@ -2782,9 +2782,9 @@
             {
               public Person(string firstName, string lastName, int id)
               {
-                this.FirstName = firstName;
-                this.LastName = lastName;
-                this.Id = id;
+                FirstName = firstName;
+                LastName = lastName;
+                Id = id;
               }
               
               public string FirstName { get; }
@@ -2836,26 +2836,26 @@
               PersonFactory PersonFactory { get; }
               public FactoryTest()
               {
-                this.PersonFactory = new PersonFactory();
+                PersonFactory = new PersonFactory();
               }
               
               public void FactoryExample()
               {
                 // Configure factory to produce shared instances
-                this.PersonFactory.FactoryMode = FactoryMode.Singleton;
+                PersonFactory.FactoryMode = FactoryMode.Singleton;
                 
                 Person firstSharedInstanceInScope = null;
                 Person secondSharedInstanceInScope = null;
-                Person sharedInstanceCreatedBeforeScope = this.PersonFactory.Create();
+                Person sharedInstanceCreatedBeforeScope = PersonFactory.Create();
                 
                 // Create a new factory scope
-                using (IDisposable factoryScope = this.PersonFactory.CreateScope())
+                using (IDisposable factoryScope = PersonFactory.CreateScope())
                 {
-                  firstSharedInstanceInScope = this.PersonFactory.Create();
-                  secondSharedInstanceInScope = this.PersonFactory.Create();
+                  firstSharedInstanceInScope = PersonFactory.Create();
+                  secondSharedInstanceInScope = PersonFactory.Create();
                 }
                 
-                Person sharedInstanceCreatedAfterScope = this.PersonFactory.Create();
+                Person sharedInstanceCreatedAfterScope = PersonFactory.Create();
                   
                 bool isReferenceEqual = ReferenceEquals(firstSharedInstanceInScope, secondShartedInstanceInScope); // true
                 isReferenceEqual = ReferenceEquals(firstSharedInstanceInScope, sharedInstanceCreatedBeforeScope); // false
@@ -2865,10 +2865,10 @@
                 isReferenceEqual = ReferenceEquals(sharedInstanceCreatedBeforeScope, sharedInstanceCreatedAfterScope); // true
                 
                 // Configure factory to produce transient instances
-                this.PersonFactory.FactoryMode = FactoryMode.Transient;
+                PersonFactory.FactoryMode = FactoryMode.Transient;
                 
-                Person firstTransientInstance = this.PersonFactory.Create();
-                Person secondTransientInstance = this.PersonFactory.Create();
+                Person firstTransientInstance = PersonFactory.Create();
+                Person secondTransientInstance = PersonFactory.Create();
                 
                 isReferenceEqual = ReferenceEquals(firstTransientInstance, secondTransientInstance); // false
               }

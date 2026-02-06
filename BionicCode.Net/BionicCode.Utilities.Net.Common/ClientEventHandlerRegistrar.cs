@@ -16,9 +16,9 @@
 
         protected ClientEventHandlerRegistrar(Delegate clientHandler, string eventName, SynchronizationContext synchronizationContext)
         {
-            this.ClientHandler = WeakReferencePool.GetOrCreate(clientHandler);
-            this.EventName = eventName;
-            this.SynchronizationContext = synchronizationContext;
+            ClientHandler = WeakReferencePool.GetOrCreate(clientHandler);
+            EventName = eventName;
+            SynchronizationContext = synchronizationContext;
         }
 
         public abstract void RegisterDelegate(TEventSource eventSource);
@@ -27,7 +27,7 @@
         {
             if (TryGetClientHandler(out Delegate clientHandler))
             {
-                WeakEventManager<TEventSource>.RemoveEventHandler(eventSource, this.EventName, clientHandler);
+                WeakEventManager<TEventSource>.RemoveEventHandler(eventSource, EventName, clientHandler);
             }
         }
 
@@ -42,7 +42,7 @@
         public bool TryGetClientHandler(out Delegate clientHandler)
         {
             clientHandler = null;
-            if (this.ClientHandler.TryGetTarget(out object handlerReference)
+            if (ClientHandler.TryGetTarget(out object handlerReference)
               && handlerReference is Delegate handler)
             {
                 clientHandler = handler;

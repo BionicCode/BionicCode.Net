@@ -8,11 +8,11 @@
         {
         }
 
-        internal ProfilerBatchResultGroupCollection(TypeData profiledTypeData) => this.ProfiledTypeData = profiledTypeData;
+        internal ProfilerBatchResultGroupCollection(TypeData profiledTypeData) => ProfiledTypeData = profiledTypeData;
 
-        internal ProfilerBatchResultGroupCollection(IEnumerable<ProfilerBatchResultGroup> collection, TypeData profiledTypeData) : base(collection) => this.ProfiledTypeData = profiledTypeData;
+        internal ProfilerBatchResultGroupCollection(IEnumerable<ProfilerBatchResultGroup> collection, TypeData profiledTypeData) : base(collection) => ProfiledTypeData = profiledTypeData;
 
-        internal ProfilerBatchResultGroupCollection(int capacity, TypeData profiledTypeData) : base(capacity) => this.ProfiledTypeData = profiledTypeData;
+        internal ProfilerBatchResultGroupCollection(int capacity, TypeData profiledTypeData) : base(capacity) => ProfiledTypeData = profiledTypeData;
 
         internal TypeData ProfiledTypeData { get; }
     }
