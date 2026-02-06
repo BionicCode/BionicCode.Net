@@ -155,7 +155,7 @@ jobs:
             echo "push_succeeded=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Fallback: open PR if direct push was not possible/failed
+      - name: "Fallback: open PR if direct push was not possible/failed"
         if: steps.compare.outputs.same == 'false' && steps.commit_push.outputs.push_succeeded != 'true'
         uses: peter-evans/create-pull-request@v5
         with:
