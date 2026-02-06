@@ -1,0 +1,82 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "BionicCode.Utilities.Net/**.csproj",
+            "BionicCode.Utilities.Net.Common/**.csproj",
+            "BionicCode.Utilities.Net.Wpf/**.csproj"
+          ],
+          "exclude": [ "_site/**", "**/bin/**", "**/obj/**", "**/[Tt]ests/**" ],
+          "src": "../"
+        }
+      ],
+      "dest": "api",
+      "disableGitFeatures": false
+    }
+  ],
+  "build": {
+    "xref": [
+      "C:\\Users\\Mobil\\.nuget\\packages\\msdn.4.5.2\\0.1.0-alpha-1611021200\\content\\msdn.4.5.2.zip"
+    ],
+    "content": [
+      {
+        "files": [
+          "**/*.yml",
+          "api/**.yml",
+          "api/index.md"
+        ]
+      },
+      {
+        "files": [
+          "articles/**.md",
+          "articles/**/toc.yml",
+          "toc.yml",
+          "*.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**"
+        ]
+      }
+    ],
+    "dest": "../../Documentation",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": [
+      "default",
+      "../../Documentation/rest.tagpage.1/content"
+    ],
+    "globalMetadata": {
+      "_appTitle": "BionicCode.NET API Reference",
+      //"_appLogoPath": "../images/BionicCode_Logo.png",
+      "_appFaviconPath": "../images/logo.ico",
+      "_gitContribute": {
+        "repo": "https://github.com/BionicCode/BionicCode.Net",
+        "branch": "master",
+        "apiSpecFolder": "docs-ref-overwrite"
+      },
+      "_enableSearch": "true"
+    },
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": true,
+    "disableGitFeatures": false
+  }
+}

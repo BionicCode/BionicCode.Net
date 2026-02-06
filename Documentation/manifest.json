@@ -4,15 +4,1407 @@
   "xrefmap": "xrefmap.yml",
   "files": [
     {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AccessModifier.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AccessModifier.html",
+          "hash": "3uXxOKGs6nxvFDgIeMQMqgC1ZcZyzZu3LEZ2eJJvtC8="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AppSettingsConnector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AppSettingsConnector.html",
+          "hash": "kiKD2Tw4L+qbNq5X/5dNQOReD1vJeXnqzgEz88NxQAQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncProfilerOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncProfilerOptions.html",
+          "hash": "+OxFkCnbCBDyjOthVsm7a8+fvgBBriLzO3trjh/7x6k="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html",
+          "hash": "9nYkHwn3I7nNChKuXdUbRHHelyMKrHnd9vkL8f0XNUc="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand.html",
+          "hash": "EI/CBB7E7nMA8TQwttokWY+PH7Qh2MdIjLpgUgKrH30="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon-1.html",
+          "hash": "OHwDuWFGj2bDaQ8v7uW5Ri4IgQX5WQV6QdKnkAK8Az4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon.html",
+          "hash": "TNo/y36l4CTM/vI4EsUNdxlowo23iyKyLedehwckmOQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AutoResetStream.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AutoResetStream.html",
+          "hash": "ovFxY4b4SZM+R/0gv22b9Fwb5aBnxn0pmwYu1kFkd6o="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.BoolToStringConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.BoolToStringConverter.html",
+          "hash": "XGb6u+q342j1aVkVophu6rMlb7z6eXaphueAbPUDwUM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.BooleanMultiValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.BooleanMultiValueConverter.html",
+          "hash": "sq4WyzDASbkYFU8fkYfAfBjUvTDX3gpdokO1NOaSkDE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.CaretInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.CaretInfo.html",
+          "hash": "PFb2vmzzysqqu7GXEAARR0H5FYQ0gSyJLMMo97dCuCg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.CaretVisibility.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.CaretVisibility.html",
+          "hash": "5PrXgNediqYMNo5ErANfzIMby2DfVD/vFh6mMsR/sAc="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.CartesianPoint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.CartesianPoint.html",
+          "hash": "ibOUGmNDtvzV0J4B4+Dmql5CdIqUqlz4vIP+s0kKmso="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.DefaultValueInverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.DefaultValueInverter.html",
+          "hash": "j0u9d7G+Zx2nyn7kae997lCCVzJHjTfc6DDQsCAFilo="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Dialog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Dialog.html",
+          "hash": "qOl+HVqD8lyy86k0jF0SA0MyWzveh/JZ8j7p3S+6K7k="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.DialogResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.DialogResult.html",
+          "hash": "bC7z8mAFQ1A8BtixM51G0iYZ5Qu2T+ZUpILTc26QfJ4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.DialogViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.DialogViewModel.html",
+          "hash": "kbh/YcRGdEqGylNyDa5JkY1ylJ5eFOmm5JcN1Gvr4Ls="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.DividerValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.DividerValueConverter.html",
+          "hash": "9WJFnSZxxbNK9chRAOV4oZ8FKdS6ecDH5FrJQhrfMiM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.EnumExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.EnumExtension.html",
+          "hash": "VVA81A8OzczxLAClX9oCOxTKAJsjTPVcALPA3H8qJaM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Environment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Environment.html",
+          "hash": "snwjv+meSgVGhtrSium0vsBGoQrr3wvtm+JkGcDGve0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.EnvironmentInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.EnvironmentInfo.html",
+          "hash": "6btlMjoT3p0yOfG7pR72bL5nwzcL7R8hyUmEJ6evCWQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.EqualsExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.EqualsExtension.html",
+          "hash": "lkQFGEYyBGNqyERJaklCcNAXru2y+Gj/8u3uz/VM1y0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.EventAggregator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.EventAggregator.html",
+          "hash": "tEmU+aEmm/HnzlCLumT7aWn/+kf0GzFTYPgRduwkMhI="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Factory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Factory-1.html",
+          "hash": "5+Eufur03RAFPxS5SFSqtJWU3WMoohBVvuKHt2lyG74="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.FactoryMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.FactoryMode.html",
+          "hash": "7oVgT2KDMgJTxkZHQn87lYjnIwiGKn3DBfpDFSfhSIY="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.FileExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.FileExtensions.html",
+          "hash": "ox/YxV+B2S4wcsPIh1puBOp6u+ZUO/AEe0HWugBiryE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.FilePathTruncateConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.FilePathTruncateConverter.html",
+          "hash": "m3b2y2sKlm7kjtB+Az61RAfloZCUbZEWcExVFGqrNOg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.HelperExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.HelperExtensions.html",
+          "hash": "0QlzMrPM0frk1nYb+3EBKdboIHmQXygFThodRXAuTjc="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.HelperExtensionsCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.HelperExtensionsCommon.html",
+          "hash": "Uhrofv7cBP8Lyjbpzvwk7MCYxO+IgTIaP3rnRMb8ICM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.HighlightRange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.HighlightRange.html",
+          "hash": "jH7RgR9lyoslTnqSJ0NEm+KJe6cQaMg55TTyLa5wUj0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.HighlightRangeCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.HighlightRangeCollection.html",
+          "hash": "euohiPLl0aPDURY/zcIVNu0p8pger/V4jLfF5vgS7cM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html",
+          "hash": "TJFUmBV5oIPp4ovnjxBqwEzf58qlb0dzYGPCSRPjvuY="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand.html",
+          "hash": "/HF6wdEMggYl7LQ/QU/dPNyx7hwm5zAwzyNucaZY6YU="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon-1.html",
+          "hash": "sE2bkI87kU1sYnZM1CIfCTyv++I4V2nqt28xIF+J0F4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon.html",
+          "hash": "2RbxL4RwH3jqgyNo8TbIK+AeTMNqSbDzBYXdzaDjWkA="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IDialogViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModel.html",
+          "hash": "yAQoHDib+u5iaMFO338GQ8fdDhI5zFE8hKtIiQMUkzk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProvider.html",
+          "hash": "yLYUuLXA2KkKh0SwDqlYds7nSljuzLVMKWl3HsnbdJk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProviderSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProviderSource.html",
+          "hash": "e4t42rPYZDOSrMAkoXRRLS1XXyLBXCYheqYgXbR6Xqw="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IEventAggregator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IEventAggregator.html",
+          "hash": "wvdF3YkOwb4PNbVvSJdXNsU6eBuHL5nwD/WeEib3UQ8="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IFactory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IFactory-1.html",
+          "hash": "ZZRnSqhwz8ioIpjM67keuIiObAhRY3JL2Of9xNR2phM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IInitializable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IInitializable.html",
+          "hash": "KopXdiB5N+gMFKYSHZTOiUvgPVAtNED+hUbK7EfJDXQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IMruManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IMruManager.html",
+          "hash": "bFplZMcZmjMe007k9jW89u4tgQ+O7vGBWUICToEiOPk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.INullObject.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.INullObject.html",
+          "hash": "VKEBaz9tn3+rvBsuRzrCKx7V+9iTqkvNrQzHfhQY3ok="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IProgressReporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IProgressReporter.html",
+          "hash": "T3cz6HvdLZZ8jM9s2rCqet2MlsoXaBFUoOgBeR9haII="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IProgressReporterCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IProgressReporterCommon.html",
+          "hash": "C2/zy/q8eM1Iakn+aySZZFQEaqgVDXOiPMY34/lITlw="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IValueInverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IValueInverter.html",
+          "hash": "vp0nUMPUC20RMtDURiJpXhH683taaH0nJZtp9RhYCVw="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IViewModel.html",
+          "hash": "ovjCi89uHvvBX8/EFmJM/ZrY1JD2BnT9X736r1D2bjM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IViewModelCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IViewModelCommon.html",
+          "hash": "CSDYIbxV3Cz4p1lqaKPskM1crlw5Cw477/WrDaK345s="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IgnoreAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IgnoreAttribute.html",
+          "hash": "PbwdaweGvO/uEQNL5GASkIS413YqPkNZ2xx7zqTQnaY="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IgnoreInObjectGraphAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IgnoreInObjectGraphAttribute.html",
+          "hash": "YiaZ2iBttQ+Ri86QmjSP64hoXUSTb6OVrDb8b/7eHfk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.InversionMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.InversionMode.html",
+          "hash": "kNYQiVL3cJNW6nXWbWay8snD7bUvE+HsUNb7Ssr1OcA="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.InvertBooleanConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.InvertBooleanConverter.html",
+          "hash": "D8ScF3p/6OzQdeJnx/V1PaJtNR+6BR00YcCcvgBEIAA="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.InvertExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.InvertExtension.html",
+          "hash": "kHbZdpiyBAZcfKtZ0BHHi02sgTagvt3Jn+GU3SS/1ck="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.InvertValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.InvertValueConverter.html",
+          "hash": "EXpYlpHLkZy98stqpYwKtf/hVh894Huz6MfvN4WkOjo="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IsGreaterThanValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IsGreaterThanValueConverter.html",
+          "hash": "w6iVrJMS3u3Jx30aqCn/dKs06N1mIt+fZ+/MCwUSTQs="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Math.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Math.html",
+          "hash": "Yr9z9wPnoo6tKGZr+jMn3tKopbu9VWWwf8uH/n1k1Jg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Microseconds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Microseconds.html",
+          "hash": "yhN6VXFrpyuDWNdNf14ztKWFB0saFSzAwtb6UA7jV/Y="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Milliseconds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Milliseconds.html",
+          "hash": "xwg+bwGgeO9gYggK4pyeeL0hc6usIQWFBMfucEEpX7Q="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Minutes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Minutes.html",
+          "hash": "Oc/Lqk2kvVyJPlsfaHpcqkmdfLe5YKGeByaZQXzVS74="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.MostRecentlyUsedFileItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.MostRecentlyUsedFileItem.html",
+          "hash": "2dXELhXrV7vMxn4kewbk6Sg1SrxnRGzgMlK8OZl88XU="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.MruManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.MruManager.html",
+          "hash": "mRfr6SU9E0GMVdSl0o5AXrRXZ+R65Mb0tT18UKwteUM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Nanoseconds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Nanoseconds.html",
+          "hash": "mlSuzIC6y7sbp4yl7/NlOAGHmeveZufmGo9p9abkHss="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.NullObjectFactory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.NullObjectFactory-1.html",
+          "hash": "5wJDOUOIn7DdR19jZalBmVZ11bweZbGxCfQ/dLqSZm4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ObservablePropertyChangedCollection-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ObservablePropertyChangedCollection-1.html",
+          "hash": "Iww/tQEu1JiPHYYYkD+H+0DaE9sSL+Tt5HZ4GlSft9M="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ObservableQueue-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ObservableQueue-1.html",
+          "hash": "V+C8jC163Z156cruPbPcwv/0mUyM1EMDtXyBP6XotCI="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PasswordBoxService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PasswordBoxService.html",
+          "hash": "BRV8SEAr5yV0WyXWb+MuDGAbGBhreNqQZX6GyTOeMR4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PercentageToPixelConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PercentageToPixelConverter.html",
+          "hash": "RfeaGhFZtG9Q125LLXyuBkjh71FbJtwh4k15i1JPEVU="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PercentageToThicknessConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PercentageToThicknessConverter.html",
+          "hash": "U+ar797oBIkObwsbaF8S+EMBvi7tGOyuMgh1OCQhv2s="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PopupService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PopupService.html",
+          "hash": "KpLP+HkuLi15VdZkquIvrFILGqdpm3YjcUbl4glQ7IE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PrimitiveExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PrimitiveExtension.html",
+          "hash": "gpgBAKBZmMfcqS8vxLv9DGIDvVTCSR0KKA+X1a4XCmE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfileAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfileAttribute.html",
+          "hash": "N4DOA5riNOr468jT194ysgO8fCyaTzcOtI54foSpfgo="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfiledTargetType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfiledTargetType.html",
+          "hash": "FaD2+5iUeoNR8ivD+EA6Q+aC9UE3Wh7H8TNP/r54cwE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfiledTypeResultCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfiledTypeResultCollection.html",
+          "hash": "AOmZD3Tj3kaJT+KddKYy8uwoc1U9eKuf/8aEEuxNOew="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Profiler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Profiler.html",
+          "hash": "4ptSdFPMNgHfjX7k1zvdAc2zBsDRLfqolSgM0NrMJF8="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerArgumentAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerArgumentAttribute.html",
+          "hash": "TtRU9jikdPrB83gGiSt19zwyEp8jtc0/Vwsyg8z5AEM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResult.html",
+          "hash": "ehZMIpat4nzcY7OupZgccr92hf+DgS62r02LsBOFX/A="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResultGroup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResultGroup.html",
+          "hash": "+zOYi5W8OpaB1mVR6Eeba0w/8z1zujyrBIbiQC+IdJk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResultGroupCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResultGroupCollection.html",
+          "hash": "kjMKE7YfP1DGFCe6vDqsj8dUtajAIkj/wCXom4XKWe8="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerBuilder.html",
+          "hash": "F3lHKimDZf2VBI6wQ0QSddpg+CiFqtW4fNc19pMib7Y="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerContext.html",
+          "hash": "8t6f/zjlQWF3PK9cUM7d+p5FmFJToGYKw78ZzzuztIY="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerFactoryAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerFactoryAttribute.html",
+          "hash": "Ie01JpgFVTaWOtk4Cex2JDc0Hs48U5dsxkjcVJcpK4s="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html",
+          "hash": "hB1iobUoiafnGsxOIhWG5ueTu+TJU6p/0Lcmpzx7TII="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerDelegate.html",
+          "hash": "f8s22aF2OAp9/Po12DxQfKJgWhAmnY4M2a4zlKp3624="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerOptions.html",
+          "hash": "gstAzfNOPWHqQly6S8/Afnwb2MNcy2U6vBA7D4/LZVA="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerResult.html",
+          "hash": "ie3tbUbU0NDgpsxfji+tx1I3m5CyInoJC1MdNQkFOh0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventArgs.html",
+          "hash": "VJ3ibM1Fd5xCkjZ+elvwdM3oG5Qc11ouz4VRxzr4ZkI="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventHandler.html",
+          "hash": "XRhVMMktfTSFtUijcrcQQ5moN5A/JHDV+g5zLun7uiQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProgressData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProgressData.html",
+          "hash": "OpKrr+2alhozDwiCveYXOoW8+s50iqtO8Ps42BLz+x4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegate-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegate-1.html",
+          "hash": "4a9qOmcH8ZPYGs+oyGbqZDS2cn9QFW4ecPjgmJmXNLU="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegateAsync-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegateAsync-1.html",
+          "hash": "yVsQo/9jOSJ5RYU+w+/2CvGmvbFmGW643IEP0fXHzVA="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValidationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValidationResult.html",
+          "hash": "sKlGM8I9C2dliG8CpcplISCFZpg6Jk0HXCHUfbIaLFw="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedArgs-1.html",
+          "hash": "cdfRicF3T95UfzhvC6hm6yjEWds5vc65FcE0qM4139c="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedEventHandler-1.html",
+          "hash": "3RA+x2coe8RSFOZkVawrah+AbkpR+AgnVOlUKIcWXXM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ReflectionHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ReflectionHelper.html",
+          "hash": "EqVlNxFIABccj06wTmQgOpLNZ8/26xT5NX/tJ4V28cc="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Seconds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Seconds.html",
+          "hash": "5h5N8Tkcfb36lnC4JOIdIT3GUlq4YJ7yOiNmxQNdmIc="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.SelectorService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.SelectorService.html",
+          "hash": "9hoB3i+TtmrRJ9+EJYwuyF4CmBeV5bbpXYZGaQOhSBI="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.SetBackingFieldDelegate-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.SetBackingFieldDelegate-1.html",
+          "hash": "0V8WB0j/dFPmivgzQflWfrZ+zINhAnSMPCaTD10HE/o="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.TextControl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.TextControl.html",
+          "hash": "JofL02/UbsOwVtDwkgwEEMdV5lbIF5/ZuKuDJHDxdzM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.TimeUnit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.TimeUnit.html",
+          "hash": "kSdVuqIRVIWCcRxbAXG+UUeIFDNIx2D24MmLW5bs9qQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ValueChangedEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ValueChangedEventArgs-1.html",
+          "hash": "PK3qnHfkpOiBFWWDlYf7rHGRUVrvhJ5iwRc01B9bQRM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ValueEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ValueEventArgs-1.html",
+          "hash": "T47Av381C5zXZsqcBUKirZTiwhL3wb4MlTphiSKp15I="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ViewModel.html",
+          "hash": "z7ONofo8NYB7wBdwNX+dw63bPpqeaRyZoa7ihFil0gE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.html",
+          "hash": "9MwC/1QNKZRP2yVjL+3bvRI9FQTNXiPYy7S4j+i2Zms="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.html",
+          "hash": "oTGVJdMlvprK7BR+l9EAGunZbQqyzTGGabL8E645zLE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Win32Caret.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Win32Caret.html",
+          "hash": "1ayfoJGztm95HAKbnPxL4OOiDH8TGq3LVnlFwY3+Z6E="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.WrongEventHandlerSignatureException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.WrongEventHandlerSignatureException.html",
+          "hash": "ssjIF/dzYVcKemmIyV6zhIXwC/HKZig0quSW+HRQsD8="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.html",
+          "hash": "NWCW/ea03slmaxa8BALWOomy72I8IkMcXkQAYUTIWho="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.AssemblyFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.AssemblyFilter.html",
+          "hash": "/SGL5izHz54rdKGj08Pjd/QiBNg8s+NdHrrtP4mrElw="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.FilteredExportServiceCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.FilteredExportServiceCollection.html",
+          "hash": "b36W5RTZj5C3IWcwfR5WtJRbDe9qHwvTUNRDcVGo2yI="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.IAssemblyFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.IAssemblyFilter.html",
+          "hash": "55CHMiRj0ue/fjbVdZlbRwEHPk6m4WW2GXdkqwwv8d0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.IFilteredExportServiceCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.IFilteredExportServiceCollection.html",
+          "hash": "5LM8Ucd5kwjelG2ylPaIWF8Hfhn69EIAXDTDNi2HLTU="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.IMultiExportServiceCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.IMultiExportServiceCollection.html",
+          "hash": "+OMbqdaO82LbdiG3EIjLDkfTlbhk9dorLNqTTgUOCn4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.MultiExportServiceCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.MultiExportServiceCollection.html",
+          "hash": "rbkVP7alP5awQhqmd9fBVw9eUNAC0mnMGM7YVPJaDaY="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.html",
+          "hash": "abtbrrZoyXvrAJD/++KV0ZBStqzzTVQC7LHi56m3yWM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "M5PHuVHFOJ8T3b8rgvfD0V09ij4Opa/q6LSDPDBbOFw="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "tMdEZd2R+NxJyuDDf0zfxr592g7bm5bqFIb0+E+aK7g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "articles/README.md",
       "output": {
         ".html": {
           "relative_path": "articles/README.html",
-          "hash": "BuTkZcfhs7cSyQdCwLYIvky6+XHOcDyGwrJfySjnj58="
+          "hash": "7PnParCyvYJQxJgeCJz4unanjlO71nKVK2KTEvo38es="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -21,10 +1413,10 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "7AeXixIWyoV/Ijf6Yf1s9tFB7GdnVFKr0R/hgcQEGQs="
+          "hash": "+WqcJ6xgnauVANtUglseMIHSWxvA9JyXXzXdhGrwSKE="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -67,22 +1459,19 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "Wgq4n5Fvpeecmi4zdn5mraB0ddaXwBrR8A/l5UsoN1E="
+          "hash": "YsdmReyX59DN3YfEu3azJ/Zk0mz3gqvTxB4drr8IQrU="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "xPhqJhBsXLL214C4gQ+jHE2teA05usVtBfstzRSQmHs="
+          "hash": "WSuRrYiGwKKMbtdG9z8W9fXmLoCyTnGg9AxbPKLXm2Y="
         }
       },
       "is_incremental": false,
@@ -92,19 +1481,23 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": false,
-        "details": "Disable incremental build by force rebuild option.",
+        "can_incremental": true,
         "incrementalPhase": "build",
         "total_file_count": 0,
-        "skipped_file_count": 0,
-        "full_build_reason_code": "ForceRebuild"
+        "skipped_file_count": 0
       },
       "processors": {
         "ConceptualDocumentProcessor": {
-          "can_incremental": false,
+          "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 3,
-          "skipped_file_count": 0
+          "total_file_count": 4,
+          "skipped_file_count": 4
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 119,
+          "skipped_file_count": 119
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
@@ -124,8 +1517,8 @@
     },
     {
       "status": {
-        "can_incremental": false,
-        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0
