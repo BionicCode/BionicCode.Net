@@ -1,0 +1,215 @@
+﻿namespace BionicCode.Utilities.Net.Reflection
+{
+    using System;
+    using System.Reflection;
+
+    /// <summary>
+    /// A descriptor that provides information about an well-known property accessor, where the caller does has a direct <see cref="MethodInfo"/> representation of the method symbol.
+    /// </summary>
+    /// <remarks>The <see cref="PropertyAccessorDescriptor"/> is used to provide information for well-known property accessor method symbols, which is when the caller has the direct <see cref="MethodInfo"/> representation.
+    /// <para/>Important: well-known descriptors are preferred over anonymous descriptors when the <see cref="MethodInfo"/> is available to ensure maximum accuracy and performance.
+    /// </remarks>
+    internal readonly struct PropertyAccessorDescriptor : IEquatable<PropertyAccessorDescriptor>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PropertyAccessorDescriptor"/> struct.
+        /// </summary>
+        /// <remarks>The <see cref="PropertyAccessorDescriptor"/> is used to provide information about a property accessor method symbol of which the caller does not have a direct <see cref="MethodInfo"/> representation and instead only signature information is available.
+        /// <para/>If the property is an explicit interface implementation, then the <paramref name="methodHandle"/> must represent an interface type.
+        /// </remarks>
+        /// <param name="methodHandle">The runtime type handle representing the declaring type of the anonymous property accessor method.
+        /// <para/>If the property is an explicit interface implementation, then the value must not be obtained from an interface type but from the implementing type instead.
+        /// </param>
+        /// <param name="propertyName">The name of the property that the anonymous accessor method is associated with. Cannot be null, empty, or consist only of white-space characters unless the property is an indexer. For indexer properties this parameter is ignored.</param>
+        /// <param name="accessorKind">This parameter specifies the kind of the accessor.
+        /// <para/>This parameter is required and is not allowed to be <see cref="PropertyAccessors.None"/> or <see cref="PropertyAccessors.None"/>.</param>
+        /// <param name="indexerParameters">For indexer properties, this parameter specifies the parameter list for the accessor specified by <paramref name="accessorKind"/>. Can be <see cref="ParameterList.Empty"/> or <see langword="null"/> to indicate no parameters. This parameter is ignored for non-indexer properties and events.</param>
+        /// <param name="isExplicitInterfaceImplementation"><see langword="true"/> if the property is an explicit interface implementation; otherwise, <see langword="false"/>.
+        /// <para/>If set to <see langword="true"/>, then the <paramref name="methodHandle"/> must represent the declaring interface type.</param>
+        /// <returns>A new instance of <see cref="PropertyAccessorDescriptor"/> representing the specified anonymous property accessor.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="methodHandle"/> is <see langword="default"/> or <paramref name="propertyName"/> is <see langword="null"/> (or only consists of white-space characters or  is an empty string).</exception>
+        /// <exception cref="ArgumentException">Thrown when
+        /// <list type="bullet">
+        /// <item>Is also thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but <paramref name="methodHandle"/> is not an interface type.</item>
+        /// <item>Is also thrown when <paramref name="accessorKind"/> has a value that is not defined by the <see cref="PropertyAccessorKind"/> enum.</item>
+        /// <item>Is also thrown when <paramref name="accessorKind"/> has value <see cref="PropertyAccessors.None"/> or <see cref="PropertyAccessors.None"/>.</item>
+        /// </list>
+        /// </exception>
+        public PropertyAccessorDescriptor(
+            RuntimeMethodHandle methodHandle,
+            bool isExplicitInterfaceImplementation,
+            ParameterList? indexerParameters,
+            string? propertyName,
+            PropertyAccessors accessorKind)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(methodHandle);
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessors>(accessorKind);
+            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
+                accessorKind,
+                [PropertyAccessors.None, PropertyAccessors.GetAndSet],
+                nameof(accessorKind),
+                $"Invalid argument '{nameof(accessorKind)}'. The argument '{nameof(accessorKind)}' has an undefined value. The value '{accessorKind}' is not allowed.");
+
+            indexerParameters = indexerParameters.OrEmpty();
+            IsIndexerPropertyAccessor = indexerParameters.HasItems;
+            IsPropertyAccessor = !IsIndexerPropertyAccessor;
+
+            if (IsIndexerPropertyAccessor)
+            {
+                propertyName = string.Empty;
+            }
+            else
+            {
+                ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(propertyName);
+            }
+
+            if (isExplicitInterfaceImplementation)
+            {
+                MethodBase? accessor = MethodInfo.GetMethodFromHandle(methodHandle);
+                ArgumentNullExceptionAdvanced.ThrowIfNull(
+                    accessor,
+                    nameof(methodHandle),
+                    $"The method represented by the argument '{nameof(methodHandle)}' could not be resolved.");
+                Type? declaringType = accessor?.DeclaringType;
+                ArgumentNullExceptionAdvanced.ThrowIfNull(
+                    accessor,
+                    nameof(declaringType),
+                    $"The declaring type of the argument '{nameof(methodHandle)}' could not be resolved.");
+                ArgumentExceptionAdvanced.ThrowIfTrue(declaringType!.IsInterface,
+                    nameof(isExplicitInterfaceImplementation),
+                    $"Invalid argument '{nameof(methodHandle)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type of the accessor method represented by the argument '{nameof(methodHandle)}' is an interface type. Reason: Only non-interface types can provide the explicit implementation.");
+            }
+
+            IndexerParameters = indexerParameters.OrEmpty();
+            MethodHandle = methodHandle;
+            PropertyName = propertyName;
+            PropertyAccessorKind = accessorKind;
+            MethodParameterInfoList = MethodParameterInfoList.Empty;
+            IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
+            IsAnonymous = false;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PropertyAccessorDescriptor"/> struct.
+        /// </summary>
+        /// <remarks>The <see cref="PropertyAccessorDescriptor"/> is used to provide information about a property or event accessor method symbol of which the caller does not have a direct <see cref="MethodInfo"/> representation and instead only signature information is available.
+        /// <para/>If the property or event is an explicit interface implementation, then the <paramref name="methodHandle"/> must represent an interface type.
+        /// </remarks>
+        /// <param name="methodHandle">The runtime type handle representing the declaring type of the anonymous property or event accessor method.
+        /// <para/>If the property is an explicit interface implementation, then the value must be obtaind an interface type.
+        /// </param>
+        /// <param name="propertyName">The name of the property or event that the anonymous accessor method is associated with. Cannot be null, empty, or consist only of white-space characters unless the property is an indexer. For indexer properties this parameter is ignored.</param>
+        /// <param name="accessorKind">This parameter specifies the kind of the accessor.
+        /// <para/>This parameter is required and is not allowed to be <see cref="PropertyAccessors.None"/> or <see cref="PropertyAccessors.None"/>.</param>
+        /// <param name="indexerParameters">For indexer properties, this parameter specifies the parameter list for the accessor specified by <paramref name="accessorKind"/>. Can be <see cref="ParameterList.Empty"/> or <see langword="null"/> to indicate no parameters. This parameter is ignored for non-indexer properties and events.</param>
+        /// <param name="isExplicitInterfaceImplementation"><see langword="true"/> if the property or event is an explicit interface implementation; otherwise, <see langword="false"/>.
+        /// <para/>If set to <see langword="true"/>, then the <paramref name="methodHandle"/> must represent the declaring interface type.</param>
+        /// <returns>A new instance of <see cref="PropertyAccessorDescriptor"/> representing the specified anonymous property or event accessor.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="methodHandle"/> is <see langword="default"/> or <paramref name="propertyName"/> is <see langword="null"/> (or only consists of white-space characters or  is an empty string).</exception>
+        /// <exception cref="ArgumentException">Thrown when
+        /// <list type="bullet">
+        /// <item>Is also thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but <paramref name="methodHandle"/> is not an interface type.</item>
+        /// <item>Is also thrown when <paramref name="accessorKind"/> has a value that is not defined by the <see cref="PropertyAccessorKind"/> enum.</item>
+        /// <item>Is also thrown when <paramref name="accessorKind"/> has value <see cref="PropertyAccessors.None"/> or <see cref="PropertyAccessors.None"/>.</item>
+        /// </list>
+        /// </exception>
+        public PropertyAccessorDescriptor(
+            RuntimeMethodHandle methodHandle,
+            bool isExplicitInterfaceImplementation,
+            MethodParameterInfoList? indexerParameters,
+            string? propertyName,
+            PropertyAccessors accessorKind)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(methodHandle);
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessors>(accessorKind);
+            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
+                accessorKind,
+                [PropertyAccessors.None, PropertyAccessors.GetAndSet],
+                nameof(accessorKind),
+                $"Invalid argument '{nameof(accessorKind)}'. The argument '{nameof(accessorKind)}' has an undefined value. The value '{accessorKind}' is not allowed.");
+
+            indexerParameters = indexerParameters.OrEmpty();
+            IsIndexerPropertyAccessor = indexerParameters.HasItems;
+            IsPropertyAccessor = !IsIndexerPropertyAccessor;
+
+            if (IsIndexerPropertyAccessor)
+            {
+                propertyName = string.Empty;
+            }
+            else
+            {
+                ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(propertyName);
+            }
+
+            if (isExplicitInterfaceImplementation)
+            {
+                MethodBase? accessor = MethodInfo.GetMethodFromHandle(methodHandle);
+                ArgumentNullExceptionAdvanced.ThrowIfNull(
+                    accessor,
+                    nameof(methodHandle),
+                    $"The method represented by the argument '{nameof(methodHandle)}' could not be resolved.");
+                Type? declaringType = accessor?.DeclaringType;
+                ArgumentNullExceptionAdvanced.ThrowIfNull(
+                    accessor,
+                    nameof(declaringType),
+                    $"The declaring type of the argument '{nameof(methodHandle)}' could not be resolved.");
+                ArgumentExceptionAdvanced.ThrowIfTrue(declaringType!.IsInterface,
+                    nameof(isExplicitInterfaceImplementation),
+                    $"Invalid argument '{nameof(methodHandle)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type of the accessor method represented by the argument '{nameof(methodHandle)}' is an interface type. Reason: Only non-interface types can provide the explicit implementation.");
+            }
+
+            IndexerParameters = ParameterList.Empty;
+            MethodHandle = methodHandle;
+            PropertyName = propertyName;
+            PropertyAccessorKind = accessorKind;
+            MethodParameterInfoList = indexerParameters.OrEmpty();
+            IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
+            IsAnonymous = false;
+        }
+
+        public RuntimeMethodHandle MethodHandle { get; }
+        public string PropertyName { get; }
+        public bool IsIndexerPropertyAccessor { get; }
+        public bool IsPropertyAccessor { get; }
+        public PropertyAccessors PropertyAccessorKind { get; }
+        public MethodParameterInfoList MethodParameterInfoList { get; }
+        public ParameterList IndexerParameters { get; }
+        public bool IsExplicitInterfaceImplementation { get; }
+        public bool IsAnonymous { get; }
+
+        public bool Equals(PropertyAccessorDescriptor other)
+            => MethodHandle.Equals(other.MethodHandle)
+            && PropertyName.Equals(other.PropertyName, StringComparison.Ordinal)
+            && IndexerParameters.Equals(other.IndexerParameters)
+            && IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
+            && MethodParameterInfoList.Equals(other.MethodParameterInfoList)
+            && PropertyAccessorKind.Equals(other.PropertyAccessorKind)
+            && IsPropertyAccessor.Equals(other.IsPropertyAccessor)
+            && IsIndexerPropertyAccessor.Equals(other.IsIndexerPropertyAccessor)
+            && IsAnonymous == other.IsAnonymous;
+
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+            hashCode.Add(MethodHandle);
+            hashCode.Add(PropertyName);
+            hashCode.Add(IndexerParameters);
+            hashCode.Add(IsIndexerPropertyAccessor);
+            hashCode.Add(IsExplicitInterfaceImplementation);
+            hashCode.Add(MethodParameterInfoList);
+            hashCode.Add(PropertyAccessorKind);
+            hashCode.Add(IsPropertyAccessor);
+            hashCode.Add(IsAnonymous);
+
+            return hashCode.ToHashCode();
+        }
+
+        public static bool operator ==(PropertyAccessorDescriptor left, PropertyAccessorDescriptor right)
+            => left.Equals(right);
+        public static bool operator !=(PropertyAccessorDescriptor left, PropertyAccessorDescriptor right)
+            => !(left == right);
+
+        public override bool Equals(object obj)
+            => obj is PropertyAccessorDescriptor other && Equals(other);
+    }
+}

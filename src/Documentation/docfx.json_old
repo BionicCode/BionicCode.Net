@@ -1,0 +1,184 @@
+{
+  "metadata": [
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/netstandard2.0/*.dll",
+      "dest": "temp/api/netstandard2.0",
+      "properties": {
+        "TargetFramework": "netstandard2.0"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/netstandard2.1/*.dll",
+      "dest": "temp/api/netstandard2.1",
+      "properties": {
+        "TargetFramework": "netstandard2.1"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/net7.0/*.dll",
+      "dest": "temp/api/net7.0",
+      "properties": {
+        "TargetFramework": "net7.0"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/net7.0-windows/*.dll",
+      "dest": "temp/api/net7.0-windows",
+      "properties": {
+        "TargetFramework": "netnet7.0-windows"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/net6.0/*.dll",
+      "dest": "temp/api/net6.0",
+      "properties": {
+        "TargetFramework": "net6.0"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/net6.0-windows/*.dll",
+      "dest": "temp/api/net6.0-windows",
+      "properties": {
+        "TargetFramework": "netnet6.0-windows"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/net5.0/*.dll",
+      "dest": "temp/api/net5.0",
+      "properties": {
+        "TargetFramework": "net5.0"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/net5.0-windows/*.dll",
+      "dest": "temp/api/net5.0-windows",
+      "properties": {
+        "TargetFramework": "net5.0-windows"
+      }
+    }
+  ],
+  "merge": {
+    "content": [
+      {
+        "files": "*.yml",
+        "src": "temp/api/netstandard2.0"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/netstandard2.1"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net7.0"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net7.0-windows"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net6.0"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net6.0-windows"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net5.0"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net5.0-windows"
+      }
+    ],
+    "fileMetadata": {
+      "platform": {
+        "temp/api/netstandard2.0/*.yml": [
+          "netstandard2.0"
+        ],
+        "temp/api/netstandard2.1/*.yml": [
+          "netstandard2.1"
+        ],
+        "temp/api/net7.0/*.yml": [
+          "net7.0"
+        ],
+        "temp/api/nets7.0-windows/*.yml": [
+          "net7.0-windows"
+        ],
+        "temp/api/net7.0/*.yml": [
+          "net6.0"
+        ],
+        "temp/api/nets7.0-windows/*.yml": [
+          "net6.0-windows"
+        ],
+        "temp/api/net7.0/*.yml": [
+          "net5.0"
+        ],
+        "temp/api/nets7.0-windows/*.yml": [
+          "net5.0-windows"
+        ]
+      }
+    },
+    "dest": "api"
+  },
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**/*.yml",
+          "api/**.yml",
+          "api/index.md"
+        ]
+      },
+      {
+        "files": [
+          "articles/**.md",
+          "articles/**/toc.yml",
+          "toc.yml",
+          "*.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**"
+        ]
+      }
+    ],
+    "dest": "../../Documentation",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": [
+      "default"
+    ],
+    "globalMetadata": {
+      "_appTitle": "BionicCode.NET API Reference",
+      "_appLogoPath": "../images/BionicCode_Logo.png",
+      "_appFaviconPath": "../images/logo.ico",
+      "_gitContribute": {
+        "repo": "https://github.com/BionicCode/BionicCode.Net",
+        "branch": "develop",
+        "apiSpecFolder": "docs-ref-overwrite"
+      },
+      "_enableSearch": "true"
+    },
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": true,
+    "disableGitFeatures": false
+  }
+}

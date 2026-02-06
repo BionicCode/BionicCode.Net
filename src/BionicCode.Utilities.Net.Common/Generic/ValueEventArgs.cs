@@ -1,0 +1,29 @@
+﻿namespace BionicCode.Utilities.Net
+{
+    #region Info
+
+    // //  
+    // WpfTestRange.Main
+
+    #endregion
+
+    using System;
+
+    /// <summary>
+    /// Generic EventArgs implementation that supports to store a value.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    public class ValueEventArgs<TValue> : EventArgs
+    {
+        /// <summary>
+        /// MemberConstructor.
+        /// </summary>
+        /// <param name="value">The value to send as event args.</param>
+        public ValueEventArgs(TValue value) => Value = value;
+
+        /// <summary>
+        /// The value to send as event args.
+        /// </summary>
+        public TValue Value { get; }
+    }
+}
