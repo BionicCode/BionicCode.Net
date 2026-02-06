@@ -5,20 +5,24 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 env:
   # Replace with your canonical repo and branch if different
   CANONICAL_REPO: BionicCode/bioniccode-code-style
   CANONICAL_BRANCH: main
-  # Raw URL used if canonical is public (constructed from CANONICAL_REPO/CANONICAL_BRANCH)
-  CANONICAL_RAW_URL: https://raw.githubusercontent.com/BionicCode/bioniccode-code-style/main/BionicCode.CodeStyle/BionicCode.CodeStyle/.editorconfig
 
 jobs:
   sync-editorconfig:
     # Determine the branch to target: for pull_request use the PR head branch, otherwise use ref_name
     env:
       TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      # true when this run is a pull_request from a fork; used to avoid using secrets for forked PRs
+      IS_FORK: ${{ github.event.pull_request != null && github.event.pull_request.head.repo.fork == true }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: sync-editorconfig-${{ github.ref_name }}
+      cancel-in-progress: true
 
     steps:
       - name: Exit if triggered by Actions bot (avoid loops)
@@ -32,22 +36,32 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch canonical .editorconfig (private repo path if token provided)
-        # If secret CANONICAL_REPO_TOKEN is set in the consumer repo, checkout canonical repo; otherwise fall back to raw URL
+      - name: Fetch canonical .editorconfig (token clone if available and not a fork, otherwise raw URL)
         run: |
           set -e
-          # Prefer checkout via token if secret is provided (for private canonical repos)
-          if [ -n "${{ secrets.CANONICAL_REPO_TOKEN }}" ]; then
-            echo "Using secret to checkout canonical repository"
+          CANONICAL_PATH="BionicCode.CodeStyle/BionicCode.CodeStyle/.editorconfig"
+          RAW_URL="https://raw.githubusercontent.com/${{ env.CANONICAL_REPO }}/${{ env.CANONICAL_BRANCH }}/${CANONICAL_PATH}"
+          echo "Canonical repo: ${{ env.CANONICAL_REPO }} (branch: ${{ env.CANONICAL_BRANCH }})"
+          echo "Using raw URL: $RAW_URL"
+
+          # Only attempt token clone if a token is present AND this is not a forked PR
+          if [ -n "${{ secrets.CANONICAL_REPO_TOKEN }}" ] && [ "${{ env.IS_FORK }}" != "true" ]; then
+            echo "Attempting authenticated clone of canonical repository"
             git clone --depth 1 https://x-access-token:${{ secrets.CANONICAL_REPO_TOKEN }}@github.com/${{ env.CANONICAL_REPO }} canonical-repo || true
             if [ -f canonical-repo/.editorconfig ]; then
               cp canonical-repo/.editorconfig canonical.editorconfig
+              echo "Fetched canonical .editorconfig via authenticated clone."
             else
-              echo "canonical .editorconfig not found in canonical-repo"
+              echo "Authenticated clone succeeded but canonical .editorconfig not found in canonical-repo"
             fi
           else
-            echo "No CANONICAL_REPO_TOKEN secret found — attempting to fetch public raw file"
-            curl -fsSL "${{ env.CANONICAL_RAW_URL }}" -o canonical.editorconfig || true
+            echo "No usable token (or forked PR). Falling back to public raw URL"
+            curl -fsSL "$RAW_URL" -o canonical.editorconfig || true
+            if [ -s canonical.editorconfig ]; then
+              echo "Fetched canonical .editorconfig via public raw URL."
+            else
+              echo "Failed to fetch canonical.editorconfig from raw URL"
+            fi
           fi
 
       - name: Ensure we have a canonical file
@@ -71,7 +85,7 @@ jobs:
         run: |
           # Overwrite or create the repo's .editorconfig with the canonical file
           cp canonical.editorconfig .editorconfig
-          # Show diff for logs
+          # Show diff for logs (first 200 lines)
           echo "---- .editorconfig (canonical) ----"
           sed -n '1,200p' canonical.editorconfig || true
           echo "-----------------------------------"
@@ -84,13 +98,13 @@ jobs:
           branch: sync-editorconfig/${{ github.run_id }}
           # target the branch that triggered the run (developer's branch)
           base: ${{ env.TARGET_BRANCH }}
-          title: chore: sync .editorconfig with canonical
+          title: "chore: sync .editorconfig with canonical"
           body: |
             This automated PR updates or adds .editorconfig from the canonical repository (${{ env.CANONICAL_REPO }}@${{ env.CANONICAL_BRANCH }}).
             Please merge or pull this update to ensure your local analyzers and formatting use the canonical rules.
-          commit-message: chore(sync): update .editorconfig from canonical
+          commit-message: "chore(sync): update .editorconfig from canonical"
           labels: automation
           # The action will pick up changes in the working directory; specifying file-pattern helps
           file-pattern: .editorconfig
           # Author set to the GitHub Actions bot to make automated commits identifiable
-          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
