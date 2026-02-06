@@ -1,0 +1,96 @@
+name: Sync .editorconfig from canonical
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+env:
+  # Replace with your canonical repo and branch if different
+  CANONICAL_REPO: BionicCode/bioniccode-code-style
+  CANONICAL_BRANCH: main
+  # Raw URL used if canonical is public (constructed from CANONICAL_REPO/CANONICAL_BRANCH)
+  CANONICAL_RAW_URL: https://raw.githubusercontent.com/BionicCode/bioniccode-code-style/main/.editorconfig
+
+jobs:
+  sync-editorconfig:
+    # Determine the branch to target: for pull_request use the PR head branch, otherwise use ref_name
+    env:
+      TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Exit if triggered by Actions bot (avoid loops)
+        if: ${{ github.actor == 'github-actions[bot]' }}
+        run: |
+          echo "Triggered by github-actions[bot], exiting to avoid loop."
+          exit 0
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch canonical .editorconfig (private repo path if token provided)
+        # If secret CANONICAL_REPO_TOKEN is set in the consumer repo, checkout canonical repo; otherwise fall back to raw URL
+        run: |
+          set -e
+          # Prefer checkout via token if secret is provided (for private canonical repos)
+          if [ -n "${{ secrets.CANONICAL_REPO_TOKEN }}" ]; then
+            echo "Using secret to checkout canonical repository"
+            git clone --depth 1 https://x-access-token:${{ secrets.CANONICAL_REPO_TOKEN }}@github.com/${{ env.CANONICAL_REPO }} canonical-repo || true
+            if [ -f canonical-repo/.editorconfig ]; then
+              cp canonical-repo/.editorconfig canonical.editorconfig
+            else
+              echo "canonical .editorconfig not found in canonical-repo"
+            fi
+          else
+            echo "No CANONICAL_REPO_TOKEN secret found — attempting to fetch public raw file"
+            curl -fsSL "${{ env.CANONICAL_RAW_URL }}" -o canonical.editorconfig || true
+          fi
+
+      - name: Ensure we have a canonical file
+        run: |
+          if [ ! -s canonical.editorconfig ]; then
+            echo "Error: canonical.editorconfig not available. Aborting." >&2
+            exit 1
+          fi
+
+      - name: Compare with repository .editorconfig
+        id: compare
+        run: |
+          if [ -f .editorconfig ] && cmp -s .editorconfig canonical.editorconfig; then
+            echo "same=true" >> $GITHUB_OUTPUT
+          else
+            echo "same=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Prepare workspace with canonical .editorconfig
+        if: steps.compare.outputs.same == 'false'
+        run: |
+          # Overwrite or create the repo's .editorconfig with the canonical file
+          cp canonical.editorconfig .editorconfig
+          # Show diff for logs
+          echo "---- .editorconfig (canonical) ----"
+          sed -n '1,200p' canonical.editorconfig || true
+          echo "-----------------------------------"
+
+      - name: Create sync pull request if .editorconfig differs or missing
+        if: steps.compare.outputs.same == 'false'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          # new branch name for sync commit
+          branch: sync-editorconfig/${{ github.run_id }}
+          # target the branch that triggered the run (developer's branch)
+          base: ${{ env.TARGET_BRANCH }}
+          title: chore: sync .editorconfig with canonical
+          body: |
+            This automated PR updates or adds .editorconfig from the canonical repository (${{ env.CANONICAL_REPO }}@${{ env.CANONICAL_BRANCH }}).
+            Please merge or pull this update to ensure your local analyzers and formatting use the canonical rules.
+          commit-message: chore(sync): update .editorconfig from canonical
+          labels: automation
+          # The action will pick up changes in the working directory; specifying file-pattern helps
+          file-pattern: .editorconfig
+          # Author set to the GitHub Actions bot to make automated commits identifiable
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
