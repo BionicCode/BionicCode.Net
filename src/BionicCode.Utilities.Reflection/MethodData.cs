@@ -13,7 +13,7 @@ internal sealed class MethodData : ParameterizedMemberData, IMethodDataInvoker, 
 {
     private static readonly Type s_asyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
 
-    private SymbolAttributes symbolAttributes;
+    private SymbolAttributes _symbolAttributes;
     private AccessModifier accessModifier;
     private bool? isAwaitable;
     private bool? isAwaitableTask;
@@ -193,7 +193,7 @@ internal sealed class MethodData : ParameterizedMemberData, IMethodDataInvoker, 
         ThrowIfDeclaringTypeIsAnOpenGenericType();
         ThrowIfInvalidMethodArguments(args, nameof(args));
 
-        MethodVoidInvoker<TTarget> invokerMethod = (MethodVoidInvoker<TTarget>)GetInvokerInternal<TTarget>(TypeList.Empty);
+        var invokerMethod = (MethodVoidInvoker<TTarget>)GetInvokerInternal<TTarget>(TypeList.Empty);
         Debug.Assert(invokerMethod is not null);
 
         invokerMethod.Invoke(target, args.ToArray());
@@ -272,7 +272,7 @@ internal sealed class MethodData : ParameterizedMemberData, IMethodDataInvoker, 
 
         // TResult will be ignored by the 'DelegateProvider' since isDiscard is TRUE.
         // Hence, 'ValueTask' is acting as a dummy generic type parameter in this special case.
-        MethodAwaitableValueTaskDiscardInvoker<TTarget>? invokerMethod = (MethodAwaitableValueTaskDiscardInvoker<TTarget>)GetInvokerInternal<TTarget, ValueTask>(TypeList.Empty, isDiscard: true);
+        var invokerMethod = (MethodAwaitableValueTaskDiscardInvoker<TTarget>)GetInvokerInternal<TTarget, ValueTask>(TypeList.Empty, isDiscard: true);
         Debug.Assert(invokerMethod is not null);
 
         await invokerMethod.Invoke(target, args.ToArray());
@@ -833,7 +833,7 @@ internal sealed class MethodData : ParameterizedMemberData, IMethodDataInvoker, 
     {
         Type resultType = typeof(void);
         Type targetType = typeof(TTarget);
-        MethodDataGenericTypeVariantKey genericTypedMethodVariantKey = new MethodDataGenericTypeVariantKey(
+        var genericTypedMethodVariantKey = new MethodDataGenericTypeVariantKey(
             genericMethodArguments,
             resultType.TypeHandle,
             targetType.TypeHandle,
@@ -903,7 +903,7 @@ internal sealed class MethodData : ParameterizedMemberData, IMethodDataInvoker, 
                 if (IsGenericMethod && !IsGenericMethodDefinition)
                 {
                     MethodInfo genericMethodDefinition = GetMethodInfo().GetGenericMethodDefinition();
-                    MethodData genericMethodDefinitionData = genericMethodDefinition.ToMethodData();
+                    var genericMethodDefinitionData = genericMethodDefinition.ToMethodData();
                     _basicMethodFingerprint = genericMethodDefinitionData.BasicMethodFingerprint;
                 }
                 else
@@ -1159,9 +1159,9 @@ internal sealed class MethodData : ParameterizedMemberData, IMethodDataInvoker, 
     internal bool IsReturnValueByRef
       => isReturnValueByRef ??= ReturnTypeData.IsByRef;
 
-    internal override SymbolAttributes SymbolAttributes => symbolAttributes is SymbolAttributes.Undefined
-      ? (symbolAttributes = MethodData.GetAttributes(this))
-      : symbolAttributes;
+    internal override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
+      ? (_symbolAttributes = MethodData.GetAttributes(this))
+      : _symbolAttributes;
 
     internal override SymbolComponentInfo SymbolComponentInfo
       => symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
