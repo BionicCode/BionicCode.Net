@@ -11,7 +11,7 @@ env:
   CANONICAL_REPO: BionicCode/bioniccode-code-style
   CANONICAL_BRANCH: main
   # Raw URL used if canonical is public (constructed from CANONICAL_REPO/CANONICAL_BRANCH)
-  CANONICAL_RAW_URL: https://raw.githubusercontent.com/BionicCode/bioniccode-code-style/main/.editorconfig
+  CANONICAL_RAW_URL: https://raw.githubusercontent.com/BionicCode/bioniccode-code-style/main/BionicCode.CodeStyle/BionicCode.CodeStyles/.editorconfig
 
 jobs:
   sync-editorconfig:
