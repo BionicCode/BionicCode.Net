@@ -104,7 +104,7 @@ jobs:
             Please merge or pull this update to ensure your local analyzers and formatting use the canonical rules.
           commit-message: "chore(sync): update .editorconfig from canonical"
           labels: automation
-          # The action will pick up changes in the working directory; specifying file-pattern helps
-          file-pattern: .editorconfig
+          # include only .editorconfig in the commit
+          add-paths: .editorconfig
           # Author set to the GitHub Actions bot to make automated commits identifiable
           author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
