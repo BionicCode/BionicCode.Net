@@ -31,11 +31,6 @@ internal readonly struct WellKnownMethodDescriptor : IEquatable<WellKnownMethodD
     }
 
     public MethodInfo MethodInfo { get; }
-
-    /// <summary>
-    /// Returns the runtime method handle of the well-known method.
-    /// </summary>
-    /// <value>If the method is an explicit interface implementation (<see cref="IsExplicitInterfaceImplementation"/> is <see langword="true"/>), this property returns the runtime method handle of the <see cref="MethodInfo"/> that maps to the declaring interface type; otherwise, it returns handle to the implementation <see cref="MethodInfo"/>.</value>
     public RuntimeMethodHandle MethodHandle { get; }
     public string MethodName { get; }
     public bool IsAnonymous { get; }
