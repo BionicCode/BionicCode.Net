@@ -3,8 +3,6 @@ name: Sync .editorconfig from canonical (PR-only)
 on:
   # "Git-triggered polling": run on pushes in this repo
   push:
-    branches:
-      - "**"
     branches-ignore:
       - "chore/sync-editorconfig" # bot branch created by this workflow
   # Fail early on PRs if branch is out-of-sync
