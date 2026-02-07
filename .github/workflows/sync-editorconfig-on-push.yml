@@ -1,13 +1,14 @@
 name: Sync .editorconfig from canonical (PR-only)
 
 on:
-  # "Git-triggered polling": run on pushes in this repo
   push:
     branches-ignore:
-      - "chore/sync-editorconfig" # bot branch created by this workflow
-  # Fail early on PRs if branch is out-of-sync
+      - "chore/sync-editorconfig" # bot PR branch
   pull_request:
   workflow_dispatch:
+  # Optional polling safety net (recommended for dormant repos):
+  # schedule:
+  #   - cron: "17 * * * *"  # hourly at :17
 
 permissions:
   contents: write
@@ -17,12 +18,12 @@ env:
   CANONICAL_RAW_URL: https://raw.githubusercontent.com/BionicCode/bioniccode-code-style/main/.editorconfig
   SYNC_BRANCH: chore/sync-editorconfig
 
+# Concurrency scoped per PR or per ref (prevents cross-branch cancellations)
 concurrency:
-  group: editorconfig-sync
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # 1) PR guard: make out-of-sync immediately visible to developers
   verify-on-pr:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -37,17 +38,13 @@ jobs:
           set -euo pipefail
           curl -fsSL "${CANONICAL_RAW_URL}" -o canonical.editorconfig
 
-      - name: Ensure exactly one tracked .editorconfig (optional strictness)
+      - name: Ensure exactly one tracked .editorconfig (strict)
         run: |
           set -euo pipefail
           count=$(git ls-files '**/.editorconfig' | wc -l | tr -d ' ')
-          if [ "$count" -eq 0 ]; then
-            echo "::error::.editorconfig is missing in this repo."
-            exit 1
-          fi
-          if [ "$count" -gt 1 ]; then
-            echo "::error::Multiple .editorconfig files found. Keep only the repo-root .editorconfig to avoid overrides."
-            git ls-files '**/.editorconfig'
+          if [ "$count" -ne 1 ]; then
+            echo "::error::Expected exactly one tracked .editorconfig (repo root). Found: $count"
+            git ls-files '**/.editorconfig' || true
             exit 1
           fi
 
@@ -57,13 +54,16 @@ jobs:
           if cmp -s .editorconfig canonical.editorconfig; then
             echo ".editorconfig is in sync with canonical."
           else
-            echo "::error::.editorconfig is OUT OF SYNC with canonical. Merge the sync PR (or rerun the sync workflow)."
+            echo "::error::.editorconfig is OUT OF SYNC with canonical. Merge the sync PR created by this workflow."
             exit 1
           fi
 
-  # 2) PR creator/updater: always proposes canonical via one rolling PR
   open-or-update-sync-pr:
-    if: github.event_name != 'pull_request' && github.actor != 'github-actions[bot]'
+    # PR-only syncing: create/update a PR on default-branch pushes, or manual runs
+    if: >
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'push' || github.ref == format('refs/heads/{0}', github.event.repository.default_branch)) &&
+      github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout default branch
@@ -83,8 +83,8 @@ jobs:
           if [ -f .editorconfig ] && cmp -s .editorconfig canonical.editorconfig; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
             mv canonical.editorconfig .editorconfig
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create or update PR
