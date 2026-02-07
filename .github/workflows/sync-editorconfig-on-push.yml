@@ -1,171 +1,106 @@
-name: Sync .editorconfig from canonical
+name: Sync .editorconfig from canonical (PR-only)
+
 on:
+  # "Git-triggered polling": run on pushes in this repo
   push:
+    branches:
+      - "**"
+    branches-ignore:
+      - "chore/sync-editorconfig" # bot branch created by this workflow
+  # Fail early on PRs if branch is out-of-sync
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: write
   pull-requests: write
 
 env:
-  # Replace with your canonical repo and branch if different
-  CANONICAL_REPO: BionicCode/bioniccode-code-style
-  CANONICAL_BRANCH: main
+  CANONICAL_RAW_URL: https://raw.githubusercontent.com/BionicCode/bioniccode-code-style/main/.editorconfig
+  SYNC_BRANCH: chore/sync-editorconfig
+
+concurrency:
+  group: editorconfig-sync
+  cancel-in-progress: true
 
 jobs:
-  sync-editorconfig:
-    # Determine the branch to target: for pull_request use the PR head branch, otherwise use ref_name
-    env:
-      TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
-      # true when this run is a pull_request from a fork; used to avoid using secrets for forked PRs
-      IS_FORK: ${{ github.event.pull_request != null && github.event.pull_request.head.repo.fork == true }}
+  # 1) PR guard: make out-of-sync immediately visible to developers
+  verify-on-pr:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    concurrency:
-      group: sync-editorconfig-${{ github.ref_name }}
-      cancel-in-progress: true
-
     steps:
-      - name: Exit if triggered by Actions bot (avoid loops)
-        if: ${{ github.actor == 'github-actions[bot]' }}
-        run: |
-          echo "Triggered by github-actions[bot], exiting to avoid loop."
-          exit 0
-
-      - name: Checkout repository
+      - name: Checkout PR head
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          persist-credentials: true
+          ref: ${{ github.head_ref }}
 
-      - name: Fetch canonical .editorconfig (token clone if available and not a fork, otherwise raw URL)
+      - name: Download canonical .editorconfig
         run: |
-          set -e
-          CANONICAL_PATH="BionicCode.CodeStyle/BionicCode.CodeStyle/.editorconfig"
-          RAW_URL="https://raw.githubusercontent.com/${{ env.CANONICAL_REPO }}/${{ env.CANONICAL_BRANCH }}/${CANONICAL_PATH}"
-          echo "Canonical repo: ${{ env.CANONICAL_REPO }} (branch: ${{ env.CANONICAL_BRANCH }})"
-          echo "Using raw URL: $RAW_URL"
+          set -euo pipefail
+          curl -fsSL "${CANONICAL_RAW_URL}" -o canonical.editorconfig
 
-          # Only attempt token clone if a token is present AND this is not a forked PR
-          if [ -n "${{ secrets.CANONICAL_REPO_TOKEN }}" ] && [ "${{ env.IS_FORK }}" != "true" ]; then
-            echo "Attempting authenticated clone of canonical repository"
-            git clone --depth 1 https://x-access-token:${{ secrets.CANONICAL_REPO_TOKEN }}@github.com/${{ env.CANONICAL_REPO }} canonical-repo || true
-            if [ -f canonical-repo/.editorconfig ]; then
-              cp canonical-repo/.editorconfig canonical.editorconfig
-              echo "Fetched canonical .editorconfig via authenticated clone."
-            else
-              echo "Authenticated clone succeeded but canonical .editorconfig not found in canonical-repo"
-            fi
-          else
-            echo "No usable token (or forked PR). Falling back to public raw URL"
-            curl -fsSL "$RAW_URL" -o canonical.editorconfig || true
-            if [ -s canonical.editorconfig ]; then
-              echo "Fetched canonical .editorconfig via public raw URL."
-            else
-              echo "Failed to fetch canonical.editorconfig from raw URL"
-            fi
+      - name: Ensure exactly one tracked .editorconfig (optional strictness)
+        run: |
+          set -euo pipefail
+          count=$(git ls-files '**/.editorconfig' | wc -l | tr -d ' ')
+          if [ "$count" -eq 0 ]; then
+            echo "::error::.editorconfig is missing in this repo."
+            exit 1
           fi
-
-      - name: Ensure we have a canonical file
-        run: |
-          if [ ! -s canonical.editorconfig ]; then
-            echo "Error: canonical.editorconfig not available. Aborting." >&2
+          if [ "$count" -gt 1 ]; then
+            echo "::error::Multiple .editorconfig files found. Keep only the repo-root .editorconfig to avoid overrides."
+            git ls-files '**/.editorconfig'
             exit 1
           fi
 
-      - name: Compare with repository .editorconfig
-        id: compare
+      - name: Fail if branch .editorconfig is out of sync
         run: |
-          if [ -f .editorconfig ] && cmp -s .editorconfig canonical.editorconfig; then
-            echo "same=true" >> $GITHUB_OUTPUT
+          set -euo pipefail
+          if cmp -s .editorconfig canonical.editorconfig; then
+            echo ".editorconfig is in sync with canonical."
           else
-            echo "same=false" >> $GITHUB_OUTPUT
+            echo "::error::.editorconfig is OUT OF SYNC with canonical. Merge the sync PR (or rerun the sync workflow)."
+            exit 1
           fi
 
-      - name: Prepare workspace with canonical .editorconfig
-        if: steps.compare.outputs.same == 'false'
-        run: |
-          # Overwrite or create the repo's .editorconfig with the canonical file
-          cp canonical.editorconfig .editorconfig
-          # Debug: show file summary to make sure the copy happened
-          echo "Workspace .editorconfig:"
-          ls -la .editorconfig || true
-          echo "---- head of .editorconfig ----"
-          sed -n '1,40p' .editorconfig || true
-          echo "--------------------------------"
-
-      - name: Commit and attempt to push .editorconfig to target branch (sets push_succeeded)
-        id: commit_push
-        if: steps.compare.outputs.same == 'false'
-        run: |
-          # We'll always write an output push_succeeded (true/false). The step must succeed
-          # so the workflow can run a fallback PR when push fails.
-          set -o pipefail
-          PUSH_SUCCEEDED=false
-
-          echo "Preparing to commit .editorconfig to branch '${{ env.TARGET_BRANCH }}'"
-
-          # Configure git for the automated commit
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Only attempt push when this run is allowed to push (push events, or PRs from the same repo)
-          if [ "${{ github.event_name }}" = "push" ] || \
-             ( [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ] ); then
-
-            echo "Push permitted for this run; attempting to commit and push."
-
-            # Ensure we have an up-to-date view of the remote target branch
-            git fetch origin "${{ env.TARGET_BRANCH }}" || true
-
-            # Checkout the target branch (create it locally if it doesn't exist)
-            if git rev-parse --verify "${{ env.TARGET_BRANCH }}" >/dev/null 2>&1; then
-              git checkout "${{ env.TARGET_BRANCH }}"
-            else
-              git checkout -b "${{ env.TARGET_BRANCH }}"
-            fi
-
-            # Add and commit .editorconfig
-            git add .editorconfig
-
-            if git diff --staged --quiet; then
-              echo "No staged changes to commit. Nothing to push."
-              PUSH_SUCCEEDED=true
-            else
-              git commit -m "chore(sync): update .editorconfig from canonical" --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" || true
-
-              # Push and capture exit code instead of failing the step
-              echo "Pushing to origin/${{ env.TARGET_BRANCH }}..."
-              if git push origin "${{ env.TARGET_BRANCH }}"; then
-                echo "Push successful."
-                PUSH_SUCCEEDED=true
-              else
-                echo "Push failed (remote rejected or permission error). Will fall back to PR."
-                PUSH_SUCCEEDED=false
-              fi
-            fi
-          else
-            echo "This run is not permitted to push (e.g., forked PR). Skipping direct push and will fall back to PR."
-            PUSH_SUCCEEDED=false
-          fi
-
-          # Emit the result for later steps
-          if [ "$PUSH_SUCCEEDED" = "true" ]; then
-            echo "push_succeeded=true" >> $GITHUB_OUTPUT
-          else
-            echo "push_succeeded=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: "Fallback: open PR if direct push was not possible/failed"
-        if: steps.compare.outputs.same == 'false' && steps.commit_push.outputs.push_succeeded != 'true'
-        uses: peter-evans/create-pull-request@v5
+  # 2) PR creator/updater: always proposes canonical via one rolling PR
+  open-or-update-sync-pr:
+    if: github.event_name != 'pull_request' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@v4
         with:
-          branch: sync-editorconfig/${{ github.run_id }}
-          base: ${{ env.TARGET_BRANCH }}
-          title: "chore: sync .editorconfig with canonical"
-          body: |
-            This automated PR updates or adds .editorconfig from the canonical repository (${{ env.CANONICAL_REPO }}@${{ env.CANONICAL_BRANCH }}).
-            Please merge or pull this update to ensure your local analyzers and formatting use the canonical rules.
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Download canonical .editorconfig
+        run: |
+          set -euo pipefail
+          curl -fsSL "${CANONICAL_RAW_URL}" -o canonical.editorconfig
+
+      - name: Detect changes
+        id: diff
+        run: |
+          set -euo pipefail
+          if [ -f .editorconfig ] && cmp -s .editorconfig canonical.editorconfig; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            mv canonical.editorconfig .editorconfig
+          fi
+
+      - name: Create or update PR
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: ${{ env.SYNC_BRANCH }}
+          base: ${{ github.event.repository.default_branch }}
+          title: "chore: sync .editorconfig from canonical"
           commit-message: "chore(sync): update .editorconfig from canonical"
+          body: |
+            Automated sync of `.editorconfig` from the canonical repository.
+
+            Source: BionicCode/bioniccode-code-style (main)
+          add-paths: |
+            .editorconfig
           labels: automation
-          add-paths: .editorconfig
-          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
