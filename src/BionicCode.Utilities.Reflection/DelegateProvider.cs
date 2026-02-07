@@ -129,7 +129,7 @@
                     Expression.ArrayIndex(argsParam, Expression.Constant(index)),
                     parameter.ParameterTypeData.UnwrapType())).ToArray();
 
-            MethodInfo methodInfo = methodData.GetMethodInfo();
+            MethodInfo methodInfo = methodData.MethodInfo;
             Expression call = methodData.IsStatic
                 ? Expression.Call(methodInfo, callArgs)
                 : Expression.Call(instance!, methodInfo, callArgs); // instance required for non-static :contentReference[oaicite:7]{index=7}
@@ -244,7 +244,7 @@
                     Expression.ArrayIndex(argsParam, Expression.Constant(index)),
                     parameter.ParameterTypeData.UnwrapType())).ToArray();
 
-            MethodInfo methodInfo = methodData.GetMethodInfo();
+            MethodInfo methodInfo = methodData.MethodInfo;
             Expression call = methodData.IsStatic
                 ? Expression.Call(methodInfo, callArgs)
                 : Expression.Call(instanceExpression, methodInfo, callArgs); // instance required for non-static :contentReference[oaicite:7]{index=7}
@@ -386,7 +386,7 @@
                     Expression.ArrayIndex(argsParam, Expression.Constant(index)),
                     parameter.ParameterTypeData.UnwrapType())).ToArray();
 
-            MethodInfo methodInfo = methodData.GetMethodInfo();
+            MethodInfo methodInfo = methodData.MethodInfo;
             Expression call = methodData.IsStatic
                 ? Expression.Call(methodInfo, callArgs)
                 : Expression.Call(instanceExpression, methodInfo, callArgs); // instance required for non-static :contentReference[oaicite:7]{index=7}
@@ -2008,7 +2008,7 @@
             MethodData toFullyQualifiedSignatureNameExtensionMethodData = helperExtensionsCommonTypeData.Methods[extensionMethodName, new MethodParameterInfo(typeCacheKey)];
 
             // BUG::Call GetType on target and pass to extension method
-            MethodCallExpression extensionMethodCall = Expression.Call(toFullyQualifiedSignatureNameExtensionMethodData.GetMethodInfo(), target);
+            MethodCallExpression extensionMethodCall = Expression.Call(toFullyQualifiedSignatureNameExtensionMethodData.MethodInfo, target);
 
             Expression message = Expression.Call(
                 stringConcat5,

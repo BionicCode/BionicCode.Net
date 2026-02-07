@@ -69,6 +69,9 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private MemberData? _accessedMember;
     private readonly WellKnownMethodDescriptor _descriptor;
     private readonly MethodSignatureEqualityComparer _methodSignatureEqualityComparer;
+    private RuntimeTypeHandle? _declaringTypeHandle;
+    private RuntimeTypeHandle? _implementingTypeHandle;
+    private bool? _isExplicitInterfaceImplementation;
 
     internal MethodData(SymbolReflectionInfoCacheKey symbolReflectionInfoCacheKey)
         : base(symbolReflectionInfoCacheKey)
@@ -78,40 +81,40 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         _descriptor = symbolReflectionInfoCacheKey.MethodDescriptor;
         _invokerTable = new ConcurrentDictionary<MethodDataGenericTypeVariantKey, Delegate>();
         Handle = _descriptor.MethodHandle;
+        MethodInfo = _descriptor.MethodInfo;
 
         _methodSignatureEqualityComparer = new MethodSignatureEqualityComparer();
     }
 
-    internal MethodInfo GetMethodInfo()
-      => (MethodInfo)MethodInfo.GetMethodFromHandle(Handle, DeclaringTypeHandle)!;
+    internal MethodInfo MethodInfo { get; }
 
     protected override MemberInfo GetMemberInfo()
-      => GetMethodInfo();
+      => MethodInfo;
 
-    internal override MethodBase GetMethodBase()
-        => GetMethodInfo();
+    public override MethodBase GetMethodBase()
+        => MethodInfo;
 
     internal MethodData MakeGenericMethodData(TypeList typeDataArguments)
     {
         Type[] typeArguments = typeDataArguments.Select(t => t.UnwrapType()).ToArray();
-        MethodInfo genericMethodInfo = GetMethodInfo().MakeGenericMethod(typeArguments);
+        MethodInfo genericMethodInfo = MethodInfo.MakeGenericMethod(typeArguments);
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
     }
 
     internal MethodData MakeGenericMethodData(params Type[] typeArguments)
     {
-        MethodInfo genericMethodInfo = GetMethodInfo().MakeGenericMethod(typeArguments);
+        MethodInfo genericMethodInfo = MethodInfo.MakeGenericMethod(typeArguments);
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
     }
 
     internal MethodInfo MakeGenericMethodInfo(TypeList typeArguments)
-      => GetMethodInfo().MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
+      => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
 
     internal MethodInfo MakeGenericMethodInfo(params TypeData[] typeArguments)
-      => GetMethodInfo().MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
+      => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
 
     internal MethodInfo MakeGenericMethodInfo(params Type[] typeArguments)
-      => GetMethodInfo().MakeGenericMethod(typeArguments);
+      => MethodInfo.MakeGenericMethod(typeArguments);
 
     /// <summary>
     /// Invokes the represented method on the specified target object using the provided arguments.
@@ -902,7 +905,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             {
                 if (IsGenericMethod && !IsGenericMethodDefinition)
                 {
-                    MethodInfo genericMethodDefinition = GetMethodInfo().GetGenericMethodDefinition();
+                    MethodInfo genericMethodDefinition = MethodInfo.GetGenericMethodDefinition();
                     var genericMethodDefinitionData = genericMethodDefinition.ToMethodData();
                     _basicMethodFingerprint = genericMethodDefinitionData.BasicMethodFingerprint;
                 }
@@ -931,7 +934,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             }
             else
             {
-                MethodInfo genericMethodDefinitionMethodInfo = GetMethodInfo().GetGenericMethodDefinition();
+                MethodInfo genericMethodDefinitionMethodInfo = MethodInfo.GetGenericMethodDefinition();
                 _genericMethodDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodDefinitionMethodInfo);
             }
 
@@ -948,66 +951,46 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     public override bool HasParamsParameter
       => _hasParamsParameter ??= Parameters.HasItems && Parameters[^1].IsParams;
 
-    public override bool IsExplicitInterfaceImplementation { get; }
-
-    private static bool TryGetExplicitInterfaceImplementationInfo(MethodData methodData, out TypeData declaringInterfaceTypeData, out TypeData implementingTypeData, out MethodData? interfaceDeclaration)
+    public override bool IsExplicitInterfaceImplementation
     {
-        TypeData declaringTypeData = methodData.DeclaringTypeData!;
-        if (declaringTypeData.IsInterface)
+        get
         {
-            interfaceDeclaration = methodData;
-            TypeData interfaceTypeData = methodData.DeclaringTypeData;
-            Type interfaceType = methodData.DeclaringTypeData.UnwrapType();
-
-            // If the declaring type is an interface, check if the method is declared on that interface.
-            // This covers the case of explicit interface implementations declared directly on interfaces.
-            InterfaceMapping interfaceMapping = interfaceType.GetInterfaceMap(interfaceType);
-            for (int i = 0; i < interfaceMapping.TargetMethods.Length; i++)
+            if (_isExplicitInterfaceImplementation is null)
             {
-                var implementationMethodData = interfaceMapping.TargetMethods[i].ToMethodData();
-                if (implementationMethodData.EqualsBySignature(interfaceDeclaration))
-                {
-                    // The method is an explicit interface implementation declared directly on the interface.
-                    declaringInterfaceTypeData = interfaceTypeData;
-                    implementingTypeData = implementationMethodData.DeclaringTypeData;
-                    interfaceDeclaration = implementationMethodData;
-
-                    return true;
-                }
+                InitializeDeclaringTypeAndExplicitImplementationContext(this);
             }
 
-            // If the declaring type is an interface, we must continue to check all inherited interfaces for explicit interface implementations declared on those interfaces.
+            return _isExplicitInterfaceImplementation!.Value;
         }
-
-        TypeList implementedInterfaces = declaringTypeData.InterfacesData;
-        foreach (Type interfaceType in implementedInterfaces)
-        {
-            InterfaceMapping interfaceMapping = declaringType.GetInterfaceMap(interfaceType);
-            for (int i = 0; i < interfaceMapping.TargetMethods.Length; i++)
-            {
-                if (interfaceMapping.TargetMethods[i] == methodInfoHandle)
-                {
-                    // The method is an explicit interface implementation
-                    declaringInterfaceTypeData = interfaceType;
-                    implementingTypeData = declaringType;
-                    declaredInterfaceMethodInfo = interfaceMapping.InterfaceMethods[i];
-                    interfaceDeclaration = null;
-                    return true;
-                }
-            }
-        }
-
-        declaringInterfaceTypeData = null!;
-        declaredInterfaceMethodInfo = null!;
-        implementingTypeData = null!;
-        interfaceDeclaration = null;
-        return false;
     }
 
     /// <inheritdoc/>
-    internal override RuntimeTypeHandle DeclaringTypeHandle { get; }
+    public override RuntimeTypeHandle DeclaringTypeHandle
+    {
+        get
+        {
+            if (_declaringTypeHandle is null)
+            {
+                InitializeDeclaringTypeAndExplicitImplementationContext(this);
+            }
+
+            return _declaringTypeHandle!.Value;
+        }
+    }
+
     /// <inheritdoc/>
-    internal override RuntimeTypeHandle ImplementingTypeHandle { get; }
+    public override RuntimeTypeHandle ImplementingTypeHandle
+    {
+        get
+        {
+            if (_implementingTypeHandle is null)
+            {
+                InitializeDeclaringTypeAndExplicitImplementationContext(this);
+            }
+
+            return _implementingTypeHandle!.Value;
+        }
+    }
 
     /// <summary>
     /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
@@ -1015,7 +998,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// </summary>
     /// <value>Returns <see langword="true"/> if the method is a property set method; otherwise, <see langword="false"/>.<para/>
     /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property setters.</value>
-    internal bool IsPropertySetMethod
+    public bool IsPropertySetMethod
         => _isPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: true);
 
     /// <summary>
@@ -1024,7 +1007,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// </summary>
     /// <value>Returns <see langword="true"/> if the method is a property get method; otherwise, <see langword="false"/>.<para/>
     /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property getters.</value>
-    internal bool IsPropertyGetMethod
+    public bool IsPropertyGetMethod
         => _isPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: false);
 
     /// <summary>
@@ -1034,7 +1017,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// </summary>
     /// <value>Returns <see langword="true"/> if the method is an indexer property set method; otherwise, <see langword="false"/>.<para/>
     /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property setters.</value>
-    internal bool IsIndexerPropertySetMethod
+    public bool IsIndexerPropertySetMethod
         => _isIndexerPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: true);
 
     /// <summary>
@@ -1042,42 +1025,42 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// </summary>
     /// <value>Returns <see langword="true"/> if the method is an indexer property get method; otherwise, <see langword="false"/>.<para/>
     /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property getters.</value>
-    internal bool IsIndexerPropertyGetMethod
+    public bool IsIndexerPropertyGetMethod
         => _isIndexerPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: false);
 
     /// <summary>
     /// Gets a value indicating whether the method is a property (non-indexer and indexer) accessor method (get or set).<br/>
     /// </summary>
     /// <value>Returns <see langword="true"/> if the method is a property accessor method; otherwise, <see langword="false"/>.<para/>
-    internal bool IsPropertyAccessorMethod
+    public bool IsPropertyAccessorMethod
         => IsPropertyGetMethod || IsPropertySetMethod || IsIndexerPropertyGetMethod || IsIndexerPropertySetMethod;
 
-    internal bool IsDelegateInvokeMethod
+    public bool IsDelegateInvokeMethod
         => _isDelegateInvokeMethod ??= MethodData.IsDelegateInvoke(this);
 
-    internal bool IsDelegateBeginInvokeMethod
+    public bool IsDelegateBeginInvokeMethod
         => _isDelegateBeginInvokeMethod ??= MethodData.IsDelegateBeginInvoke(this);
 
-    internal bool IsDelegateEndInvokeMethod
+    public bool IsDelegateEndInvokeMethod
         => _isDelegateEndInvokeMethod ??= MethodData.IsDelegateEndInvoke(this);
 
-    internal bool IsDelegateMethod
+    public bool IsDelegateMethod
         => IsDelegateInvokeMethod || IsDelegateBeginInvokeMethod || IsDelegateEndInvokeMethod;
 
-    internal bool IsEventAddMethod
+    public bool IsEventAddMethod
         => _isEventAddMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: true);
 
-    internal bool IsEventRemoveMethod
+    public bool IsEventRemoveMethod
         => _isEventRemoveMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: false);
 
-    internal bool IsEventAccessorMethod
+    public bool IsEventAccessorMethod
         => _isEventAccessorMethod ??= IsEventAddMethod || IsEventRemoveMethod;
 
     /// <summary>
     /// Gets a value indicating whether the method is an accessor method (property or event).<br/>
     /// This value exclusively describes accessor methods and therefore also returns <see langword="false"/> for non-accessor methods.
     /// </summary>
-    internal bool IsAccessorMethod
+    public bool IsAccessorMethod
         => IsPropertyAccessorMethod || IsEventAccessorMethod;
 
     /// <summary>
@@ -1088,34 +1071,34 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// method is an accessor before accessing this property.</remarks>
     /// <exception cref="InvalidOperationException">Thrown if the current method is not an accessor method.</exception>
     /// <value>The <see cref="PropertyData"/> or <see cref="EventData"/> representing the property or event accessed by this accessor method.</value>
-    internal MemberData AccessedMember
+    public MemberData AccessedMember
         => IsAccessorMethod
             ? _accessedMember! // The earlier call to MethodData.IsAccessorMethod ensured that _accessedMember is set.
             : throw new InvalidOperationException($"The current method is not an accessor. Call {nameof(MethodData.IsAccessorMethod)} before accessing this property to avoid this exception.");
 
-    internal bool IsOperatorOverload
+    public bool IsOperatorOverload
         => _isOperatorOverload ??= MethodData.IsOperator(this);
 
-    internal bool IsVoidMethod
+    public bool IsVoidMethod
       => _isVoidMethod ??= ReturnTypeData.UnwrapType() == typeof(void);
 
-    internal TypeList GenericMethodParameters
+    public TypeList GenericMethodParameters
         => _genericMethodArguments ??= TypeListBuilder.CreateGenericTypeArgumentList(this);
 
-    internal override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
+    public override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
       ? (_accessModifier = MethodData.GetAccessModifier(this))
       : _accessModifier;
 
-    internal bool IsExtensionMethod
+    public bool IsExtensionMethod
       => _isExtensionMethod ??= MethodData.IsMethodExtensionMethod(this);
 
-    internal bool IsAsync
+    public bool IsAsync
       => _isAsync ??= IsMarkedAsync(this);
 
-    internal bool IsAwaitable
+    public bool IsAwaitable
       => _isAwaitable ??= ReturnTypeData.IsAwaitable;
 
-    internal bool IsAwaitableTask
+    public bool IsAwaitableTask
     {
         get
         {
@@ -1138,7 +1121,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    internal bool IsAwaitableValueTask
+    public bool IsAwaitableValueTask
     {
         get
         {
@@ -1161,7 +1144,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    internal bool IsAwaitableGenericValueTask
+    public bool IsAwaitableGenericValueTask
     {
         get
         {
@@ -1184,7 +1167,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    internal bool IsAwaitableGenericTask
+    public bool IsAwaitableGenericTask
     {
         get
         {
@@ -1207,74 +1190,74 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    internal bool IsOverride
+    public bool IsOverride
       => _isOverride ??= MethodData.IsMethodOverride(this);
 
-    internal bool IsReturnValueReadOnly
-      => _isReturnValueReadOnly ??= GetMethodInfo().ReturnParameter.GetCustomAttribute<IsReadOnlyAttribute>() != null;
+    public bool IsReturnValueReadOnly
+      => _isReturnValueReadOnly ??= MethodInfo.ReturnParameter.GetCustomAttribute<IsReadOnlyAttribute>() != null;
 
-    internal bool IsReturnValueByRef
+    public bool IsReturnValueByRef
       => _isReturnValueByRef ??= ReturnTypeData.IsByRef;
 
-    internal override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
+    public override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
       ? (_symbolAttributes = MethodData.GetAttributes(this))
       : _symbolAttributes;
 
-    internal override SymbolComponentInfo SymbolComponentInfo
+    public override SymbolComponentInfo SymbolComponentInfo
       => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
-    internal override string Signature
+    public override string Signature
       => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    internal override string ShortSignature
+    public override string ShortSignature
       => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
 
-    internal override string ShortCompactSignature
+    public override string ShortCompactSignature
       => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
-    internal override string FullyQualifiedSignature
+    public override string FullyQualifiedSignature
       => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    internal override string FullyQualifiedRuntimeSignature
+    public override string FullyQualifiedRuntimeSignature
       => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    internal override string RuntimeSignature
+    public override string RuntimeSignature
       => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    internal override string RuntimeShortSignature
+    public override string RuntimeShortSignature
       => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
 
-    internal override string RuntimeShortCompactSignature
+    public override string RuntimeShortCompactSignature
       => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
-    internal override string DisplayName
+    public override string DisplayName
       => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    internal override string ShortDisplayName
+    public override string ShortDisplayName
       => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
-    internal override string FullyQualifiedDisplayName
+    public override string FullyQualifiedDisplayName
       => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
-    internal override string AssemblyName
+    public override string AssemblyName
       => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
-    internal TypeData ReturnTypeData
-      => _returnTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetMethodInfo().ReturnType);
+    public TypeData ReturnTypeData
+      => _returnTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(MethodInfo.ReturnType);
 
-    internal bool IsGenericMethod
-      => _isGenericMethod ??= GetMethodInfo().IsGenericMethod;
+    public bool IsGenericMethod
+      => _isGenericMethod ??= MethodInfo.IsGenericMethod;
 
-    internal bool IsGenericMethodDefinition
-      => _isGenericTypeMethod ??= GetMethodInfo().IsGenericMethodDefinition;
+    public bool IsGenericMethodDefinition
+      => _isGenericTypeMethod ??= MethodInfo.IsGenericMethodDefinition;
 
-    internal bool ContainsGenericParameters
-      => _containsGenericParameters ??= GetMethodInfo().ContainsGenericParameters;
+    public bool ContainsGenericParameters
+      => _containsGenericParameters ??= MethodInfo.ContainsGenericParameters;
 
-    internal bool IsOpenGenericMethodOrGenericMethodDefinition
+    public bool IsOpenGenericMethodOrGenericMethodDefinition
       => (IsGenericMethod && ContainsGenericParameters) || IsGenericMethodDefinition;
 
-    internal override ParameterizedSymbolKind ParameterizedSymbolKind
+    public override ParameterizedSymbolKind ParameterizedSymbolKind
       => _parameterizedSymbolKind ??= IsPropertySetMethod
         ? ParameterizedSymbolKind.MemberNormalPropertySet
         : IsIndexerPropertyGetMethod
@@ -1299,7 +1282,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             return false;
         }
 
-        MethodInfo methodInfo = methodData.GetMethodInfo();
+        MethodInfo methodInfo = methodData.MethodInfo;
         Attribute methodExtensionAttribute = methodInfo.GetCustomAttribute(ReflectionHelperExtensions.ExtensionAttributeType, false);
         if (methodExtensionAttribute == null)
         {
@@ -1317,7 +1300,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     }
 
     private static bool IsMarkedAsync(MethodData methodData)
-      => methodData.GetMethodInfo().GetCustomAttribute(MethodData.s_asyncStateMachineAttributeType) != null;
+      => methodData.MethodInfo.GetCustomAttribute(MethodData.s_asyncStateMachineAttributeType) != null;
 
     private static bool IsPropertyAccessor(MethodData methodData, bool isIndexer, bool isSetter)
     {
@@ -1479,6 +1462,87 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             && methodData.DeclaringTypeData.IsDelegate
             && methodData.Name.Equals("EndInvoke", StringComparison.Ordinal);
 
+    private static void InitializeDeclaringTypeAndExplicitImplementationContext(MethodData methodData)
+    {
+        if (TryGetExplicitInterfaceImplementationInfo(methodData, out TypeData declaringInterfaceTypeData, out TypeData implementingTypeData, out _))
+        {
+            methodData._isExplicitInterfaceImplementation = true;
+            methodData._declaringTypeHandle = declaringInterfaceTypeData.Handle;
+            methodData._implementingTypeHandle = implementingTypeData.Handle;
+        }
+        else
+        {
+            methodData._isExplicitInterfaceImplementation = false;
+            methodData._declaringTypeHandle = methodData.MethodInfo.DeclaringType?.TypeHandle ?? throw new InvalidOperationException("Declaring type handle is not available.");
+            methodData._implementingTypeHandle = methodData._declaringTypeHandle;
+        }
+    }
+
+    private static bool TryGetExplicitInterfaceImplementationInfo(MethodData methodData, out TypeData declaringInterfaceTypeData, out TypeData implementingTypeData, out MethodData? interfaceDeclaration)
+    {
+        TypeData declaringTypeData = methodData.DeclaringTypeData!;
+        if (declaringTypeData.IsInterface)
+        {
+            // Explicit interface implementations cannot be declared directly on interfaces since they require an implementing type to implement the interface method explicitly.
+            // Therefore, if the declaring type is an interface, we can directly return false without further checks.
+
+            declaringInterfaceTypeData = declaringTypeData;
+            implementingTypeData = null!;
+            interfaceDeclaration = null;
+
+            return false;
+            //interfaceDeclaration = methodData;
+            //TypeData interfaceTypeData = methodData.DeclaringTypeData;
+            //Type interfaceType = methodData.DeclaringTypeData.UnwrapType();
+
+            //// If the declaring type is an interface, check if the method is declared on that interface.
+            //// This covers the case of explicit interface implementations declared directly on interfaces.
+            //InterfaceMapping interfaceMapping = interfaceType.GetInterfaceMap(interfaceType);
+            //for (int i = 0; i < interfaceMapping.TargetMethods.Length; i++)
+            //{
+            //    var implementationMethodData = interfaceMapping.TargetMethods[i].ToMethodData();
+            //    if (implementationMethodData.EqualsBySignature(interfaceDeclaration))
+            //    {
+            //        // The method is an explicit interface implementation declared directly on the interface.
+            //        declaringInterfaceTypeData = interfaceTypeData;
+            //        implementingTypeData = implementationMethodData.DeclaringTypeData;
+
+            //        return true;
+            //    }
+            //}
+
+            //// If the declaring type is an interface, we must continue to check all inherited interfaces for explicit interface implementations declared on those interfaces.
+        }
+
+        TypeList implementedInterfaces = declaringTypeData.InterfacesData;
+        foreach (TypeData interfaceTypeData in implementedInterfaces)
+        {
+            Type interfaceType = interfaceTypeData.UnwrapType();
+            InterfaceMapping interfaceMapping = declaringTypeData.UnwrapType().GetInterfaceMap(interfaceType);
+            for (int i = 0; i < interfaceMapping.TargetMethods.Length; i++)
+            {
+                var implementationMethodData = interfaceMapping.TargetMethods[i].ToMethodData();
+                bool isExplicitInterfaceImplementationCandidate = !implementationMethodData.IsPublic;
+                if (isExplicitInterfaceImplementationCandidate
+                    && implementationMethodData.EqualsBySignature(methodData))
+                {
+                    // The method is an explicit interface implementation
+                    declaringInterfaceTypeData = interfaceTypeData;
+                    implementingTypeData = implementationMethodData.DeclaringTypeData;
+                    interfaceDeclaration = interfaceMapping.InterfaceMethods[i].ToMethodData();
+
+                    return true;
+                }
+            }
+        }
+
+        declaringInterfaceTypeData = null!;
+        implementingTypeData = null!;
+        interfaceDeclaration = null;
+
+        return false;
+    }
+
     /// <summary>
     /// Determines the set of symbol attributes for the specified closedGenericMethoMethodInfo based on its metadata and characteristics.
     /// </summary>
@@ -1524,7 +1588,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
 
     private static bool IsMethodOverride(MethodData methodData)
     {
-        MethodInfo methodInfo = methodData.GetMethodInfo();
+        MethodInfo methodInfo = methodData.MethodInfo;
         return !methodInfo.Equals(methodInfo.GetBaseDefinition());
     }
 

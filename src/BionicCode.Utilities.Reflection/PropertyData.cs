@@ -1100,7 +1100,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     {
         if (propertyData.CanWrite)
         {
-            Type[] requiredModifiers = propertyData.PropertySetMethodData!.GetMethodInfo().ReturnParameter.GetRequiredCustomModifiers();
+            Type[] requiredModifiers = propertyData.PropertySetMethodData!.MethodInfo.ReturnParameter.GetRequiredCustomModifiers();
             if (requiredModifiers.Length > 0)
             {
                 return requiredModifiers.FirstOrDefault(type => type == typeof(IsExternalInit)) != default;

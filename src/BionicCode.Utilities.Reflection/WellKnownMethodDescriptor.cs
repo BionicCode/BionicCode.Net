@@ -24,10 +24,13 @@ internal readonly struct WellKnownMethodDescriptor : IEquatable<WellKnownMethodD
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
 
+        MethodInfo = methodInfo;
         MethodName = methodInfo.Name;
         MethodHandle = methodInfo.MethodHandle;
         IsAnonymous = false;
     }
+
+    public MethodInfo MethodInfo { get; }
 
     /// <summary>
     /// Returns the runtime method handle of the well-known method.

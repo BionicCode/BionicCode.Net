@@ -92,7 +92,7 @@
 
             return !genericMethodData.IsGenericMethod
                 ? TypeList.Empty
-                : CreateGenericTypeArgumentListInternal(genericMethodData.GetMethodInfo());
+                : CreateGenericTypeArgumentListInternal(genericMethodData.MethodInfo);
         }
 
         internal static TypeList CreateGenericTypeArgumentConstraintList(Type genericType)

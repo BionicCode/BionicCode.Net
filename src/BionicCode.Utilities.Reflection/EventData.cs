@@ -38,6 +38,7 @@ internal sealed class EventData : MemberData
     private readonly WellKnownEventDescriptor _descriptor;
     private RuntimeTypeHandle? _declaringTypeHandle;
     private RuntimeTypeHandle? _implementingTypeHandle;
+    private bool? _isExplicitInterfaceImplementation;
 
     internal EventData(SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.EventDescriptor.EventName, SymbolKind.MemberEvent, symbolInfoDataCacheKey)
@@ -177,7 +178,6 @@ internal sealed class EventData : MemberData
         private set => _eventInfo = value;
     }
 
-    private bool? _isExplicitInterfaceImplementation;
     /// <inheritdoc/>
     internal override bool IsExplicitInterfaceImplementation
         => _isExplicitInterfaceImplementation ??= IsExplicitImplementation(this);
