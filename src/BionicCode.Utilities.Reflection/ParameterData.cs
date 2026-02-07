@@ -111,6 +111,9 @@ internal sealed class ParameterData : SymbolInfoData
     internal bool IsGenericMethodParameter
       => isGenericMethodParameter ??= ParameterTypeData.IsGenericMethodParameter;
 
+    /// <summary>
+    /// The modifier that indicates how the parameter is passed (e.g., by value, by reference, as an input parameter, or as an output parameter).
+    /// </summary>
     internal ParameterKind ParameterKind
       => parameterKind ??= IsIn
         ? ParameterKind.In
@@ -193,7 +196,7 @@ internal sealed class ParameterData : SymbolInfoData
       => declaringTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType());
 
     internal override IList<CustomAttributeData> AttributeData
-      => attributeData ??= new List<CustomAttributeData>(GetParameterInfo().GetCustomAttributesData());
+      => attributeData ??= [.. GetParameterInfo().GetCustomAttributesData()];
 
     /// <summary>
     /// Gets a value indicating whether the parameter is passed by reference.

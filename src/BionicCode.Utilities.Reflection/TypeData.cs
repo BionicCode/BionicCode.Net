@@ -95,8 +95,8 @@ internal class TypeData : SymbolInfoData
 
         _descriptor = symbolInfoDataCacheKey.TypeDescriptor;
         Handle = _descriptor.TypeHandle;
-        Namespace = _descriptor.TypeNamespace;
-        _memberTable = new ConcurrentHashSet<SymbolReflectionInfoCacheKey>();
+        _namespace = _descriptor.TypeNamespace;
+        _memberTable = [];
         _memberTableStateFlagTable = new ConcurrentDictionary<SymbolKind, bool>();
     }
 
@@ -462,7 +462,7 @@ internal class TypeData : SymbolInfoData
                     continue;
                 }
 
-                TMemberData memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
+                var memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
                 addMemberToTypeDataMemberList.Invoke(memberDataFromReflectionCache);
                 SymbolReflectionInfoCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
                 if (_memberTable.TryAdd(cacheKey))
@@ -481,7 +481,7 @@ internal class TypeData : SymbolInfoData
             for (; memberIndex < members.Length; memberIndex++)
             {
                 MemberInfo memberInfo = members[memberIndex];
-                TMemberData memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
+                var memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
                 addMemberToTypeDataMemberList.Invoke(memberDataFromReflectionCache);
                 SymbolReflectionInfoCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
                 _ = _memberTable.TryAdd(cacheKey);

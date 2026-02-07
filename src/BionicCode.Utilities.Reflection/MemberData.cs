@@ -43,17 +43,17 @@ internal abstract class MemberData : SymbolInfoData
         return visibilityMask;
     }
 
-    internal TypeData DeclaringTypeData
+    public TypeData DeclaringTypeData
       => _declaringTypeData ??= Type.GetTypeFromHandle(DeclaringTypeHandle) is Type declaringType
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType)
             : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(DeclaringTypeHandle)}' is not valid.");
 
-    internal TypeData ImplementingTypeData
+    public TypeData ImplementingTypeData
       => _implementingTypeData ??= Type.GetTypeFromHandle(ImplementingTypeHandle) is Type implementingType
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(implementingType)
             : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(ImplementingTypeHandle)}' is not valid.");
 
-    internal override string Namespace
+    public override string Namespace
         => _namespace ??= DeclaringTypeData!.Namespace;
 
     /// <summary>
@@ -64,8 +64,8 @@ internal abstract class MemberData : SymbolInfoData
     /// The runtime type handle of the type that declares the member.
     /// <para/> For an explicit interface implementation, this would be the runtime type handle of the interface that declares the member.
     /// </value>
-    internal abstract RuntimeTypeHandle DeclaringTypeHandle { get; }
-    internal abstract bool IsExplicitInterfaceImplementation { get; }
+    public abstract RuntimeTypeHandle DeclaringTypeHandle { get; }
+    public abstract bool IsExplicitInterfaceImplementation { get; }
 
     /// <summary>
     /// The implementing type handle of the member. This is the runtime type handle of the type that implements the member. For example, for a method declared in a class, this would be the runtime type handle of that class.
@@ -79,26 +79,26 @@ internal abstract class MemberData : SymbolInfoData
     /// <para/> For an explicit interface implementation, this would be the runtime type handle of the interface that implements the member.
     /// <para/> For a non-explicit interface implementation, this would be the same as the declaring type handle.
     /// </value>
-    internal abstract RuntimeTypeHandle ImplementingTypeHandle { get; }
+    public abstract RuntimeTypeHandle ImplementingTypeHandle { get; }
 
-    internal abstract bool IsStatic { get; }
-    internal abstract bool IsPublic { get; }
-    internal abstract bool IsPrivate { get; }
+    public abstract bool IsStatic { get; }
+    public abstract bool IsPublic { get; }
+    public abstract bool IsPrivate { get; }
     /// <summary>
     /// Gets a value indicating whether the member has internal accessibility within its assembly.
     /// </summary>
-    internal abstract bool IsAssembly { get; }
+    public abstract bool IsAssembly { get; }
     /// <summary>
     /// Gets a value indicating whether the member is protected and thus accessible only within its own class or by
     /// derived class instances.
     /// </summary>
-    internal abstract bool IsFamily { get; }
-    internal abstract bool IsFamilyOrAssembly { get; }
-    internal abstract bool IsFamilyAndAssembly { get; }
-    internal abstract AccessModifier AccessModifier { get; }
-    internal BindingFlags BindingFlagsVisibilityMask => _bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
+    public abstract bool IsFamily { get; }
+    public abstract bool IsFamilyOrAssembly { get; }
+    public abstract bool IsFamilyAndAssembly { get; }
+    public abstract AccessModifier AccessModifier { get; }
+    public BindingFlags BindingFlagsVisibilityMask => _bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
 
     /// <inheritdoc/>
-    internal override IList<CustomAttributeData> AttributeData
+    public override IList<CustomAttributeData> AttributeData
       => _attributeData ??= new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData());
 }

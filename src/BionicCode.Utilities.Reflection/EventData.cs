@@ -36,6 +36,8 @@ internal sealed class EventData : MemberData
     private SymbolComponentInfo? _symbolComponentInfo;
     private EventInfo _eventInfo;
     private readonly WellKnownEventDescriptor _descriptor;
+    private RuntimeTypeHandle? _declaringTypeHandle;
+    private RuntimeTypeHandle? _implementingTypeHandle;
 
     internal EventData(SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.EventDescriptor.EventName, SymbolKind.MemberEvent, symbolInfoDataCacheKey)
@@ -175,13 +177,22 @@ internal sealed class EventData : MemberData
         private set => _eventInfo = value;
     }
 
+    private bool? _isExplicitInterfaceImplementation;
     /// <inheritdoc/>
-    internal override bool IsExplicitInterfaceImplementation { get; }
+    internal override bool IsExplicitInterfaceImplementation
+        => _isExplicitInterfaceImplementation ??= IsExplicitImplementation(this);
 
     /// <inheritdoc/>
-    internal override RuntimeTypeHandle DeclaringTypeHandle { get; }
+    internal override RuntimeTypeHandle DeclaringTypeHandle
+        => _declaringTypeHandle ??= CanAdd
+            ? AddMethodData.DeclaringTypeHandle
+            : RemoveMethodData.DeclaringTypeHandle;
+
     /// <inheritdoc/>
-    internal override RuntimeTypeHandle ImplementingTypeHandle { get; }
+    internal override RuntimeTypeHandle ImplementingTypeHandle
+        => _implementingTypeHandle ??= CanAdd
+            ? AddMethodData.ImplementingTypeHandle
+            : RemoveMethodData.ImplementingTypeHandle;
 
     /// <inheritdoc/>
     internal override bool IsStatic
@@ -276,6 +287,11 @@ internal sealed class EventData : MemberData
     /// <inheritdoc/>
     internal override bool IsFamilyAndAssembly
         => _isFamilyAndAssembly ??= AccessModifier == AccessModifier.PrivateProtected;
+
+    private static bool IsExplicitImplementation(EventData eventData)
+        => eventData.CanAdd
+            ? eventData.AddMethodData.IsExplicitInterfaceImplementation
+            : eventData.RemoveMethodData.IsExplicitInterfaceImplementation;
 
     /// <summary>
     /// Determines the set of symbol attributes for the specified event based on its add method characteristics.
