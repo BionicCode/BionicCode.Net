@@ -1491,27 +1491,6 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             interfaceDeclaration = null;
 
             return false;
-            //interfaceDeclaration = methodData;
-            //TypeData interfaceTypeData = methodData.DeclaringTypeData;
-            //Type interfaceType = methodData.DeclaringTypeData.UnwrapType();
-
-            //// If the declaring type is an interface, check if the method is declared on that interface.
-            //// This covers the case of explicit interface implementations declared directly on interfaces.
-            //InterfaceMapping interfaceMapping = interfaceType.GetInterfaceMap(interfaceType);
-            //for (int i = 0; i < interfaceMapping.TargetMethods.Length; i++)
-            //{
-            //    var implementationMethodData = interfaceMapping.TargetMethods[i].ToMethodData();
-            //    if (implementationMethodData.EqualsBySignature(interfaceDeclaration))
-            //    {
-            //        // The method is an explicit interface implementation declared directly on the interface.
-            //        declaringInterfaceTypeData = interfaceTypeData;
-            //        implementingTypeData = implementationMethodData.DeclaringTypeData;
-
-            //        return true;
-            //    }
-            //}
-
-            //// If the declaring type is an interface, we must continue to check all inherited interfaces for explicit interface implementations declared on those interfaces.
         }
 
         TypeList implementedInterfaces = declaringTypeData.InterfacesData;
