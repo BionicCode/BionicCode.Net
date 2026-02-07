@@ -126,7 +126,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
     /// parameters, or if the method itself is a generic method definition or contains unassigned generic
     /// parameters.</exception>
-    /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
+    /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
     internal object? Invoke(object? target, params object?[]? args)
         => Invoke(target, args.AsSpan());
@@ -141,7 +141,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
     /// parameters, or if the method itself is a generic method definition or contains unassigned generic
     /// parameters.</exception>
-    /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
+    /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, ReadOnlySpan{object?})"/> overload and provide the generic type parameter arguments.</remarks>
     internal object? Invoke(object? target, ReadOnlySpan<object?> args)
     {
@@ -167,7 +167,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
     /// parameters, or if the method itself is a generic method definition or contains unassigned generic
     /// parameters.</exception>
-    /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
+    /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
     internal void Invoke<TTarget>(TTarget target, params object?[]? args)
         => Invoke<TTarget>(target, args.AsSpan());
@@ -212,7 +212,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
     /// parameters, or if the method itself is a generic method definition or contains unassigned generic
     /// parameters.</exception>
-    /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
+    /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
     internal TResult Invoke<TTarget, TResult>(TTarget target, params object?[]? args)
         => Invoke<TTarget, TResult>(target, args.AsSpan());
