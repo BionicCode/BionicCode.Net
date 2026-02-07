@@ -1,0 +1,34 @@
+﻿namespace BionicCode.Utilities.Net.Profiling
+{
+    using System.Collections.Generic;
+
+    public class ProfilerBatchResultGroupCollection : List<ProfilerBatchResultGroup>
+    {
+        public ProfilerBatchResultGroupCollection()
+        {
+        }
+
+        internal ProfilerBatchResultGroupCollection(TypeData profiledTypeData) => ProfiledTypeData = profiledTypeData;
+
+        internal ProfilerBatchResultGroupCollection(IEnumerable<ProfilerBatchResultGroup> collection, TypeData profiledTypeData) : base(collection) => ProfiledTypeData = profiledTypeData;
+
+        internal ProfilerBatchResultGroupCollection(int capacity, TypeData profiledTypeData) : base(capacity) => ProfiledTypeData = profiledTypeData;
+
+        internal TypeData ProfiledTypeData { get; }
+    }
+
+    public class ProfiledTypeResultCollection : List<ProfilerBatchResultGroupCollection>
+    {
+        public ProfiledTypeResultCollection()
+        {
+        }
+
+        public ProfiledTypeResultCollection(IEnumerable<ProfilerBatchResultGroupCollection> collection) : base(collection)
+        {
+        }
+
+        public ProfiledTypeResultCollection(int capacity) : base(capacity)
+        {
+        }
+    }
+}

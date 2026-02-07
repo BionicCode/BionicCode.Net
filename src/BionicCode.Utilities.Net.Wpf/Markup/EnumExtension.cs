@@ -1,0 +1,51 @@
+﻿
+namespace BionicCode.Utilities.Net
+{
+    using System;
+#if !NETSTANDARD
+    using System.Windows.Markup;
+    /// <summary>
+    /// XAML extension to return the values of an enumeration.
+    /// </summary>
+    /// <example>Provide the enum type via constructor or by setting the <see cref="EnumType"/> property:
+    /// <code><ComboBox ItemsSource="{Enum {x:Types MyEnum}}" /></code>
+    /// <code><ComboBox ItemsSource="{Enum EnumType={x:Types MyEnum}}" /></code>
+    /// </example>
+    public class EnumExtension : MarkupExtension
+    {
+        /// <summary>
+        /// The enum to enumerate.
+        /// </summary>
+        /// <value>The type of the enum to enumerate.</value>
+        public Type EnumType { get; set; }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public EnumExtension()
+        {
+        }
+
+        /// <summary>
+        /// MemberConstructor to initialize the <see cref="EnumType"/> property.
+        /// </summary>
+        /// <param name="enumType"></param>
+        public EnumExtension(Type enumType) => EnumType = enumType;
+
+        #region Overrides of MarkupExtension
+
+        /// <inheritdoc />
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            if (EnumType == null)
+            {
+                throw new ArgumentException("The property 'EnumType' of markup extension 'EnumExtension' must be set.");
+            }
+
+            return Enum.GetNames(EnumType);
+        }
+
+        #endregion
+    }
+#endif
+}
