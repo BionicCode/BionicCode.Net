@@ -18,24 +18,24 @@ using BionicCode.Utilities.Net.Reflection;
 /// Instances of this class are typically created based on a ParameterInfo object from the <see cref="SymbolReflectionInfoCache"/> API.</remarks>
 internal sealed class ParameterData : SymbolInfoData
 {
-    private SymbolAttributes symbolAttributes;
-    private IList<CustomAttributeData>? attributeData;
-    private bool? isRef;
-    private bool? isRefReadOnly;
-    private bool? isByRef;
-    private bool? isIn;
-    private bool? isOut;
-    private bool? isOptional;
-    private bool? isParams;
-    private TypeData? parameterTypeData;
-    private TypeData? declaringTypeData;
-    private ParameterizedMemberData? member;
-    private string? assemblyName;
-    private SymbolComponentInfo? symbolComponentInfo;
+    private SymbolAttributes _symbolAttributes;
+    private IList<CustomAttributeData>? _attributeData;
+    private bool? _isRef;
+    private bool? _isRefReadOnly;
+    private bool? _isByRef;
+    private bool? _isIn;
+    private bool? _isOut;
+    private bool? _isOptional;
+    private bool? _isParams;
+    private TypeData? _parameterTypeData;
+    private TypeData? _declaringTypeData;
+    private ParameterizedMemberData? _member;
+    private string? _assemblyName;
+    private SymbolComponentInfo? _symbolComponentInfo;
     private object? _defaultValue;
-    private ParameterKind? parameterKind;
-    private bool? isGenericTypeParameter;
-    private bool? isGenericMethodParameter;
+    private ParameterKind? _parameterKind;
+    private bool? _isGenericTypeParameter;
+    private bool? _isGenericMethodParameter;
     private bool? _isIndexerPropertyParameter;
     private RuntimeTypeHandle? _declaringTypeHandle;
     private RuntimeTypeHandle? _propertyTypeHandle;
@@ -69,28 +69,28 @@ internal sealed class ParameterData : SymbolInfoData
     /// </summary>
     /// <value><see langword="true"/> if the parameter is passed by reference using the <c>ref</c> keyword; otherwise, <see langword="false"/>.</value>
     internal bool IsRef
-      => isRef ??= IsRefInternal(this);
+      => _isRef ??= IsRefInternal(this);
 
     /// <summary>
     /// Gets a value indicating whether the current instance is marked as <see langword="ref"/> <see langword="readonly"/>.
     /// </summary>
     /// <value><see langword="true"/> if the parameter is marked as <see langword="ref"/> <see langword="readonly"/>; otherwise, <see langword="false"/>.</value>
     internal bool IsRefReadOnly
-      => isRefReadOnly ??= IsRefReadOnlyInternal(this);
+      => _isRefReadOnly ??= IsRefReadOnlyInternal(this);
 
     /// <summary>
     /// Gets a value indicating whether the parameter is an input parameter (passed by  reference using the <see langword="in"/> keyword).
     /// </summary>
     /// <value><see langword="true"/> if the parameter is an input parameter; otherwise, <see langword="false"/>.</value>
     internal bool IsIn
-      => isIn ??= IsInParameter(this);
+      => _isIn ??= IsInParameter(this);
 
     /// <summary>
     /// Gets a value indicating whether the parameter is an output parameter (passed by reference using the <see langword="out"/> keyword.
     /// </summary>
     /// <value><see langword="true"/> if the parameter is an output parameter; otherwise, <see langword="false"/>.</value>
     internal bool IsOut
-      => isOut ??= IsOutParameter(this);
+      => _isOut ??= IsOutParameter(this);
 
     /// <summary>
     /// Gets a value indicating whether the parameter is optional.
@@ -99,23 +99,23 @@ internal sealed class ParameterData : SymbolInfoData
     /// <remarks>This property does not return whether the parameter is decorated with the <see cref="System.Runtime.InteropServices.OptionalAttribute"/>.
     /// It only checks whether the parameter is considered optional by the existence of a default value by reading <see cref="System.Reflection.ParameterInfo.HasDefaultValue"/>.</remarks>
     internal bool IsOptional
-      => isOptional ??= GetParameterInfo().HasDefaultValue;
+      => _isOptional ??= GetParameterInfo().HasDefaultValue;
 
     /// <summary>
     /// Gets a value indicating whether the parameter type is a generic type parameter.
     /// </summary>
     /// <value><see langword="true"/> if the parameter type is a generic type parameter; otherwise, <see langword="false"/>.</value>
     internal bool IsGenericTypeParameter
-      => isGenericTypeParameter ??= ParameterTypeData.IsGenericTypeParameter;
+      => _isGenericTypeParameter ??= ParameterTypeData.IsGenericTypeParameter;
 
     internal bool IsGenericMethodParameter
-      => isGenericMethodParameter ??= ParameterTypeData.IsGenericMethodParameter;
+      => _isGenericMethodParameter ??= ParameterTypeData.IsGenericMethodParameter;
 
     /// <summary>
     /// The modifier that indicates how the parameter is passed (e.g., by value, by reference, as an input parameter, or as an output parameter).
     /// </summary>
     internal ParameterKind ParameterKind
-      => parameterKind ??= IsIn
+      => _parameterKind ??= IsIn
         ? ParameterKind.In
         : IsOut
             ? ParameterKind.Out
@@ -146,7 +146,7 @@ internal sealed class ParameterData : SymbolInfoData
         => _position ??= GetParameterInfo().Position;
 
     internal bool IsParams
-      => isParams ??= GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null;
+      => _isParams ??= GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null;
 
     internal ParameterInfo ParameterInfo { get; }
 
@@ -170,7 +170,7 @@ internal sealed class ParameterData : SymbolInfoData
     /// If parameter association for indexer properties matters, then always obtain parameters directly from the getter or setter method (e.g. <see cref="MethodData.Parameters"/> like <c>PropertyData.PropertySetMethodData.Parameters</c>) and completely avoid <see cref="PropertyData.IndexerParameters"/> (or <see cref="PropertyInfo.GetIndexParameters"/>).</remarks>
     /// <value>The <see cref="ParameterizedMemberData"/> (which is either a <see cref="MethodData"/> or <see cref="ConstructorData"/>) that declares this parameter.</value>
     internal ParameterizedMemberData MemberData
-        => member ??= GetParameterInfo().Member switch
+        => _member ??= GetParameterInfo().Member switch
         {
             ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo),
 
@@ -190,19 +190,19 @@ internal sealed class ParameterData : SymbolInfoData
         };
 
     internal TypeData ParameterTypeData
-      => parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetParameterInfo().ParameterType);
+      => _parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetParameterInfo().ParameterType);
 
     internal TypeData DeclaringTypeData
-      => declaringTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType());
+      => _declaringTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType());
 
     internal override IList<CustomAttributeData> AttributeData
-      => attributeData ??= [.. GetParameterInfo().GetCustomAttributesData()];
+      => _attributeData ??= [.. GetParameterInfo().GetCustomAttributesData()];
 
     /// <summary>
     /// Gets a value indicating whether the parameter is passed by reference.
     /// </summary>
     internal bool IsByRef
-      => isByRef ??= ParameterTypeData.UnwrapType().IsByRef;
+      => _isByRef ??= ParameterTypeData.UnwrapType().IsByRef;
 
     internal bool IsIndexerPropertyParameter
       => _isIndexerPropertyParameter ??= MemberData is MethodData methodData && (methodData.IsIndexerPropertyGetMethod || methodData.IsIndexerPropertySetMethod);
@@ -246,12 +246,12 @@ internal sealed class ParameterData : SymbolInfoData
     internal bool IsPropertySetterParameter
       => _isPropertySetterParameter ??= MemberData is MethodData methodData && methodData.IsPropertySetMethod;
 
-    internal override SymbolAttributes SymbolAttributes => symbolAttributes is SymbolAttributes.Undefined
-      ? (symbolAttributes = ParameterData.GetAttributesInternal(this))
-      : symbolAttributes;
+    internal override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
+      ? (_symbolAttributes = ParameterData.GetAttributesInternal(this))
+      : _symbolAttributes;
 
     internal override SymbolComponentInfo SymbolComponentInfo
-      => symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+      => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
     internal override string Signature
       => Name;
@@ -287,7 +287,7 @@ internal sealed class ParameterData : SymbolInfoData
       => Name;
 
     internal override string AssemblyName
-      => assemblyName ??= MemberData.AssemblyName;
+      => _assemblyName ??= MemberData.AssemblyName;
 
     internal override string Namespace { get; }
 
