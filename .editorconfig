@@ -7,7 +7,7 @@ root = true
 #### .NET Analyzers ####
 
 # CA1051: Do not declare visible instance fields
-dotnet_diagnostic.CA1051.severity = warning
+dotnet_diagnostic.CA1051.severity = error
 dotnet_code_quality.CA1051.api_surface = all
 
 # CA1005: Avoid excessive parameters on generic types
