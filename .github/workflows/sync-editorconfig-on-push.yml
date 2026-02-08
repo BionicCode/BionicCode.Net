@@ -59,23 +59,34 @@ jobs:
           fi
 
   open-or-update-sync-pr:
-    # PR-only syncing: create/update a PR on default-branch pushes, or manual runs
-    if: >
-      github.event_name != 'pull_request' && github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout default branch
+      - name: Determine base branch
+        id: base
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "name=${{ github.head_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          fi
+  
+      - name: Checkout base branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.repository.default_branch }}
-
+          ref: ${{ steps.base.outputs.name }}
+  
       - name: Download canonical .editorconfig
         run: |
           set -euo pipefail
-          curl -fsSL "${CANONICAL_RAW_URL}" -o canonical.editorconfig
-
-      - name: Detect changes
+          curl -fsSL "https://raw.githubusercontent.com/BionicCode/bioniccode-code-style/main/.editorconfig" \
+            -o canonical.editorconfig
+  
+      - name: Apply if changed
         id: diff
+        shell: bash
         run: |
           set -euo pipefail
           if [ -f .editorconfig ] && cmp -s .editorconfig canonical.editorconfig; then
@@ -84,19 +95,24 @@ jobs:
             mv canonical.editorconfig .editorconfig
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Create or update PR
+  
+      - name: Compute sync branch name (per-base)
+        if: steps.diff.outputs.changed == 'true'
+        id: syncbranch
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ steps.base.outputs.name }}"
+          safe="$(echo "$base" | tr '/ ' '--')"
+          echo "name=chore/sync-editorconfig/$safe" >> "$GITHUB_OUTPUT"
+  
+      - name: Create or update PR into the base branch
         if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: ${{ env.SYNC_BRANCH }}
-          base: ${{ github.event.repository.default_branch }}
+          branch: ${{ steps.syncbranch.outputs.name }}
+          base: ${{ steps.base.outputs.name }}
           title: "chore: sync .editorconfig from canonical"
           commit-message: "chore(sync): update .editorconfig from canonical"
-          body: |
-            Automated sync of `.editorconfig` from the canonical repository.
-
-            Source: BionicCode/bioniccode-code-style (main)
           add-paths: |
             .editorconfig
-          labels: automation
