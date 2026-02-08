@@ -44,12 +44,12 @@ internal sealed class ParameterData : SymbolInfoData
     private bool? _isIndexerPropertyGetterParameter;
     private bool? _isPropertySetterParameter;
 
-    internal ParameterData(ParameterInfo parameterInfo, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
-        : base(parameterInfo.Name, SymbolKind.Parameter, symbolInfoDataCacheKey)
+    internal ParameterData(SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
+        : base(symbolInfoDataCacheKey.ParameterDescriptor.ParameterName, SymbolKind.Parameter, symbolInfoDataCacheKey)
     {
-        ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey);
 
-        ParameterInfo = parameterInfo;
+        ParameterInfo = symbolInfoDataCacheKey.ParameterDescriptor.ParameterInfo;
     }
 
     internal ParameterInfo GetParameterInfo()
