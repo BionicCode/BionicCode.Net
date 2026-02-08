@@ -93,12 +93,12 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
 
     public ImmutableList<ParameterInfo> AsParameterInfoList()
         => Parameters
-            .Select(parameterData => parameterData.GetParameterInfo())
+            .Select(parameterData => parameterData.ParameterInfo())
             .ToImmutableList();
 
     public ImmutableArray<ParameterInfo> AsParameterInfoArray()
         => Parameters
-            .Select(parameterData => parameterData.GetParameterInfo())
+            .Select(parameterData => parameterData.ParameterInfo())
             .ToImmutableArray();
 
     public bool TryGetParameterByName(string parameterName, out ParameterData? parameterData)

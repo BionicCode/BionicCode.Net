@@ -30,7 +30,7 @@ internal readonly struct WellKnownParameterDescriptor : IEquatable<WellKnownPara
         {
             ParameterData? disambiguatedPropertyData = SymbolReflectionInfoCache.ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(parameterInfo);
 
-            ParameterInfo = disambiguatedPropertyData.GetParameterInfo();
+            ParameterInfo = disambiguatedPropertyData.ParameterInfo();
         }
         else
         {
