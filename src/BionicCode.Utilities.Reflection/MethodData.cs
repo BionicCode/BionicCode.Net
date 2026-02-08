@@ -94,26 +94,26 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     public override MethodBase GetMethodBase()
         => MethodInfo;
 
-    internal MethodData MakeGenericMethodData(TypeList typeDataArguments)
+    public MethodData MakeGenericMethodData(TypeList typeDataArguments)
     {
         Type[] typeArguments = typeDataArguments.Select(t => t.UnwrapType()).ToArray();
         MethodInfo genericMethodInfo = MethodInfo.MakeGenericMethod(typeArguments);
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
     }
 
-    internal MethodData MakeGenericMethodData(params Type[] typeArguments)
+    public MethodData MakeGenericMethodData(params Type[] typeArguments)
     {
         MethodInfo genericMethodInfo = MethodInfo.MakeGenericMethod(typeArguments);
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
     }
 
-    internal MethodInfo MakeGenericMethodInfo(TypeList typeArguments)
+    public MethodInfo MakeGenericMethodInfo(TypeList typeArguments)
       => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
 
-    internal MethodInfo MakeGenericMethodInfo(params TypeData[] typeArguments)
+    public MethodInfo MakeGenericMethodInfo(params TypeData[] typeArguments)
       => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
 
-    internal MethodInfo MakeGenericMethodInfo(params Type[] typeArguments)
+    public MethodInfo MakeGenericMethodInfo(params Type[] typeArguments)
       => MethodInfo.MakeGenericMethod(typeArguments);
 
     /// <summary>
@@ -128,7 +128,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// parameters.</exception>
     /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
-    internal object? Invoke(object? target, params object?[]? args)
+    public object? Invoke(object? target, params object?[]? args)
         => Invoke(target, args.AsSpan());
 
     /// <summary>
@@ -143,7 +143,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// parameters.</exception>
     /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, ReadOnlySpan{object?})"/> overload and provide the generic type parameter arguments.</remarks>
-    internal object? Invoke(object? target, ReadOnlySpan<object?> args)
+    public object? Invoke(object? target, ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(Invoke), nameof(InvokeOpenGeneric));
@@ -169,7 +169,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// parameters.</exception>
     /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
-    internal void Invoke<TTarget>(TTarget target, params object?[]? args)
+    public void Invoke<TTarget>(TTarget target, params object?[]? args)
         => Invoke<TTarget>(target, args.AsSpan());
 
     /// <summary>
@@ -187,7 +187,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <param name="args">A read-only span containing the arguments to pass to the method. The number, order, and types of arguments
     /// must match the method's parameters.</param>
     /// <returns>The result returned by the invoked method.</returns>
-    internal void Invoke<TTarget>(TTarget target, ReadOnlySpan<object?> args)
+    public void Invoke<TTarget>(TTarget target, ReadOnlySpan<object?> args)
     {
         ThrowIfNonVoidMethodIsInvokedAsVoid();
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -214,7 +214,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// parameters.</exception>
     /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
-    internal TResult Invoke<TTarget, TResult>(TTarget target, params object?[]? args)
+    public TResult Invoke<TTarget, TResult>(TTarget target, params object?[]? args)
         => Invoke<TTarget, TResult>(target, args.AsSpan());
 
     /// <summary>
@@ -232,7 +232,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <param name="args">A read-only span containing the arguments to pass to the method. The number, order, and types of arguments
     /// must match the method's parameters.</param>
     /// <returns>The result returned by the invoked method.</returns>
-    internal TResult Invoke<TTarget, TResult>(TTarget target, ReadOnlySpan<object?> args)
+    public TResult Invoke<TTarget, TResult>(TTarget target, ReadOnlySpan<object?> args)
     {
         ThrowIfVoidMethodIsInvokedAsNonVoid();
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -247,7 +247,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invokerMethod.Invoke(target, args);
     }
 
-    internal async Task InvokeAwaitableTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
+    public async Task InvokeAwaitableTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
     {
         ThrowIfVoidMethodIsInvokedAsNonVoid();
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -264,7 +264,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invokerMethod.Invoke(target, args).ConfigureAwait(false);
     }
 
-    internal async ValueTask InvokeAwaitableValueTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
+    public async ValueTask InvokeAwaitableValueTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
     {
         ThrowIfVoidMethodIsInvokedAsNonVoid();
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -297,7 +297,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the declaring type is a generic type definition or contains unassigned generic parameters, or if
     /// the method itself is not a closed generic method.</exception>
-    internal object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, params object?[]? args)
+    public object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, params object?[]? args)
         => InvokeOpenGeneric(target, genericMethodParameters, args.AsSpan());
 
     /// <summary>
@@ -316,7 +316,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the declaring type is a generic type definition or contains unassigned generic parameters, or if
     /// the method itself is not a closed generic method.</exception>
-    internal object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    public object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
         ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(InvokeOpenGeneric), nameof(Invoke));
@@ -333,7 +333,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._invoker!.Invoke(target, args.ToArray());
     }
 
-    internal async Task InvokeAwaitableTaskAsync(object? target, params object?[] args)
+    public async Task InvokeAwaitableTaskAsync(object? target, params object?[] args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableTask)
@@ -352,7 +352,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invocatorMethod._asyncTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    internal async Task InvokeOpenGenericAwaitableTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
+    public async Task InvokeOpenGenericAwaitableTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableTask)
@@ -374,7 +374,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invocatorMethod._asyncTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    internal async Task<object?> InvokeAwaitableTaskWithResultAsync(object? target, params object?[]? args)
+    public async Task<object?> InvokeAwaitableTaskWithResultAsync(object? target, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableGenericTask)
@@ -393,7 +393,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return await invocatorMethod._asyncGenericTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    internal async Task<object?> InvokeOpenGenericAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
+    public async Task<object?> InvokeOpenGenericAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableGenericTask)
@@ -416,7 +416,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return await invocatorMethod._asyncGenericTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    internal async ValueTask InvokeAwaitableValueTaskAsync(object? target, params object?[]? args)
+    public async ValueTask InvokeAwaitableValueTaskAsync(object? target, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableValueTask)
@@ -435,7 +435,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invocatorMethod._asyncValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    internal async ValueTask InvokeOpenGenericAwaitableValueTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
+    public async ValueTask InvokeOpenGenericAwaitableValueTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableValueTask)
@@ -458,7 +458,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invocatorMethod._asyncValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    internal async ValueTask<object?> InvokeAwaitableValueTaskWithResultAsync(object? target, params object?[] args)
+    public async ValueTask<object?> InvokeAwaitableValueTaskWithResultAsync(object? target, params object?[] args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableGenericValueTask)
@@ -477,7 +477,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return await invocatorMethod._asyncGenericValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    internal async ValueTask<object?> InvokeOpenGenericValueAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[] args)
+    public async ValueTask<object?> InvokeOpenGenericValueAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[] args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableValueTask)
@@ -499,7 +499,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return await invocatorMethod._asyncGenericValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    internal Func<object?, object?[]?, object?> GetInvoker(ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, object?> GetInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetInvoker), nameof(GetOpenGenericInvoker));
@@ -512,7 +512,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._invoker!;
     }
 
-    internal Func<object?, object?[]?, object?> GetOpenGenericInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, object?> GetOpenGenericInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -528,7 +528,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._invoker!;
     }
 
-    internal Func<object?, object?[]?, Task> GetAwaitableTaskInvoker(ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, Task> GetAwaitableTaskInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableTaskInvoker), nameof(GetOpenGenericAwaitableTaskInvoker));
@@ -541,7 +541,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncTaskInvoker!;
     }
 
-    internal Func<object?, object?[]?, Task> GetOpenGenericAwaitableTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, Task> GetOpenGenericAwaitableTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -557,7 +557,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncTaskInvoker!;
     }
 
-    internal Func<object?, object?[]?, Task<object?>> GetAwaitableTaskWithResultInvoker(ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, Task<object?>> GetAwaitableTaskWithResultInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableTaskWithResultInvoker), nameof(GetOpenGenericAwaitableTaskWithResultInvoker));
@@ -570,7 +570,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncGenericTaskInvoker!;
     }
 
-    internal Func<object?, object?[]?, Task<object?>> GetOpenGenericAwaitableTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, Task<object?>> GetOpenGenericAwaitableTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -586,7 +586,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncGenericTaskInvoker!;
     }
 
-    internal Func<object?, object?[]?, ValueTask> GetAwaitableValueTaskInvoker(ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, ValueTask> GetAwaitableValueTaskInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableValueTaskInvoker), nameof(GetOpenGenericAwaitableValueTaskInvoker));
@@ -599,7 +599,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncValueTaskInvoker!;
     }
 
-    internal Func<object?, object?[]?, ValueTask> GetOpenGenericAwaitableValueTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, ValueTask> GetOpenGenericAwaitableValueTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -615,7 +615,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncValueTaskInvoker!;
     }
 
-    internal Func<object?, object?[]?, ValueTask<object?>> GetAwaitableValueTaskWithResultInvoker(ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, ValueTask<object?>> GetAwaitableValueTaskWithResultInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableValueTaskWithResultInvoker), nameof(GetOpenGenericAwaitableValueTaskWithResultInvoker));
@@ -628,7 +628,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncGenericValueTaskInvoker!;
     }
 
-    internal Func<object?, object?[]?, ValueTask<object?>> GetOpenGenericAwaitableValueTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    public Func<object?, object?[]?, ValueTask<object?>> GetOpenGenericAwaitableValueTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -644,7 +644,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncGenericValueTaskInvoker!;
     }
 
-    internal MethodAwaitableTaskDiscardInvoker<TTarget> GetAwaitableTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
+    public MethodAwaitableTaskDiscardInvoker<TTarget> GetAwaitableTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericAwaitableTaskWithResultInvoker), nameof(GetAwaitableTaskWithResultInvoker));
@@ -657,7 +657,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod;
     }
 
-    internal MethodAwaitableTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    public MethodAwaitableTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -673,7 +673,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod;
     }
 
-    internal MethodAwaitableValueTaskDiscardInvoker<TTarget> GetAwaitableValueTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
+    public MethodAwaitableValueTaskDiscardInvoker<TTarget> GetAwaitableValueTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableValueTaskInvoker), nameof(GetOpenGenericAwaitableValueTaskInvoker));
@@ -686,7 +686,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod!;
     }
 
-    internal MethodAwaitableValueTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableValueTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    public MethodAwaitableValueTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableValueTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -897,7 +897,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// This allows to identify methods that belong to the same generic family (based on the open generic method signature).<br/>
     /// For example, the open generic method would share the same basic fingerprint like all  it's closed generic variants.<br/>
     /// In other words, the <see cref="BasicMethodFingerprint"/> enables the identification of generic methods that share the same generic structure since it is based on the raw unconstructed generic method signature.</remarks>
-    internal BasicMethodFingerprint BasicMethodFingerprint
+    public BasicMethodFingerprint BasicMethodFingerprint
     {
         get
         {
@@ -924,7 +924,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    internal MethodData GenericMethodDefinitionData
+    public MethodData GenericMethodDefinitionData
     {
         get
         {

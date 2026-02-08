@@ -12,10 +12,6 @@ using System.Reflection;
 /// </remarks>
 internal readonly struct WellKnownEventDescriptor : IEquatable<WellKnownEventDescriptor>
 {
-    private readonly RuntimeMethodHandle _removeAccessorImplementationMethodHandle;
-    private readonly RuntimeMethodHandle _addAccessorImplementationMethodHandle;
-    private readonly RuntimeTypeHandle _implementingTypeHandle;
-
     /// <summary>
     /// Creates a new instance of the <see cref="WellKnownEventDescriptor"/> struct for a well-known event.
     /// </summary>
@@ -39,88 +35,28 @@ internal readonly struct WellKnownEventDescriptor : IEquatable<WellKnownEventDes
     /// <item>the provided <paramref name="isExplicitInterfaceImplementation"/> value is <see langword="false"/> but either <paramref name="explicitAddImplementationMethod"/> or <paramref name="explicitRemoveImplementationMethod"/> is provided.</item>
     /// </list>
     /// </exception>
-    public WellKnownEventDescriptor(
-        EventInfo eventInfo,
-        bool isExplicitInterfaceImplementation,
-        MethodInfo? explicitAddImplementationMethod,
-        MethodInfo? explicitRemoveImplementationMethod)
+    public WellKnownEventDescriptor(EventInfo eventInfo)
     {
         ArgumentNullException.ThrowIfNull(eventInfo);
-        Type? declaringType = eventInfo.DeclaringType;
-        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
 
-        if (isExplicitInterfaceImplementation)
-        {
-            ArgumentExceptionAdvanced.ThrowIfFalse(declaringType!.IsInterface,
-                nameof(isExplicitInterfaceImplementation),
-                $"Invalid argument '{nameof(isExplicitInterfaceImplementation)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type represented by the argument '{nameof(eventInfo)}.{nameof(eventInfo.DeclaringType)}' is not an interface. Reason: Only interface types can provide the declaration of explicit interface implementations.");
-
-            if (explicitAddImplementationMethod is null && explicitRemoveImplementationMethod is null)
-            {
-                throw new ArgumentException($"Invalid argument '{nameof(explicitAddImplementationMethod)}' and '{nameof(explicitRemoveImplementationMethod)}'. All implemented event accessors must be provided.");
-            }
-        }
-        else
-        {
-            if (explicitRemoveImplementationMethod is not null || explicitAddImplementationMethod is not null)
-            {
-                throw new ArgumentException($"Invalid argument '{nameof(isExplicitInterfaceImplementation)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' is set to 'false', but either a '{nameof(explicitAddImplementationMethod)}' or a '{nameof(explicitRemoveImplementationMethod)}' is provided. Reason: Accessor method descriptors can only be provided for explicit interface implementation properties.");
-            }
-        }
-
-        IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
-        DeclaringTypeHandle = declaringType!.TypeHandle;
-        _implementingTypeHandle = explicitAddImplementationMethod?.DeclaringType?.TypeHandle
-            ?? explicitRemoveImplementationMethod?.DeclaringType?.TypeHandle
-            ?? DeclaringTypeHandle;
-        _addAccessorImplementationMethodHandle = explicitAddImplementationMethod?.MethodHandle ?? default;
-        _removeAccessorImplementationMethodHandle = explicitRemoveImplementationMethod?.MethodHandle ?? default;
         IsAnonymous = false;
         EventInfo = eventInfo;
         EventName = eventInfo.Name;
     }
 
-    public bool IsExplicitInterfaceImplementation { get; }
-    public RuntimeTypeHandle DeclaringTypeHandle { get; }
-
-    public RuntimeTypeHandle ImplementingTypeHandle
-        => IsExplicitInterfaceImplementation ? _implementingTypeHandle : DeclaringTypeHandle;
-
-    public RuntimeMethodHandle AddAccessorImplementationMethodHandle
-        => IsExplicitInterfaceImplementation ? _addAccessorImplementationMethodHandle : throw new InvalidOperationException($"The property '{nameof(AddAccessorImplementationMethodHandle)}' cannot be accessed for implicit property implementations or write-only properties.");
-
-    public RuntimeMethodHandle RemoveAccessorImplementationMethodHandle
-        => IsExplicitInterfaceImplementation ? _removeAccessorImplementationMethodHandle : throw new InvalidOperationException($"The property '{nameof(RemoveAccessorImplementationMethodHandle)}' cannot be accessed for implicit property implementations or write-only properties.");
-
-    public bool HasExplicitAddEventAccessor { get; }
-    public bool HasExplicitRemoveEventAccessor { get; }
     public bool IsAnonymous { get; }
 
     public EventInfo EventInfo { get; }
     public string EventName { get; }
 
     public bool Equals(WellKnownEventDescriptor other)
-        => IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-        && HasExplicitAddEventAccessor.Equals(other.HasExplicitAddEventAccessor)
-        && HasExplicitRemoveEventAccessor.Equals(other.HasExplicitRemoveEventAccessor)
-        && _addAccessorImplementationMethodHandle.Equals(other._addAccessorImplementationMethodHandle)
-        && _removeAccessorImplementationMethodHandle.Equals(other._removeAccessorImplementationMethodHandle)
-        && IsAnonymous == other.IsAnonymous
+        => IsAnonymous == other.IsAnonymous
         && ReferenceEquals(EventInfo, other.EventInfo)
-        && EventName.Equals(other.EventName, StringComparison.Ordinal)
-        && DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
-        && ImplementingTypeHandle.Equals(other.ImplementingTypeHandle);
+        && EventName.Equals(other.EventName, StringComparison.Ordinal);
 
     public override int GetHashCode()
     {
         var hashCode = new HashCode();
-        hashCode.Add(IsExplicitInterfaceImplementation);
-        hashCode.Add(HasExplicitAddEventAccessor);
-        hashCode.Add(HasExplicitRemoveEventAccessor);
-        hashCode.Add(_addAccessorImplementationMethodHandle);
-        hashCode.Add(_removeAccessorImplementationMethodHandle);
-        hashCode.Add(_implementingTypeHandle);
-        hashCode.Add(DeclaringTypeHandle);
         hashCode.Add(IsAnonymous);
         hashCode.Add(EventInfo);
         hashCode.Add(EventName, StringComparer.Ordinal);

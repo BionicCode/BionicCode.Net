@@ -111,7 +111,7 @@
         {
             ArgumentNullException.ThrowIfNull(constructorData);
 
-            return CreateInternal(constructorData.GetConstructorInfo());
+            return CreateInternal(constructorData.ConstructorInfo);
         }
 
         internal static MethodParameterInfoList Create(MethodBase methodBase)

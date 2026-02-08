@@ -102,24 +102,24 @@ public class SymbolComponentInfo : IDisposable
 
     public SymbolComponentInfo(bool isKeyword)
     {
-        _modifiersInternal = new List<string>();
+        _modifiersInternal = [];
         Modifiers = new ReadOnlyCollection<string>(_modifiersInternal);
-        _genericTypeParametersInternal = new List<SymbolComponentInfo>();
+        _genericTypeParametersInternal = [];
         GenericTypeParameters = new ReadOnlyCollection<SymbolComponentInfo>(_genericTypeParametersInternal);
-        _inheritedTypesInternal = new List<SymbolComponentInfo>();
+        _inheritedTypesInternal = [];
         InheritedTypes = new ReadOnlyCollection<SymbolComponentInfo>(_inheritedTypesInternal);
-        _genericTypeConstraintsInternal = new List<SymbolComponentInfo>();
+        _genericTypeConstraintsInternal = [];
         GenericTypeConstraints = new ReadOnlyCollection<SymbolComponentInfo>(_genericTypeConstraintsInternal);
-        _parametersInternal = new List<SymbolComponentInfo>();
+        _parametersInternal = [];
         Parameters = new ReadOnlyCollection<SymbolComponentInfo>(_parametersInternal);
-        _customAttributes = new List<SymbolComponentInfo>();
+        _customAttributes = [];
         CustomAttributes = new ReadOnlyCollection<SymbolComponentInfo>(_customAttributes);
-        _customAttributeConstructorArgs = new List<string>();
+        _customAttributeConstructorArgs = [];
         CustomAttributeConstructorArgs = new ReadOnlyCollection<string>(_customAttributeConstructorArgs);
-        _customAttributeNamedArgs = new List<(string PropertyName, string PropertyValue)>();
+        _customAttributeNamedArgs = [];
         CustomAttributeNamedArgs = new ReadOnlyCollection<(string PropertyName, string PropertyValue)>(_customAttributeNamedArgs);
-        _nameBuilder = StringBuilderFactory.GetOrCreate();
-        _valueNameBuilder = StringBuilderFactory.GetOrCreate();
+        _nameBuilder = PooledStringBuilder.GetOrCreate();
+        _valueNameBuilder = PooledStringBuilder.GetOrCreate();
         Signature = string.Empty;
         ReturnType = null;
         IsKeyword = isKeyword;

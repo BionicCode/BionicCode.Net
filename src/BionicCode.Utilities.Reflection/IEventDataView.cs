@@ -2,7 +2,7 @@
 
 using System;
 
-public interface IEventDataView : IMemberDataView
+public interface IEventDataView : IMemberDataView, ISymbolInfoDataView
 {
     IMethodDataView AddMethodData { get; }
     bool CanAdd { get; }

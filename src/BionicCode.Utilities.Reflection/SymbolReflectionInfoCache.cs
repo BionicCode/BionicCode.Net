@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 
-public class EventDataView : SymbolDataView, IEventDataView
+public class EventDataView : IEventDataView
 {
     internal EventDataView(SymbolReflectionInfoCacheKey cacheKey)
         => CacheKey = cacheKey;
@@ -60,12 +60,15 @@ public class EventDataView : SymbolDataView, IEventDataView
     public ITypeDataView EventHandlerTypeData { get; }
     public IMethodDataView EventInvokerMethodData { get; }
     public IMethodDataView RemoveMethodData { get; }
+    public ITypeDataView DeclaringTypData { get; }
+    public ITypeDataView ImplementingTypData { get; }
 
     public void AddEventHandler(object eventSource, Delegate handler) => throw new NotImplementedException();
     public void AddEventHandler<TEventSource>(TEventSource eventSource, Delegate handler) => throw new NotImplementedException();
     public object? RaiseEvent(object? target, params object?[]? arguments) => throw new NotImplementedException();
     public void RemoveEventHandler(object eventSource, Delegate handler) => throw new NotImplementedException();
     public void RemoveEventHandler<TEventSource>(TEventSource eventSource, Delegate handler) => throw new NotImplementedException();
+    public MemberInfo GetMemberInfo() => throw new NotImplementedException();
 }
 
 internal static class SymbolReflectionInfoCache

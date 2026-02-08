@@ -1,18 +1,18 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using BionicCode.Utilities.Net;
 
 public interface IMemberDataView : ISymbolInfoDataView
 {
+    MemberInfo GetMemberInfo();
     AccessModifier AccessModifier { get; }
-    new IList<CustomAttributeData> AttributeData { get; }
     BindingFlags BindingFlagsVisibilityMask { get; }
-    RuntimeTypeHandle DeclaringInterfaceHandle { get; }
+    ITypeDataView DeclaringTypData { get; }
     RuntimeTypeHandle DeclaringTypeHandle { get; }
     RuntimeTypeHandle ImplementingTypeHandle { get; }
+    ITypeDataView ImplementingTypData { get; }
     bool IsAssembly { get; }
     bool IsExplicitInterfaceImplementation { get; }
     bool IsFamily { get; }

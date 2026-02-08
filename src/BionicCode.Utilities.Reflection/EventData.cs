@@ -47,15 +47,12 @@ internal sealed class EventData : MemberData
 
         _descriptor = symbolInfoDataCacheKey.EventDescriptor;
         EventInfo = symbolInfoDataCacheKey.EventDescriptor.EventInfo;
-        IsExplicitInterfaceImplementation = _descriptor.IsExplicitInterfaceImplementation;
-        DeclaringTypeHandle = _descriptor.DeclaringTypeHandle;
-        ImplementingTypeHandle = _descriptor.ImplementingTypeHandle;
     }
 
     protected override MemberInfo GetMemberInfo()
       => EventInfo;
 
-    internal object? RaiseEvent(object? target, params object?[]? arguments)
+    public object? RaiseEvent(object? target, params object?[]? arguments)
     {
         ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
         ThrowIfInvalidMethodArguments(arguments);
@@ -124,23 +121,23 @@ internal sealed class EventData : MemberData
     }
 
     /// <inheritdoc/>
-    internal override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
+    public override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
       ? (_accessModifier = EventData.GetAccessModifierInternal(this))
       : _accessModifier;
 
-    internal void AddEventHandler(object eventSource, Delegate handler)
+    public void AddEventHandler(object eventSource, Delegate handler)
       => AddMethodData.Invoke(eventSource, handler);
 
-    internal void AddEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
+    public void AddEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
       => AddMethodData.Invoke(eventSource, handler);
 
-    internal void RemoveEventHandler(object eventSource, Delegate handler)
+    public void RemoveEventHandler(object eventSource, Delegate handler)
       => RemoveMethodData.Invoke(eventSource, handler);
 
-    internal void RemoveEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
+    public void RemoveEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
       => RemoveMethodData.Invoke(eventSource, handler);
 
-    internal MethodData AddMethodData
+    public MethodData AddMethodData
       => _addMethodData ??= IsExplicitInterfaceImplementation
             ? MethodInfo.GetMethodFromHandle(_descriptor.AddAccessorImplementationMethodHandle) is MethodInfo explicitImplementationAccessor
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(explicitImplementationAccessor)
@@ -149,7 +146,7 @@ internal sealed class EventData : MemberData
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo)
                 : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an add method.");
 
-    internal MethodData RemoveMethodData
+    public MethodData RemoveMethodData
       => _removeMethodData ??= IsExplicitInterfaceImplementation
             ? MethodInfo.GetMethodFromHandle(_descriptor.RemoveAccessorImplementationMethodHandle) is MethodInfo explicitImplementationAccessor
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(explicitImplementationAccessor)
