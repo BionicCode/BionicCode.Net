@@ -50,48 +50,33 @@ internal abstract class ParameterizedMemberData : MemberData
     /// │ Delegates       │ Invoke, BeginInvoke, EndInvoke           │ Invoke(int)             │
     /// └─────────────────┴──────────────────────────────────────────┴─────────────────────────┘
     /// </remarks>
-    public bool IsSpecializedName
-        => ((MethodBase)GetMethodBase()).IsSpecialName;
+    public bool IsSpecializedName => ((MethodBase)GetMethodBase()).IsSpecialName;
 
-    public bool IsAbstract
-      => _isAbstract ??= GetMethodBase().IsAbstract;
+    public bool IsAbstract => _isAbstract ??= GetMethodBase().IsAbstract;
 
-    public bool IsVirtual
-        => _isVirtual ??= GetMethodBase().IsVirtual;
+    public bool IsVirtual => _isVirtual ??= GetMethodBase().IsVirtual;
 
-    public override bool IsStatic
-      => _isStatic ??= GetMethodBase().IsStatic;
+    public override bool IsStatic => _isStatic ??= GetMethodBase().IsStatic;
 
-    public bool IsSealed
-      => IsFinal;
+    public bool IsSealed => IsFinal;
 
-    public bool IsFinal
-      => _isFinal ??= GetMethodBase().IsFinal;
+    public bool IsFinal => _isFinal ??= GetMethodBase().IsFinal;
 
-    public override bool IsPublic
-        => _isPublic ??= GetMethodBase().IsPublic;
+    public override bool IsPublic => _isPublic ??= GetMethodBase().IsPublic;
 
-    public override bool IsPrivate
-        => _isPrivate ??= GetMethodBase().IsPrivate;
+    public override bool IsPrivate => _isPrivate ??= GetMethodBase().IsPrivate;
 
-    public override bool IsAssembly
-        => _isAssembly ??= GetMethodBase().IsAssembly;
+    public override bool IsAssembly => _isAssembly ??= GetMethodBase().IsAssembly;
 
-    public override bool IsFamily
-        => _isFamily ??= GetMethodBase().IsFamily;
+    public override bool IsFamily => _isFamily ??= GetMethodBase().IsFamily;
 
-    public override bool IsFamilyOrAssembly
-        => _isFamilyOrAssembly ??= GetMethodBase().IsFamilyOrAssembly;
+    public override bool IsFamilyOrAssembly => _isFamilyOrAssembly ??= GetMethodBase().IsFamilyOrAssembly;
 
-    public override bool IsFamilyAndAssembly
-        => _isFamilyAndAssembly ??= GetMethodBase().IsFamilyAndAssembly;
+    public override bool IsFamilyAndAssembly => _isFamilyAndAssembly ??= GetMethodBase().IsFamilyAndAssembly;
 
-    public bool IsConstructor
-        => _isConstructor ??= GetMethodBase() is ConstructorInfo;
+    public bool IsConstructor => _isConstructor ??= GetMethodBase() is ConstructorInfo;
 
-    public bool IsMethod
-        => _isMethod ??= GetMethodBase() is MethodInfo;
+    public bool IsMethod => _isMethod ??= GetMethodBase() is MethodInfo;
 
-    public bool IsSpecialName
-        => _isSpecialName ??= GetMethodBase().IsSpecialName;
+    public bool IsSpecialName => _isSpecialName ??= GetMethodBase().IsSpecialName;
 }

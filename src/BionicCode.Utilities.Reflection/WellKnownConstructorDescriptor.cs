@@ -33,8 +33,7 @@ internal readonly struct WellKnownConstructorDescriptor : IEquatable<WellKnownCo
     public ConstructorInfo ConstructorInfo { get; }
     public bool IsAnonymous { get; }
 
-    public bool Equals(WellKnownConstructorDescriptor other)
-        => IsAnonymous == other.IsAnonymous
+    public bool Equals(WellKnownConstructorDescriptor other) => IsAnonymous == other.IsAnonymous
         && ConstructorInfo == other.ConstructorInfo;
 
     public override int GetHashCode()
@@ -46,11 +45,8 @@ internal readonly struct WellKnownConstructorDescriptor : IEquatable<WellKnownCo
         return hashCode.ToHashCode();
     }
 
-    public static bool operator ==(WellKnownConstructorDescriptor left, WellKnownConstructorDescriptor right)
-        => left.Equals(right);
-    public static bool operator !=(WellKnownConstructorDescriptor left, WellKnownConstructorDescriptor right)
-        => !(left == right);
+    public static bool operator ==(WellKnownConstructorDescriptor left, WellKnownConstructorDescriptor right) => left.Equals(right);
+    public static bool operator !=(WellKnownConstructorDescriptor left, WellKnownConstructorDescriptor right) => !(left == right);
 
-    public override bool Equals(object obj)
-        => obj is WellKnownConstructorDescriptor other && Equals(other);
+    public override bool Equals(object obj) => obj is WellKnownConstructorDescriptor other && Equals(other);
 }

@@ -79,10 +79,9 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
     public bool IsEmpty => Methods.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<MethodData> Methods { get; }
-    public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
-        => HasItems
-            ? _declaringTypeCacheKey
-            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeCacheKey)));
+    public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey => HasItems
+        ? _declaringTypeCacheKey
+        : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeCacheKey)));
 
     public TypeData DeclaringTypeData
     {
@@ -130,7 +129,7 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
                 throw new InvalidOperationException("Method index is not initialized.");
             }
 
-            MethodList methods = _methodNameIndex[methodName].ToMethodList();
+            var methods = _methodNameIndex[methodName].ToMethodList();
             if (methods.IsEmpty)
             {
                 throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
@@ -179,11 +178,9 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
         }
     }
 
-    public IEnumerator<MethodData> GetEnumerator()
-        => ((IEnumerable<MethodData>)Methods).GetEnumerator();
+    public IEnumerator<MethodData> GetEnumerator() => ((IEnumerable<MethodData>)Methods).GetEnumerator();
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => Methods.GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Methods.GetEnumerator();
 
     public bool Equals(MethodList? other)
     {
@@ -213,11 +210,9 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
         return true;
     }
 
-    public override bool Equals(object? obj)
-        => obj is MethodList other && Equals(other);
+    public override bool Equals(object? obj) => obj is MethodList other && Equals(other);
 
-    public override int GetHashCode()
-        => _hashCode;
+    public override int GetHashCode() => _hashCode;
 
     private int ComputeHashCode()
     {
@@ -235,8 +230,6 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
         }
     }
 
-    public static bool operator ==(MethodList? left, MethodList? right)
-        => left?.Equals(right) ?? (right is null);
-    public static bool operator !=(MethodList? left, MethodList? right)
-        => !(left == right);
+    public static bool operator ==(MethodList? left, MethodList? right) => left?.Equals(right) ?? (right is null);
+    public static bool operator !=(MethodList? left, MethodList? right) => !(left == right);
 }

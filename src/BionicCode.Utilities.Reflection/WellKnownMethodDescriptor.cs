@@ -35,8 +35,7 @@ internal readonly struct WellKnownMethodDescriptor : IEquatable<WellKnownMethodD
     public string MethodName { get; }
     public bool IsAnonymous { get; }
 
-    public bool Equals(WellKnownMethodDescriptor other)
-        => MethodHandle == other.MethodHandle
+    public bool Equals(WellKnownMethodDescriptor other) => MethodHandle == other.MethodHandle
         && MethodName.Equals(other.MethodName, StringComparison.Ordinal)
         && IsAnonymous == other.IsAnonymous;
 
@@ -50,11 +49,8 @@ internal readonly struct WellKnownMethodDescriptor : IEquatable<WellKnownMethodD
         return hashCode.ToHashCode();
     }
 
-    public static bool operator ==(WellKnownMethodDescriptor left, WellKnownMethodDescriptor right)
-        => left.Equals(right);
-    public static bool operator !=(WellKnownMethodDescriptor left, WellKnownMethodDescriptor right)
-        => !(left == right);
+    public static bool operator ==(WellKnownMethodDescriptor left, WellKnownMethodDescriptor right) => left.Equals(right);
+    public static bool operator !=(WellKnownMethodDescriptor left, WellKnownMethodDescriptor right) => !(left == right);
 
-    public override bool Equals(object obj)
-        => obj is WellKnownMethodDescriptor other && Equals(other);
+    public override bool Equals(object obj) => obj is WellKnownMethodDescriptor other && Equals(other);
 }

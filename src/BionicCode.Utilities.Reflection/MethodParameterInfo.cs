@@ -13,10 +13,9 @@ internal readonly struct MethodParameterInfo : IEquatable<MethodParameterInfo>
     /// <remarks>Ambiguity is expected when neither the parameter nor the declaring member can be
     /// uniquely identified by name, position, or handle. This property can be used to determine if additional
     /// disambiguation logic may be required when resolving parameters or members.</remarks>
-    public bool IsAmbiguityExpected
-        => (!ParameterDescriptor.HasParameterName
-            && !ParameterDescriptor.HasParameterPosition)
-            || !DeclaringMemberDescriptor.HasMemberHandle;
+    public bool IsAmbiguityExpected => (!ParameterDescriptor.HasParameterName
+        && !ParameterDescriptor.HasParameterPosition)
+        || !DeclaringMemberDescriptor.HasMemberHandle;
 
     ///// <summary>
     ///// Gets a value indicating whether the type parameter is declared by a generic method definition.
@@ -79,8 +78,7 @@ internal readonly struct MethodParameterInfo : IEquatable<MethodParameterInfo>
     public bool Equals(MethodParameterInfo other) => ParameterDescriptor == other.ParameterDescriptor
         && DeclaringMemberDescriptor == other.DeclaringMemberDescriptor;
 
-    public override int GetHashCode()
-        => HashCode.Combine(ParameterDescriptor, DeclaringMemberDescriptor);
+    public override int GetHashCode() => HashCode.Combine(ParameterDescriptor, DeclaringMemberDescriptor);
 
     public static bool operator ==(MethodParameterInfo left, MethodParameterInfo right) => left.Equals(right);
     public static bool operator !=(MethodParameterInfo left, MethodParameterInfo right) => !(left == right);

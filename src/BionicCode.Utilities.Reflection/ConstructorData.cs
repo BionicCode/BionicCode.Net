@@ -42,11 +42,9 @@ internal sealed class ConstructorData : ParameterizedMemberData
 
     public ConstructorInfo ConstructorInfo { get; }
 
-    public override MethodBase GetMethodBase()
-        => ConstructorInfo;
+    public override MethodBase GetMethodBase() => ConstructorInfo;
 
-    protected override MemberInfo GetMemberInfo()
-      => ConstructorInfo;
+    protected override MemberInfo GetMemberInfo() => ConstructorInfo;
 
     public object Invoke(params object?[] arguments)
     {
@@ -69,87 +67,63 @@ internal sealed class ConstructorData : ParameterizedMemberData
         return _invocator!;
     }
 
-    private void InitializeInvocator()
-      => _invocator = ConstructorInfo.Invoke;
+    private void InitializeInvocator() => _invocator = ConstructorInfo.Invoke;
 
     public override RuntimeMethodHandle Handle { get; }
 
     public override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
-      ? (_accessModifier = ConstructorData.GetAccessModifierInternal(this))
-      : _accessModifier;
+        ? (_accessModifier = ConstructorData.GetAccessModifierInternal(this))
+        : _accessModifier;
 
-    public override ParameterList Parameters
-      => _parameters ??= ParameterListBuilder.Create(this);
+    public override ParameterList Parameters => _parameters ??= ParameterListBuilder.Create(this);
 
-    public override bool HasParamsParameter
-      => _hasParamsParameter ??= Parameters.HasItems && Parameters[^1].IsParams;
+    public override bool HasParamsParameter => _hasParamsParameter ??= Parameters.HasItems && Parameters[^1].IsParams;
 
     public override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
-      ? (_symbolAttributes = ConstructorData.GetAttributesInternal(this))
-      : _symbolAttributes;
+        ? (_symbolAttributes = ConstructorData.GetAttributesInternal(this))
+        : _symbolAttributes;
 
-    public override SymbolComponentInfo SymbolComponentInfo
-      => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+    public override SymbolComponentInfo SymbolComponentInfo => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
-    public override string Signature
-      => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+    public override string Signature => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortSignature
-      => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
+    public override string ShortSignature => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortCompactSignature
-      => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
+    public override string ShortCompactSignature => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedSignature
-      => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+    public override string FullyQualifiedSignature => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedRuntimeSignature
-      => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+    public override string FullyQualifiedRuntimeSignature => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeSignature
-      => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+    public override string RuntimeSignature => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortSignature
-      => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
+    public override string RuntimeShortSignature => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortCompactSignature
-      => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
+    public override string RuntimeShortCompactSignature => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
-    public override string DisplayName
-      => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+    public override string DisplayName => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    public override string ShortDisplayName
-      => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+    public override string ShortDisplayName => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
-    public override string FullyQualifiedDisplayName
-      => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+    public override string FullyQualifiedDisplayName => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    public override string AssemblyName
-      => _assemblyName ??= DeclaringTypeData.AssemblyName;
+    public override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
-    public override bool IsStatic
-        => _isStatic ??= ConstructorInfo.IsStatic;
+    public override bool IsStatic => _isStatic ??= ConstructorInfo.IsStatic;
 
-    public override bool IsPublic
-        => _isPublic ??= ConstructorInfo.IsPublic;
+    public override bool IsPublic => _isPublic ??= ConstructorInfo.IsPublic;
 
-    public override bool IsPrivate
-        => _isPrivate ??= ConstructorInfo.IsPrivate;
+    public override bool IsPrivate => _isPrivate ??= ConstructorInfo.IsPrivate;
 
-    public override bool IsAssembly
-        => _isAssembly ??= ConstructorInfo.IsAssembly;
+    public override bool IsAssembly => _isAssembly ??= ConstructorInfo.IsAssembly;
 
-    public override bool IsFamily
-        => _isFamily ??= ConstructorInfo.IsFamily;
+    public override bool IsFamily => _isFamily ??= ConstructorInfo.IsFamily;
 
-    public override bool IsFamilyOrAssembly
-        => _isFamilyOrAssembly ??= ConstructorInfo.IsFamilyOrAssembly;
+    public override bool IsFamilyOrAssembly => _isFamilyOrAssembly ??= ConstructorInfo.IsFamilyOrAssembly;
 
-    public override bool IsFamilyAndAssembly
-        => _isFamilyAndAssembly ??= ConstructorInfo.IsFamilyAndAssembly;
+    public override bool IsFamilyAndAssembly => _isFamilyAndAssembly ??= ConstructorInfo.IsFamilyAndAssembly;
 
-    public override ParameterizedSymbolKind ParameterizedSymbolKind
-      => ParameterizedSymbolKind.MemberConstructor;
+    public override ParameterizedSymbolKind ParameterizedSymbolKind => ParameterizedSymbolKind.MemberConstructor;
 
     public override RuntimeTypeHandle DeclaringTypeHandle { get; }
     public override bool IsExplicitInterfaceImplementation { get; }
@@ -175,11 +149,11 @@ internal sealed class ConstructorData : ParameterizedMemberData
     }
 
     private static AccessModifier GetAccessModifierInternal(ConstructorData constructorData) => constructorData.IsPublic ? AccessModifier.Public
-          : constructorData.IsPrivate ? AccessModifier.Private
-          : constructorData.IsAssembly ? AccessModifier.Internal
-          : constructorData.IsFamily ? AccessModifier.Protected
-          : constructorData.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
-          : constructorData.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
-          : constructorData.IsStatic ? AccessModifier.Undefined
-          : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+        : constructorData.IsPrivate ? AccessModifier.Private
+        : constructorData.IsAssembly ? AccessModifier.Internal
+        : constructorData.IsFamily ? AccessModifier.Protected
+        : constructorData.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+        : constructorData.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+        : constructorData.IsStatic ? AccessModifier.Undefined
+        : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
 }

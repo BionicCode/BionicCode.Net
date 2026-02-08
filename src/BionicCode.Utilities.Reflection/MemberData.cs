@@ -49,7 +49,7 @@ internal abstract class MemberData : SymbolInfoData
             : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(DeclaringTypeHandle)}' is not valid.");
 
     public TypeData ImplementingTypeData
-      => _implementingTypeData ??= Type.GetTypeFromHandle(ImplementingTypeHandle) is Type implementingType
+        => _implementingTypeData ??= Type.GetTypeFromHandle(ImplementingTypeHandle) is Type implementingType
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(implementingType)
             : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(ImplementingTypeHandle)}' is not valid.");
 
@@ -99,6 +99,5 @@ internal abstract class MemberData : SymbolInfoData
     public BindingFlags BindingFlagsVisibilityMask => _bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
 
     /// <inheritdoc/>
-    public override IList<CustomAttributeData> AttributeData
-      => _attributeData ??= new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData());
+    public override IList<CustomAttributeData> AttributeData => _attributeData ??= [.. GetMemberInfo().GetCustomAttributesData()];
 }

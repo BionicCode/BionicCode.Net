@@ -49,8 +49,7 @@ internal readonly struct WellKnownEventDescriptor : IEquatable<WellKnownEventDes
     public EventInfo EventInfo { get; }
     public string EventName { get; }
 
-    public bool Equals(WellKnownEventDescriptor other)
-        => IsAnonymous == other.IsAnonymous
+    public bool Equals(WellKnownEventDescriptor other) => IsAnonymous == other.IsAnonymous
         && ReferenceEquals(EventInfo, other.EventInfo)
         && EventName.Equals(other.EventName, StringComparison.Ordinal);
 
@@ -64,11 +63,8 @@ internal readonly struct WellKnownEventDescriptor : IEquatable<WellKnownEventDes
         return hashCode.ToHashCode();
     }
 
-    public static bool operator ==(WellKnownEventDescriptor left, WellKnownEventDescriptor right)
-        => left.Equals(right);
-    public static bool operator !=(WellKnownEventDescriptor left, WellKnownEventDescriptor right)
-        => !(left == right);
+    public static bool operator ==(WellKnownEventDescriptor left, WellKnownEventDescriptor right) => left.Equals(right);
+    public static bool operator !=(WellKnownEventDescriptor left, WellKnownEventDescriptor right) => !(left == right);
 
-    public override bool Equals(object obj)
-        => obj is WellKnownEventDescriptor other && Equals(other);
+    public override bool Equals(object obj) => obj is WellKnownEventDescriptor other && Equals(other);
 }

@@ -31,16 +31,14 @@ public class SymbolComponentInfo : IDisposable
     public bool IsCompleted { get; private set; }
 
     private readonly PooledStringBuilder _nameBuilder;
-    public PooledStringBuilder NameBuilder
-        => IsCompleted
-            ? throw new InvalidOperationException($"Cannot access '{nameof(NameBuilder)}' after the '{nameof(SymbolComponentInfo)}' has been marked as completed.")
-            : _nameBuilder;
+    public PooledStringBuilder NameBuilder => IsCompleted
+        ? throw new InvalidOperationException($"Cannot access '{nameof(NameBuilder)}' after the '{nameof(SymbolComponentInfo)}' has been marked as completed.")
+        : _nameBuilder;
 
     private readonly PooledStringBuilder _valueNameBuilder;
-    public PooledStringBuilder ValueNameBuilder
-        => IsCompleted
-            ? throw new InvalidOperationException($"Cannot access '{nameof(ValueNameBuilder)}' after the '{nameof(SymbolComponentInfo)}' has been marked as completed.")
-            : _valueNameBuilder;
+    public PooledStringBuilder ValueNameBuilder => IsCompleted
+        ? throw new InvalidOperationException($"Cannot access '{nameof(ValueNameBuilder)}' after the '{nameof(SymbolComponentInfo)}' has been marked as completed.")
+        : _valueNameBuilder;
 
     public bool IsKeyword { get; set; }
     public bool IsExtensionMethodParameter { get; set; }
@@ -126,41 +124,29 @@ public class SymbolComponentInfo : IDisposable
         Indentation = 4;
     }
 
-    public SymbolComponentInfo(string name, bool isKeyword = false) : this(isKeyword)
-        => _ = NameBuilder.Append(name);
+    public SymbolComponentInfo(string name, bool isKeyword = false) : this(isKeyword) => _ = NameBuilder.Append(name);
 
-    public void AddModifier(string modifier)
-      => _modifiersInternal.Add(modifier);
+    public void AddModifier(string modifier) => _modifiersInternal.Add(modifier);
 
-    public void AddCustomAttribute(SymbolComponentInfo attribute)
-      => _customAttributes.Add(attribute);
+    public void AddCustomAttribute(SymbolComponentInfo attribute) => _customAttributes.Add(attribute);
 
-    public void AddCustomAttributeConstructorArg(string attributeConstructorArg)
-      => _customAttributeConstructorArgs.Add(attributeConstructorArg);
+    public void AddCustomAttributeConstructorArg(string attributeConstructorArg) => _customAttributeConstructorArgs.Add(attributeConstructorArg);
 
-    public void AddCustomAttributeNamedArg((string PropertyName, string PropertyValue) attributeNamedArg)
-      => _customAttributeNamedArgs.Add(attributeNamedArg);
+    public void AddCustomAttributeNamedArg((string PropertyName, string PropertyValue) attributeNamedArg) => _customAttributeNamedArgs.Add(attributeNamedArg);
 
-    public void AddGenericTypeParameter(SymbolComponentInfo typeParameter)
-      => _genericTypeParametersInternal.Add(typeParameter);
+    public void AddGenericTypeParameter(SymbolComponentInfo typeParameter) => _genericTypeParametersInternal.Add(typeParameter);
 
-    public void AddGenericTypeParameterRange(IEnumerable<SymbolComponentInfo> typeParameters)
-      => _genericTypeParametersInternal.AddRange(typeParameters);
+    public void AddGenericTypeParameterRange(IEnumerable<SymbolComponentInfo> typeParameters) => _genericTypeParametersInternal.AddRange(typeParameters);
 
-    public void AddGenericTypeConstraint(SymbolComponentInfo typeConstraint)
-      => _genericTypeConstraintsInternal.Add(typeConstraint);
+    public void AddGenericTypeConstraint(SymbolComponentInfo typeConstraint) => _genericTypeConstraintsInternal.Add(typeConstraint);
 
-    public void AddGenericTypeConstraintRange(IEnumerable<SymbolComponentInfo> typeConstraints)
-      => _genericTypeConstraintsInternal.AddRange(typeConstraints);
+    public void AddGenericTypeConstraintRange(IEnumerable<SymbolComponentInfo> typeConstraints) => _genericTypeConstraintsInternal.AddRange(typeConstraints);
 
-    public void AddInheritedType(SymbolComponentInfo type)
-      => _inheritedTypesInternal.Add(type);
+    public void AddInheritedType(SymbolComponentInfo type) => _inheritedTypesInternal.Add(type);
 
-    public void AddInheritedTypeRange(IEnumerable<SymbolComponentInfo> types)
-      => _inheritedTypesInternal.AddRange(types);
+    public void AddInheritedTypeRange(IEnumerable<SymbolComponentInfo> types) => _inheritedTypesInternal.AddRange(types);
 
-    public void AddParameter(SymbolComponentInfo parameter)
-      => _parametersInternal.Add(parameter);
+    public void AddParameter(SymbolComponentInfo parameter) => _parametersInternal.Add(parameter);
 
     public void Complete()
     {
