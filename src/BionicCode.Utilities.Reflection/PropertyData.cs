@@ -103,7 +103,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             Type targetType = target.GetType();
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                DeclaringTypeData.UnwrapType(),
+                DeclaringTypeData.Type,
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
         }
@@ -150,7 +150,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             Type targetType = target.GetType();
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                DeclaringTypeData.UnwrapType(),
+                DeclaringTypeData.Type,
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
         }
@@ -207,7 +207,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             Type targetType = target.GetType();
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                DeclaringTypeData.UnwrapType(),
+                DeclaringTypeData.Type,
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
         }
@@ -263,7 +263,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             Type targetType = target.GetType();
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                DeclaringTypeData.UnwrapType(),
+                DeclaringTypeData.Type,
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
         }
@@ -319,7 +319,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             Type targetType = target.GetType();
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                DeclaringTypeData.UnwrapType(),
+                DeclaringTypeData.Type,
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
         }
@@ -371,7 +371,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             Type targetType = target.GetType();
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                DeclaringTypeData.UnwrapType(),
+                DeclaringTypeData.Type,
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
         }
@@ -415,7 +415,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             Type targetType = target.GetType();
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                DeclaringTypeData.UnwrapType(),
+                DeclaringTypeData.Type,
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
         }
@@ -457,7 +457,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         Type targetType = typeof(TTarget);
         ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
             targetType,
-            DeclaringTypeData.UnwrapType(),
+            DeclaringTypeData.Type,
             nameof(target),
             $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
@@ -509,7 +509,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             Type targetType = target.GetType();
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                DeclaringTypeData.UnwrapType(),
+                DeclaringTypeData.Type,
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
         }

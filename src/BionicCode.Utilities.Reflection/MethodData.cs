@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,7 @@ using Microsoft.CodeAnalysis;
 internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataInvoker, IStrictMethodDataInvoker
 {
     private static readonly Type s_asyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
+    private static readonly ConcurrentDictionary<InterfaceMappingKey, InterfaceMappingEntry> s_interfaceMappingTable = new();
 
     private SymbolAttributes _symbolAttributes;
     private AccessModifier _accessModifier;
@@ -96,7 +98,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
 
     public MethodData MakeGenericMethodData(TypeList typeDataArguments)
     {
-        Type[] typeArguments = typeDataArguments.Select(t => t.UnwrapType()).ToArray();
+        Type[] typeArguments = typeDataArguments.Select(t => t.Type).ToArray();
         MethodInfo genericMethodInfo = MethodInfo.MakeGenericMethod(typeArguments);
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
     }
@@ -107,9 +109,9 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
     }
 
-    public MethodInfo MakeGenericMethodInfo(TypeList typeArguments) => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
+    public MethodInfo MakeGenericMethodInfo(TypeList typeArguments) => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.Type).ToArray());
 
-    public MethodInfo MakeGenericMethodInfo(params TypeData[] typeArguments) => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
+    public MethodInfo MakeGenericMethodInfo(params TypeData[] typeArguments) => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.Type).ToArray());
 
     public MethodInfo MakeGenericMethodInfo(params Type[] typeArguments) => MethodInfo.MakeGenericMethod(typeArguments);
 
@@ -119,7 +121,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <param name="target">The object on which to invoke the method. For static methods, this parameter is ignored.</param>
     /// <param name="args">An array of arguments to pass to the method. The number, order, and type of the arguments must match the
     /// method's parameters.</param>
-    /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+    /// <returns>The return entryFactory of the invoked method, or null if the method has no return entryFactory.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
     /// parameters, or if the method itself is a generic method definition or contains unassigned generic
     /// parameters.</exception>
@@ -133,7 +135,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <param name="target">The object on which to invoke the method. For static methods, this parameter is ignored.</param>
     /// <param name="args">An array of arguments to pass to the method. The number, order, and type of the arguments must match the
     /// method's parameters.</param>
-    /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+    /// <returns>The return entryFactory of the invoked method, or null if the method has no return entryFactory.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
     /// parameters, or if the method itself is a generic method definition or contains unassigned generic
     /// parameters.</exception>
@@ -159,7 +161,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <param name="target">The object on which to invoke the method. For static methods, this parameter is ignored.</param>
     /// <param name="args">An array of arguments to pass to the method. The number, order, and type of the arguments must match the
     /// method's parameters.</param>
-    /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+    /// <returns>The return entryFactory of the invoked method, or null if the method has no return entryFactory.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
     /// parameters, or if the method itself is a generic method definition or contains unassigned generic
     /// parameters.</exception>
@@ -173,10 +175,10 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// </summary>
     /// <remarks>This method performs validation to ensure that the invocation is valid for the
     /// method's signature and type constraints. Attempting to invoke an asynchronous or open generic method, or
-    /// providing invalid arguments, will result in an exception. For methods with no return value, use a compatible
+    /// providing invalid arguments, will result in an exception. For methods with no return entryFactory, use a compatible
     /// <typeparamref name="TResult"/> type such as void or object.</remarks>
     /// <typeparam name="TTarget">The type of the object on which the method is invoked.</typeparam>
-    /// <typeparam name="TResult">The type of the value returned by the invoked method.</typeparam>
+    /// <typeparam name="TResult">The type of the entryFactory returned by the invoked method.</typeparam>
     /// <param name="target">The instance of the target object on which to invoke the method. For static methods, this parameter is
     /// ignored.</param>
     /// <param name="args">A read-only span containing the arguments to pass to the method. The number, order, and types of arguments
@@ -203,7 +205,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <param name="target">The object on which to invoke the method. For static methods, this parameter is ignored.</param>
     /// <param name="args">An array of arguments to pass to the method. The number, order, and type of the arguments must match the
     /// method's parameters.</param>
-    /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+    /// <returns>The return entryFactory of the invoked method, or null if the method has no return entryFactory.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
     /// parameters, or if the method itself is a generic method definition or contains unassigned generic
     /// parameters.</exception>
@@ -217,10 +219,10 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// </summary>
     /// <remarks>This method performs validation to ensure that the invocation is valid for the
     /// method's signature and type constraints. Attempting to invoke an asynchronous or open generic method, or
-    /// providing invalid arguments, will result in an exception. For methods with no return value, use a compatible
+    /// providing invalid arguments, will result in an exception. For methods with no return entryFactory, use a compatible
     /// <typeparamref name="TResult"/> type such as void or object.</remarks>
     /// <typeparam name="TTarget">The type of the object on which the method is invoked.</typeparam>
-    /// <typeparam name="TResult">The type of the value returned by the invoked method.</typeparam>
+    /// <typeparam name="TResult">The type of the entryFactory returned by the invoked method.</typeparam>
     /// <param name="target">The instance of the target object on which to invoke the method. For static methods, this parameter is
     /// ignored.</param>
     /// <param name="args">A read-only span containing the arguments to pass to the method. The number, order, and types of arguments
@@ -288,7 +290,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// elements must match the method's generic parameter count.</param>
     /// <param name="args">An array of arguments to pass to the method. The number and types of arguments must match the method's
     /// parameters.</param>
-    /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+    /// <returns>The return entryFactory of the invoked method, or null if the method has no return entryFactory.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the declaring type is a generic type definition or contains unassigned generic parameters, or if
     /// the method itself is not a closed generic method.</exception>
     public object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, params object?[]? args) => InvokeOpenGeneric(target, genericMethodParameters, args.AsSpan());
@@ -306,7 +308,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// elements must match the method's generic parameter count.</param>
     /// <param name="args">An array of arguments to pass to the method. The number and types of arguments must match the method's
     /// parameters.</param>
-    /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+    /// <returns>The return entryFactory of the invoked method, or null if the method has no return entryFactory.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the declaring type is a generic type definition or contains unassigned generic parameters, or if
     /// the method itself is not a closed generic method.</exception>
     public object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, ReadOnlySpan<object?> args)
@@ -756,7 +758,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             ArgumentNullException.ThrowIfNull(target, nameof(target));
 
             Type targetType = target.GetType();
-            Type declaringType = DeclaringTypeData.UnwrapType();
+            Type declaringType = DeclaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
                 declaringType,
@@ -773,7 +775,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     {
         if (!IsVoidMethod)
         {
-            throw new InvalidOperationException($"The method '{Name}' does not have a void return type. Use the '{nameof(Invoke)}<TTarget, TResult>()' overload to invoke methods with a return value.");
+            throw new InvalidOperationException($"The method '{Name}' does not have a void return type. Use the '{nameof(Invoke)}<TTarget, TResult>()' overload to invoke methods with a return entryFactory.");
         }
     }
 
@@ -986,16 +988,16 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
     /// Use <see cref="IsIndexerPropertySetMethod"/> to specifically check for indexer set methods and exclude normal properties.
     /// </summary>
-    /// <value>Returns <see langword="true"/> if the method is a property set method; otherwise, <see langword="false"/>.<para/>
-    /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property setters.</value>
+    /// <entryFactory>Returns <see langword="true"/> if the method is a property set method; otherwise, <see langword="false"/>.<para/>
+    /// This entryFactory exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property setters.</entryFactory>
     public bool IsPropertySetMethod => _isPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: true);
 
     /// <summary>
     /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
     /// Use <see cref="IsIndexerPropertyGetMethod"/> to specifically check for indexer get methods and exclude normal properties.
     /// </summary>
-    /// <value>Returns <see langword="true"/> if the method is a property get method; otherwise, <see langword="false"/>.<para/>
-    /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property getters.</value>
+    /// <entryFactory>Returns <see langword="true"/> if the method is a property get method; otherwise, <see langword="false"/>.<para/>
+    /// This entryFactory exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property getters.</entryFactory>
     public bool IsPropertyGetMethod => _isPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: false);
 
     /// <summary>
@@ -1003,21 +1005,21 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// Will not include non-indexer property set methods.<br/>
     /// Use <see cref="IsPropertySetMethod"/> to specifically check for non-indexer property set methods and exclude indexer properties.
     /// </summary>
-    /// <value>Returns <see langword="true"/> if the method is an indexer property set method; otherwise, <see langword="false"/>.<para/>
-    /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property setters.</value>
+    /// <entryFactory>Returns <see langword="true"/> if the method is an indexer property set method; otherwise, <see langword="false"/>.<para/>
+    /// This entryFactory exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property setters.</entryFactory>
     public bool IsIndexerPropertySetMethod => _isIndexerPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: true);
 
     /// <summary>
     /// Checks whether the method is an indexer property get method.
     /// </summary>
-    /// <value>Returns <see langword="true"/> if the method is an indexer property get method; otherwise, <see langword="false"/>.<para/>
-    /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property getters.</value>
+    /// <entryFactory>Returns <see langword="true"/> if the method is an indexer property get method; otherwise, <see langword="false"/>.<para/>
+    /// This entryFactory exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property getters.</entryFactory>
     public bool IsIndexerPropertyGetMethod => _isIndexerPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: false);
 
     /// <summary>
-    /// Gets a value indicating whether the method is a property (non-indexer and indexer) accessor method (get or set).<br/>
+    /// Gets a entryFactory indicating whether the method is a property (non-indexer and indexer) accessor method (get or set).<br/>
     /// </summary>
-    /// <value>Returns <see langword="true"/> if the method is a property accessor method; otherwise, <see langword="false"/>.<para/>
+    /// <entryFactory>Returns <see langword="true"/> if the method is a property accessor method; otherwise, <see langword="false"/>.<para/>
     public bool IsPropertyAccessorMethod => IsPropertyGetMethod || IsPropertySetMethod || IsIndexerPropertyGetMethod || IsIndexerPropertySetMethod;
 
     public bool IsDelegateInvokeMethod => _isDelegateInvokeMethod ??= MethodData.IsDelegateInvoke(this);
@@ -1035,8 +1037,8 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     public bool IsEventAccessorMethod => _isEventAccessorMethod ??= IsEventAddMethod || IsEventRemoveMethod;
 
     /// <summary>
-    /// Gets a value indicating whether the method is an accessor method (property or event).<br/>
-    /// This value exclusively describes accessor methods and therefore also returns <see langword="false"/> for non-accessor methods.
+    /// Gets a entryFactory indicating whether the method is an accessor method (property or event).<br/>
+    /// This entryFactory exclusively describes accessor methods and therefore also returns <see langword="false"/> for non-accessor methods.
     /// </summary>
     public bool IsAccessorMethod => IsPropertyAccessorMethod || IsEventAccessorMethod;
 
@@ -1047,14 +1049,14 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// property getter or setter, or an event adder or remover). Call <see cref="MethodData.IsAccessorMethod"/> to determine whether the
     /// method is an accessor before accessing this property.</remarks>
     /// <exception cref="InvalidOperationException">Thrown if the current method is not an accessor method.</exception>
-    /// <value>The <see cref="PropertyData"/> or <see cref="EventData"/> representing the property or event accessed by this accessor method.</value>
+    /// <entryFactory>The <see cref="PropertyData"/> or <see cref="EventData"/> representing the property or event accessed by this accessor method.</entryFactory>
     public MemberData AccessedMember => IsAccessorMethod
         ? _accessedMember! // The earlier call to MethodData.IsAccessorMethod ensured that _accessedMember is set.
         : throw new InvalidOperationException($"The current method is not an accessor. Call {nameof(MethodData.IsAccessorMethod)} before accessing this property to avoid this exception.");
 
     public bool IsOperatorOverload => _isOperatorOverload ??= MethodData.IsOperator(this);
 
-    public bool IsVoidMethod => _isVoidMethod ??= ReturnTypeData.UnwrapType() == typeof(void);
+    public bool IsVoidMethod => _isVoidMethod ??= ReturnTypeData.Type == typeof(void);
 
     public TypeList GenericMethodParameters => _genericMethodArguments ??= TypeListBuilder.CreateGenericTypeArgumentList(this);
 
@@ -1407,11 +1409,11 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
 
     private static void InitializeDeclaringTypeAndExplicitImplementationContext(MethodData methodData)
     {
-        if (TryGetExplicitInterfaceImplementationInfo(methodData, out TypeData declaringInterfaceTypeData, out TypeData implementingTypeData, out _))
+        if (TryGetExplicitInterfaceImplementationInfo(methodData, out TypeData? declaringInterfaceTypeData, out TypeData? implementingTypeData, out _))
         {
             methodData._isExplicitInterfaceImplementation = true;
-            methodData._declaringTypeHandle = declaringInterfaceTypeData.Handle;
-            methodData._implementingTypeHandle = implementingTypeData.Handle;
+            methodData._declaringTypeHandle = declaringInterfaceTypeData!.Handle;
+            methodData._implementingTypeHandle = implementingTypeData!.Handle;
         }
         else
         {
@@ -1421,48 +1423,54 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    private static bool TryGetExplicitInterfaceImplementationInfo(MethodData methodData, out TypeData declaringInterfaceTypeData, out TypeData implementingTypeData, out MethodData? interfaceDeclaration)
+    private static bool TryGetExplicitInterfaceImplementationInfo(MethodData methodData, out TypeData? declaringInterfaceTypeData, out TypeData? implementingTypeData, out MethodData? interfaceDeclaration)
     {
-        TypeData declaringTypeData = methodData.DeclaringTypeData!;
-        if (declaringTypeData.IsInterface)
-        {
-            // Explicit interface implementations cannot be declared directly on interfaces since they require an implementing type to implement the interface method explicitly.
-            // Therefore, if the declaring type is an interface, we can directly return false without further checks.
+        implementingTypeData = null;
+        interfaceDeclaration = null;
+        declaringInterfaceTypeData = null;
 
-            declaringInterfaceTypeData = declaringTypeData;
-            implementingTypeData = null!;
-            interfaceDeclaration = null;
+        TypeData implementingType = methodData.DeclaringTypeData;
+        if (implementingType.IsInterface
+            || methodData.IsPublic)
+        {
+            // Case 1: Explicit interface implementations cannot be declared directly on interfaces since they require an implementing type to implement the interface method explicitly.
+            // Therefore, if the declaring type is an interface, we can directly return false without further checks.
+            // Case 2: Explicit interface implementations must be non-public.
+            // Therefore, if the method is public, it cannot be an explicit interface implementation and we can directly return false without further checks.
 
             return false;
         }
 
-        TypeList implementedInterfaces = declaringTypeData.InterfacesData;
+        TypeList implementedInterfaces = implementingType.InterfacesData;
         foreach (TypeData interfaceTypeData in implementedInterfaces)
         {
-            Type interfaceType = interfaceTypeData.UnwrapType();
-            InterfaceMapping interfaceMapping = declaringTypeData.UnwrapType().GetInterfaceMap(interfaceType);
-            for (int i = 0; i < interfaceMapping.TargetMethods.Length; i++)
-            {
-                var implementationMethodData = interfaceMapping.TargetMethods[i].ToMethodData();
-                bool isExplicitInterfaceImplementationCandidate = !implementationMethodData.IsPublic;
-                if (isExplicitInterfaceImplementationCandidate
-                    && implementationMethodData.EqualsBySignature(methodData))
-                {
-                    // The method is an explicit interface implementation
-                    declaringInterfaceTypeData = interfaceTypeData;
-                    implementingTypeData = implementationMethodData.DeclaringTypeData;
-                    interfaceDeclaration = interfaceMapping.InterfaceMethods[i].ToMethodData();
+            Type interfaceType = interfaceTypeData.Type;
 
-                    return true;
-                }
+            InterfaceMappingEntry interfaceMapping = s_interfaceMappingTable.GetOrAdd(
+                new InterfaceMappingKey(implementingType.Handle, interfaceTypeData.Handle),
+                _ => InterfaceMappingEntryFactory(implementingType, interfaceTypeData));
+            if (interfaceMapping.ImplementedMethodCacheKeyTable.TryGetValue(methodData.CacheKey, out int mappingIndex)
+                && interfaceMapping.ReverseInterfaceMethodsCacheKeyTable.TryGetValue(mappingIndex, out SymbolReflectionInfoCacheKey interfaceMethodCacheKey))
+            {
+                MethodData interfaceMethod = SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(interfaceMethodCacheKey);
+                declaringInterfaceTypeData = interfaceMethod.DeclaringTypeData;
+                interfaceDeclaration = interfaceMethod;
+                implementingTypeData = implementingType;
+
+                return true;
             }
         }
 
-        declaringInterfaceTypeData = null!;
-        implementingTypeData = null!;
-        interfaceDeclaration = null;
-
         return false;
+    }
+
+    private static InterfaceMappingEntry InterfaceMappingEntryFactory(TypeData declaringTypeData, TypeData interfaceTypeData)
+    {
+        InterfaceMapping mapping = declaringTypeData.Type.GetInterfaceMap(interfaceTypeData.Type);
+        IEnumerable<SymbolReflectionInfoCacheKey> implementedMethodCacheKeys = mapping.TargetMethods.Select(m => m.ToMethodData().CacheKey);
+        IEnumerable<SymbolReflectionInfoCacheKey> interfaceMethodCacheKeys = mapping.InterfaceMethods.Select(m => m.ToMethodData().CacheKey);
+
+        return new InterfaceMappingEntry(implementedMethodCacheKeys, interfaceMethodCacheKeys);
     }
 
     /// <summary>
@@ -1555,4 +1563,79 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     }
 
     #endregion IStrictMethodDataInvoker
+
+    #region InterfaceMappingKey
+    private readonly struct InterfaceMappingKey : IEquatable<InterfaceMappingKey>
+    {
+        public InterfaceMappingKey(RuntimeTypeHandle implementingTypeHandle, RuntimeTypeHandle interfaceTypeHandle)
+        {
+            ImplementingTypeHandle = implementingTypeHandle;
+            InterfaceTypeHandle = interfaceTypeHandle;
+        }
+
+        public RuntimeTypeHandle ImplementingTypeHandle { get; }
+        public RuntimeTypeHandle InterfaceTypeHandle { get; }
+        public bool Equals(InterfaceMappingKey other) => ImplementingTypeHandle.Equals(other.ImplementingTypeHandle) && InterfaceTypeHandle.Equals(other.InterfaceTypeHandle);
+        public override bool Equals(object? obj) => obj is InterfaceMappingKey other && Equals(other);
+        public override int GetHashCode() => HashCode.Combine(ImplementingTypeHandle.GetHashCode(), InterfaceTypeHandle.GetHashCode());
+
+        public static bool operator ==(InterfaceMappingKey left, InterfaceMappingKey right) => left.Equals(right);
+        public static bool operator !=(InterfaceMappingKey left, InterfaceMappingKey right) => !(left == right);
+    }
+    #endregion InterfaceMappingKey
+
+    #region InterfaceMappingEntry
+    private readonly struct InterfaceMappingEntry : IEquatable<InterfaceMappingEntry>
+    {
+        public InterfaceMappingEntry(IEnumerable<SymbolReflectionInfoCacheKey> implementedMethodCacheKeys, IEnumerable<SymbolReflectionInfoCacheKey> interfaceMethodsCacheKeys)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(implementedMethodCacheKeys);
+            ArgumentNullExceptionAdvanced.ThrowIfNull(interfaceMethodsCacheKeys);
+
+            int index = 0;
+            Dictionary<SymbolReflectionInfoCacheKey, int> implementedMethodCacheKeyDictionary = [];
+            Dictionary<int, SymbolReflectionInfoCacheKey> reverseImplementedMethodCacheKeyDictionary = [];
+            foreach (SymbolReflectionInfoCacheKey cacheKey in implementedMethodCacheKeys)
+            {
+                implementedMethodCacheKeyDictionary[cacheKey] = index;
+                reverseImplementedMethodCacheKeyDictionary[index] = cacheKey;
+                index++;
+            }
+
+            ImplementedMethodCacheKeyTable = implementedMethodCacheKeyDictionary.ToImmutableDictionary();
+            ReverseImplementedMethodCacheKeyTable = reverseImplementedMethodCacheKeyDictionary.ToImmutableDictionary();
+
+            index = 0;
+            Dictionary<SymbolReflectionInfoCacheKey, int> interfaceMethodCacheKeyDictionary = [];
+            Dictionary<int, SymbolReflectionInfoCacheKey> reverseInterfaceMethodCacheKeyDictionary = [];
+            foreach (SymbolReflectionInfoCacheKey cacheKey in interfaceMethodsCacheKeys)
+            {
+                interfaceMethodCacheKeyDictionary[cacheKey] = index;
+                reverseInterfaceMethodCacheKeyDictionary[index] = cacheKey;
+                index++;
+            }
+
+            InterfaceMethodsCacheKeyTable = interfaceMethodCacheKeyDictionary.ToImmutableDictionary();
+            ReverseInterfaceMethodsCacheKeyTable = reverseInterfaceMethodCacheKeyDictionary.ToImmutableDictionary();
+        }
+
+        public ImmutableDictionary<SymbolReflectionInfoCacheKey, int> ImplementedMethodCacheKeyTable { get; }
+        public ImmutableDictionary<int, SymbolReflectionInfoCacheKey> ReverseImplementedMethodCacheKeyTable { get; }
+        public ImmutableDictionary<SymbolReflectionInfoCacheKey, int> InterfaceMethodsCacheKeyTable { get; }
+        public ImmutableDictionary<int, SymbolReflectionInfoCacheKey> ReverseInterfaceMethodsCacheKeyTable { get; }
+        public bool Equals(InterfaceMappingEntry other) => ImplementedMethodCacheKeyTable.Equals(other.ImplementedMethodCacheKeyTable)
+            && InterfaceMethodsCacheKeyTable.Equals(other.InterfaceMethodsCacheKeyTable)
+            && ReverseImplementedMethodCacheKeyTable.Equals(other.ReverseImplementedMethodCacheKeyTable)
+            && ReverseInterfaceMethodsCacheKeyTable.Equals(other.ReverseInterfaceMethodsCacheKeyTable);
+        public override bool Equals(object? obj) => obj is InterfaceMappingEntry other && Equals(other);
+        public override int GetHashCode() => HashCode.Combine(
+            ImplementedMethodCacheKeyTable,
+            InterfaceMethodsCacheKeyTable,
+            ReverseImplementedMethodCacheKeyTable,
+            ReverseInterfaceMethodsCacheKeyTable);
+
+        public static bool operator ==(InterfaceMappingEntry left, InterfaceMappingEntry right) => left.Equals(right);
+        public static bool operator !=(InterfaceMappingEntry left, InterfaceMappingEntry right) => !(left == right);
+    }
+    #endregion InterfaceMappingEntry
 }

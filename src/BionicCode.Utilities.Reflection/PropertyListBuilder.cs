@@ -58,7 +58,7 @@
         public static PropertyList Create(TypeData declaringTypeData)
         {
             ArgumentNullException.ThrowIfNull(declaringTypeData);
-            return CreateInternal(declaringTypeData.UnwrapType());
+            return CreateInternal(declaringTypeData.Type);
         }
 
         public static PropertyList Create(Type declaringType)

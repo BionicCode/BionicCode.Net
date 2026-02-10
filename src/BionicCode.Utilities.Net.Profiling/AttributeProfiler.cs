@@ -620,7 +620,7 @@
 
                 MethodInfo methodInfo = methodData.GetMethodInfo();
                 bool isMethodStatic = methodData.IsStatic;
-                bool isFactoryMethod = isMethodStatic && typeDataToProfile.UnwrapType().IsAssignableFrom(methodData.ReturnTypeData.UnwrapType());
+                bool isFactoryMethod = isMethodStatic && typeDataToProfile.Type.IsAssignableFrom(methodData.ReturnTypeData.Type);
                 if (isFindInstanceProviderEnabled
                   && !hasHighPriorityInstanceProvider
                   && isFactoryMethod)
@@ -754,7 +754,7 @@
                   && !hasHighPriorityInstanceProvider
                   && isPropertyStatic
                   && propertyData.CanRead
-                  && typeDataToProfile.UnwrapType().IsAssignableFrom(propertyData.PropertyTypeData.UnwrapType()))
+                  && typeDataToProfile.Type.IsAssignableFrom(propertyData.PropertyTypeData.Type))
                 {
                     ProfilerFactoryAttribute profilerFactoryAttribute = propertyInfo.GetCustomAttribute<ProfilerFactoryAttribute>(false);
                     hasHighPriorityInstanceProvider = profilerFactoryAttribute != null;
@@ -823,7 +823,7 @@
                 FieldInfo fieldInfo = fieldData.GetFieldInfo();
                 if (fieldData.IsStatic
                   && !hasHighPriorityInstanceProvider
-                  && typeDataToProfile.UnwrapType().IsAssignableFrom(fieldData.FieldTypeData.UnwrapType()))
+                  && typeDataToProfile.Type.IsAssignableFrom(fieldData.FieldTypeData.Type))
                 {
                     hasHighPriorityInstanceProvider = fieldInfo.GetCustomAttribute<ProfilerFactoryAttribute>(false) != null;
                     if (hasHighPriorityInstanceProvider || instanceProviderInfo is null)

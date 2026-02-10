@@ -615,7 +615,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The event data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static IEventDataView GetOrCreateEventDataView(SymbolReflectionInfoCacheKey cacheKey)
+    public static EventData GetOrCreateEventDataView(SymbolReflectionInfoCacheKey cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -641,7 +641,7 @@ internal static class SymbolReflectionInfoCache
         // while the underlying cache entries may need to be collected (e.g. in ALC unloading scenarios).
         // Basically return a view object that wraps the cache with the cache key associated (stored in property)
         // and provides access to the represented cache entry via a set of read-only properties and methods that delegate the underlying cache entry obtained from the cache based on the stored key.
-        // This way the cache entrries themselves are private to the scope of the cache and cannot be held strongly by the caller.
+        // This way the cache entries themselves are private to the scope of the cache and cannot be held strongly by the caller.
         return eventData;
     }
 
@@ -653,7 +653,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The method data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static MethodData GetOrCreateMethodDataCacheEntry(ref SymbolReflectionInfoCacheKey cacheKey)
+    public static MethodData GetOrCreateMethodDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -662,11 +662,9 @@ internal static class SymbolReflectionInfoCache
             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a method symbol.");
 
         // Optimization: Avoid normalization for non-anonymous symbols
-        MethodData methodData = cacheKey.IsAnonymousSymbolKey
-            ? GetOrCreateNormalizedSymbolInfoDataCacheEntry<MethodData>(ref cacheKey)
-            : SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is MethodData existingMethodData
-                ? existingMethodData
-                : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing method data found for the provided non-anonymous cache key.");
+        MethodData methodData = SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is MethodData existingMethodData
+            ? existingMethodData
+            : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing method data found for the provided non-anonymous cache key.");
 
         return methodData;
     }

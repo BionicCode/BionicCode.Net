@@ -57,7 +57,7 @@
         internal static MethodList Create(TypeData declaringTypeData)
         {
             ArgumentNullException.ThrowIfNull(declaringTypeData);
-            return CreateInternal(declaringTypeData.UnwrapType());
+            return CreateInternal(declaringTypeData.Type);
         }
 
         internal static MethodList Create(Type declaringType)

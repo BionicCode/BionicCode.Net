@@ -58,7 +58,7 @@
         public static EventList Create(TypeData declaringTypeData)
         {
             ArgumentNullException.ThrowIfNull(declaringTypeData);
-            return CreateInternal(declaringTypeData.UnwrapType());
+            return CreateInternal(declaringTypeData.Type);
         }
 
         public static EventList Create(Type declaringType)

@@ -22,19 +22,21 @@ internal readonly struct WellKnownTypeDescriptor : IEquatable<WellKnownTypeDescr
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type);
 
+        Type = type;
         TypeHandle = type.TypeHandle;
         TypeName = type.FullName ?? type.Name;
         TypeNamespace = type.Namespace ?? string.Empty;
         IsAnonymous = false;
     }
 
+    public Type Type { get; }
     public RuntimeTypeHandle TypeHandle { get; }
     public string TypeName { get; }
     public string TypeNamespace { get; }
     public bool IsAnonymous { get; }
 
-    public bool Equals(WellKnownTypeDescriptor other)
-        => IsAnonymous == other.IsAnonymous
+    public bool Equals(WellKnownTypeDescriptor other) => IsAnonymous == other.IsAnonymous
+        && Type == other.Type
         && TypeHandle.Equals(other.TypeHandle)
         && TypeName.Equals(other.TypeName, StringComparison.Ordinal)
         && TypeNamespace.Equals(other.TypeNamespace, StringComparison.Ordinal);
@@ -43,6 +45,7 @@ internal readonly struct WellKnownTypeDescriptor : IEquatable<WellKnownTypeDescr
     {
         var hashCode = new HashCode();
         hashCode.Add(IsAnonymous);
+        hashCode.Add(Type);
         hashCode.Add(TypeHandle);
         hashCode.Add(TypeName, StringComparer.Ordinal);
         hashCode.Add(TypeNamespace, StringComparer.Ordinal);

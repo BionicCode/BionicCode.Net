@@ -86,7 +86,9 @@ internal class TypeData : SymbolInfoData
     private bool? _isNestedFamANDAssem;
     private bool? _isVisible;
     private string? _namespace;
-    private readonly PropertyList? _explicitInterfaceProperties;
+    private PropertyList? _explicitInterfaceProperties;
+    private MethodList? _explicitInterfaceMethods;
+    private EventList? _explicitInterfaceEvents;
     private readonly WellKnownTypeDescriptor _descriptor;
 
     internal TypeData(SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
@@ -95,17 +97,20 @@ internal class TypeData : SymbolInfoData
         ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey, nameof(symbolInfoDataCacheKey));
 
         _descriptor = symbolInfoDataCacheKey.TypeDescriptor;
+        Type = _descriptor.Type;
         Handle = _descriptor.TypeHandle;
         _namespace = _descriptor.TypeNamespace;
         _memberTable = [];
         _memberTableStateFlagTable = new ConcurrentDictionary<SymbolKind, bool>();
     }
 
+    internal Type Type { get; }
+
     /// <summary>
     /// Returns the underlying <see cref="Type"/> represented by this handle.
     /// </summary>
     /// <returns>A <see cref="Type"/> object that is referenced by this handle.</returns>
-    internal Type UnwrapType() => Type.GetTypeFromHandle(Handle)!;
+    //internal Type Type => Type.GetTypeFromHandle(Handle)!;
 
     /// <summary>
     /// Attempts to retrieve the property data associated with the specified property name.
@@ -121,6 +126,12 @@ internal class TypeData : SymbolInfoData
         return Properties.TryGetPropertyByName(propertyName, out propertyData);
     }
 
+    public bool TryGetExplicitInterfacePropertyByName(string propertyName, out PropertyData? propertyData)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
+        return ExplicitInterfaceProperties.TryGetPropertyByName(propertyName, out propertyData);
+    }
+
     public bool TryGetIndexerPropertyByParameterList(ParameterList parameters, PropertyAccessors propertyAccessor, out PropertyData? propertyData)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(parameters);
@@ -128,6 +139,32 @@ internal class TypeData : SymbolInfoData
 
         propertyData = null;
         foreach (PropertyData property in Properties)
+        {
+            ParameterList indexerAccessorParameters = propertyAccessor switch
+            {
+                // Since we use binary AND to bit mask flags, we we also catch the combined flag GetAndSet here.
+                var accessorSpecifier when (accessorSpecifier & PropertyAccessors.Get) != 0 && property.CanRead => property.PropertyGetMethodParameters,
+                var accessorSpecifier when (accessorSpecifier & PropertyAccessors.Set) != 0 && property.CanWrite => property.PropertySetMethodParameters,
+                _ => throw new NotSupportedException($"The value '{propertyAccessor}' is not supported."),
+            };
+
+            if (indexerAccessorParameters.Equals(parameters))
+            {
+                propertyData = property;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool TryGetExplicitInterfaceIndexerPropertyByParameterList(ParameterList parameters, PropertyAccessors propertyAccessor, out PropertyData? propertyData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(parameters);
+        ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessors>(propertyAccessor);
+
+        propertyData = null;
+        foreach (PropertyData property in ExplicitInterfaceProperties)
         {
             ParameterList indexerAccessorParameters = propertyAccessor switch
             {
@@ -161,6 +198,32 @@ internal class TypeData : SymbolInfoData
         };
         propertyData = null;
         foreach (PropertyData property in Properties)
+        {
+            ParameterList indexerAccessorParameters = indexerAccessorParametersReader.Invoke(property);
+            if (ParameterListEqualityComparer.Equals(indexerAccessorParameters, indexerParameters))
+            {
+                propertyData = property;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool TryGetExplicitInterfaceIndexerPropertyByParameterList(MethodParameterInfoList indexerParameters, PropertyAccessors indexerPropertyAccessor, out PropertyData? propertyData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(indexerParameters);
+        ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessors>(indexerPropertyAccessor);
+
+        Func<PropertyData, ParameterList> indexerAccessorParametersReader = indexerPropertyAccessor switch
+        {
+            // Since we use binary AND to bit mask flags, we we also catch the combined flag GetAndSet here.
+            var accessorSpecifier when (accessorSpecifier & PropertyAccessors.Get) != 0 => property => property.IsIndexer && property.CanRead ? property.PropertyGetMethodParameters : ParameterList.Empty,
+            var accessorSpecifier when (accessorSpecifier & PropertyAccessors.Set) != 0 => property => property.IsIndexer && property.CanWrite ? property.PropertySetMethodParameters : ParameterList.Empty,
+            _ => throw new NotSupportedException($"The value '{indexerPropertyAccessor}' is not supported."),
+        };
+        propertyData = null;
+        foreach (PropertyData property in ExplicitInterfaceProperties)
         {
             ParameterList indexerAccessorParameters = indexerAccessorParametersReader.Invoke(property);
             if (ParameterListEqualityComparer.Equals(indexerAccessorParameters, indexerParameters))
@@ -216,11 +279,26 @@ internal class TypeData : SymbolInfoData
         static bool equalityComparer(ParameterList foundMethodParameters, ParameterList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
         {
             return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
-                            && foundMethodParameters.Equals(requestedMethodParameters)
-                            && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
+                && foundMethodParameters.Equals(requestedMethodParameters)
+                && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
         }
 
-        return TryGetMethodInternal(methodName, genericMethodParameters, parameters, equalityComparer, out methodData);
+        return TryGetMethodInternal(methodName, isExplicitImplementation: false, genericMethodParameters, parameters, equalityComparer, out methodData);
+    }
+
+    public bool TryGetExplicitInterfaceMethod(string methodName, TypeList genericMethodParameters, ParameterList parameters, out MethodData? methodData)
+    {
+        parameters = parameters.OrEmpty();
+        genericMethodParameters = genericMethodParameters.OrEmpty();
+
+        static bool equalityComparer(ParameterList foundMethodParameters, ParameterList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
+        {
+            return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
+                && foundMethodParameters.Equals(requestedMethodParameters)
+                && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
+        }
+
+        return TryGetMethodInternal(methodName, isExplicitImplementation: true, genericMethodParameters, parameters, equalityComparer, out methodData);
     }
 
     public bool TryGetMethod(string methodName, TypeList genericMethodParameters, MethodParameterInfoList parameters, out MethodData? methodData)
@@ -231,18 +309,34 @@ internal class TypeData : SymbolInfoData
         static bool equalityComparer(ParameterList foundMethodParameters, MethodParameterInfoList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
         {
             return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
-                            && ParameterListEqualityComparer.Equals(foundMethodParameters, requestedMethodParameters)
-                            && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
+                && ParameterListEqualityComparer.Equals(foundMethodParameters, requestedMethodParameters)
+                && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
         }
 
-        return TryGetMethodInternal(methodName, genericMethodParameters, parameters, equalityComparer, out methodData);
+        return TryGetMethodInternal(methodName, isExplicitImplementation: false, genericMethodParameters, parameters, equalityComparer, out methodData);
     }
 
-    private bool TryGetMethodInternal<TParameterList>(string requestedMethodName, TypeList requestedGenericMethodParameters, TParameterList requestedMethodParameters, MethodEqualityComparer<TParameterList> equalityComparer, out MethodData? requestedMethodData)
+    public bool TryGetExplicitInterfaceMethod(string methodName, TypeList genericMethodParameters, MethodParameterInfoList parameters, out MethodData? methodData)
+    {
+        parameters = parameters.OrEmpty();
+        genericMethodParameters = genericMethodParameters.OrEmpty();
+
+        static bool equalityComparer(ParameterList foundMethodParameters, MethodParameterInfoList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
+        {
+            return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
+                && ParameterListEqualityComparer.Equals(foundMethodParameters, requestedMethodParameters)
+                && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
+        }
+
+        return TryGetMethodInternal(methodName, isExplicitImplementation: true, genericMethodParameters, parameters, equalityComparer, out methodData);
+    }
+
+    private bool TryGetMethodInternal<TParameterList>(string requestedMethodName, bool isExplicitImplementation, TypeList requestedGenericMethodParameters, TParameterList requestedMethodParameters, MethodEqualityComparer<TParameterList> equalityComparer, out MethodData? requestedMethodData)
         where TParameterList : notnull, IEnumerable
     {
         requestedMethodData = null;
-        foreach (MethodData method in Methods)
+        MethodList source = isExplicitImplementation ? ExplicitInterfaceMethods : Methods;
+        foreach (MethodData method in source)
         {
             ParameterList methodParameters = method.Parameters;
             TypeList methodGenericMethodParameters = method.GenericMethodParameters;
@@ -315,11 +409,11 @@ internal class TypeData : SymbolInfoData
         ArgumentException.ThrowIfNullOrWhiteSpace(eventName);
         return Events.TryGetEventByName(eventName, out eventData);
     }
-    public bool TryGetExplicitEvent(RuntimeTypeHandle declaringInterfaceTypeHandle, string eventName, out EventData? eventData)
+    public bool TryGetExplicitInterfaceEvent(RuntimeTypeHandle declaringInterfaceTypeHandle, string eventName, out EventData? eventData)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringInterfaceTypeHandle);
         ArgumentException.ThrowIfNullOrWhiteSpace(eventName);
-        return ExplicitEventImplementations.TryGetEventByName(eventName, out eventData);
+        return ExplicitInterfaceEvents.TryGetEventByName(eventName, out eventData);
     }
 
     public IEnumerable<EventData> EnumerateEvents(BindingFlags bindingFlags = ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
@@ -393,10 +487,10 @@ internal class TypeData : SymbolInfoData
         {
             // Accessing member list properties ensure cache is built up
 
-            SymbolKind.MemberMethod => Methods,
-            SymbolKind.MemberProperty => Properties,
+            SymbolKind.MemberMethod => Methods.Concat(ExplicitInterfaceMethods),
+            SymbolKind.MemberProperty => Properties.Concat(ExplicitInterfaceProperties),
             SymbolKind.MemberField => Fields,
-            SymbolKind.MemberEvent => Events,
+            SymbolKind.MemberEvent => Events.Concat(ExplicitInterfaceEvents),
             SymbolKind.MemberConstructor => Constructors,
             _ => throw new NotSupportedException($"The member kind '{typeof(SymbolKind).FullName}.{memberKind}' is not supported."),
         };
@@ -410,85 +504,118 @@ internal class TypeData : SymbolInfoData
         }
     }
 
-    private IEnumerable<TMemberData> BuildAndEnumerateMemberKindCache<TMemberData>(MemberInfo[] members, BindingFlags bindingFlags) where TMemberData : MemberData
+    private void BuildAndEnumerateMemberKindCache<TMemberData>(MemberInfo[] members, BindingFlags bindingFlags) where TMemberData : MemberData
     {
         Func<MemberInfo, MemberData> readReflectionCache;
         Action<MemberData> addMemberToTypeDataMemberList;
+        Action fieldInitializer;
         SymbolKind memberKind;
         switch (typeof(TMemberData))
         {
             case Type memberType when memberType == typeof(PropertyData):
                 readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((PropertyInfo)memberInfo);
                 IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(Handle);
-                addMemberToTypeDataMemberList = propertyData => _ = propertyListBuilder.Add((PropertyData)propertyData);
+                IPropertyListBuilder explicitPropertyListBuilder = PropertyListBuilder.New(Handle);
+                addMemberToTypeDataMemberList = memberData =>
+                {
+                    var propertyData = (PropertyData)memberData;
+                    if (propertyData.IsExplicitInterfaceImplementation)
+                    {
+                        _ = explicitPropertyListBuilder.Add(propertyData);
+                    }
+                    else
+                    {
+                        _ = propertyListBuilder.Add(propertyData);
+                    }
+                };
+
+                fieldInitializer = () =>
+                {
+                    _explicitInterfaceProperties = explicitPropertyListBuilder.Build();
+                    _properties = propertyListBuilder.Build();
+                };
                 memberKind = SymbolKind.MemberProperty;
                 break;
             case Type memberType when memberType == typeof(MethodData):
                 readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((MethodInfo)memberInfo);
                 IMethodListBuilder methodListBuilder = MethodListBuilder.New(Handle);
-                addMemberToTypeDataMemberList = methodData => methodListBuilder.Add((MethodData)methodData);
+                IMethodListBuilder explicitMethodListBuilder = MethodListBuilder.New(Handle);
+                addMemberToTypeDataMemberList = methodData =>
+                {
+                    if (methodData.IsExplicitInterfaceImplementation)
+                    {
+                        _ = explicitMethodListBuilder.Add((MethodData)methodData);
+                    }
+                    else
+                    {
+                        _ = methodListBuilder.Add((MethodData)methodData);
+                    }
+                };
+
+                fieldInitializer = () =>
+                {
+                    _methods = methodListBuilder.Build();
+                    _explicitInterfaceMethods = explicitMethodListBuilder.Build();
+                };
                 memberKind = SymbolKind.MemberMethod;
                 break;
             case Type memberType when memberType == typeof(FieldData):
                 readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((FieldInfo)memberInfo);
                 IFieldListBuilder fieldListBuilder = FieldListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = fieldData => fieldListBuilder.Add((FieldData)fieldData);
+                fieldInitializer = () => _fields = fieldListBuilder.Build();
                 memberKind = SymbolKind.MemberField;
                 break;
             case Type memberType when memberType == typeof(EventData):
                 readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((EventInfo)memberInfo);
                 IEventListBuilder eventListBuilder = EventListBuilder.New(Handle);
-                addMemberToTypeDataMemberList = eventData => eventListBuilder.Add((EventData)eventData);
+                IEventListBuilder explicitEventListBuilder = EventListBuilder.New(Handle);
+                addMemberToTypeDataMemberList = eventData =>
+                {
+                    if (eventData.IsExplicitInterfaceImplementation)
+                    {
+                        _ = explicitEventListBuilder.Add((EventData)eventData);
+                    }
+                    else
+                    {
+                        _ = eventListBuilder.Add((EventData)eventData);
+                    }
+                };
+
+                fieldInitializer = () =>
+                {
+                    _events = eventListBuilder.Build();
+                    _explicitInterfaceEvents = explicitEventListBuilder.Build();
+                };
                 memberKind = SymbolKind.MemberEvent;
                 break;
             case Type memberType when memberType == typeof(ConstructorData):
                 readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((ConstructorInfo)memberInfo);
                 IConstructorListBuilder constructorListBuilder = ConstructorListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = constructorData => constructorListBuilder.Add((ConstructorData)constructorData);
+                fieldInitializer = () => _constructors = constructorListBuilder.Build();
                 memberKind = SymbolKind.MemberConstructor;
                 break;
             default:
                 throw new NotSupportedException($"The member type '{typeof(TMemberData).FullName}' is not supported.");
         }
 
-        int memberIndex = 0;
-        try
+        for (int memberIndex = 0; memberIndex < members.Length; memberIndex++)
         {
-            for (; memberIndex < members.Length; memberIndex++)
+            MemberInfo memberInfo = members[memberIndex];
+            if (memberInfo is null)
             {
-                MemberInfo memberInfo = members[memberIndex];
-                if (memberInfo is null)
-                {
-                    continue;
-                }
-
-                var memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
-                addMemberToTypeDataMemberList.Invoke(memberDataFromReflectionCache);
-                SymbolReflectionInfoCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
-                if (_memberTable.TryAdd(cacheKey))
-                {
-                    bool isValidMember = IsValidMember(memberDataFromReflectionCache, bindingFlags);
-                    if (isValidMember)
-                    {
-                        yield return memberDataFromReflectionCache;
-                    }
-                }
-            }
-        }
-        finally
-        {
-            // Caller may has broke out of enumeration prematurely. So we need to finish cache building.
-            for (; memberIndex < members.Length; memberIndex++)
-            {
-                MemberInfo memberInfo = members[memberIndex];
-                var memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
-                addMemberToTypeDataMemberList.Invoke(memberDataFromReflectionCache);
-                SymbolReflectionInfoCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
-                _ = _memberTable.TryAdd(cacheKey);
+                continue;
             }
 
-            _ = _memberTableStateFlagTable.TryAdd(memberKind, true);
+            var memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
+            addMemberToTypeDataMemberList.Invoke(memberDataFromReflectionCache);
+            SymbolReflectionInfoCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
+            _ = _memberTable.TryAdd(cacheKey);
         }
+
+        _ = _memberTableStateFlagTable.TryAdd(memberKind, true);
+        fieldInitializer.Invoke();
     }
 
     private bool IsCacheBuildForMemberKind(SymbolKind memberKind) => _memberTableStateFlagTable.TryGetValue(memberKind, out bool isCacheReady)
@@ -556,7 +683,7 @@ internal class TypeData : SymbolInfoData
             }
             else
             {
-                Type genericTypeDefinitionType = UnwrapType().GetGenericTypeDefinition();
+                Type genericTypeDefinitionType = Type.GetGenericTypeDefinition();
                 _genericTypeDefinition = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericTypeDefinitionType);
             }
 
@@ -569,7 +696,7 @@ internal class TypeData : SymbolInfoData
     public bool CanDeclareExtensionMethod => (bool)(bool?)(_canDeclareExtensionMethod ??= TypeData.CanDeclareExtensionMethods(this));
 
     /// <inheritdoc/>
-    public override IList<CustomAttributeData> AttributeData => _attributeData ??= UnwrapType().GetCustomAttributesData();
+    public override IList<CustomAttributeData> AttributeData => _attributeData ??= Type.GetCustomAttributesData();
 
     public AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
         ? (_accessModifier = TypeData.GetAccessModifier(this))
@@ -615,7 +742,7 @@ internal class TypeData : SymbolInfoData
     public override string FullyQualifiedDisplayName => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
     /// <inheritdoc/>
-    public override string AssemblyName => _assemblyName ??= UnwrapType().Assembly.GetName().Name ?? string.Empty;
+    public override string AssemblyName => _assemblyName ??= Type.Assembly.GetName().Name ?? string.Empty;
 
     public bool IsStatic => _isStatic ??= TypeData.IsTypeStatic(this);
 
@@ -623,23 +750,23 @@ internal class TypeData : SymbolInfoData
       ? (_symbolAttributes = TypeData.GetAttributes(this))
       : _symbolAttributes;
 
-    public bool IsAbstract => _isAbstract ??= UnwrapType().IsAbstract;
+    public bool IsAbstract => _isAbstract ??= Type.IsAbstract;
 
-    public bool IsSealed => _isSealed ??= UnwrapType().IsSealed;
+    public bool IsSealed => _isSealed ??= Type.IsSealed;
 
-    public bool IsByRef => _isByRef ??= UnwrapType().IsByRef;
+    public bool IsByRef => _isByRef ??= Type.IsByRef;
 
-    public bool IsByRefLike => _isByRefLike ??= UnwrapType().IsByRefLike;
+    public bool IsByRefLike => _isByRefLike ??= Type.IsByRefLike;
 
-    public bool IsDelegate => _isDelegate ??= TypeData.IsTypeDelegate(UnwrapType());
+    public bool IsDelegate => _isDelegate ??= TypeData.IsTypeDelegate(Type);
 
-    public bool IsClass => _isClass ??= UnwrapType().IsClass;
+    public bool IsClass => _isClass ??= Type.IsClass;
 
-    public bool IsInterface => _isInterface ??= UnwrapType().IsInterface;
+    public bool IsInterface => _isInterface ??= Type.IsInterface;
 
-    public bool IsEnum => _isEnum ??= UnwrapType().IsEnum;
+    public bool IsEnum => _isEnum ??= Type.IsEnum;
 
-    public bool IsValueType => _isValueType ??= UnwrapType().IsValueType;
+    public bool IsValueType => _isValueType ??= Type.IsValueType;
 
     public bool IsReferenceType => !IsValueType;
 
@@ -647,21 +774,21 @@ internal class TypeData : SymbolInfoData
 
     public bool IsReadOnlyStruct => _isReadOnlyStruct ??= IsReadOnlyStructInternal(this);
 
-    public bool IsPublic => _isPublic ??= UnwrapType().IsPublic;
+    public bool IsPublic => _isPublic ??= Type.IsPublic;
 
-    public bool IsNestedPrivate => _isNestedPrivate ??= UnwrapType().IsNestedPrivate;
+    public bool IsNestedPrivate => _isNestedPrivate ??= Type.IsNestedPrivate;
 
-    public bool IsNestedAssembly => _isNestedAssembly ??= UnwrapType().IsNestedAssembly;
+    public bool IsNestedAssembly => _isNestedAssembly ??= Type.IsNestedAssembly;
 
-    public bool IsNestedFamily => _isNestedFamily ??= UnwrapType().IsNestedFamily;
+    public bool IsNestedFamily => _isNestedFamily ??= Type.IsNestedFamily;
 
-    public bool IsNestedPublic => _isNestedPublic ??= UnwrapType().IsNestedPublic;
+    public bool IsNestedPublic => _isNestedPublic ??= Type.IsNestedPublic;
 
-    public bool IsNestedFamORAssem => _isNestedFamORAssem ??= UnwrapType().IsNestedFamORAssem;
+    public bool IsNestedFamORAssem => _isNestedFamORAssem ??= Type.IsNestedFamORAssem;
 
-    public bool IsNestedFamANDAssem => _isNestedFamANDAssem ??= UnwrapType().IsNestedFamANDAssem;
+    public bool IsNestedFamANDAssem => _isNestedFamANDAssem ??= Type.IsNestedFamANDAssem;
 
-    public bool IsVisible => _isVisible ??= UnwrapType().IsVisible;
+    public bool IsVisible => _isVisible ??= Type.IsVisible;
 
     public bool IsSubclass
     {
@@ -669,7 +796,7 @@ internal class TypeData : SymbolInfoData
         {
             if (_isSubclass is null)
             {
-                Type? baseType = UnwrapType().BaseType;
+                Type? baseType = Type.BaseType;
                 _isSubclass = baseType is not null
                   && baseType != typeof(object)
                   && baseType != typeof(ValueType);
@@ -685,7 +812,7 @@ internal class TypeData : SymbolInfoData
         {
             if (_baseTypes is null && IsSubclass)
             {
-                Type? baseType = UnwrapType().BaseType;
+                Type? baseType = Type.BaseType;
                 _baseTypes = baseType is null
                     ? null
                     : SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(baseType);
@@ -718,24 +845,24 @@ internal class TypeData : SymbolInfoData
         }
     }
 
-    public bool IsGenericTypeParameter => _isGenericTypeParameter ??= UnwrapType().IsGenericTypeParameter;
+    public bool IsGenericTypeParameter => _isGenericTypeParameter ??= Type.IsGenericTypeParameter;
 
-    public bool IsGenericMethodParameter => _isGenericMethodParameter ??= UnwrapType().IsGenericMethodParameter;
+    public bool IsGenericMethodParameter => _isGenericMethodParameter ??= Type.IsGenericMethodParameter;
 
-    public bool IsGenericParameter => _isGenericParameter ??= UnwrapType().IsGenericParameter;
+    public bool IsGenericParameter => _isGenericParameter ??= Type.IsGenericParameter;
 
-    public bool IsGenericType => _isGenericType ??= UnwrapType().IsGenericType;
+    public bool IsGenericType => _isGenericType ??= Type.IsGenericType;
 
     /// <summary>
     /// Gets a value indicating whether the type is a built-in .NET type.
     /// </summary>
     public bool IsBuiltInType => _isBuiltInType ??= TypeData.IsTypeBuiltInType(this);
 
-    public bool IsGenericTypeDefinition => _isGenericTypeDefinition ??= UnwrapType().IsGenericTypeDefinition;
+    public bool IsGenericTypeDefinition => _isGenericTypeDefinition ??= Type.IsGenericTypeDefinition;
 
-    public bool ContainsGenericParameters => _containsGenericParameters ??= UnwrapType().ContainsGenericParameters;
+    public bool ContainsGenericParameters => _containsGenericParameters ??= Type.ContainsGenericParameters;
 
-    public GenericParameterAttributes GenericParameterAttributes => _genericParameterAttributes ??= UnwrapType().GenericParameterAttributes;
+    public GenericParameterAttributes GenericParameterAttributes => _genericParameterAttributes ??= Type.GenericParameterAttributes;
 
     public TypeList GenericParameterConstraintsData => _genericParameterConstraintsData ??= TypeListBuilder.CreateGenericTypeArgumentConstraintList(this);
 
@@ -759,10 +886,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_properties is null)
             {
-                Type thisType = UnwrapType();
-                PropertyInfo[] visibleProperties = thisType.GetProperties(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                _properties = BuildAndEnumerateMemberKindCache<PropertyData>(visibleProperties, ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
-                    .ToPropertyList();
+                PropertyInfo[] visibleProperties = Type.GetProperties(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                BuildAndEnumerateMemberKindCache<PropertyData>(visibleProperties, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             }
 
             return _properties!;
@@ -775,72 +900,13 @@ internal class TypeData : SymbolInfoData
         {
             if (_explicitInterfaceProperties is null)
             {
-                Type thisType = UnwrapType();
-                Type[] implementedInterfaces = thisType.GetInterfaces();
-                IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(Handle);
-                foreach (Type implementedInterface in implementedInterfaces)
-                {
-                    InterfaceMapping interfaceMap = thisType.GetInterfaceMap(implementedInterface);
-
-                    foreach (PropertyInfo interfacePropertyInfo in implementedInterface.GetProperties())
-                    {
-                        (MethodData? getMethodData, MethodData? setMethodData) propertyAccessors;
-                        if (interfacePropertyInfo.CanRead)
-                        {
-                            MethodInfo? interfaceGetAccessorMethod = interfacePropertyInfo.GetMethod;
-                            int mapIndex = Array.IndexOf(interfaceMap.InterfaceMethods, interfaceGetAccessorMethod);
-                            var implementedPropertyAccessorMethodData = interfaceMap.TargetMethods[mapIndex].ToMethodData();
-                            if (implementedPropertyAccessorMethodData.IsPublic)
-                            {
-                                // Not an explicit interface implementation (it's a normal public interface implementation)
-                                continue;
-                            }
-
-                            propertyAccessors.getMethodData = implementedPropertyAccessorMethodData;
-                        }
-
-                        if (interfacePropertyInfo.CanWrite)
-                        {
-                            MethodInfo? interfaceSetAccessorMethod = interfacePropertyInfo.SetMethod;
-                            int mapIndex = Array.IndexOf(interfaceMap.InterfaceMethods, interfaceSetAccessorMethod);
-                            var implementedPropertyAccessorMethodData = interfaceMap.TargetMethods[mapIndex].ToMethodData();
-                            if (implementedPropertyAccessorMethodData.IsPublic)
-                            {
-                                // Not an explicit interface implementation (it's a normal public interface implementation)
-                                continue;
-                            }
-
-                            propertyAccessors.setMethodData = implementedPropertyAccessorMethodData;
-                        }
-                    }
-
-                    MethodInfo[] implementedPropertyAccessors = interfaceMap.TargetMethods;
-                    foreach (MethodInfo implementedPropertyAccessor in implementedPropertyAccessors)
-                    {
-                        if (implementedPropertyAccessor.IsPublic)
-                        {
-                            // Not an explicit interface implementation (it's a normal public interface implementation)
-                            continue;
-                        }
-
-                        RuntimeMethodHandle accessorMethodHandle = implementedPropertyAccessor.MethodHandle;
-                        if (propertyAccessorMap.TryGetValue(accessorMethodHandle, out PropertyData? propertyData))
-                        {
-                            // Property is an explicit interface implementation
-                            propertyListBuilder.Add(propertyData);
-                        }
-                    }
-                    RuntimeMethodHandle
-                }
-
-                _properties = BuildAndEnumerateMemberKindCache<PropertyData>(visibleProperties, ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
-                    .ToPropertyList();
+                PropertyInfo[] visibleProperties = Type.GetProperties(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                BuildAndEnumerateMemberKindCache<PropertyData>(visibleProperties, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             }
 
-            return _properties!;
+            return _explicitInterfaceProperties!;
         }
     }
-
 
     /// <summary>
     /// Gets all reachable methods of the current type.
@@ -860,13 +926,24 @@ internal class TypeData : SymbolInfoData
         {
             if (_methods is null)
             {
-                Type thisType = UnwrapType();
-                MethodInfo[] visibleMethods = thisType.GetMethods(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                _methods = BuildAndEnumerateMemberKindCache<MethodData>(visibleMethods, ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
-                    .ToMethodList();
+                MethodInfo[] visibleMethods = Type.GetMethods(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                BuildAndEnumerateMemberKindCache<MethodData>(visibleMethods, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             }
 
             return _methods!;
+        }
+    }
+    public MethodList ExplicitInterfaceMethods
+    {
+        get
+        {
+            if (_explicitInterfaceMethods is null)
+            {
+                MethodInfo[] visibleMethods = Type.GetMethods(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                BuildAndEnumerateMemberKindCache<MethodData>(visibleMethods, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+            }
+
+            return _explicitInterfaceMethods!;
         }
     }
 
@@ -887,10 +964,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_fields is null)
             {
-                Type thisType = UnwrapType();
-                FieldInfo[] visibleFields = thisType.GetFields(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                _fields = BuildAndEnumerateMemberKindCache<FieldData>(visibleFields, ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
-                    .ToFieldList();
+                FieldInfo[] visibleFields = Type.GetFields(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                BuildAndEnumerateMemberKindCache<FieldData>(visibleFields, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             }
 
             return _fields!;
@@ -915,13 +990,24 @@ internal class TypeData : SymbolInfoData
         {
             if (_events is null)
             {
-                Type thisType = UnwrapType();
-                EventInfo[] visibleEvents = thisType.GetEvents(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                _events = BuildAndEnumerateMemberKindCache<EventData>(visibleEvents, ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
-                    .ToEventList();
+                EventInfo[] visibleEvents = Type.GetEvents(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                BuildAndEnumerateMemberKindCache<EventData>(visibleEvents, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             }
 
             return _events!;
+        }
+    }
+    public EventList ExplicitInterfaceEvents
+    {
+        get
+        {
+            if (_explicitInterfaceEvents is null)
+            {
+                EventInfo[] visibleEvents = Type.GetEvents(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                BuildAndEnumerateMemberKindCache<EventData>(visibleEvents, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+            }
+
+            return _explicitInterfaceEvents!;
         }
     }
 
@@ -942,10 +1028,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_constructors is null)
             {
-                Type thisType = UnwrapType();
-                ConstructorInfo[] visibleConstructors = thisType.GetConstructors(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                _constructors = BuildAndEnumerateMemberKindCache<ConstructorData>(visibleConstructors, ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
-                    .ToConstructorList();
+                ConstructorInfo[] visibleConstructors = Type.GetConstructors(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                BuildAndEnumerateMemberKindCache<ConstructorData>(visibleConstructors, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
             }
 
             return _constructors!;
@@ -957,7 +1041,7 @@ internal class TypeData : SymbolInfoData
 
     private static bool IsTypeBuiltInType(TypeData typeData)
     {
-        var typeReference = new CodeTypeReference(typeData.UnwrapType());
+        var typeReference = new CodeTypeReference(typeData.Type);
         string typeName = ReflectionHelperExtensions.CodeProvider.GetTypeOutput(typeReference);
         int typeNameStartIndex = typeName.LastIndexOf('.') + 1;
         if (typeNameStartIndex > 0)
@@ -970,7 +1054,7 @@ internal class TypeData : SymbolInfoData
 
     private static bool CanDeclareExtensionMethods(TypeData typeData)
     {
-        Type typeInfo = typeData.UnwrapType();
+        Type typeInfo = typeData.Type;
         if (!typeData.IsStatic || typeInfo.IsNested || typeInfo.IsGenericType)
         {
             return false;
@@ -1084,7 +1168,7 @@ internal class TypeData : SymbolInfoData
     }
 
     private static bool IsReadOnlyStructInternal(TypeData typeData)
-      => typeData.IsStruct && typeData.UnwrapType().GetCustomAttribute(ReflectionHelperExtensions.IsReadOnlyAttributeType) != null;
+      => typeData.IsStruct && typeData.Type.GetCustomAttribute(ReflectionHelperExtensions.IsReadOnlyAttributeType) != null;
 
     /// <summary>
     /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
@@ -1100,7 +1184,7 @@ internal class TypeData : SymbolInfoData
             return true;
         }
 
-        Type type = typeData.UnwrapType();
+        Type type = typeData.Type;
         if (type.GetMethod(nameof(Task.GetAwaiter)) != null)
         {
             return true;
@@ -1171,12 +1255,12 @@ internal class TypeData : SymbolInfoData
     }
 
     private static bool IsTypeAwaitableTask(TypeData type)
-      => TypeData.s_taskType.IsAssignableFrom(type.UnwrapType())
-        || (type.BaseTypeData?.UnwrapType() is Type baseType && TypeData.s_taskType.IsAssignableFrom(baseType));
+      => TypeData.s_taskType.IsAssignableFrom(type.Type)
+        || (type.BaseTypeData?.Type is Type baseType && TypeData.s_taskType.IsAssignableFrom(baseType));
 
     private static bool IsTypeAwaitableValueTask(TypeData type)
-      => TypeData.s_valueTaskType == type.UnwrapType()
-        || (type.IsGenericType && TypeData.s_valueTaskGenericType == type.GenericTypeDefinitionData.UnwrapType());
+      => TypeData.s_valueTaskType == type.Type
+        || (type.IsGenericType && TypeData.s_valueTaskGenericType == type.GenericTypeDefinitionData.Type);
 
     private static AccessModifier GetAccessModifier(TypeData typeData) => typeData.IsPublic ? AccessModifier.Public
           : typeData.IsNestedPrivate ? AccessModifier.Private

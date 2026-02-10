@@ -81,7 +81,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
             throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsReferenceTypeWrongInvokerExceptionMessage(this, nameof(SetValue)));
         }
 
-        Type declaringType = DeclaringTypeData.UnwrapType();
+        Type declaringType = DeclaringTypeData.Type;
         Type targetType = typeof(TTarget);
         ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
             declaringType,
@@ -95,7 +95,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
         if (value is not null)
         {
             Type valueType = typeof(TValue);
-            Type fieldType = FieldTypeData.UnwrapType();
+            Type fieldType = FieldTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 valueType,
                 fieldType,
@@ -131,7 +131,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
         {
             ArgumentNullException.ThrowIfNull(target, nameof(target));
             Type targetType = target.GetType();
-            Type declaringType = DeclaringTypeData.UnwrapType();
+            Type declaringType = DeclaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
                 declaringType,
@@ -145,7 +145,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
         if (value is not null)
         {
             Type valueType = value.GetType();
-            Type fieldType = FieldTypeData.UnwrapType();
+            Type fieldType = FieldTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 valueType,
                 fieldType,

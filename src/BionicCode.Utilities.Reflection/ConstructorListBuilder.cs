@@ -58,7 +58,7 @@
         internal static ConstructorList Create(TypeData declaringTypeData)
         {
             ArgumentNullException.ThrowIfNull(declaringTypeData);
-            return CreateInternal(declaringTypeData.UnwrapType());
+            return CreateInternal(declaringTypeData.Type);
         }
 
         internal static ConstructorList Create(Type declaringType)

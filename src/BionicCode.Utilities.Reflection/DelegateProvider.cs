@@ -93,7 +93,7 @@
             }
 
             Type desiredReturnType = !targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
-                ? targetMethodData.ReturnTypeData.UnwrapType()
+                ? targetMethodData.ReturnTypeData.Type
                 : targetMethodData.IsAwaitableGenericTask
                     ? typeof(Task<object>)
                     : targetMethodData.IsAwaitableTask
@@ -121,13 +121,13 @@
             Expression? instance = null;
             if (!methodData.IsStatic)
             {
-                instance = Expression.Convert(targetParam, methodData.DeclaringTypeData.UnwrapType()!);
+                instance = Expression.Convert(targetParam, methodData.DeclaringTypeData.Type!);
             }
 
             UnaryExpression[] callArgs = methodData.Parameters.Select((parameter, index) =>
                 Expression.Convert(
                     Expression.ArrayIndex(argsParam, Expression.Constant(index)),
-                    parameter.ParameterTypeData.UnwrapType())).ToArray();
+                    parameter.ParameterTypeData.Type)).ToArray();
 
             MethodInfo methodInfo = methodData.MethodInfo;
             Expression call = methodData.IsStatic
@@ -186,10 +186,10 @@
         public static MethodData GetOrCreateFastMethodInvoker<TTarget, TResult>(MethodData targetMethodData, TypeList genericMethodArguments, bool isDiscardDelegate)
         {
             Type targetType = typeof(TTarget);
-            Type declaringType = targetMethodData.DeclaringTypeData.UnwrapType();
+            Type declaringType = targetMethodData.DeclaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                targetMethodData.DeclaringTypeData.UnwrapType()!,
+                targetMethodData.DeclaringTypeData.Type!,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         targetType,
                         nameof(TTarget),
@@ -242,14 +242,14 @@
             UnaryExpression[] callArgs = methodData.Parameters.Select((parameter, index) =>
                 Expression.Convert(
                     Expression.ArrayIndex(argsParam, Expression.Constant(index)),
-                    parameter.ParameterTypeData.UnwrapType())).ToArray();
+                    parameter.ParameterTypeData.Type)).ToArray();
 
             MethodInfo methodInfo = methodData.MethodInfo;
             Expression call = methodData.IsStatic
                 ? Expression.Call(methodInfo, callArgs)
                 : Expression.Call(instanceExpression, methodInfo, callArgs); // instance required for non-static :contentReference[oaicite:7]{index=7}
 
-            Type methodReturnType = targetMethodData.ReturnTypeData.UnwrapType();
+            Type methodReturnType = targetMethodData.ReturnTypeData.Type;
             Delegate invocator = null;
             Expression body;
             try
@@ -332,10 +332,10 @@
         public static MethodData GetOrCreateFastVoidMethodInvoker<TTarget>(MethodData targetMethodData, TypeList genericMethodArguments)
         {
             Type targetType = typeof(TTarget);
-            Type declaringType = targetMethodData.DeclaringTypeData.UnwrapType();
+            Type declaringType = targetMethodData.DeclaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
-                targetMethodData.DeclaringTypeData.UnwrapType()!,
+                targetMethodData.DeclaringTypeData.Type!,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         targetType,
                         nameof(TTarget),
@@ -384,14 +384,14 @@
             UnaryExpression[] callArgs = methodData.Parameters.Select((parameter, index) =>
                 Expression.Convert(
                     Expression.ArrayIndex(argsParam, Expression.Constant(index)),
-                    parameter.ParameterTypeData.UnwrapType())).ToArray();
+                    parameter.ParameterTypeData.Type)).ToArray();
 
             MethodInfo methodInfo = methodData.MethodInfo;
             Expression call = methodData.IsStatic
                 ? Expression.Call(methodInfo, callArgs)
                 : Expression.Call(instanceExpression, methodInfo, callArgs); // instance required for non-static :contentReference[oaicite:7]{index=7}
 
-            Type methodReturnType = targetMethodData.ReturnTypeData.UnwrapType();
+            Type methodReturnType = targetMethodData.ReturnTypeData.Type;
             Expression body = Expression.Block(call, Expression.Empty());
             Delegate invocator = Expression.Lambda<MethodVoidInvoker<TTarget>>(body, targetParam, argsParam).Compile();
 
@@ -418,7 +418,7 @@
                 return;
             }
 
-            Type methodReturnType = targetMethodData.ReturnTypeData.UnwrapType();
+            Type methodReturnType = targetMethodData.ReturnTypeData.Type;
 
             if (resultType.IsGenericType && !resultType.IsConstructedGenericType) // Disallow open generic types
             {
@@ -567,7 +567,7 @@
                 field.IsStatic
                     ? Expression.Field(expression: null, field) // static: no instance
                     : Expression.Field(
-                        Expression.Convert(targetParam, fieldData.DeclaringTypeData.UnwrapType()), // cast/unbox
+                        Expression.Convert(targetParam, fieldData.DeclaringTypeData.Type), // cast/unbox
                         field);
 
             // Box returnType types
@@ -624,12 +624,12 @@
                 fieldData.IsStatic
                     ? Expression.Field(expression: null, field)
                     : Expression.Field(
-                        Expression.Convert(targetParam, fieldData.DeclaringTypeData.UnwrapType()),
+                        Expression.Convert(targetParam, fieldData.DeclaringTypeData.Type),
                         field);
 
             BinaryExpression assign = Expression.Assign(
                 fieldAccess,
-                Expression.Convert(valueParam, fieldData.FieldTypeData.UnwrapType())); // Expression.Assign 
+                Expression.Convert(valueParam, fieldData.FieldTypeData.Type)); // Expression.Assign 
 
             // Action<...> requires a void body -> wrap assignment in a void block.
             BlockExpression body = Expression.Block(assign, Expression.Empty());
@@ -657,7 +657,7 @@
             ArgumentNullException.ThrowIfNull(fieldData, nameof(fieldData));
             ArgumentNullException.ThrowIfNull(fieldData.DeclaringTypeData, nameof(fieldData));
 
-            Type declaringType = fieldData.DeclaringTypeData.UnwrapType();
+            Type declaringType = fieldData.DeclaringTypeData.Type;
             Type targetType = typeof(TTarget);
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
@@ -669,7 +669,7 @@
                         "declaring prpertyType"));
 
             Type valueType = typeof(TValue);
-            Type fieldType = fieldData.FieldTypeData.UnwrapType();
+            Type fieldType = fieldData.FieldTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 valueType,
                 fieldType,
@@ -736,7 +736,7 @@
             ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
 
             PropertyInfo property = propertyData.GetPropertyInfo();
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Type declaringType = propertyData.DeclaringTypeData.Type;
             Expression propertyAccess =
                 propertyData.IsStatic
                     ? Expression.Property(expression: null, property) // static: no instance
@@ -785,7 +785,7 @@
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
             Type targetType = typeof(TTarget);
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Type declaringType = propertyData.DeclaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
                 declaringType,
@@ -797,7 +797,7 @@
                     "declaring type"));
 
             Type returnType = typeof(TValue);
-            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            Type propertyType = propertyData.PropertyTypeData.Type;
 
             // (TTarget target) => (TValue)target.Property
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
@@ -865,7 +865,7 @@
             TypeData declaringTypeData = propertyData.DeclaringTypeData;
             ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
             Type targetType = typeof(TTarget);
-            Type declaringType = declaringTypeData.UnwrapType();
+            Type declaringType = declaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
                 declaringType,
@@ -881,11 +881,11 @@
             //    nameof(propertyData),
             //    "The provided indexer property must have exactly a single index parameter to create a 1D indexer getter.");
             Type returnType = typeof(TValue);
-            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            Type propertyType = propertyData.PropertyTypeData.Type;
             Type indexType = typeof(TIndex);
             ParameterList propertyGetMethodParameters = propertyData.PropertyGetMethodParameters;
             TypeData indexerParameterTypeData = propertyGetMethodParameters[0].ParameterTypeData;
-            Type indexParameterType = indexerParameterTypeData.UnwrapType();
+            Type indexParameterType = indexerParameterTypeData.Type;
 
             // (TTarget declaringType, TIndex[] indices)
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
@@ -992,7 +992,7 @@
             TypeData declaringTypeData = propertyData.DeclaringTypeData;
             ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
             Type targetType = typeof(TTarget);
-            Type declaringType = declaringTypeData.UnwrapType();
+            Type declaringType = declaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
                 declaringType,
@@ -1003,7 +1003,7 @@
                     declaringType,
                     "declaring type"));
             Type returnType = typeof(TValue);
-            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            Type propertyType = propertyData.PropertyTypeData.Type;
 
             // (TTarget target, object[] indices)
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
@@ -1016,7 +1016,7 @@
             for (int i = 0; i < propertyGetMethodParameters.Count; i++)
             {
                 ParameterData indexParameterData = propertyGetMethodParameters[i];
-                Type indexParameterType = indexParameterData.ParameterTypeData.UnwrapType();
+                Type indexParameterType = indexParameterData.ParameterTypeData.Type;
 
                 // indices[i]
                 BinaryExpression indexAccess = Expression.ArrayIndex(
@@ -1109,7 +1109,7 @@
             TypeData declaringTypeData = propertyData.DeclaringTypeData;
             ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
             Type targetType = typeof(TTarget);
-            Type declaringType = declaringTypeData.UnwrapType();
+            Type declaringType = declaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
                 declaringType,
@@ -1127,13 +1127,13 @@
                 nameof(propertyData),
                 "The provided indexer property must have exactly two index parameters to create a 2D indexer getter.");
             Type returnType = typeof(TValue);
-            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            Type propertyType = propertyData.PropertyTypeData.Type;
             Type index1Type = typeof(TIndex1);
             TypeData indexerParameter1TypeData = propertyGetMethodParameters[0].ParameterTypeData;
-            Type indexParameter1Type = indexerParameter1TypeData.UnwrapType();
+            Type indexParameter1Type = indexerParameter1TypeData.Type;
             Type index2Type = typeof(TIndex2);
             TypeData indexerParameter2TypeData = propertyGetMethodParameters[1].ParameterTypeData;
-            Type indexParameter2Type = indexerParameter2TypeData.UnwrapType();
+            Type indexParameter2Type = indexerParameter2TypeData.Type;
 
             // (TTarget target, TIndex1 index1, TIndex2 index2)
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
@@ -1240,7 +1240,7 @@
             TypeData declaringTypeData = propertyData.DeclaringTypeData;
             ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
             Type targetType = typeof(TTarget);
-            Type declaringType = declaringTypeData.UnwrapType();
+            Type declaringType = declaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
                 declaringType,
@@ -1258,19 +1258,19 @@
                 nameof(propertyData),
                 "The provided indexer property must have exactly three index parameters to create a 3D indexer getter.");
             Type returnType = typeof(TValue);
-            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            Type propertyType = propertyData.PropertyTypeData.Type;
 
             Type index1Type = typeof(TIndex1);
             TypeData indexerParameter1TypeData = propertyGetMethodParameters[0].ParameterTypeData;
-            Type indexParameter1Type = indexerParameter1TypeData.UnwrapType();
+            Type indexParameter1Type = indexerParameter1TypeData.Type;
 
             Type index2Type = typeof(TIndex2);
             TypeData indexerParameter2TypeData = propertyGetMethodParameters[1].ParameterTypeData;
-            Type indexParameter2Type = indexerParameter2TypeData.UnwrapType();
+            Type indexParameter2Type = indexerParameter2TypeData.Type;
 
             Type index3Type = typeof(TIndex3);
             TypeData indexerParameter3TypeData = propertyGetMethodParameters[2].ParameterTypeData;
-            Type indexParameter3Type = indexerParameter3TypeData.UnwrapType();
+            Type indexParameter3Type = indexerParameter3TypeData.Type;
 
             // (TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3)
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
@@ -1404,7 +1404,7 @@
             for (int i = 0; i < propertyGetMethodParameters.Count; i++)
             {
                 ParameterData indexParameterData = propertyGetMethodParameters[i];
-                Type indexParameterType = indexParameterData.ParameterTypeData.UnwrapType();
+                Type indexParameterType = indexParameterData.ParameterTypeData.Type;
 
                 // indices[i]
                 BinaryExpression indexAccess = Expression.ArrayIndex(
@@ -1427,7 +1427,7 @@
                 }
             }
 
-            Type declaringType = declaringTypeData.UnwrapType();
+            Type declaringType = declaringTypeData.Type;
             Expression? instanceExpression = propertyData.IsStatic
                 ? null
                 : Expression.Convert(targetParam, declaringType);
@@ -1492,10 +1492,10 @@
                 propertyData.IsStatic
                     ? Expression.Property(expression: null, property)
                     : Expression.Property(
-                        Expression.Convert(targetParam, propertyData.DeclaringTypeData.UnwrapType()),
+                        Expression.Convert(targetParam, propertyData.DeclaringTypeData.Type),
                         property);
 
-            Type type = propertyData.PropertyTypeData.UnwrapType();
+            Type type = propertyData.PropertyTypeData.Type;
             BinaryExpression assign = Expression.Assign(
                 propertyAccess,
                 Expression.Convert(valueParam, type)); // Expression.Assign 
@@ -1552,7 +1552,7 @@
                 "Cannot create a setter for an read-only property.");
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Type declaringType = propertyData.DeclaringTypeData.Type;
             Type targetType = typeof(TTarget);
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
@@ -1578,7 +1578,7 @@
                         Expression.Convert(targetParam, declaringType),
                         property);
 
-            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            Type propertyType = propertyData.PropertyTypeData.Type;
             Expression value;
             try
             {
@@ -1663,7 +1663,7 @@
             for (int i = 0; i < propertySetMethodParameters.Count; i++)
             {
                 ParameterData indexParameterData = propertySetMethodParameters[i];
-                Type indexParameterType = indexParameterData.ParameterTypeData.UnwrapType();
+                Type indexParameterType = indexParameterData.ParameterTypeData.Type;
 
                 // indices[i]
                 BinaryExpression indexAccess = Expression.ArrayIndex(
@@ -1689,14 +1689,14 @@
             // Access the indexer: propertyType[index0, index1, ...]
             PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
 
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Type declaringType = propertyData.DeclaringTypeData.Type;
             Expression? instanceExpression = propertyData.IsStatic
                 ? null
                 : Expression.Convert(targetParam, declaringType);
             IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, indexExpressions);
             BinaryExpression assign = Expression.Assign(
                 propertyAccess,
-                Expression.Convert(valueParam, propertyData.PropertyTypeData.UnwrapType())); // Expression.Assign 
+                Expression.Convert(valueParam, propertyData.PropertyTypeData.Type)); // Expression.Assign 
 
             // Action<...> requires a void body -> wrap assignment in a void block.
             BlockExpression body = Expression.Block(assign, Expression.Empty());
@@ -1740,7 +1740,7 @@
                 "Cannot create a setter for an read-only property.");
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Type declaringType = propertyData.DeclaringTypeData.Type;
             Type targetType = typeof(TTarget);
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
@@ -1752,7 +1752,7 @@
                         "declaring type"));
 
             Type valueType = typeof(TValue);
-            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            Type propertyType = propertyData.PropertyTypeData.Type;
 
             // (ref TTarget target, TValue value) => propertyType.Property = value;
             Type refTargetType = targetType.MakeByRefType();
@@ -1814,10 +1814,10 @@
                 "Cannot create a setter for an read-only property.");
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Type declaringType = propertyData.DeclaringTypeData.Type;
             Type targetType = typeof(object);
             Type valueType = typeof(object);
-            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            Type propertyType = propertyData.PropertyTypeData.Type;
 
             // (object target, object? value) => propertyType.Property = value;
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
@@ -1883,7 +1883,7 @@
                 "Cannot create a setter for an read-only property.");
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Type declaringType = propertyData.DeclaringTypeData.Type;
             Type targetType = typeof(TTarget);
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
@@ -1895,7 +1895,7 @@
                         "declaring type"));
 
             Type valueType = typeof(TValue);
-            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            Type propertyType = propertyData.PropertyTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 valueType,
                 propertyType,
@@ -1936,7 +1936,7 @@
             IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, property, indexExpressions);
             BinaryExpression assign = Expression.Assign(
                 propertyAccess,
-                Expression.Convert(valueParam, propertyData.PropertyTypeData.UnwrapType())); // Expression.Assign 
+                Expression.Convert(valueParam, propertyData.PropertyTypeData.Type)); // Expression.Assign 
 
             // Action<...> requires a void body -> wrap assignment in a void block.
             BlockExpression body = Expression.Block(assign, Expression.Empty());
@@ -1986,7 +1986,7 @@
         private static Expression CreateTargetTypeMismatchExceptionExpression(PropertyData propertyData, ParameterExpression target)
         {
             BinaryExpression isTargetNull = Expression.Equal(target, Expression.Constant(null, typeof(object)));
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Type declaringType = propertyData.DeclaringTypeData.Type;
             Expression isTargetInvalid = !propertyData.IsStatic
                 ? Expression.OrElse(
                     isTargetNull,
@@ -2032,7 +2032,7 @@
         //    Expression isTargetValid = propertyData.IsStatic
         //        ? Expression.Constant(true)
         //        : Expression.AndAlso(
-        //            Expression.NotEqual(value, Expression.Constant(null, typeof(object))), Expression.TypeIs(value, propertyData.DeclaringTypeData.UnwrapType()));
+        //            Expression.NotEqual(value, Expression.Constant(null, typeof(object))), Expression.TypeIs(value, propertyData.DeclaringTypeData.Type));
 
         //    MethodInfo stringConcat5 = typeof(string).GetMethod(
         //        nameof(string.Concat),

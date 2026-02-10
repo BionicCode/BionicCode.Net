@@ -67,7 +67,7 @@ internal sealed class EventData : MemberData
             ArgumentNullException.ThrowIfNull(target, nameof(target));
 
             Type targetType = target.GetType();
-            Type declaringType = DeclaringTypeData.UnwrapType();
+            Type declaringType = DeclaringTypeData.Type;
             ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 targetType,
                 declaringType,

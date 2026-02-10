@@ -51,7 +51,7 @@
         {
             ArgumentNullException.ThrowIfNull(typeData, nameof(typeData));
 
-            Type type = typeData.UnwrapType();
+            Type type = typeData.Type;
             return type.GetInterfaces()
                 .Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry)
                 .ToTypeList();
@@ -74,7 +74,7 @@
 
             return !genericTypeData.IsGenericType
                 ? TypeList.Empty
-                : CreateGenericTypeArgumentListInternal(genericTypeData.UnwrapType());
+                : CreateGenericTypeArgumentListInternal(genericTypeData.Type);
         }
 
         internal static TypeList CreateGenericTypeArgumentList(MethodBase genericMethodInfo)
@@ -112,7 +112,7 @@
 
             return !genericTypeData.IsGenericType
                 ? TypeList.Empty
-                : CreateGenericTypeArgumentConstraintListInternal(genericTypeData.UnwrapType());
+                : CreateGenericTypeArgumentConstraintListInternal(genericTypeData.Type);
         }
 
         private static TypeList CreateGenericTypeArgumentListInternal(Type genericType)

@@ -199,7 +199,7 @@ internal sealed class ParameterData : SymbolInfoData
     /// Gets a value indicating whether the parameter is passed by reference.
     /// </summary>
     public bool IsByRef
-      => _isByRef ??= ParameterTypeData.UnwrapType().IsByRef;
+      => _isByRef ??= ParameterTypeData.Type.IsByRef;
 
     public bool IsIndexerPropertyParameter
       => _isIndexerPropertyParameter ??= MemberData is MethodData methodData && (methodData.IsIndexerPropertyGetMethod || methodData.IsIndexerPropertySetMethod);

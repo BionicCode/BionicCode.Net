@@ -134,11 +134,11 @@ public static partial class ReflectionHelperExtensions
         ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder);
         ArgumentNullExceptionAdvanced.ThrowIfNull(typeData);
 
-        Type type = typeData.UnwrapType();
+        Type type = typeData.Type;
         if (typeData.IsByRef)
         {
             typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type.GetElementType());
-            type = typeData.UnwrapType();
+            type = typeData.Type;
         }
 
         var typeReference = new CodeTypeReference(type);
@@ -400,13 +400,13 @@ public static partial class ReflectionHelperExtensions
 
         if (isSubclass)
         {
-            _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseTypeData.UnwrapType().FullName : typeData.BaseTypeData.Name)
+            _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseTypeData.Type.FullName : typeData.BaseTypeData.Name)
               .Append(ReflectionHelperExtensions.ParameterSeparator);
         }
 
         foreach (TypeData interfaceData in interfaces)
         {
-            _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.UnwrapType().FullName : interfaceData.Name)
+            _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.Type.FullName : interfaceData.Name)
               .Append(ReflectionHelperExtensions.ParameterSeparator);
         }
 
@@ -710,7 +710,7 @@ public static partial class ReflectionHelperExtensions
 
         for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Count; parameterIndex++)
         {
-            Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterTypeData.UnwrapType();
+            Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterTypeData.Type;
             Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
             if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
             {

@@ -326,7 +326,7 @@ public class ArgumentExceptionAdvanced : ArgumentException
 
         for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Count; parameterIndex++)
         {
-            Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterTypeData.UnwrapType();
+            Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterTypeData.Type;
             Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
             if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
             {
