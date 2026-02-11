@@ -34,7 +34,6 @@ internal sealed class EventData : MemberData
     private TypeData? _eventHandlerTypeData;
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
-    private EventInfo _eventInfo;
     private readonly WellKnownEventDescriptor _descriptor;
     private RuntimeTypeHandle? _declaringTypeHandle;
     private RuntimeTypeHandle? _implementingTypeHandle;
@@ -147,17 +146,7 @@ internal sealed class EventData : MemberData
         ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventHandlerType)
         : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an event handler type.");
 
-    public EventInfo EventInfo
-    {
-        get
-        {
-            ExceptionThrower.ThrowIfDisposed(this);
-
-            return base.IsDisposed ? throw new ObjectDisposedException(nameof(EventData)) : _eventInfo;
-        }
-
-        private set => _eventInfo = value;
-    }
+    public EventInfo EventInfo { get; }
 
     /// <inheritdoc/>
     public override bool IsExplicitInterfaceImplementation => _isExplicitInterfaceImplementation ??= IsExplicitImplementation(this);
@@ -291,10 +280,4 @@ internal sealed class EventData : MemberData
     private static AccessModifier GetAccessModifierInternal(EventData eventData) => eventData is EventData checkedEventData
         ? checkedEventData.AddMethodData?.AccessModifier ?? AccessModifier.Undefined
         : throw new ArgumentNullException(nameof(eventData));
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-        EventInfo = null!;
-    }
 }

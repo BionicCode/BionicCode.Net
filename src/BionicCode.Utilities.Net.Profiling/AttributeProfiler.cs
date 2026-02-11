@@ -747,7 +747,7 @@
             foreach (PropertyData propertyData in typeDataToProfile.Properties)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+                PropertyInfo propertyInfo = propertyData.GetPropertyInfo;
                 bool isPropertyStatic = propertyData.IsStatic;
                 bool isPropertyIndexer = propertyData.IsIndexer;
                 if (isFindInstanceProviderEnabled
@@ -820,7 +820,7 @@
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                FieldInfo fieldInfo = fieldData.GetFieldInfo();
+                FieldInfo fieldInfo = fieldData.GetFieldInfo;
                 if (fieldData.IsStatic
                   && !hasHighPriorityInstanceProvider
                   && typeDataToProfile.Type.IsAssignableFrom(fieldData.FieldTypeData.Type))

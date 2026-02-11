@@ -27,7 +27,7 @@ internal abstract class ParameterizedMemberData : MemberData
     public abstract bool HasParamsParameter { get; }
     public abstract RuntimeMethodHandle Handle { get; }
     public abstract ParameterizedSymbolKind ParameterizedSymbolKind { get; }
-    public abstract MethodBase GetMethodBase();
+    internal abstract MethodBase GetMethodBase();
 
     /// <summary>
     /// Gets a value indicating whether this method has a special name.

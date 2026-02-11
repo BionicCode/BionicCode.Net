@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-internal class TypeData : SymbolInfoData
+internal class TypeData : SymbolInfoData, ITypeDataView
 {
     private delegate bool MethodEqualityComparer<TParameterList>(ParameterList foundMethodParameters, TParameterList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
         where TParameterList : notnull, IEnumerable;
@@ -19,6 +19,7 @@ internal class TypeData : SymbolInfoData
     private static readonly Type s_taskType = typeof(Task);
     private static readonly Type s_valueTaskType = typeof(ValueTask);
     private static readonly Type s_valueTaskGenericType = typeof(ValueTask<>);
+    private static readonly Type s_delegateType = typeof(MulticastDelegate);
     private const BindingFlags BindingFlagsPublicMask = BindingFlags.Public | BindingFlags.NonPublic;
     private const BindingFlags BindingFlagsStaticMask = BindingFlags.Static | BindingFlags.Instance;
 
@@ -1164,11 +1165,10 @@ internal class TypeData : SymbolInfoData
 
         return type != typeof(Delegate)
             && type != typeof(MulticastDelegate)
-            && TypeData.DelegateType.IsAssignableFrom(type);
+            && s_delegateType.IsAssignableFrom(type);
     }
 
-    private static bool IsReadOnlyStructInternal(TypeData typeData)
-      => typeData.IsStruct && typeData.Type.GetCustomAttribute(ReflectionHelperExtensions.IsReadOnlyAttributeType) != null;
+    private static bool IsReadOnlyStructInternal(TypeData typeData) => typeData.IsStruct && typeData.Type.GetCustomAttribute(ReflectionHelperExtensions.IsReadOnlyAttributeType) != null;
 
     /// <summary>
     /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
@@ -1254,21 +1254,19 @@ internal class TypeData : SymbolInfoData
         return false;
     }
 
-    private static bool IsTypeAwaitableTask(TypeData type)
-      => TypeData.s_taskType.IsAssignableFrom(type.Type)
+    private static bool IsTypeAwaitableTask(TypeData type) => TypeData.s_taskType.IsAssignableFrom(type.Type)
         || (type.BaseTypeData?.Type is Type baseType && TypeData.s_taskType.IsAssignableFrom(baseType));
 
-    private static bool IsTypeAwaitableValueTask(TypeData type)
-      => TypeData.s_valueTaskType == type.Type
+    private static bool IsTypeAwaitableValueTask(TypeData type) => TypeData.s_valueTaskType == type.Type
         || (type.IsGenericType && TypeData.s_valueTaskGenericType == type.GenericTypeDefinitionData.Type);
 
     private static AccessModifier GetAccessModifier(TypeData typeData) => typeData.IsPublic ? AccessModifier.Public
-          : typeData.IsNestedPrivate ? AccessModifier.Private
-          : typeData.IsNestedAssembly ? AccessModifier.Internal
-          : typeData.IsNestedFamily ? AccessModifier.Protected
-          : typeData.IsNestedPublic ? AccessModifier.Public
-          : typeData.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
-          : typeData.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
-          : !typeData.IsVisible ? AccessModifier.Internal
-          : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+        : typeData.IsNestedPrivate ? AccessModifier.Private
+        : typeData.IsNestedAssembly ? AccessModifier.Internal
+        : typeData.IsNestedFamily ? AccessModifier.Protected
+        : typeData.IsNestedPublic ? AccessModifier.Public
+        : typeData.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
+        : typeData.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
+        : !typeData.IsVisible ? AccessModifier.Internal
+        : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
 }

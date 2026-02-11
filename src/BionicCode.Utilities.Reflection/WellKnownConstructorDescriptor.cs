@@ -31,16 +31,19 @@ internal readonly struct WellKnownConstructorDescriptor : IEquatable<WellKnownCo
     }
 
     public ConstructorInfo ConstructorInfo { get; }
+    public RuntimeMethodHandle ConstructorHandle { get; }
     public bool IsAnonymous { get; }
 
     public bool Equals(WellKnownConstructorDescriptor other) => IsAnonymous == other.IsAnonymous
-        && ConstructorInfo == other.ConstructorInfo;
+        && ConstructorHandle == other.ConstructorHandle
+        && ReferenceEquals(ConstructorInfo, other.ConstructorInfo);
 
     public override int GetHashCode()
     {
         var hashCode = new HashCode();
         hashCode.Add(IsAnonymous);
         hashCode.Add(ConstructorInfo);
+        hashCode.Add(ConstructorHandle);
 
         return hashCode.ToHashCode();
     }

@@ -38,11 +38,14 @@ internal sealed class ConstructorData : ParameterizedMemberData
 
         Handle = symbolInfoDataCacheKey.ConstructorDescriptor.ConstructorInfo.MethodHandle;
         ConstructorInfo = symbolInfoDataCacheKey.ConstructorDescriptor.ConstructorInfo;
+        DeclaringTypeHandle = ConstructorInfo.DeclaringType?.TypeHandle ?? throw new InvalidOperationException("Declaring type handle is not available.");
+        ImplementingTypeHandle = DeclaringTypeHandle;
+        IsExplicitInterfaceImplementation = false;
     }
 
-    public ConstructorInfo ConstructorInfo { get; }
+    internal ConstructorInfo ConstructorInfo { get; }
 
-    public override MethodBase GetMethodBase() => ConstructorInfo;
+    internal override MethodBase GetMethodBase() => ConstructorInfo;
 
     protected override MemberInfo GetMemberInfo() => ConstructorInfo;
 

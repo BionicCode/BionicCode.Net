@@ -558,7 +558,7 @@
             ArgumentNullException.ThrowIfNull(fieldData, nameof(fieldData));
             ArgumentNullException.ThrowIfNull(fieldData.DeclaringTypeData, nameof(fieldData));
 
-            FieldInfo field = fieldData.GetFieldInfo();
+            FieldInfo field = fieldData.FieldInfo;
 
             // (object? propertyType) => (object?)((TDeclaring)propertyType).Field
             ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
@@ -619,7 +619,7 @@
             ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
             ParameterExpression valueParam = Expression.Parameter(typeof(object), "returnType");
 
-            FieldInfo field = fieldData.GetFieldInfo();
+            FieldInfo field = fieldData.FieldInfo;
             Expression fieldAccess =
                 fieldData.IsStatic
                     ? Expression.Field(expression: null, field)
@@ -693,7 +693,7 @@
             ParameterExpression targetByRef = Expression.Parameter(targetType.MakeByRefType(), "propertyType");
             ParameterExpression valueParam = Expression.Parameter(valueType, "returnType");
 
-            FieldInfo field = fieldData.GetFieldInfo();
+            FieldInfo field = fieldData.FieldInfo;
             MemberExpression fieldAccess = Expression.Field(targetByRef, field);
             BinaryExpression assign = Expression.Assign(fieldAccess, Expression.Convert(valueParam, fieldType));
             BlockExpression body = Expression.Block(assign, Expression.Empty());
@@ -735,7 +735,7 @@
             // (object? target) => (object?)((TDeclaring)target).Property
             ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
 
-            PropertyInfo property = propertyData.GetPropertyInfo();
+            PropertyInfo property = propertyData.PropertyInfo;
             Type declaringType = propertyData.DeclaringTypeData.Type;
             Expression propertyAccess =
                 propertyData.IsStatic
@@ -808,7 +808,7 @@
                     ? Expression.Convert(targetParam, declaringType)
                     : targetParam;
 
-            PropertyInfo property = propertyData.GetPropertyInfo();
+            PropertyInfo property = propertyData.PropertyInfo;
             Expression propertyAccess = Expression.Property(instanceExpression, property);
 
             Expression body;
@@ -932,7 +932,7 @@
                     : targetParam;
 
             // Access the indexer: propertyType[index]
-            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+            PropertyInfo propertyInfo = propertyData.PropertyInfo;
             IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, indexExpressions);
 
             Expression body;
@@ -1048,7 +1048,7 @@
                     : targetParam;
 
             // Access the indexer: propertyType[index]
-            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+            PropertyInfo propertyInfo = propertyData.PropertyInfo;
             IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, indexExpressions);
 
             Expression body;
@@ -1179,7 +1179,7 @@
                     : targetParam;
 
             // Access the indexer: propertyType[index1, index2]
-            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+            PropertyInfo propertyInfo = propertyData.PropertyInfo;
             IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, [castedIndex1Param, castedIndex2Param]);
 
             Expression body;
@@ -1333,7 +1333,7 @@
                     : targetParam;
 
             // Access the indexer: propertyType[index1, index2, index3]
-            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+            PropertyInfo propertyInfo = propertyData.PropertyInfo;
             IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, [castedIndex1Param, castedIndex2Param, castedIndex3Param]);
 
             Expression body;
@@ -1433,7 +1433,7 @@
                 : Expression.Convert(targetParam, declaringType);
 
             // Access the indexer: propertyType[index0, index1, ...]
-            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+            PropertyInfo propertyInfo = propertyData.PropertyInfo;
             IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, indexExpressions);
 
             // Box the result
@@ -1487,7 +1487,7 @@
             ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
             ParameterExpression valueParam = Expression.Parameter(typeof(object), "value");
 
-            PropertyInfo property = propertyData.GetPropertyInfo();
+            PropertyInfo property = propertyData.PropertyInfo;
             Expression propertyAccess =
                 propertyData.IsStatic
                     ? Expression.Property(expression: null, property)
@@ -1570,7 +1570,7 @@
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
             ParameterExpression valueParam = Expression.Parameter(valueType, "value");
 
-            PropertyInfo property = propertyData.GetPropertyInfo();
+            PropertyInfo property = propertyData.PropertyInfo;
             Expression propertyAccess =
                 propertyData.IsStatic
                     ? Expression.Property(expression: null, property)
@@ -1687,7 +1687,7 @@
             }
 
             // Access the indexer: propertyType[index0, index1, ...]
-            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+            PropertyInfo propertyInfo = propertyData.PropertyInfo;
 
             Type declaringType = propertyData.DeclaringTypeData.Type;
             Expression? instanceExpression = propertyData.IsStatic
@@ -1759,7 +1759,7 @@
             ParameterExpression targetByRef = Expression.Parameter(refTargetType, "target");
             ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "value");
 
-            PropertyInfo property = propertyData.GetPropertyInfo();
+            PropertyInfo property = propertyData.PropertyInfo;
             MemberExpression propertyAccess = Expression.Property(targetByRef, property);
 
             UnaryExpression castedValue;
@@ -1823,7 +1823,7 @@
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
             ParameterExpression valueParam = Expression.Parameter(valueType, "value");
 
-            PropertyInfo property = propertyData.GetPropertyInfo();
+            PropertyInfo property = propertyData.PropertyInfo;
             MemberExpression propertyAccess = Expression.Property(targetParam, property);
 
             UnaryExpression castedValue = null;
@@ -1930,7 +1930,7 @@
                 indexExpressions[i] = convertedIndex;
             }
 
-            PropertyInfo property = propertyData.GetPropertyInfo();
+            PropertyInfo property = propertyData.PropertyInfo;
 
             Expression? instanceExpression = Expression.Convert(targetByRef, declaringType);
             IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, property, indexExpressions);

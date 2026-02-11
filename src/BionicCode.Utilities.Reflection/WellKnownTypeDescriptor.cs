@@ -36,7 +36,7 @@ internal readonly struct WellKnownTypeDescriptor : IEquatable<WellKnownTypeDescr
     public bool IsAnonymous { get; }
 
     public bool Equals(WellKnownTypeDescriptor other) => IsAnonymous == other.IsAnonymous
-        && Type == other.Type
+        && ReferenceEquals(Type, other.Type)
         && TypeHandle.Equals(other.TypeHandle)
         && TypeName.Equals(other.TypeName, StringComparison.Ordinal)
         && TypeNamespace.Equals(other.TypeNamespace, StringComparison.Ordinal);
@@ -53,11 +53,8 @@ internal readonly struct WellKnownTypeDescriptor : IEquatable<WellKnownTypeDescr
         return hashCode.ToHashCode();
     }
 
-    public static bool operator ==(WellKnownTypeDescriptor left, WellKnownTypeDescriptor right)
-        => left.Equals(right);
-    public static bool operator !=(WellKnownTypeDescriptor left, WellKnownTypeDescriptor right)
-        => !(left == right);
+    public static bool operator ==(WellKnownTypeDescriptor left, WellKnownTypeDescriptor right) => left.Equals(right);
+    public static bool operator !=(WellKnownTypeDescriptor left, WellKnownTypeDescriptor right) => !(left == right);
 
-    public override bool Equals(object obj)
-        => obj is WellKnownTypeDescriptor other && Equals(other);
+    public override bool Equals(object obj) => obj is WellKnownTypeDescriptor other && Equals(other);
 }

@@ -40,8 +40,7 @@ internal readonly struct WellKnownParameterDescriptor : IEquatable<WellKnownPara
         ParameterName = ParameterInfo.Name ?? string.Empty;
     }
 
-    public static bool IsAnonymous
-        => false;
+    public static bool IsAnonymous => false;
 
     public string ParameterName { get; }
 

@@ -1,6 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
-internal enum ParameterizedSymbolKind
+public enum ParameterizedSymbolKind
 {
     Undefined = 0,
     MemberMethod,

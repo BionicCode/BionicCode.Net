@@ -90,7 +90,7 @@
         {
             ArgumentNullException.ThrowIfNull(propertyData);
 
-            return CreateInternal(propertyData.GetPropertyInfo());
+            return CreateInternal(propertyData.PropertyInfo);
         }
 
         internal static MethodParameterInfoList Create(PropertyInfo propertyInfo)

@@ -52,42 +52,33 @@ internal sealed class ParameterData : SymbolInfoData
         ParameterInfo = symbolInfoDataCacheKey.ParameterDescriptor.ParameterInfo;
     }
 
-    public Type GetDeclaringType()
-      => Type.GetTypeFromHandle(DeclaringTypeHandle)!;
+    public RuntimeTypeHandle DeclaringTypeHandle => _declaringTypeHandle ??= ParameterInfo.Member.DeclaringType?.TypeHandle ?? throw new NotSupportedException($"The underlying '{typeof(ParameterInfo).FullName}' belongs to a member that does not return a declaring type.");
 
-    public RuntimeTypeHandle DeclaringTypeHandle
-        => _declaringTypeHandle ??= ParameterInfo.Member.DeclaringType?.TypeHandle ?? throw new NotSupportedException($"The underlying '{typeof(ParameterInfo).FullName}' belongs to a member that does not return a declaring type.");
-
-    public RuntimeTypeHandle ParameterTypeHandle
-        => _propertyTypeHandle ??= ParameterInfo.ParameterType.TypeHandle;
+    public RuntimeTypeHandle ParameterTypeHandle => _propertyTypeHandle ??= ParameterInfo.ParameterType.TypeHandle;
 
     /// <summary>
     /// Gets a value indicating whether the current type is passed by reference using the <see langword="ref"/> keyword.
     /// </summary>
     /// <value><see langword="true"/> if the parameter is passed by reference using the <c>ref</c> keyword; otherwise, <see langword="false"/>.</value>
-    public bool IsRef
-      => _isRef ??= IsRefInternal(this);
+    public bool IsRef => _isRef ??= IsRefInternal(this);
 
     /// <summary>
     /// Gets a value indicating whether the current instance is marked as <see langword="ref"/> <see langword="readonly"/>.
     /// </summary>
     /// <value><see langword="true"/> if the parameter is marked as <see langword="ref"/> <see langword="readonly"/>; otherwise, <see langword="false"/>.</value>
-    public bool IsRefReadOnly
-      => _isRefReadOnly ??= IsRefReadOnlyInternal(this);
+    public bool IsRefReadOnly => _isRefReadOnly ??= IsRefReadOnlyInternal(this);
 
     /// <summary>
     /// Gets a value indicating whether the parameter is an input parameter (passed by  reference using the <see langword="in"/> keyword).
     /// </summary>
     /// <value><see langword="true"/> if the parameter is an input parameter; otherwise, <see langword="false"/>.</value>
-    public bool IsIn
-      => _isIn ??= IsInParameter(this);
+    public bool IsIn => _isIn ??= IsInParameter(this);
 
     /// <summary>
     /// Gets a value indicating whether the parameter is an output parameter (passed by reference using the <see langword="out"/> keyword.
     /// </summary>
     /// <value><see langword="true"/> if the parameter is an output parameter; otherwise, <see langword="false"/>.</value>
-    public bool IsOut
-      => _isOut ??= IsOutParameter(this);
+    public bool IsOut => _isOut ??= IsOutParameter(this);
 
     /// <summary>
     /// Gets a value indicating whether the parameter is optional.
@@ -95,24 +86,20 @@ internal sealed class ParameterData : SymbolInfoData
     /// <value><see langword="true"/> if the parameter is optional i.e. has a default value; otherwise, <see langword="false"/>.</value>
     /// <remarks>This property does not return whether the parameter is decorated with the <see cref="System.Runtime.InteropServices.OptionalAttribute"/>.
     /// It only checks whether the parameter is considered optional by the existence of a default value by reading <see cref="System.Reflection.ParameterInfo.HasDefaultValue"/>.</remarks>
-    public bool IsOptional
-      => _isOptional ??= ParameterInfo.HasDefaultValue;
+    public bool IsOptional => _isOptional ??= ParameterInfo.HasDefaultValue;
 
     /// <summary>
     /// Gets a value indicating whether the parameter type is a generic type parameter.
     /// </summary>
     /// <value><see langword="true"/> if the parameter type is a generic type parameter; otherwise, <see langword="false"/>.</value>
-    public bool IsGenericTypeParameter
-      => _isGenericTypeParameter ??= ParameterTypeData.IsGenericTypeParameter;
+    public bool IsGenericTypeParameter => _isGenericTypeParameter ??= ParameterTypeData.IsGenericTypeParameter;
 
-    public bool IsGenericMethodParameter
-      => _isGenericMethodParameter ??= ParameterTypeData.IsGenericMethodParameter;
+    public bool IsGenericMethodParameter => _isGenericMethodParameter ??= ParameterTypeData.IsGenericMethodParameter;
 
     /// <summary>
     /// The modifier that indicates how the parameter is passed (e.g., by value, by reference, as an input parameter, or as an output parameter).
     /// </summary>
-    public ParameterKind ParameterKind
-      => _parameterKind ??= IsIn
+    public ParameterKind ParameterKind => _parameterKind ??= IsIn
         ? ParameterKind.In
         : IsOut
             ? ParameterKind.Out
@@ -130,22 +117,19 @@ internal sealed class ParameterData : SymbolInfoData
     /// that value; otherwise, it returns <see langword="null"/>. The value may be of any type, depending on the parameter's
     /// type. Use <see cref="IsOptional"/> to check if a default value is defined before accessing this property.</remarks>
     /// <exception cref="InvalidOperationException">Thrown when no default value is defined for the parameter.</exception>
-    public object? DefaultValue
-        => _defaultValue ??= IsOptional
-            ? ParameterInfo.RawDefaultValue
-            : throw new InvalidOperationException("No default value defined.");
+    public object? DefaultValue => _defaultValue ??= IsOptional
+        ? ParameterInfo.RawDefaultValue
+        : throw new InvalidOperationException("No default value defined.");
 
     /// <summary>
     /// Zero-based index of the parameter in the formal parameter list.
     /// </summary>
     /// <value>The position of the parameter.</value>
-    public int Position
-        => _position ??= ParameterInfo.Position;
+    public int Position => _position ??= ParameterInfo.Position;
 
-    public bool IsParams
-      => _isParams ??= ParameterInfo.GetCustomAttribute<ParamArrayAttribute>() != null;
+    public bool IsParams => _isParams ??= ParameterInfo.GetCustomAttribute<ParamArrayAttribute>() != null;
 
-    public ParameterInfo ParameterInfo { get; }
+    internal ParameterInfo ParameterInfo { get; }
 
     /// <summary>
     /// Gets the member (method, constructor, or property accessor) that declares this parameter.
@@ -166,58 +150,50 @@ internal sealed class ParameterData : SymbolInfoData
     /// belongs to an indexer property (getter or setter) or the setter of a non-indexer property.<para/>
     /// If parameter association for indexer properties matters, then always obtain parameters directly from the getter or setter method (e.g. <see cref="MethodData.Parameters"/> like <c>PropertyData.PropertySetMethodData.Parameters</c>) and completely avoid <see cref="PropertyData.IndexerParameters"/> (or <see cref="PropertyInfo.GetIndexParameters"/>).</remarks>
     /// <value>The <see cref="ParameterizedMemberData"/> (which is either a <see cref="MethodData"/> or <see cref="ConstructorData"/>) that declares this parameter.</value>
-    public ParameterizedMemberData MemberData
-        => _member ??= ParameterInfo.Member switch
-        {
-            ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo),
+    public ParameterizedMemberData MemberData => _member ??= ParameterInfo.Member switch
+    {
+        ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo),
 
-            // If ParameterInfo.Member is a PropertyInfo, it is ALWAYS an indexer property
-            // and the current parameter was obtained via PropertyInfo.GetIndexerParameters(). Since the returned parameter list excludes the "value" parameter for the setter,
-            // we can't resolve ambiguity whether the parameter belongs to the getter or setter.
-            // This case is no longer supported since ParameterData creation involves normalization. The fact we landed here points to a bug in the code.
-            PropertyInfo propertyInfo => throw new NotSupportedException($"Parameters obtained via '{typeof(PropertyInfo).ToFullyQualifiedSignatureName}.{nameof(PropertyInfo.GetIndexParameters)}()' are not supported."),
+        // If ParameterInfo.Member is a PropertyInfo, it is ALWAYS an indexer property
+        // and the current parameter was obtained via PropertyInfo.GetIndexerParameters(). Since the returned parameter list excludes the "value" parameter for the setter,
+        // we can't resolve ambiguity whether the parameter belongs to the getter or setter.
+        // This case is no longer supported since ParameterData creation involves normalization. The fact we landed here points to a bug in the code.
+        PropertyInfo propertyInfo => throw new NotSupportedException($"Parameters obtained via '{typeof(PropertyInfo).ToFullyQualifiedSignatureName}.{nameof(PropertyInfo.GetIndexParameters)}()' are not supported."),
 
-            // The parameter belongs to a method and was obtained via:
-            //      * MethodInfo.GetParameters() or
-            //      * ConstructorInfo.GetParameters() or
-            //      * PropertyInfo.GetGetMethod().GetParameters() or
-            //      * PropertyInfo.GetSetMethod().GetParameters() (which, opposed to PropertyInfo.GetIndexerParameters(), includes the "value" parameter of the property setter).
-            MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo),
-            _ => throw new NotImplementedException(),
-        };
+        // The parameter belongs to a method and was obtained via:
+        //      * MethodInfo.GetParameters() or
+        //      * ConstructorInfo.GetParameters() or
+        //      * PropertyInfo.GetGetMethod().GetParameters() or
+        //      * PropertyInfo.GetSetMethod().GetParameters() (which, opposed to PropertyInfo.GetIndexerParameters(), includes the "value" parameter of the property setter).
+        MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo),
+        _ => throw new NotImplementedException(),
+    };
 
-    public TypeData ParameterTypeData
-      => _parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo.ParameterType);
+    public TypeData ParameterTypeData => _parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo.ParameterType);
 
-    public TypeData DeclaringTypeData
-      => _declaringTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType());
+    public TypeData DeclaringTypeData => _declaringTypeData ??= MemberData.DeclaringTypeData;
 
-    public override IList<CustomAttributeData> AttributeData
-      => _attributeData ??= [.. ParameterInfo.GetCustomAttributesData()];
+    public override IList<CustomAttributeData> AttributeData => _attributeData ??= [.. ParameterInfo.GetCustomAttributesData()];
 
     /// <summary>
     /// Gets a value indicating whether the parameter is passed by reference.
     /// </summary>
-    public bool IsByRef
-      => _isByRef ??= ParameterTypeData.Type.IsByRef;
+    public bool IsByRef => _isByRef ??= ParameterTypeData.Type.IsByRef;
 
-    public bool IsIndexerPropertyParameter
-      => _isIndexerPropertyParameter ??= MemberData is MethodData methodData && (methodData.IsIndexerPropertyGetMethod || methodData.IsIndexerPropertySetMethod);
+    public bool IsIndexerPropertyParameter => _isIndexerPropertyParameter ??= MemberData is MethodData methodData && (methodData.IsIndexerPropertyGetMethod || methodData.IsIndexerPropertySetMethod);
 
     /// <summary>
     /// Gets a value indicating whether this parameter belongs to the setter method of an indexer property.
     /// </summary>
     /// <value><see langword="true"/> if the parameter belongs to an indexer property setter; otherwise, <see langword="false"/>.<para/>
     /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property setters.</value>
-    public bool IsIndexerPropertySetterParameter
-      => _isIndexerPropertySetterParameter ??= MemberData is MethodData methodData && methodData.IsIndexerPropertySetMethod;
+    public bool IsIndexerPropertySetterParameter => _isIndexerPropertySetterParameter ??= MemberData is MethodData methodData && methodData.IsIndexerPropertySetMethod;
 
     /// <summary>
     /// Returns <see langword="true"/> if the parameter belongs to an indexer property getter.
     /// </summary>
     /// <remarks>This property is typically used to identify parameters that are part of indexer property getters. </remarks>
-    public bool IsIndexerPropertyGetterParameter
-      => _isIndexerPropertyGetterParameter ??= MemberData is MethodData methodData && methodData.IsIndexerPropertyGetMethod;
+    public bool IsIndexerPropertyGetterParameter => _isIndexerPropertyGetterParameter ??= MemberData is MethodData methodData && methodData.IsIndexerPropertyGetMethod;
 
     /// <summary>
     /// Gets a value indicating whether the parameter represents the implicit 'value' parameter of a property or
@@ -228,8 +204,7 @@ internal sealed class ParameterData : SymbolInfoData
     /// compiler-generated parameter named 'value' as the last parameter in the method signature.
     /// </remarks>
     /// <value><see langword="true"/> if the parameter is the implicit 'value' parameter of a property or indexer setter; otherwise, <see langword="false"/>.</value>
-    public bool IsSetterValueParameter
-      => IsPropertySetterParameter // No-indexer property setter always has a single "value" parameter
+    public bool IsSetterValueParameter => IsPropertySetterParameter // No-indexer property setter always has a single "value" parameter
         || (Name.Equals("value", StringComparison.Ordinal) // "value" parameter is always named "value"
             && Position == MemberData.Parameters.Count - 1 // Calling MethodInfo.GetParameters() on a property setter includes the compiler generated "value" parameter at the end of the parameter list
             && IsIndexerPropertySetterParameter); // Execute most expensive check last
@@ -240,53 +215,39 @@ internal sealed class ParameterData : SymbolInfoData
     /// </summary>
     /// <value><see langword="true"/> if the parameter belongs to a non-indexer property setter method; otherwise, <see langword="false"/>.<para/>
     /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property setters.</value>
-    public bool IsPropertySetterParameter
-      => _isPropertySetterParameter ??= MemberData is MethodData methodData && methodData.IsPropertySetMethod;
+    public bool IsPropertySetterParameter => _isPropertySetterParameter ??= MemberData is MethodData methodData && methodData.IsPropertySetMethod;
 
     public override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
       ? (_symbolAttributes = ParameterData.GetAttributesInternal(this))
       : _symbolAttributes;
 
-    public override SymbolComponentInfo SymbolComponentInfo
-      => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+    public override SymbolComponentInfo SymbolComponentInfo => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
-    public override string Signature
-      => Name;
+    public override string Signature => Name;
 
-    public override string ShortSignature
-      => Name;
+    public override string ShortSignature => Name;
 
-    public override string ShortCompactSignature
-      => Name;
+    public override string ShortCompactSignature => Name;
 
-    public override string FullyQualifiedSignature
-      => Name;
+    public override string FullyQualifiedSignature => Name;
 
-    public override string FullyQualifiedRuntimeSignature
-      => Name;
+    public override string FullyQualifiedRuntimeSignature => Name;
 
-    public override string RuntimeSignature
-      => Name;
+    public override string RuntimeSignature => Name;
 
-    public override string RuntimeShortSignature
-      => Name;
+    public override string RuntimeShortSignature => Name;
 
-    public override string RuntimeShortCompactSignature
-      => Name;
+    public override string RuntimeShortCompactSignature => Name;
 
-    public override string DisplayName
-      => Name;
+    public override string DisplayName => Name;
 
-    public override string ShortDisplayName
-      => Name;
+    public override string ShortDisplayName => Name;
 
-    public override string FullyQualifiedDisplayName
-      => Name;
+    public override string FullyQualifiedDisplayName => Name;
 
-    public override string AssemblyName
-      => _assemblyName ??= MemberData.AssemblyName;
+    public override string AssemblyName => _assemblyName ??= MemberData.AssemblyName;
 
-    public override string Namespace { get; }
+    public override string Namespace => string.Empty;
 
     /// <summary>
     /// Determine whether the parameter is passed by reference using the <see langword="ref"/> keyword.
@@ -323,8 +284,7 @@ internal sealed class ParameterData : SymbolInfoData
         return parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is not null;
     }
 
-    private static bool IsOutParameter(ParameterData parameterData)
-      => parameterData.IsByRef && parameterData.IsOut;
+    private static bool IsOutParameter(ParameterData parameterData) => parameterData.IsByRef && parameterData.IsOut;
 
     private static bool IsInParameter(ParameterData parameterData)
     {

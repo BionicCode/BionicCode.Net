@@ -6,8 +6,8 @@ using System.Reflection;
 
 internal abstract class MemberData : SymbolInfoData
 {
-    private IList<CustomAttributeData> _attributeData;
-    private TypeData _declaringTypeData;
+    private IList<CustomAttributeData>? _attributeData;
+    private TypeData? _declaringTypeData;
     private string? _namespace;
     private BindingFlags? _bindingFlagsVisibilityMask;
     private TypeData? _implementingTypeData;

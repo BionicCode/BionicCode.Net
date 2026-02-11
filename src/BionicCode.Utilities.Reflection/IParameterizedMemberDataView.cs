@@ -1,7 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
-using System.Reflection;
 
 public interface IParameterizedMemberDataView
 {
@@ -18,7 +17,5 @@ public interface IParameterizedMemberDataView
     bool IsSpecialName { get; }
     bool IsVirtual { get; }
     ParameterizedSymbolKind ParameterizedSymbolKind { get; }
-    ParameterListView Parameters { get; }
-
-    MethodBase GetMethodBase();
+    IParameterListView Parameters { get; }
 }

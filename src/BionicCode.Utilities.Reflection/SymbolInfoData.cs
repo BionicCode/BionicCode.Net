@@ -3,10 +3,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using Microsoft.CodeAnalysis;
 
 [DebuggerDisplay("{RuntimeShortSignature}")]
-internal abstract class SymbolInfoData : IDisposableAdvanced
+internal abstract class SymbolInfoData
 {
     protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolReflectionInfoCacheKey cacheKey)
     {
@@ -140,36 +139,4 @@ internal abstract class SymbolInfoData : IDisposableAdvanced
     public string IndentationString { get; private set; }
 
     public SymbolReflectionInfoCacheKey CacheKey { get; }
-    bool IDisposableAdvanced.IsDisposed { get; }
-
-    #region IDisposable
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!IsDisposed)
-        {
-            if (disposing)
-            {
-                // TODO: dispose managed state (managed objects)
-            }
-
-            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-            // TODO: set large fields to null
-            IsDisposed = true;
-        }
-    }
-
-    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-    // ~SymbolInfoData()
-    // {
-    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-    //     Dispose(disposing: false);
-    // }
-
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-    #endregion IDisposable
 }

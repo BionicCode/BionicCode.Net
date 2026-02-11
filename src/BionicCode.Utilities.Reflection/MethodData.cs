@@ -90,11 +90,9 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
 
     internal MethodInfo MethodInfo { get; }
 
-    protected override MemberInfo GetMemberInfo()
-      => MethodInfo;
+    protected override MemberInfo GetMemberInfo() => MethodInfo;
 
-    public override MethodBase GetMethodBase()
-        => MethodInfo;
+    internal override MethodBase GetMethodBase() => MethodInfo;
 
     public MethodData MakeGenericMethodData(TypeList typeDataArguments)
     {
@@ -1429,7 +1427,8 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         interfaceDeclaration = null;
         declaringInterfaceTypeData = null;
 
-        TypeData implementingType = methodData.DeclaringTypeData;
+        TypeData implementingType = methodData.MethodInfo.DeclaringType?.ToTypeData() ?? throw new InvalidOperationException("Declaring type handle is not available.");
+
         if (implementingType.IsInterface
             || methodData.IsPublic)
         {

@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 public interface IMethodDataView : IParameterizedMemberDataView, IMemberDataView, ISymbolInfoDataView
 {
     IMemberDataView AccessedMember { get; }
-    BasicMethodFingerprint BasicMethodFingerprint { get; }
     bool ContainsGenericParameters { get; }
     IMethodDataView GenericMethodDefinitionData { get; }
-    TypeListView GenericMethodParameters { get; }
+    ITypeListView GenericMethodParameters { get; }
     bool IsAccessorMethod { get; }
     bool IsAsync { get; }
     bool IsAwaitable { get; }
@@ -53,15 +52,15 @@ public interface IMethodDataView : IParameterizedMemberDataView, IMemberDataView
     ValueTask InvokeAwaitableValueTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args);
     ValueTask InvokeAwaitableValueTaskAsync(object? target, params object?[]? args);
     ValueTask<object?> InvokeAwaitableValueTaskWithResultAsync(object? target, params object?[] args);
-    object? InvokeOpenGeneric(object? target, TypeListView genericMethodParameters, params object?[]? args);
-    object? InvokeOpenGeneric(object? target, TypeListView genericMethodParameters, ReadOnlySpan<object?> args);
-    Task InvokeOpenGenericAwaitableTaskAsync(object? target, TypeListView genericMethodParameters, params object?[]? args);
-    Task<object?> InvokeOpenGenericAwaitableTaskWithResultAsync(object? target, TypeListView genericMethodParameters, params object?[]? args);
-    ValueTask InvokeOpenGenericAwaitableValueTaskAsync(object? target, TypeListView genericMethodParameters, params object?[]? args);
-    ValueTask<object?> InvokeOpenGenericValueAwaitableTaskWithResultAsync(object? targetView, TypeListView genericMethodParameters, params object?[] args);
+    object? InvokeOpenGeneric(object? target, ITypeListView genericMethodParameters, params object?[]? args);
+    object? InvokeOpenGeneric(object? target, ITypeListView genericMethodParameters, ReadOnlySpan<object?> args);
+    Task InvokeOpenGenericAwaitableTaskAsync(object? target, ITypeListView genericMethodParameters, params object?[]? args);
+    Task<object?> InvokeOpenGenericAwaitableTaskWithResultAsync(object? target, ITypeListView genericMethodParameters, params object?[]? args);
+    ValueTask InvokeOpenGenericAwaitableValueTaskAsync(object? target, ITypeListView genericMethodParameters, params object?[]? args);
+    ValueTask<object?> InvokeOpenGenericValueAwaitableTaskWithResultAsync(object? targetView, ITypeListView genericMethodParameters, params object?[] args);
     IMethodDataView MakeGenericMethodData(params Type[] typeArguments);
-    IMethodDataView MakeGenericMethodData(TypeListView typeDataArguments);
+    IMethodDataView MakeGenericMethodData(ITypeListView typeDataArguments);
     MethodInfo MakeGenericMethodInfo(params Type[] typeArguments);
     MethodInfo MakeGenericMethodInfo(params ITypeDataView[] typeArguments);
-    MethodInfo MakeGenericMethodInfo(TypeListView typeArguments);
+    MethodInfo MakeGenericMethodInfo(ITypeListView typeArguments);
 }

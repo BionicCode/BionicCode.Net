@@ -78,11 +78,6 @@ internal readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflect
         ? _eventDescriptor
         : ThrowInvalidPropertyContextException<WellKnownEventDescriptor>([SymbolKind.MemberEvent]);
 
-    private readonly bool _isExplicitInterfaceImplementation;
-    public bool IsExplicitInterfaceImplementation => SymbolKind is SymbolKind.MemberProperty or SymbolKind.MemberEvent or SymbolKind.MemberMethod
-        ? _isExplicitInterfaceImplementation
-        : ThrowInvalidPropertyContextException<bool>([SymbolKind.MemberProperty, SymbolKind.MemberEvent, SymbolKind.MemberMethod]);
-
     private readonly int _hashCode;
 
     private SymbolReflectionInfoCacheKey(
@@ -280,7 +275,6 @@ internal readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflect
             hashCode.Add(_fieldDescriptor);
             hashCode.Add(_eventDescriptor);
             hashCode.Add(_typeDescriptor);
-            hashCode.Add(_isExplicitInterfaceImplementation);
 
             return hashCode.ToHashCode();
         }
@@ -297,8 +291,7 @@ internal readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflect
         && _propertyDescriptor == other._propertyDescriptor
         && _fieldDescriptor == other._fieldDescriptor
         && _eventDescriptor == other._eventDescriptor
-        && _typeDescriptor == other._typeDescriptor
-        && _isExplicitInterfaceImplementation == other._isExplicitInterfaceImplementation;
+        && _typeDescriptor == other._typeDescriptor;
 
     public static bool operator ==(SymbolReflectionInfoCacheKey left, SymbolReflectionInfoCacheKey right) => left.Equals(right);
     public static bool operator !=(SymbolReflectionInfoCacheKey left, SymbolReflectionInfoCacheKey right) => !(left == right);

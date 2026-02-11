@@ -6,7 +6,6 @@ using BionicCode.Utilities.Net;
 
 public interface IMemberDataView : ISymbolInfoDataView
 {
-    MemberInfo GetMemberInfo();
     AccessModifier AccessModifier { get; }
     BindingFlags BindingFlagsVisibilityMask { get; }
     ITypeDataView DeclaringTypData { get; }
