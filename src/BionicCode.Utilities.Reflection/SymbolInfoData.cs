@@ -7,7 +7,7 @@ using System.Reflection;
 [DebuggerDisplay("{RuntimeShortSignature}")]
 internal abstract class SymbolInfoData
 {
-    protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolReflectionInfoCacheKey cacheKey)
+    protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
         ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
@@ -20,61 +20,61 @@ internal abstract class SymbolInfoData
         CacheKey = cacheKey;
     }
 
-    public string Name { get; }
-    public SymbolKind SymbolKind { get; }
-    public abstract string Namespace { get; }
-    public abstract IList<CustomAttributeData> AttributeData { get; }
-    public abstract SymbolAttributes SymbolAttributes { get; }
-    public abstract string AssemblyName { get; }
+    internal string Name { get; }
+    internal SymbolKind SymbolKind { get; }
+    internal abstract string Namespace { get; }
+    internal abstract IList<CustomAttributeData> AttributeData { get; }
+    internal abstract SymbolAttributes SymbolAttributes { get; }
+    internal abstract string AssemblyName { get; }
 
     /// <summary>
     /// Symbol name with namespace, the declaring type (in case of a member), and generic type parameters.
     /// </summary>
     /// <value>The fully qualified name of the symbol.
     /// <br/>For example, a method name: <c>"MyNamespace.MyClass.DoSomething&lt;T&gt;"</c>.</value>
-    public abstract string FullyQualifiedDisplayName { get; }
+    internal abstract string FullyQualifiedDisplayName { get; }
 
     /// <summary>
     /// Symbol name without namespace, but with the declaring type (in case of a member), and generic type parameters.
     /// </summary>
     /// <value>The full name of the symbol.
     /// <br/>For example, a method name: <c>"MyClass.DoSomething&lt;T&gt;"</c>.</value>
-    public abstract string DisplayName { get; }
+    internal abstract string DisplayName { get; }
 
     /// <summary>
     /// Symbol name without namespace and the declaring type (in case of a member), but with generic type parameters.
     /// </summary>
     /// <value>The short name of the symbol.
     /// <br/>For example, a method name: <c>"DoSomething;T&gt;"</c>.</value>
-    public abstract string ShortDisplayName { get; }
+    internal abstract string ShortDisplayName { get; }
 
     /// <summary>
     /// Signature including the namespace, the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
     /// </summary>
     /// <value>The fully qualified signature of the symbol.
     /// <br/>For example, a method signature: <c>"internal void MyNamespace.MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
-    public abstract string FullyQualifiedSignature { get; }
+    internal abstract string FullyQualifiedSignature { get; }
 
     /// <summary>
     /// Signature without namespace, but with the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
     /// </summary>
     /// <value>The full signature of the symbol.
     /// <br/>For example, a method signature: <c>"internal void MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
-    public abstract string Signature { get; }
+    internal abstract string Signature { get; }
 
     /// <summary>
     /// Signature without namespace and the declaring type (in case of a member), but with attributes, generic type parameters and generic type parameter constraints.
     /// </summary>
     /// <value>The shortened signature of the symbol.
     /// <br/>For example, a method signature: <c>"internal void DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
-    public abstract string ShortSignature { get; }
+    internal abstract string ShortSignature { get; }
 
     /// <summary>
     /// Signature without namespace, the declaring type (in case of a member), attributes and generic type parameter constraints, but with generic type parameters.
     /// </summary>
     /// <value>The compacted short signature of the symbol.
     /// <br/>For example, a method signature: <c>"internal void DoSomething&lt;T&gt;(T firstValue, string value = null)"</c>.</value>
-    public abstract string ShortCompactSignature { get; }
+    internal abstract string ShortCompactSignature { get; }
 
     /// <summary>
     /// Signature with namespace, the declaring type (in case of a member), attributes and generic type parameter constraints and with the resolved runtime generic type argument names.
@@ -82,7 +82,7 @@ internal abstract class SymbolInfoData
     /// </summary>
     /// <value>The fully qualified runtime signature of the symbol.
     /// <br/>For example: <c>"internal void MyNamespace.MyClass.DoSomething&lt;int&gt;(int firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
-    public abstract string FullyQualifiedRuntimeSignature { get; }
+    internal abstract string FullyQualifiedRuntimeSignature { get; }
 
     /// <summary>
     /// Signature without namespace but with the declaring type (in case of a member), attributes and generic type parameter constraints and with the resolved runtime generic type argument names.
@@ -90,7 +90,7 @@ internal abstract class SymbolInfoData
     /// </summary>
     /// <value>The full runtime signature of the symbol.
     /// <br/>For example, a method signature: <c>"internal void MyClass.DoSomething&lt;int&gt;(int firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
-    public abstract string RuntimeSignature { get; }
+    internal abstract string RuntimeSignature { get; }
 
     /// <summary>
     /// Signature without namespace and the declaring type (in case of a member) but with attributes and generic type parameter constraints and with the resolved runtime generic type argument names.
@@ -98,7 +98,7 @@ internal abstract class SymbolInfoData
     /// </summary>
     /// <value>The shortened runtime signature of the symbol.
     /// <br/>For example, a method signature: <c>"internal void DoSomething&lt;int&gt;(int firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
-    public abstract string RuntimeShortSignature { get; }
+    internal abstract string RuntimeShortSignature { get; }
 
     /// <summary>
     /// Signature without namespace, the declaring type (in case of a member), attributes and generic type parameter constraints, but with the resolved runtime generic type argument names.
@@ -106,13 +106,13 @@ internal abstract class SymbolInfoData
     /// </summary>
     /// <value>The compacted short runtime signature of the symbol.
     /// <br/>For example, a method signature: <c>"internal void DoSomething&lt;int&gt;(int firstValue, string value = null)"</c>.</value>
-    public abstract string RuntimeShortCompactSignature { get; }
+    internal abstract string RuntimeShortCompactSignature { get; }
 
     /// <summary>
     /// The individual components that make the signature.
     /// </summary>
-    public abstract SymbolComponentInfo SymbolComponentInfo { get; }
-    public bool IsDisposed { get; private set; }
+    internal abstract SymbolComponentInfo SymbolComponentInfo { get; }
+    internal bool IsDisposed { get; private set; }
 
     private int _indentation;
 
@@ -120,7 +120,7 @@ internal abstract class SymbolInfoData
     /// Gets or sets the number of spaces to use for each indentation level when formatting the symbol signatures.
     /// </summary>
     /// <value>The number of spaces to indent a line. The default is <code>4</code>.</value>
-    public int FormattingIndentation
+    internal int FormattingIndentation
     {
         get => _indentation;
         set
@@ -136,7 +136,7 @@ internal abstract class SymbolInfoData
     /// Gets the string used to represent a single level of indentation.
     /// </summary>
     /// <value>The spaces to indent a line based on the <see cref="FormattingIndentation"/> property.</value>
-    public string IndentationString { get; private set; }
+    internal string IndentationString { get; private set; }
 
-    public SymbolReflectionInfoCacheKey CacheKey { get; }
+    internal SymbolReflectionInfoCacheKeyInternal CacheKey { get; }
 }

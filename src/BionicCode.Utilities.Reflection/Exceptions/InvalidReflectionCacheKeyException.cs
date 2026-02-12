@@ -11,7 +11,7 @@ using System;
 [Serializable]
 public class InvalidReflectionCacheKeyException : System.Exception
 {
-    private const string DefaultMessage = $"The key contains invalid information that don't map to an actual reflection symbol. For example, this can be the case when the {nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)} is invalid or {nameof(SymbolReflectionInfoCacheKey.SymbolName)} doesn't belong to the provided {nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)} or the generic type parameter count for a generic method was wrong.";
+    private const string DefaultMessage = $"The key contains invalid information that don't map to an actual reflection symbol. For example, this can be the case when the {nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)} is invalid or {nameof(SymbolReflectionInfoCacheKeyInternal.SymbolName)} doesn't belong to the provided {nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)} or the generic type parameter count for a generic method was wrong.";
     /// <inheritdoc />
     public InvalidReflectionCacheKeyException()
     {

@@ -10,7 +10,7 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
     public static MethodList Empty { get; } = new MethodList();
     private readonly int _hashCode; // precomputed
     private readonly ILookup<string, MethodData> _methodNameIndex;
-    private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
+    private readonly SymbolReflectionInfoCacheKeyInternal _declaringTypeCacheKey;
 
     public MethodList(MethodData[] items) : this((IEnumerable<MethodData>)items)
     {
@@ -79,7 +79,7 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
     public bool IsEmpty => Methods.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<MethodData> Methods { get; }
-    public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey => HasItems
+    public SymbolReflectionInfoCacheKeyInternal DeclaringTypeCacheKey => HasItems
         ? _declaringTypeCacheKey
         : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeCacheKey)));
 
@@ -87,7 +87,7 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringTypeCacheKey;
             return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeData)));

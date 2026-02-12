@@ -16,7 +16,7 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
 {
     public static ParameterList Empty { get; } = new ParameterList();
     private readonly int _hashCode; // precomputed
-    private readonly SymbolReflectionInfoCacheKey _declaringMemberCacheKey;
+    private readonly SymbolReflectionInfoCacheKeyInternal _declaringMemberCacheKey;
     private readonly Dictionary<string, ParameterData> _parameterNameIndex;
 
     private ParameterList()
@@ -111,7 +111,7 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
     public bool IsEmpty => Parameters.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<ParameterData> Parameters { get; }
-    public SymbolReflectionInfoCacheKey DeclaringMemberCacheKey
+    public SymbolReflectionInfoCacheKeyInternal DeclaringMemberCacheKey
         => HasItems
             ? _declaringMemberCacheKey
             : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringMemberCacheKey)));
@@ -125,7 +125,7 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
                 throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringMemberData)));
             }
 
-            SymbolReflectionInfoCacheKey cacheKey = DeclaringMemberCacheKey;
+            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringMemberCacheKey;
             return cacheKey.SymbolKind == SymbolKind.MemberMethod
                     ? SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref cacheKey)
                     : SymbolReflectionInfoCache.GetOrCreateConstructorDataCacheEntry(ref cacheKey);

@@ -15,7 +15,7 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
 {
     public static MethodParameterInfoList Empty { get; } = new MethodParameterInfoList();
     private readonly int _hashCode; // precomputed
-    private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
+    private readonly SymbolReflectionInfoCacheKeyInternal _declaringTypeCacheKey;
     private readonly Dictionary<string, MethodParameterInfo> _parameterNameIndex;
 
     public MethodParameterInfoList(MethodParameterInfo[] items) : this((IEnumerable<MethodParameterInfo>)items)
@@ -90,7 +90,7 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
     public bool IsEmpty => Parameters.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<MethodParameterInfo> Parameters { get; }
-    public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
+    public SymbolReflectionInfoCacheKeyInternal DeclaringTypeCacheKey
         => HasItems
             ? _declaringTypeCacheKey
             : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeCacheKey)));
@@ -104,7 +104,7 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
                 throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeData)));
             }
 
-            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringTypeCacheKey;
             return SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey);
         }
     }

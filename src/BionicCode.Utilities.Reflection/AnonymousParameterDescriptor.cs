@@ -27,7 +27,7 @@
         public AnonymousParameterDescriptor(
             AnonymousMethodDescriptor declaringMethodDescriptor,
             string? parameterName = null,
-            int parameterPosition = SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
+            int parameterPosition = SymbolReflectionInfoCacheKeyInternal.UnknownParameterCountOrPosition,
             ParameterKind parameterKind = ParameterKind.Undefined,
             RuntimeTypeHandle? parameterTypeHandle = null)
         {
@@ -35,7 +35,7 @@
             if (parameterTypeHandle.Equals(default)
                 && string.IsNullOrWhiteSpace(parameterName)
                 && parameterKind == ParameterKind.Undefined
-                && parameterPosition == SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition)
+                && parameterPosition == SymbolReflectionInfoCacheKeyInternal.UnknownParameterCountOrPosition)
             {
                 throw new ArgumentException($"At least one of the following arguments must be provided to avoid ambiguity when using the created key for lookups: '{nameof(parameterTypeHandle)}', '{nameof(parameterName)}', '{nameof(parameterKind)}', '{nameof(parameterPosition)}'.");
             }
@@ -51,7 +51,7 @@
             => !string.IsNullOrWhiteSpace(ParameterName);
 
         public bool HasParameterPosition
-            => ParameterPosition > SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition;
+            => ParameterPosition > SymbolReflectionInfoCacheKeyInternal.UnknownParameterCountOrPosition;
 
         public bool HasParameterKind
             => ParameterKind != ParameterKind.Undefined;

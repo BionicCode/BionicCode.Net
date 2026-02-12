@@ -1,12 +1,14 @@
-﻿namespace BionicCode.Utilities.Net.Reflection
+﻿namespace BionicCode.Utilities.Net.Reflection;
+
+/// <summary>
+/// Specifies the modifier of a parameter.
+/// </summary>
+public enum ParameterKind
 {
-    internal enum ParameterKind
-    {
-        Undefined = 0,
-        Normal,
-        In,
-        Out,
-        Ref,
-        RefReadOnly,
-    }
+    Undefined = 0,
+    Normal,
+    In,
+    Out,
+    Ref,
+    RefReadOnly,
 }

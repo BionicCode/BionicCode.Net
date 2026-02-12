@@ -12,7 +12,7 @@ internal abstract class MemberData : SymbolInfoData
     private BindingFlags? _bindingFlagsVisibilityMask;
     private TypeData? _implementingTypeData;
 
-    protected MemberData(string memberName, SymbolKind symbolKind, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
+    protected MemberData(string memberName, SymbolKind symbolKind, SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(memberName, symbolKind, symbolInfoDataCacheKey)
     {
     }
@@ -43,17 +43,17 @@ internal abstract class MemberData : SymbolInfoData
         return visibilityMask;
     }
 
-    public TypeData DeclaringTypeData
+    internal TypeData DeclaringTypeData
       => _declaringTypeData ??= Type.GetTypeFromHandle(DeclaringTypeHandle) is Type declaringType
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType)
             : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(DeclaringTypeHandle)}' is not valid.");
 
-    public TypeData ImplementingTypeData
+    internal TypeData ImplementingTypeData
         => _implementingTypeData ??= Type.GetTypeFromHandle(ImplementingTypeHandle) is Type implementingType
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(implementingType)
             : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(ImplementingTypeHandle)}' is not valid.");
 
-    public override string Namespace
+    internal override string Namespace
         => _namespace ??= DeclaringTypeData!.Namespace;
 
     /// <summary>
@@ -64,8 +64,8 @@ internal abstract class MemberData : SymbolInfoData
     /// The runtime type handle of the type that declares the member.
     /// <para/> For an explicit interface implementation, this would be the runtime type handle of the interface that declares the member.
     /// </value>
-    public abstract RuntimeTypeHandle DeclaringTypeHandle { get; }
-    public abstract bool IsExplicitInterfaceImplementation { get; }
+    internal abstract RuntimeTypeHandle DeclaringTypeHandle { get; }
+    internal abstract bool IsExplicitInterfaceImplementation { get; }
 
     /// <summary>
     /// The implementing type handle of the member. This is the runtime type handle of the type that implements the member. For example, for a method declared in a class, this would be the runtime type handle of that class.
@@ -79,25 +79,25 @@ internal abstract class MemberData : SymbolInfoData
     /// <para/> For an explicit interface implementation, this would be the runtime type handle of the interface that implements the member.
     /// <para/> For a non-explicit interface implementation, this would be the same as the declaring type handle.
     /// </value>
-    public abstract RuntimeTypeHandle ImplementingTypeHandle { get; }
+    internal abstract RuntimeTypeHandle ImplementingTypeHandle { get; }
 
-    public abstract bool IsStatic { get; }
-    public abstract bool IsPublic { get; }
-    public abstract bool IsPrivate { get; }
+    internal abstract bool IsStatic { get; }
+    internal abstract bool IsPublic { get; }
+    internal abstract bool IsPrivate { get; }
     /// <summary>
     /// Gets a value indicating whether the member has internal accessibility within its assembly.
     /// </summary>
-    public abstract bool IsAssembly { get; }
+    internal abstract bool IsAssembly { get; }
     /// <summary>
     /// Gets a value indicating whether the member is protected and thus accessible only within its own class or by
     /// derived class instances.
     /// </summary>
-    public abstract bool IsFamily { get; }
-    public abstract bool IsFamilyOrAssembly { get; }
-    public abstract bool IsFamilyAndAssembly { get; }
-    public abstract AccessModifier AccessModifier { get; }
-    public BindingFlags BindingFlagsVisibilityMask => _bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
+    internal abstract bool IsFamily { get; }
+    internal abstract bool IsFamilyOrAssembly { get; }
+    internal abstract bool IsFamilyAndAssembly { get; }
+    internal abstract AccessModifier AccessModifier { get; }
+    internal BindingFlags BindingFlagsVisibilityMask => _bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
 
     /// <inheritdoc/>
-    public override IList<CustomAttributeData> AttributeData => _attributeData ??= [.. GetMemberInfo().GetCustomAttributesData()];
+    internal override IList<CustomAttributeData> AttributeData => _attributeData ??= [.. GetMemberInfo().GetCustomAttributesData()];
 }

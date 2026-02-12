@@ -55,7 +55,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     private RuntimeTypeHandle? _implementingTypeHandle;
     private bool? _isExplicitInterfaceImplementation;
 
-    internal PropertyData(SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
+    internal PropertyData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.PropertyDescriptor.PropertyName, SymbolKind.MemberProperty, symbolInfoDataCacheKey)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey);
@@ -81,7 +81,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="InvalidOperationException">Thrown if the property does not have a getter or if the property is an indexer property.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the target is <see langword="null"/> for an instance property.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    public object? GetValue(object? target)
+    internal object? GetValue(object? target)
     {
         if (!CanRead)
         {
@@ -128,7 +128,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="InvalidOperationException">Thrown if the property does not have a getter or if the property is an indexer.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the target is <see langword="null"/> for an instance property.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    public TValue GetValue<TTarget, TValue>(TTarget target)
+    internal TValue GetValue<TTarget, TValue>(TTarget target)
     {
         if (!CanRead)
         {
@@ -178,7 +178,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="ArgumentNullException">Thrown if the target is null for an instance property, or if indexerPropertyParameters is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the number of elements in indexerPropertyParameters does not match the indexer parameter count of the property.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    public object? GetIndexerValue(object? target, object?[] indexerPropertyParameters)
+    internal object? GetIndexerValue(object? target, object?[] indexerPropertyParameters)
     {
         if (!CanRead)
         {
@@ -234,7 +234,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="ArgumentNullException">Thrown when the indexer parameter is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the indexer parameter count does not match the indexer parameter count of the property.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    public TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indexerPropertyParameters)
+    internal TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indexerPropertyParameters)
     {
         if (!CanRead)
         {
@@ -289,7 +289,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="ArgumentNullException">Thrown when the indexer parameter is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the indexer parameter count does not match the indexer parameter count of the property.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    public TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object[] indexerPropertyParameters)
+    internal TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object[] indexerPropertyParameters)
     {
         if (!CanRead)
         {
@@ -343,7 +343,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="InvalidOperationException">Thrown if the property is read-only or is an indexer property.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the property is an instance property and the target object is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    public void SetValue(object? target, object? value)
+    internal void SetValue(object? target, object? value)
     {
         if (DeclaringTypeData.IsValueType)
         {
@@ -382,7 +382,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         propertySetInvoker(invocationTarget, value);
     }
 
-    public void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class
+    internal void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class
     {
         if (DeclaringTypeData.IsValueType)
         {
@@ -426,7 +426,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         propertySetInvoker(invocationTarget, value);
     }
 
-    public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, object[]? indexerPropertyIndex = null) where TTarget : struct
+    internal void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, object[]? indexerPropertyIndex = null) where TTarget : struct
     {
         if (IsReadOnly)
         {
@@ -481,7 +481,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="InvalidOperationException">Thrown if the property is read-only or if the declaring type is a value type.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the target object is null for an instance property, or if indexerPropertyParameters is null for an
     /// indexer property.</exception>
-    public void SetIndexerValue(object? target, object? value, object?[]? indexerPropertyIndex = null)
+    internal void SetIndexerValue(object? target, object? value, object?[]? indexerPropertyIndex = null)
     {
         if (IsReadOnly)
         {
@@ -843,21 +843,21 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         _getAccessorAccessModifier = getMethodModifier;
     }
 
-    public bool IsIndexer => CanRead
+    internal bool IsIndexer => CanRead
         ? PropertyGetMethodParameters.HasItems
         : CanWrite && PropertySetMethodParameters.Count > 1;
 
     /// <summary>
     /// Gets the parameters of the property getter method (including indexer parameters only).
     /// </summary>
-    public ParameterList PropertyGetMethodParameters => _getMethodParameters ??= ParameterListBuilder.CreateForPropertyGet(this);
+    internal ParameterList PropertyGetMethodParameters => _getMethodParameters ??= ParameterListBuilder.CreateForPropertyGet(this);
 
     /// <summary>
     /// Gets the parameters of the property setter method (indexer parameters plus the implicit <c>value</c> parameter).
     /// </summary>
-    public ParameterList PropertySetMethodParameters => _setMethodParameters ??= ParameterListBuilder.CreateForPropertySet(this);
+    internal ParameterList PropertySetMethodParameters => _setMethodParameters ??= ParameterListBuilder.CreateForPropertySet(this);
 
-    public override AccessModifier AccessModifier
+    internal override AccessModifier AccessModifier
     {
         get
         {
@@ -870,7 +870,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         }
     }
 
-    public AccessModifier SetAccessorAccessModifier
+    internal AccessModifier SetAccessorAccessModifier
     {
         get
         {
@@ -883,7 +883,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         }
     }
 
-    public AccessModifier GetAccessorAccessModifier
+    internal AccessModifier GetAccessorAccessModifier
     {
         get
         {
@@ -896,7 +896,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         }
     }
 
-    public TypeData PropertyTypeData => _propertyTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(PropertyInfo.PropertyType);
+    internal TypeData PropertyTypeData => _propertyTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(PropertyInfo.PropertyType);
 
     internal PropertyInfo PropertyInfo { get; }
 
@@ -906,85 +906,85 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     //internal static PropertyData ValueTaskResultPropertyData
     //  => PropertyData._ValueTaskResultPropertyData ??= SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(typeof(ValueTask<>).GetProperty(nameof(ValueTask<object>.Result)));
 
-    public bool IsSealed => _isSealed ??= (CanRead && PropertyGetMethodData!.IsSealed)
+    internal bool IsSealed => _isSealed ??= (CanRead && PropertyGetMethodData!.IsSealed)
         || (CanWrite && PropertySetMethodData!.IsSealed);
 
-    public bool CanWrite => _canWrite ??= PropertyInfo.CanWrite;
+    internal bool CanWrite => _canWrite ??= PropertyInfo.CanWrite;
 
-    public bool IsReadOnly => !CanWrite;
+    internal bool IsReadOnly => !CanWrite;
 
-    public bool CanRead => _canRead ??= PropertyInfo.CanRead;
+    internal bool CanRead => _canRead ??= PropertyInfo.CanRead;
 
-    public bool IsInit => _isInit ??= CanWrite && PropertyData.IsPropertyInit(this);
+    internal bool IsInit => _isInit ??= CanWrite && PropertyData.IsPropertyInit(this);
 
-    public MethodData PropertyGetMethodData => _getMethodData ??= PropertyInfo is PropertyInfo propertyInfo && propertyInfo.CanRead
+    internal MethodData PropertyGetMethodData => _getMethodData ??= PropertyInfo is PropertyInfo propertyInfo && propertyInfo.CanRead
         ? propertyInfo.GetGetMethod(true) is MethodInfo propertyGetter
             ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyGetter)
             : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{PropertyInfo.Name}' does not have a get method.")
         : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{PropertyInfo.Name}' does not have a get method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanRead)}' before access.");
 
-    public MethodData PropertySetMethodData => _setMethodData ??= PropertyInfo is PropertyInfo propertyInfo && propertyInfo.CanWrite
+    internal MethodData PropertySetMethodData => _setMethodData ??= PropertyInfo is PropertyInfo propertyInfo && propertyInfo.CanWrite
         ? propertyInfo.GetSetMethod(true) is MethodInfo propertySetter
             ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertySetter)
             : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{PropertyInfo.Name}' does not have a set method.")
         : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{PropertyInfo.Name}' does not have a set method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanWrite)}' before access.");
 
-    public override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
+    internal override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
         ? (_symbolAttributes = PropertyData.GetAttributesInternal(this))
         : _symbolAttributes;
 
-    public override SymbolComponentInfo SymbolComponentInfo => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+    internal override SymbolComponentInfo SymbolComponentInfo => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
-    public override string Signature => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+    internal override string Signature => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortSignature => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
+    internal override string ShortSignature => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortCompactSignature => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
+    internal override string ShortCompactSignature => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedSignature => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+    internal override string FullyQualifiedSignature => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedRuntimeSignature => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+    internal override string FullyQualifiedRuntimeSignature => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeSignature => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+    internal override string RuntimeSignature => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortSignature => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
+    internal override string RuntimeShortSignature => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortCompactSignature => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
+    internal override string RuntimeShortCompactSignature => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
-    public override string DisplayName => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+    internal override string DisplayName => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    public override string ShortDisplayName => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+    internal override string ShortDisplayName => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
-    public override string FullyQualifiedDisplayName => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+    internal override string FullyQualifiedDisplayName => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    public override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
+    internal override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
-    public override bool IsStatic => _isStatic ??= (CanRead && PropertyGetMethodData!.IsStatic)
+    internal override bool IsStatic => _isStatic ??= (CanRead && PropertyGetMethodData!.IsStatic)
         || (CanWrite && PropertySetMethodData!.IsStatic);
 
-    public bool IsSetMethodReadOnly => _isSetMethodReadOnly ??= CanWrite && PropertySetMethodData!.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
+    internal bool IsSetMethodReadOnly => _isSetMethodReadOnly ??= CanWrite && PropertySetMethodData!.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
 
-    public bool IsOverride => _isOverride ??= (CanRead && PropertyGetMethodData!.IsOverride)
+    internal bool IsOverride => _isOverride ??= (CanRead && PropertyGetMethodData!.IsOverride)
         || (CanWrite && PropertySetMethodData!.IsOverride);
 
-    public override bool IsPublic => _isPublic ??= AccessModifier == AccessModifier.Public;
+    internal override bool IsPublic => _isPublic ??= AccessModifier == AccessModifier.Public;
 
-    public override bool IsPrivate => _isPrivate ??= AccessModifier == AccessModifier.Private;
+    internal override bool IsPrivate => _isPrivate ??= AccessModifier == AccessModifier.Private;
 
     /// <summary>
     /// Gets a value indicating whether the member has internal accessibility within its assembly.
     /// </summary>
-    public override bool IsAssembly => _isAssembly ??= AccessModifier == AccessModifier.Internal;
+    internal override bool IsAssembly => _isAssembly ??= AccessModifier == AccessModifier.Internal;
 
     /// <summary>
     /// Gets a value indicating whether the member is protected and thus accessible only within its own class or by
     /// derived class instances.
     /// </summary>
-    public override bool IsFamily => _isFamily ??= AccessModifier == AccessModifier.Protected;
+    internal override bool IsFamily => _isFamily ??= AccessModifier == AccessModifier.Protected;
 
-    public override bool IsFamilyOrAssembly => _isFamilyOrAssembly ??= AccessModifier == AccessModifier.ProtectedInternal;
+    internal override bool IsFamilyOrAssembly => _isFamilyOrAssembly ??= AccessModifier == AccessModifier.ProtectedInternal;
 
-    public override bool IsFamilyAndAssembly => _isFamilyAndAssembly ??= AccessModifier == AccessModifier.PrivateProtected;
+    internal override bool IsFamilyAndAssembly => _isFamilyAndAssembly ??= AccessModifier == AccessModifier.PrivateProtected;
 
     #region IPropertyDataInvoker
 
@@ -1000,15 +1000,15 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     bool IPropertyDataInvoker.IsIndexer => IsIndexer;
 
     /// <inheritdoc/>
-    public override bool IsExplicitInterfaceImplementation => _isExplicitInterfaceImplementation ??= IsExplicitImplementation(this);
+    internal override bool IsExplicitInterfaceImplementation => _isExplicitInterfaceImplementation ??= IsExplicitImplementation(this);
 
     /// <inheritdoc/>
-    public override RuntimeTypeHandle DeclaringTypeHandle => _declaringTypeHandle ??= CanWrite
+    internal override RuntimeTypeHandle DeclaringTypeHandle => _declaringTypeHandle ??= CanWrite
         ? PropertySetMethodData.DeclaringTypeHandle
         : PropertyGetMethodData.DeclaringTypeHandle;
 
     /// <inheritdoc/>
-    public override RuntimeTypeHandle ImplementingTypeHandle => _implementingTypeHandle ??= CanWrite
+    internal override RuntimeTypeHandle ImplementingTypeHandle => _implementingTypeHandle ??= CanWrite
         ? PropertySetMethodData.ImplementingTypeHandle
         : PropertyGetMethodData.ImplementingTypeHandle;
 

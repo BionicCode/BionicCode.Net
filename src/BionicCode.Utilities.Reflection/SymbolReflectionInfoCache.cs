@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis;
 
 public class EventDataView : IEventDataView
 {
-    internal EventDataView(SymbolReflectionInfoCacheKey cacheKey)
+    internal EventDataView(SymbolReflectionInfoCacheKeyInternal cacheKey)
         => CacheKey = cacheKey;
 
     public AccessModifier AccessModifier => SymbolReflectionInfoCache.GetOrCreateEventDataCacheEntry(CacheKey).AccessModifier;
@@ -54,7 +54,7 @@ public class EventDataView : IEventDataView
     public SymbolAttributes SymbolAttributes { get; }
     SymbolAttributes ISymbolInfoDataView.SymbolAttributes { get; }
     private ITypeDataView DeclaringTypeDataView { get; }
-    private SymbolReflectionInfoCacheKey CacheKey { get; }
+    private SymbolReflectionInfoCacheKeyInternal CacheKey { get; }
     public SymbolKind SymbolKind { get; }
     public IMethodDataView AddMethodData { get; }
     public ITypeDataView EventHandlerTypeData { get; }
@@ -73,18 +73,18 @@ public class EventDataView : IEventDataView
 
 internal static class SymbolReflectionInfoCache
 {
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolInfoData> s_symbolInfoDataCache = new();
-    private static readonly ConcurrentDictionary<RuntimeMethodHandle, SymbolReflectionInfoCacheKey> s_wellKnownMethodAndConstructorCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, RuntimeMethodHandle> s_reverseWellKnownMethodAndConstructorCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<RuntimeTypeHandle, SymbolReflectionInfoCacheKey> s_wellKnownTypeCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, RuntimeTypeHandle> s_reverseWellKnownTypeCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<AssemblyLoadContextMonitor.AssemblyLoadContextInfo, ConcurrentHashSet<SymbolReflectionInfoCacheKey>> s_assemblyLoadContextIdToCacheKeyMap = new();
-    private static readonly ConcurrentDictionary<AnonymousSymbolDescriptorContainer, SymbolReflectionInfoCacheKey> s_normalizedAnonymousCacheKeyMap = new();
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, AnonymousSymbolDescriptorContainer> s_reverseNormalizedAnonymousCacheKeyMap = new();
-    private static readonly ConcurrentDictionary<AmbiguousIndexerPropertyKey, SymbolReflectionInfoCacheKey> s_indexerParameterSymbolDataCacheKeyMap = new();
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, AmbiguousIndexerPropertyKey> s_reverseIndexerParameterSymbolDataCacheKeyMap = new();
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, IEventDataView> s_eventDataViewTable = new();
-    private const string DeclaringTypeHandleInKeyIsDefaultExceptionMessage = $"The value 'default' is not a valid value for the key's '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}' property. The property must reference a valid declaring type handle.";
+    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, SymbolInfoData> s_symbolInfoDataCache = new();
+    private static readonly ConcurrentDictionary<RuntimeMethodHandle, SymbolReflectionInfoCacheKeyInternal> s_wellKnownMethodAndConstructorCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeMethodHandle> s_reverseWellKnownMethodAndConstructorCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<RuntimeTypeHandle, SymbolReflectionInfoCacheKeyInternal> s_wellKnownTypeCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeTypeHandle> s_reverseWellKnownTypeCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<AssemblyLoadContextMonitor.AssemblyLoadContextInfo, ConcurrentHashSet<SymbolReflectionInfoCacheKeyInternal>> s_assemblyLoadContextIdToCacheKeyMap = new();
+    private static readonly ConcurrentDictionary<AnonymousSymbolDescriptorContainer, SymbolReflectionInfoCacheKeyInternal> s_normalizedAnonymousCacheKeyMap = new();
+    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, AnonymousSymbolDescriptorContainer> s_reverseNormalizedAnonymousCacheKeyMap = new();
+    private static readonly ConcurrentDictionary<AmbiguousIndexerPropertyKey, SymbolReflectionInfoCacheKeyInternal> s_indexerParameterSymbolDataCacheKeyMap = new();
+    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, AmbiguousIndexerPropertyKey> s_reverseIndexerParameterSymbolDataCacheKeyMap = new();
+    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, IEventDataView> s_eventDataViewTable = new();
+    private const string DeclaringTypeHandleInKeyIsDefaultExceptionMessage = $"The value 'default' is not a valid value for the key's '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' property. The property must reference a valid declaring type handle.";
 
     static SymbolReflectionInfoCache() => AssemblyLoadContextMonitor.AssemblyLoadContextUnloading += OnAssemblyLoadContextUnloading;
 
@@ -93,9 +93,9 @@ internal static class SymbolReflectionInfoCache
         AssemblyLoadContextMonitor.AssemblyLoadContextInfo assemblyLoadContextInfo = e.AssemblyLoadContextInfo;
         lock (assemblyLoadContextInfo.SyncLock)
         {
-            if (SymbolReflectionInfoCache.s_assemblyLoadContextIdToCacheKeyMap.TryRemove(assemblyLoadContextInfo, out ConcurrentHashSet<SymbolReflectionInfoCacheKey>? cacheKeysOfAssemblyLoadContext))
+            if (SymbolReflectionInfoCache.s_assemblyLoadContextIdToCacheKeyMap.TryRemove(assemblyLoadContextInfo, out ConcurrentHashSet<SymbolReflectionInfoCacheKeyInternal>? cacheKeysOfAssemblyLoadContext))
             {
-                foreach (SymbolReflectionInfoCacheKey cacheKey in cacheKeysOfAssemblyLoadContext)
+                foreach (SymbolReflectionInfoCacheKeyInternal cacheKey in cacheKeysOfAssemblyLoadContext)
                 {
                     if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryRemove(cacheKey, out SymbolInfoData? symbolInfoData))
                     {
@@ -114,9 +114,9 @@ internal static class SymbolReflectionInfoCache
         }
     }
 
-    private static void ClearEventDataViewTable(SymbolReflectionInfoCacheKey cacheKey) => _ = SymbolReflectionInfoCache.s_eventDataViewTable.TryRemove(cacheKey, out _);
+    private static void ClearEventDataViewTable(SymbolReflectionInfoCacheKeyInternal cacheKey) => _ = SymbolReflectionInfoCache.s_eventDataViewTable.TryRemove(cacheKey, out _);
 
-    private static void ClearAnonymousCacheKeyMap(SymbolReflectionInfoCacheKey cacheKey)
+    private static void ClearAnonymousCacheKeyMap(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         if (SymbolReflectionInfoCache.s_reverseNormalizedAnonymousCacheKeyMap.TryRemove(cacheKey, out AnonymousSymbolDescriptorContainer anonymousSymbolReflectionInfoCacheKey))
         {
@@ -124,7 +124,7 @@ internal static class SymbolReflectionInfoCache
         }
     }
 
-    private static void ClearWellKnownMethodAndConstructorCacheKeyTable(SymbolReflectionInfoCacheKey cacheKey)
+    private static void ClearWellKnownMethodAndConstructorCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         if (SymbolReflectionInfoCache.s_reverseWellKnownMethodAndConstructorCacheKeyTable.TryRemove(cacheKey, out RuntimeMethodHandle methodHandle))
         {
@@ -132,7 +132,7 @@ internal static class SymbolReflectionInfoCache
         }
     }
 
-    private static void ClearWellKnownTypeCacheKeyTable(SymbolReflectionInfoCacheKey cacheKey)
+    private static void ClearWellKnownTypeCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         if (SymbolReflectionInfoCache.s_reverseWellKnownTypeCacheKeyTable.TryRemove(cacheKey, out RuntimeTypeHandle typeHandle))
         {
@@ -140,7 +140,7 @@ internal static class SymbolReflectionInfoCache
         }
     }
 
-    private static void ClearIndexerParameterSymbolDataCacheKeyMap(SymbolReflectionInfoCacheKey cacheKey)
+    private static void ClearIndexerParameterSymbolDataCacheKeyMap(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         if (SymbolReflectionInfoCache.s_reverseIndexerParameterSymbolDataCacheKeyMap.TryRemove(cacheKey, out AmbiguousIndexerPropertyKey ambiguousKey))
         {
@@ -258,7 +258,7 @@ internal static class SymbolReflectionInfoCache
     {
         RuntimeTypeHandle typeHandle = type.TypeHandle;
         SymbolInfoData? symbolInfoData;
-        if (SymbolReflectionInfoCache.s_wellKnownTypeCacheKeyTable.TryGetValue(typeHandle, out SymbolReflectionInfoCacheKey cacheKey))
+        if (SymbolReflectionInfoCache.s_wellKnownTypeCacheKeyTable.TryGetValue(typeHandle, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
             if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out symbolInfoData) && symbolInfoData is TypeData typeData)
@@ -272,7 +272,7 @@ internal static class SymbolReflectionInfoCache
         }
 
         var descriptor = new WellKnownTypeDescriptor(type);
-        cacheKey = SymbolReflectionInfoCacheKey.CreateForType(descriptor);
+        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForType(descriptor);
         SymbolReflectionInfoCache.s_wellKnownTypeCacheKeyTable[typeHandle] = cacheKey;
         SymbolReflectionInfoCache.s_reverseWellKnownTypeCacheKeyTable[cacheKey] = typeHandle;
         MonitorAssemblyLoadContextOfType(cacheKey, type);
@@ -302,7 +302,7 @@ internal static class SymbolReflectionInfoCache
     {
         SymbolInfoData? symbolInfoData;
         RuntimeMethodHandle methodHandle = methodInfo.MethodHandle;
-        if (SymbolReflectionInfoCache.s_wellKnownMethodAndConstructorCacheKeyTable.TryGetValue(methodHandle, out SymbolReflectionInfoCacheKey cacheKey))
+        if (SymbolReflectionInfoCache.s_wellKnownMethodAndConstructorCacheKeyTable.TryGetValue(methodHandle, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
             if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out symbolInfoData) && symbolInfoData is MethodData methodData)
@@ -329,7 +329,7 @@ internal static class SymbolReflectionInfoCache
             descriptor = new WellKnownMethodDescriptor(methodInfo, isExplicitInterfaceImplementation: false, null);
         }
 
-        cacheKey = SymbolReflectionInfoCacheKey.CreateForMethod(descriptor);
+        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForMethod(descriptor);
         SymbolReflectionInfoCache.s_wellKnownMethodAndConstructorCacheKeyTable[methodHandle] = cacheKey;
         SymbolReflectionInfoCache.s_reverseWellKnownMethodAndConstructorCacheKeyTable[cacheKey] = methodHandle;
         MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
@@ -385,7 +385,7 @@ internal static class SymbolReflectionInfoCache
 
         descriptor = new WellKnownMethodDescriptor(declaredInterfaceMethodInfo, isExplicitInterfaceImplementation: true, implementingType);
 
-        var cacheKey = SymbolReflectionInfoCacheKey.CreateForMethod(descriptor);
+        var cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForMethod(descriptor);
         MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
         SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, key));
 
@@ -425,7 +425,7 @@ internal static class SymbolReflectionInfoCache
 
     public static ConstructorData GetOrCreateSymbolReflectionInfoCacheEntry(ConstructorInfo constructorInfo)
     {
-        SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForConstructor(constructorInfo);
+        SymbolReflectionInfoCacheKeyInternal cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForConstructor(constructorInfo);
         SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(constructorInfo, key));
 
         // REMOVE::after testing
@@ -436,7 +436,7 @@ internal static class SymbolReflectionInfoCache
 
     public static FieldData GetOrCreateSymbolReflectionInfoCacheEntry(FieldInfo fieldInfo)
     {
-        SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForField(fieldInfo);
+        SymbolReflectionInfoCacheKeyInternal cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForField(fieldInfo);
         SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(fieldInfo, key));
 
         // REMOVE::after testing
@@ -448,7 +448,7 @@ internal static class SymbolReflectionInfoCache
     public static PropertyData GetOrCreateSymbolReflectionInfoCacheEntry(PropertyInfo propertyInfo, bool isExplicitInterfaceImplementation = false)
     {
         // This call also validates that the 'PropertyInfo.DeclaringType' returns an interface type when 'isExplicitInterfaceImplementation' is true.
-        SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForProperty(propertyInfo, isExplicitInterfaceImplementation);
+        SymbolReflectionInfoCacheKeyInternal cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForProperty(propertyInfo, isExplicitInterfaceImplementation);
 
         SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key =>
         {
@@ -465,7 +465,7 @@ internal static class SymbolReflectionInfoCache
     public static EventData GetOrCreateSymbolReflectionInfoCacheEntry(EventInfo eventInfo)
     {
         descriptor = new WellKnownEventDescriptor(eventInfo);
-        SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForEvent(eventInfo);
+        SymbolReflectionInfoCacheKeyInternal cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForEvent(eventInfo);
         SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(key));
         _ = s_eventDataViewTable.TryAdd(cacheKey, new EventDataView(cacheKey));
 
@@ -492,7 +492,7 @@ internal static class SymbolReflectionInfoCache
     public static ParameterData GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
     {
         MemberInfo member = parameterInfo.Member;
-        SymbolReflectionInfoCacheKey cacheKey;
+        SymbolReflectionInfoCacheKeyInternal cacheKey;
         // If the 'ParameterInfo.Member' property returns a 'PropertyInfo' then the current parameter 'parameterInfo'
         // was obtained via PropertyInfo.GetIndexParameters method call. As a result, the parameter's association to the property's accessors is ambiguous.
         // We need to normalize it to remove association ambiguity by explicitly associating it with a property's accessor method.
@@ -505,7 +505,7 @@ internal static class SymbolReflectionInfoCache
         }
         else
         {
-            cacheKey = SymbolReflectionInfoCacheKey.CreateForParameter(parameterInfo);
+            cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForParameter(parameterInfo);
         }
 
         SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(parameterInfo, key));
@@ -531,15 +531,15 @@ internal static class SymbolReflectionInfoCache
             ? propertyData.PropertyGetMethodData
             : propertyData.PropertySetMethodData;
 
-        SymbolReflectionInfoCacheKey accessorMethodCacheKey = accessorData.CacheKey;
+        SymbolReflectionInfoCacheKeyInternal accessorMethodCacheKey = accessorData.CacheKey;
         var ambiguousKey = new AmbiguousIndexerPropertyKey(parameterInfo.Position, accessorMethodCacheKey);
-        SymbolReflectionInfoCacheKey normalizedParameterDataCacheKey = SymbolReflectionInfoCache.s_indexerParameterSymbolDataCacheKeyMap.GetOrAdd(ambiguousKey,
+        SymbolReflectionInfoCacheKeyInternal normalizedParameterDataCacheKey = SymbolReflectionInfoCache.s_indexerParameterSymbolDataCacheKeyMap.GetOrAdd(ambiguousKey,
             key =>
             {
                 var accessorData = (MethodData)SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(key.AccessorMethodCacheKey, CreateMethodData);
                 ParameterList accessorParameters = accessorData.Parameters;
                 ParameterData parameterData = accessorParameters[key.ParameterIndex];
-                SymbolReflectionInfoCacheKey normalizedParameterCacheKey = parameterData.CacheKey;
+                SymbolReflectionInfoCacheKeyInternal normalizedParameterCacheKey = parameterData.CacheKey;
                 SymbolReflectionInfoCache.s_reverseIndexerParameterSymbolDataCacheKeyMap[normalizedParameterCacheKey] = key;
 
                 return normalizedParameterCacheKey;
@@ -556,7 +556,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The event data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    internal static EventData GetOrCreateEventDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey)
+    internal static EventData GetOrCreateEventDataCacheEntry(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -594,7 +594,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The event data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="anonymousCacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    internal static EventData GetOrCreateEventDataCacheEntry(AnonymousEventDescriptor eventDescriptor, out SymbolReflectionInfoCacheKey cacheKey)
+    internal static EventData GetOrCreateEventDataCacheEntry(AnonymousEventDescriptor eventDescriptor, out SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(
             eventDescriptor,
@@ -615,7 +615,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The event data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static EventData GetOrCreateEventDataView(SymbolReflectionInfoCacheKey cacheKey)
+    public static EventData GetOrCreateEventDataView(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -653,7 +653,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The method data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static MethodData GetOrCreateMethodDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey)
+    public static MethodData GetOrCreateMethodDataCacheEntry(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -677,7 +677,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The field data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static FieldData GetOrCreateFieldDataCacheEntry(ref SymbolReflectionInfoCacheKey cacheKey)
+    public static FieldData GetOrCreateFieldDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -703,7 +703,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The property data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static PropertyData GetOrCreatePropertyDataCacheEntry(ref SymbolReflectionInfoCacheKey cacheKey)
+    public static PropertyData GetOrCreatePropertyDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -729,7 +729,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The parameter data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static ParameterData GetOrCreateParameterDataCacheEntry(ref SymbolReflectionInfoCacheKey cacheKey)
+    public static ParameterData GetOrCreateParameterDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -755,7 +755,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The constructor data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static ConstructorData GetOrCreateConstructorDataCacheEntry(ref SymbolReflectionInfoCacheKey cacheKey)
+    public static ConstructorData GetOrCreateConstructorDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -781,7 +781,7 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The type data associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static TypeData GetOrCreateTypeDataCacheEntry(ref SymbolReflectionInfoCacheKey cacheKey)
+    public static TypeData GetOrCreateTypeDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
@@ -799,7 +799,7 @@ internal static class SymbolReflectionInfoCache
         return typeData;
     }
 
-    public static bool TryGetSymbolInfoDataCacheEntry<TEntry>(SymbolReflectionInfoCacheKey key, out TEntry? entry)
+    public static bool TryGetSymbolInfoDataCacheEntry<TEntry>(SymbolReflectionInfoCacheKeyInternal key, out TEntry? entry)
       where TEntry : SymbolInfoData
     {
         entry = null;
@@ -825,11 +825,11 @@ internal static class SymbolReflectionInfoCache
     /// key is returned.</returns>
     /// <exception cref="NotSupportedException">Thrown if the symbol kind of <paramref name="anonymousCacheKey"/> is not supported for normalization.</exception>
     /// <exception cref="InvalidReflectionCacheKeyException">Thrown if key's integrity is invalid as it contains information that makes symbol lookup impossible.</exception>
-    public static SymbolReflectionInfoCacheKey NormalizeKey(AnonymousSymbolDescriptorContainer anonymousCacheKey)
+    public static SymbolReflectionInfoCacheKeyInternal NormalizeKey(AnonymousSymbolDescriptorContainer anonymousCacheKey)
     {
-        SymbolReflectionInfoCacheKey normalizedCacheKey = SymbolReflectionInfoCache.s_normalizedAnonymousCacheKeyMap.GetOrAdd(anonymousCacheKey, anonymousCacheKey =>
+        SymbolReflectionInfoCacheKeyInternal normalizedCacheKey = SymbolReflectionInfoCache.s_normalizedAnonymousCacheKeyMap.GetOrAdd(anonymousCacheKey, anonymousCacheKey =>
         {
-            SymbolReflectionInfoCacheKey normalizedCacheKey;
+            SymbolReflectionInfoCacheKeyInternal normalizedCacheKey;
             switch (anonymousCacheKey.SymbolKind)
             {
                 case SymbolKind.MemberEvent:
@@ -873,7 +873,7 @@ internal static class SymbolReflectionInfoCache
         return normalizedCacheKey;
     }
 
-    private static TypeData CreateTypeData(SymbolReflectionInfoCacheKey anonymousCacheKey)
+    private static TypeData CreateTypeData(SymbolReflectionInfoCacheKeyInternal anonymousCacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             anonymousCacheKey.SymbolKind,
@@ -889,14 +889,14 @@ internal static class SymbolReflectionInfoCache
         ArgumentNullExceptionAdvanced.ThrowIfDefault(
             anonymousCacheKey.SymbolTypeHandle,
             nameof(anonymousCacheKey.SymbolTypeHandle),
-            $"The value 'default' is not a valid value for the key's '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.SymbolTypeHandle)}' property. The property must reference a valid type handle.");
+            $"The value 'default' is not a valid value for the key's '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.SymbolTypeHandle)}' property. The property must reference a valid type handle.");
 
-        Type? type = Type.GetTypeFromHandle(anonymousCacheKey.SymbolTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.SymbolTypeHandle)}' does not contain a valid handle for the type.");
+        Type? type = Type.GetTypeFromHandle(anonymousCacheKey.SymbolTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.SymbolTypeHandle)}' does not contain a valid handle for the type.");
 
         return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
     }
 
-    private static PropertyData CreatePropertyData(SymbolReflectionInfoCacheKey anonymousCacheKey)
+    private static PropertyData CreatePropertyData(SymbolReflectionInfoCacheKeyInternal anonymousCacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             anonymousCacheKey.SymbolKind,
@@ -914,7 +914,7 @@ internal static class SymbolReflectionInfoCache
             nameof(anonymousCacheKey.DeclaringTypeHandle),
             SymbolReflectionInfoCache.DeclaringTypeHandleInKeyIsDefaultExceptionMessage);
 
-        Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
+        Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
         TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType);
 
@@ -939,7 +939,7 @@ internal static class SymbolReflectionInfoCache
         throw new InvalidReflectionCacheKeyException();
     }
 
-    private static ConstructorData CreateConstructorData(SymbolReflectionInfoCacheKey anonymousCacheKey)
+    private static ConstructorData CreateConstructorData(SymbolReflectionInfoCacheKeyInternal anonymousCacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             anonymousCacheKey.SymbolKind,
@@ -969,7 +969,7 @@ internal static class SymbolReflectionInfoCache
             nameof(anonymousCacheKey.DeclaringTypeHandle),
             SymbolReflectionInfoCache.DeclaringTypeHandleInKeyIsDefaultExceptionMessage);
 
-        Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
+        Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
         TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType);
 
@@ -987,7 +987,7 @@ internal static class SymbolReflectionInfoCache
         throw new InvalidReflectionCacheKeyException();
     }
 
-    private static FieldData CreateFieldData(SymbolReflectionInfoCacheKey anonymousCacheKey)
+    private static FieldData CreateFieldData(SymbolReflectionInfoCacheKeyInternal anonymousCacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             anonymousCacheKey.SymbolKind
@@ -1012,7 +1012,7 @@ internal static class SymbolReflectionInfoCache
             nameof(anonymousCacheKey.DeclaringTypeHandle),
             SymbolReflectionInfoCache.DeclaringTypeHandleInKeyIsDefaultExceptionMessage);
 
-        Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
+        Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
         TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType);
 
@@ -1021,7 +1021,7 @@ internal static class SymbolReflectionInfoCache
             : throw new InvalidReflectionCacheKeyException();
     }
 
-    private static MethodData CreateMethodData(SymbolReflectionInfoCacheKey anonymousCacheKey)
+    private static MethodData CreateMethodData(SymbolReflectionInfoCacheKeyInternal anonymousCacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             anonymousCacheKey.SymbolKind,
@@ -1052,7 +1052,7 @@ internal static class SymbolReflectionInfoCache
             nameof(anonymousCacheKey.DeclaringTypeHandle),
             SymbolReflectionInfoCache.DeclaringTypeHandleInKeyIsDefaultExceptionMessage);
 
-        Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
+        Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
         TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType);
 
@@ -1086,7 +1086,7 @@ internal static class SymbolReflectionInfoCache
         return eventData;
     }
 
-    private static ParameterData CreateParameterData(SymbolReflectionInfoCacheKey anonymousCacheKey)
+    private static ParameterData CreateParameterData(SymbolReflectionInfoCacheKeyInternal anonymousCacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             anonymousCacheKey.SymbolKind,
@@ -1142,7 +1142,7 @@ internal static class SymbolReflectionInfoCache
             nameof(anonymousCacheKey.DeclaringTypeHandle),
             SymbolReflectionInfoCache.DeclaringTypeHandleInKeyIsDefaultExceptionMessage);
 
-        Type? declaringType = Type.GetTypeFromHandle(declaringMemberDescriptor.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
+        Type? declaringType = Type.GetTypeFromHandle(declaringMemberDescriptor.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
         TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType);
 
@@ -1570,7 +1570,7 @@ internal static class SymbolReflectionInfoCache
         }
     }
 
-    private static EventData GetOrCreateNormalizedEventDataCacheEntry(AnonymousEventDescriptor eventDescriptor, out SymbolReflectionInfoCacheKey normalizedCacheKey)
+    private static EventData GetOrCreateNormalizedEventDataCacheEntry(AnonymousEventDescriptor eventDescriptor, out SymbolReflectionInfoCacheKeyInternal normalizedCacheKey)
     {
         EventData eventData = CreateEventData(eventDescriptor);
         normalizedCacheKey = eventData.CacheKey;
@@ -1580,7 +1580,7 @@ internal static class SymbolReflectionInfoCache
         return eventData;
     }
 
-    private static void MonitorAssemblyLoadContextOfType(SymbolReflectionInfoCacheKey cacheKey, Type type)
+    private static void MonitorAssemblyLoadContextOfType(SymbolReflectionInfoCacheKeyInternal cacheKey, Type type)
     {
         if (!AssemblyLoadContextMonitor.TryStartMonitoringAssembly(type.Assembly, out AssemblyLoadContextMonitor.AssemblyLoadContextInfo assemblyLoadContextInfo))
         {
@@ -1594,7 +1594,7 @@ internal static class SymbolReflectionInfoCache
                 throw new InvalidOperationException($"The assembly load context for type '{type.ToFullyQualifiedSignatureName()}' in assembly '{type.Assembly.FullName}' is already unloaded.");
             }
 
-            ConcurrentHashSet<SymbolReflectionInfoCacheKey> cacheKeysOfSameAssembly = SymbolReflectionInfoCache.s_assemblyLoadContextIdToCacheKeyMap.GetOrAdd(assemblyLoadContextInfo, _ => []);
+            ConcurrentHashSet<SymbolReflectionInfoCacheKeyInternal> cacheKeysOfSameAssembly = SymbolReflectionInfoCache.s_assemblyLoadContextIdToCacheKeyMap.GetOrAdd(assemblyLoadContextInfo, _ => []);
             _ = cacheKeysOfSameAssembly.TryAdd(cacheKey);
         }
     }
@@ -1603,7 +1603,7 @@ internal static class SymbolReflectionInfoCache
 
     private readonly struct AmbiguousIndexerPropertyKey : IEquatable<AmbiguousIndexerPropertyKey>
     {
-        public AmbiguousIndexerPropertyKey(int parameterIndex, SymbolReflectionInfoCacheKey accessorMethodCacheKey)
+        public AmbiguousIndexerPropertyKey(int parameterIndex, SymbolReflectionInfoCacheKeyInternal accessorMethodCacheKey)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(parameterIndex);
             ArgumentNullExceptionAdvanced.ThrowIfDefault(accessorMethodCacheKey);
@@ -1613,7 +1613,7 @@ internal static class SymbolReflectionInfoCache
         }
 
         public int ParameterIndex { get; init; }
-        public SymbolReflectionInfoCacheKey AccessorMethodCacheKey { get; init; }
+        public SymbolReflectionInfoCacheKeyInternal AccessorMethodCacheKey { get; init; }
 
         public bool Equals(AmbiguousIndexerPropertyKey other)
             => ParameterIndex == other.ParameterIndex

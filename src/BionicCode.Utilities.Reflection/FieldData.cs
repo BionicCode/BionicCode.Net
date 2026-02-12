@@ -37,7 +37,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
 
-    internal FieldData(SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
+    internal FieldData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.FieldDescriptor.FieldName, SymbolKind.MemberField, symbolInfoDataCacheKey)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey);
@@ -55,7 +55,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
 
     protected override MemberInfo GetMemberInfo() => FieldInfo;
 
-    public object? GetValue(object? target) => (_getValueInvoker ??= DelegateProvider.CreateGetter(this)).Invoke(target);
+    internal object? GetValue(object? target) => (_getValueInvoker ??= DelegateProvider.CreateGetter(this)).Invoke(target);
 
     /// <summary>
     /// Sets the value of a field on a struct instance using the specified value.
@@ -71,7 +71,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
     /// <exception cref="InvalidOperationException">Thrown if the field is static or if the declaring type is not a value type.</exception>
     /// <exception cref="ArgumentException">Thrown if the target type does not match the declaring type of the field.</exception>
     /// <exception cref="ArgumentException">Thrown if the value type does not match the field type.</exception>
-    public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct
+    internal void SetStructValue<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct
     {
         if (IsStatic)
         {
@@ -127,7 +127,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
     /// <exception cref="ArgumentNullException">Thrown if the target is null for an instance field.</exception>
     /// <exception cref="ArgumentException">Thrown if the value is not of the same type as the field.</exception>
     /// <exception cref="ArgumentException">Thrown if the target is not of the declaring type for an instance field.</exception>"
-    public void SetValue(object? target, object? value)
+    internal void SetValue(object? target, object? value)
     {
         if (!IsStatic)
         {
@@ -167,69 +167,69 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
         _referenceTypeSetValueInvoker.Invoke(target, value);
     }
 
-    public RuntimeFieldHandle Handle { get; }
+    internal RuntimeFieldHandle Handle { get; }
 
-    public override RuntimeTypeHandle DeclaringTypeHandle { get; }
-    public override bool IsExplicitInterfaceImplementation { get; }
-    public override RuntimeTypeHandle ImplementingTypeHandle { get; }
+    internal override RuntimeTypeHandle DeclaringTypeHandle { get; }
+    internal override bool IsExplicitInterfaceImplementation { get; }
+    internal override RuntimeTypeHandle ImplementingTypeHandle { get; }
 
-    public override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
+    internal override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
         ? (_accessModifier = FieldData.GetAccessModifierInternal(this))
         : _accessModifier;
 
-    public override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
+    internal override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
         ? (_symbolAttributes = FieldData.GetAttributes(this))
         : _symbolAttributes;
 
-    public override SymbolComponentInfo SymbolComponentInfo => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+    internal override SymbolComponentInfo SymbolComponentInfo => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
-    public override string Signature => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+    internal override string Signature => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortSignature => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
+    internal override string ShortSignature => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortCompactSignature => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
+    internal override string ShortCompactSignature => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedSignature => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+    internal override string FullyQualifiedSignature => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedRuntimeSignature => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+    internal override string FullyQualifiedRuntimeSignature => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeSignature => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+    internal override string RuntimeSignature => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortSignature => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
+    internal override string RuntimeShortSignature => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortCompactSignature => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
+    internal override string RuntimeShortCompactSignature => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
-    public override string DisplayName => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+    internal override string DisplayName => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    public override string ShortDisplayName => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+    internal override string ShortDisplayName => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
-    public override string FullyQualifiedDisplayName => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+    internal override string FullyQualifiedDisplayName => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    public override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
+    internal override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
-    public override bool IsStatic => _isStatic ??= FieldInfo.IsStatic;
+    internal override bool IsStatic => _isStatic ??= FieldInfo.IsStatic;
 
-    public TypeData FieldTypeData => _fieldTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(FieldInfo.FieldType);
+    internal TypeData FieldTypeData => _fieldTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(FieldInfo.FieldType);
 
-    public bool IsRef => _isRef ??= FieldTypeData.IsByRef;
+    internal bool IsRef => _isRef ??= FieldTypeData.IsByRef;
 
-    public bool IsConst => _isConst ??= IsFieldConst(this);
+    internal bool IsConst => _isConst ??= IsFieldConst(this);
 
-    public bool IsInitOnly => _isInitOnly ??= FieldInfo.IsInitOnly;
+    internal bool IsInitOnly => _isInitOnly ??= FieldInfo.IsInitOnly;
 
-    public bool IsReadonly => IsInitOnly && !IsConst;
+    internal bool IsReadonly => IsInitOnly && !IsConst;
 
-    public override bool IsPublic => _isPublic ??= FieldInfo.IsPublic;
+    internal override bool IsPublic => _isPublic ??= FieldInfo.IsPublic;
 
-    public override bool IsPrivate => _isPrivate ??= FieldInfo.IsPrivate;
+    internal override bool IsPrivate => _isPrivate ??= FieldInfo.IsPrivate;
 
-    public override bool IsAssembly => _isAssembly ??= FieldInfo.IsAssembly;
+    internal override bool IsAssembly => _isAssembly ??= FieldInfo.IsAssembly;
 
-    public override bool IsFamily => _isFamily ??= FieldInfo.IsFamily;
+    internal override bool IsFamily => _isFamily ??= FieldInfo.IsFamily;
 
-    public override bool IsFamilyOrAssembly => _isFamilyOrAssembly ??= FieldInfo.IsFamilyOrAssembly;
+    internal override bool IsFamilyOrAssembly => _isFamilyOrAssembly ??= FieldInfo.IsFamilyOrAssembly;
 
-    public override bool IsFamilyAndAssembly => _isFamilyAndAssembly ??= FieldInfo.IsFamilyAndAssembly;
+    internal override bool IsFamilyAndAssembly => _isFamilyAndAssembly ??= FieldInfo.IsFamilyAndAssembly;
 
     bool IFieldDataInvoker.IsInvocable { get; }
 

@@ -75,7 +75,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private RuntimeTypeHandle? _implementingTypeHandle;
     private bool? _isExplicitInterfaceImplementation;
 
-    internal MethodData(SymbolReflectionInfoCacheKey symbolReflectionInfoCacheKey)
+    internal MethodData(SymbolReflectionInfoCacheKeyInternal symbolReflectionInfoCacheKey)
         : base(symbolReflectionInfoCacheKey)
     {
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolReflectionInfoCacheKey.SymbolKind, [SymbolKind.MemberMethod], nameof(symbolReflectionInfoCacheKey));
@@ -94,24 +94,24 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
 
     internal override MethodBase GetMethodBase() => MethodInfo;
 
-    public MethodData MakeGenericMethodData(TypeList typeDataArguments)
+    internal MethodData MakeGenericMethodData(TypeList typeDataArguments)
     {
         Type[] typeArguments = typeDataArguments.Select(t => t.Type).ToArray();
         MethodInfo genericMethodInfo = MethodInfo.MakeGenericMethod(typeArguments);
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
     }
 
-    public MethodData MakeGenericMethodData(params Type[] typeArguments)
+    internal MethodData MakeGenericMethodData(params Type[] typeArguments)
     {
         MethodInfo genericMethodInfo = MethodInfo.MakeGenericMethod(typeArguments);
         return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
     }
 
-    public MethodInfo MakeGenericMethodInfo(TypeList typeArguments) => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.Type).ToArray());
+    internal MethodInfo MakeGenericMethodInfo(TypeList typeArguments) => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.Type).ToArray());
 
-    public MethodInfo MakeGenericMethodInfo(params TypeData[] typeArguments) => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.Type).ToArray());
+    internal MethodInfo MakeGenericMethodInfo(params TypeData[] typeArguments) => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.Type).ToArray());
 
-    public MethodInfo MakeGenericMethodInfo(params Type[] typeArguments) => MethodInfo.MakeGenericMethod(typeArguments);
+    internal MethodInfo MakeGenericMethodInfo(params Type[] typeArguments) => MethodInfo.MakeGenericMethod(typeArguments);
 
     /// <summary>
     /// Invokes the represented method on the specified target object using the provided arguments.
@@ -125,7 +125,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// parameters.</exception>
     /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
-    public object? Invoke(object? target, params object?[]? args) => Invoke(target, args.AsSpan());
+    internal object? Invoke(object? target, params object?[]? args) => Invoke(target, args.AsSpan());
 
     /// <summary>
     /// Invokes the represented method on the specified target object using the provided arguments.
@@ -139,7 +139,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// parameters.</exception>
     /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, ReadOnlySpan{object?})"/> overload and provide the generic type parameter arguments.</remarks>
-    public object? Invoke(object? target, ReadOnlySpan<object?> args)
+    internal object? Invoke(object? target, ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(Invoke), nameof(InvokeOpenGeneric));
@@ -165,7 +165,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// parameters.</exception>
     /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
-    public void Invoke<TTarget>(TTarget target, params object?[]? args) => Invoke<TTarget>(target, args.AsSpan());
+    internal void Invoke<TTarget>(TTarget target, params object?[]? args) => Invoke<TTarget>(target, args.AsSpan());
 
     /// <summary>
     /// Invokes the represented void method on the specified target object using the provided arguments and returns the
@@ -182,7 +182,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <param name="args">A read-only span containing the arguments to pass to the method. The number, order, and types of arguments
     /// must match the method's parameters.</param>
     /// <returns>The result returned by the invoked method.</returns>
-    public void Invoke<TTarget>(TTarget target, ReadOnlySpan<object?> args)
+    internal void Invoke<TTarget>(TTarget target, ReadOnlySpan<object?> args)
     {
         ThrowIfNonVoidMethodIsInvokedAsVoid();
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -209,7 +209,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// parameters.</exception>
     /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="true"/>)
     /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
-    public TResult Invoke<TTarget, TResult>(TTarget target, params object?[]? args) => Invoke<TTarget, TResult>(target, args.AsSpan());
+    internal TResult Invoke<TTarget, TResult>(TTarget target, params object?[]? args) => Invoke<TTarget, TResult>(target, args.AsSpan());
 
     /// <summary>
     /// Invokes the represented method on the specified target object using the provided arguments and returns the
@@ -226,7 +226,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <param name="args">A read-only span containing the arguments to pass to the method. The number, order, and types of arguments
     /// must match the method's parameters.</param>
     /// <returns>The result returned by the invoked method.</returns>
-    public TResult Invoke<TTarget, TResult>(TTarget target, ReadOnlySpan<object?> args)
+    internal TResult Invoke<TTarget, TResult>(TTarget target, ReadOnlySpan<object?> args)
     {
         ThrowIfVoidMethodIsInvokedAsNonVoid();
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -241,7 +241,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invokerMethod.Invoke(target, args);
     }
 
-    public async Task InvokeAwaitableTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
+    internal async Task InvokeAwaitableTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
     {
         ThrowIfVoidMethodIsInvokedAsNonVoid();
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -258,7 +258,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invokerMethod.Invoke(target, args).ConfigureAwait(false);
     }
 
-    public async ValueTask InvokeAwaitableValueTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
+    internal async ValueTask InvokeAwaitableValueTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
     {
         ThrowIfVoidMethodIsInvokedAsNonVoid();
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -291,7 +291,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <returns>The return entryFactory of the invoked method, or null if the method has no return entryFactory.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the declaring type is a generic type definition or contains unassigned generic parameters, or if
     /// the method itself is not a closed generic method.</exception>
-    public object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, params object?[]? args) => InvokeOpenGeneric(target, genericMethodParameters, args.AsSpan());
+    internal object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, params object?[]? args) => InvokeOpenGeneric(target, genericMethodParameters, args.AsSpan());
 
     /// <summary>
     /// Invokes an open generic method on the specified target, using the provided generic type arguments and method
@@ -309,7 +309,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// <returns>The return entryFactory of the invoked method, or null if the method has no return entryFactory.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the declaring type is a generic type definition or contains unassigned generic parameters, or if
     /// the method itself is not a closed generic method.</exception>
-    public object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    internal object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
         ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(InvokeOpenGeneric), nameof(Invoke));
@@ -326,7 +326,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._invoker!.Invoke(target, args.ToArray());
     }
 
-    public async Task InvokeAwaitableTaskAsync(object? target, params object?[] args)
+    internal async Task InvokeAwaitableTaskAsync(object? target, params object?[] args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableTask)
@@ -345,7 +345,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invocatorMethod._asyncTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    public async Task InvokeOpenGenericAwaitableTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
+    internal async Task InvokeOpenGenericAwaitableTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableTask)
@@ -367,7 +367,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invocatorMethod._asyncTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    public async Task<object?> InvokeAwaitableTaskWithResultAsync(object? target, params object?[]? args)
+    internal async Task<object?> InvokeAwaitableTaskWithResultAsync(object? target, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableGenericTask)
@@ -386,7 +386,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return await invocatorMethod._asyncGenericTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    public async Task<object?> InvokeOpenGenericAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
+    internal async Task<object?> InvokeOpenGenericAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableGenericTask)
@@ -409,7 +409,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return await invocatorMethod._asyncGenericTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    public async ValueTask InvokeAwaitableValueTaskAsync(object? target, params object?[]? args)
+    internal async ValueTask InvokeAwaitableValueTaskAsync(object? target, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableValueTask)
@@ -428,7 +428,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invocatorMethod._asyncValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    public async ValueTask InvokeOpenGenericAwaitableValueTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
+    internal async ValueTask InvokeOpenGenericAwaitableValueTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableValueTask)
@@ -451,7 +451,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         await invocatorMethod._asyncValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    public async ValueTask<object?> InvokeAwaitableValueTaskWithResultAsync(object? target, params object?[] args)
+    internal async ValueTask<object?> InvokeAwaitableValueTaskWithResultAsync(object? target, params object?[] args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableGenericValueTask)
@@ -470,7 +470,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return await invocatorMethod._asyncGenericValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    public async ValueTask<object?> InvokeOpenGenericValueAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[] args)
+    internal async ValueTask<object?> InvokeOpenGenericValueAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[] args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         if (!IsAwaitableValueTask)
@@ -492,7 +492,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return await invocatorMethod._asyncGenericValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
     }
 
-    public Func<object?, object?[]?, object?> GetInvoker(ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, object?> GetInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetInvoker), nameof(GetOpenGenericInvoker));
@@ -505,7 +505,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._invoker!;
     }
 
-    public Func<object?, object?[]?, object?> GetOpenGenericInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, object?> GetOpenGenericInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
@@ -521,7 +521,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._invoker!;
     }
 
-    public Func<object?, object?[]?, Task> GetAwaitableTaskInvoker(ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, Task> GetAwaitableTaskInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableTaskInvoker), nameof(GetOpenGenericAwaitableTaskInvoker));
@@ -534,7 +534,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncTaskInvoker!;
     }
 
-    public Func<object?, object?[]?, Task> GetOpenGenericAwaitableTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, Task> GetOpenGenericAwaitableTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -550,7 +550,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncTaskInvoker!;
     }
 
-    public Func<object?, object?[]?, Task<object?>> GetAwaitableTaskWithResultInvoker(ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, Task<object?>> GetAwaitableTaskWithResultInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableTaskWithResultInvoker), nameof(GetOpenGenericAwaitableTaskWithResultInvoker));
@@ -563,7 +563,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncGenericTaskInvoker!;
     }
 
-    public Func<object?, object?[]?, Task<object?>> GetOpenGenericAwaitableTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, Task<object?>> GetOpenGenericAwaitableTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -579,7 +579,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncGenericTaskInvoker!;
     }
 
-    public Func<object?, object?[]?, ValueTask> GetAwaitableValueTaskInvoker(ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, ValueTask> GetAwaitableValueTaskInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableValueTaskInvoker), nameof(GetOpenGenericAwaitableValueTaskInvoker));
@@ -592,7 +592,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncValueTaskInvoker!;
     }
 
-    public Func<object?, object?[]?, ValueTask> GetOpenGenericAwaitableValueTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, ValueTask> GetOpenGenericAwaitableValueTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -608,7 +608,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncValueTaskInvoker!;
     }
 
-    public Func<object?, object?[]?, ValueTask<object?>> GetAwaitableValueTaskWithResultInvoker(ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, ValueTask<object?>> GetAwaitableValueTaskWithResultInvoker(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableValueTaskWithResultInvoker), nameof(GetOpenGenericAwaitableValueTaskWithResultInvoker));
@@ -621,7 +621,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncGenericValueTaskInvoker!;
     }
 
-    public Func<object?, object?[]?, ValueTask<object?>> GetOpenGenericAwaitableValueTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    internal Func<object?, object?[]?, ValueTask<object?>> GetOpenGenericAwaitableValueTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -637,7 +637,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod._asyncGenericValueTaskInvoker!;
     }
 
-    public MethodAwaitableTaskDiscardInvoker<TTarget> GetAwaitableTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
+    internal MethodAwaitableTaskDiscardInvoker<TTarget> GetAwaitableTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericAwaitableTaskWithResultInvoker), nameof(GetAwaitableTaskWithResultInvoker));
@@ -650,7 +650,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod;
     }
 
-    public MethodAwaitableTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    internal MethodAwaitableTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -666,7 +666,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod;
     }
 
-    public MethodAwaitableValueTaskDiscardInvoker<TTarget> GetAwaitableValueTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
+    internal MethodAwaitableValueTaskDiscardInvoker<TTarget> GetAwaitableValueTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
     {
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
         ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableValueTaskInvoker), nameof(GetOpenGenericAwaitableValueTaskInvoker));
@@ -679,7 +679,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         return invocatorMethod!;
     }
 
-    public MethodAwaitableValueTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableValueTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+    internal MethodAwaitableValueTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableValueTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(genericMethodParameters);
         ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
@@ -881,7 +881,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             : throw new InvalidOperationException("Unable to create  the strictly typed method invoker.");
     }
 
-    public override RuntimeMethodHandle Handle { get; }
+    internal override RuntimeMethodHandle Handle { get; }
 
     /// <summary>
     /// Provides a basic fingerprint for this method based on its name, declaring type, return type, parameters and generic method parameters (if the method is a generic method).
@@ -890,7 +890,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// This allows to identify methods that belong to the same generic family (based on the open generic method signature).<br/>
     /// For example, the open generic method would share the same basic fingerprint like all  it's closed generic variants.<br/>
     /// In other words, the <see cref="BasicMethodFingerprint"/> enables the identification of generic methods that share the same generic structure since it is based on the raw unconstructed generic method signature.</remarks>
-    public BasicMethodFingerprint BasicMethodFingerprint
+    internal BasicMethodFingerprint BasicMethodFingerprint
     {
         get
         {
@@ -917,7 +917,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    public MethodData GenericMethodDefinitionData
+    internal MethodData GenericMethodDefinitionData
     {
         get
         {
@@ -935,13 +935,13 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    public bool EqualsBySignature(MethodData other) => _methodSignatureEqualityComparer.Equals(this, other);
+    internal bool EqualsBySignature(MethodData other) => _methodSignatureEqualityComparer.Equals(this, other);
 
-    public override ParameterList Parameters => _parameters ??= ParameterListBuilder.Create(parameterizedMember: this);
+    internal override ParameterList Parameters => _parameters ??= ParameterListBuilder.Create(parameterizedMember: this);
 
-    public override bool HasParamsParameter => _hasParamsParameter ??= Parameters.HasItems && Parameters[^1].IsParams;
+    internal override bool HasParamsParameter => _hasParamsParameter ??= Parameters.HasItems && Parameters[^1].IsParams;
 
-    public override bool IsExplicitInterfaceImplementation
+    internal override bool IsExplicitInterfaceImplementation
     {
         get
         {
@@ -955,7 +955,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     }
 
     /// <inheritdoc/>
-    public override RuntimeTypeHandle DeclaringTypeHandle
+    internal override RuntimeTypeHandle DeclaringTypeHandle
     {
         get
         {
@@ -969,7 +969,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     }
 
     /// <inheritdoc/>
-    public override RuntimeTypeHandle ImplementingTypeHandle
+    internal override RuntimeTypeHandle ImplementingTypeHandle
     {
         get
         {
@@ -988,7 +988,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// </summary>
     /// <entryFactory>Returns <see langword="true"/> if the method is a property set method; otherwise, <see langword="false"/>.<para/>
     /// This entryFactory exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property setters.</entryFactory>
-    public bool IsPropertySetMethod => _isPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: true);
+    internal bool IsPropertySetMethod => _isPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: true);
 
     /// <summary>
     /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
@@ -996,7 +996,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// </summary>
     /// <entryFactory>Returns <see langword="true"/> if the method is a property get method; otherwise, <see langword="false"/>.<para/>
     /// This entryFactory exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property getters.</entryFactory>
-    public bool IsPropertyGetMethod => _isPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: false);
+    internal bool IsPropertyGetMethod => _isPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: false);
 
     /// <summary>
     /// Checks whether the method is an indexer property set method.
@@ -1005,40 +1005,40 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// </summary>
     /// <entryFactory>Returns <see langword="true"/> if the method is an indexer property set method; otherwise, <see langword="false"/>.<para/>
     /// This entryFactory exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property setters.</entryFactory>
-    public bool IsIndexerPropertySetMethod => _isIndexerPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: true);
+    internal bool IsIndexerPropertySetMethod => _isIndexerPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: true);
 
     /// <summary>
     /// Checks whether the method is an indexer property get method.
     /// </summary>
     /// <entryFactory>Returns <see langword="true"/> if the method is an indexer property get method; otherwise, <see langword="false"/>.<para/>
     /// This entryFactory exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property getters.</entryFactory>
-    public bool IsIndexerPropertyGetMethod => _isIndexerPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: false);
+    internal bool IsIndexerPropertyGetMethod => _isIndexerPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: false);
 
     /// <summary>
     /// Gets a entryFactory indicating whether the method is a property (non-indexer and indexer) accessor method (get or set).<br/>
     /// </summary>
     /// <entryFactory>Returns <see langword="true"/> if the method is a property accessor method; otherwise, <see langword="false"/>.<para/>
-    public bool IsPropertyAccessorMethod => IsPropertyGetMethod || IsPropertySetMethod || IsIndexerPropertyGetMethod || IsIndexerPropertySetMethod;
+    internal bool IsPropertyAccessorMethod => IsPropertyGetMethod || IsPropertySetMethod || IsIndexerPropertyGetMethod || IsIndexerPropertySetMethod;
 
-    public bool IsDelegateInvokeMethod => _isDelegateInvokeMethod ??= MethodData.IsDelegateInvoke(this);
+    internal bool IsDelegateInvokeMethod => _isDelegateInvokeMethod ??= MethodData.IsDelegateInvoke(this);
 
-    public bool IsDelegateBeginInvokeMethod => _isDelegateBeginInvokeMethod ??= MethodData.IsDelegateBeginInvoke(this);
+    internal bool IsDelegateBeginInvokeMethod => _isDelegateBeginInvokeMethod ??= MethodData.IsDelegateBeginInvoke(this);
 
-    public bool IsDelegateEndInvokeMethod => _isDelegateEndInvokeMethod ??= MethodData.IsDelegateEndInvoke(this);
+    internal bool IsDelegateEndInvokeMethod => _isDelegateEndInvokeMethod ??= MethodData.IsDelegateEndInvoke(this);
 
-    public bool IsDelegateMethod => IsDelegateInvokeMethod || IsDelegateBeginInvokeMethod || IsDelegateEndInvokeMethod;
+    internal bool IsDelegateMethod => IsDelegateInvokeMethod || IsDelegateBeginInvokeMethod || IsDelegateEndInvokeMethod;
 
-    public bool IsEventAddMethod => _isEventAddMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: true);
+    internal bool IsEventAddMethod => _isEventAddMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: true);
 
-    public bool IsEventRemoveMethod => _isEventRemoveMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: false);
+    internal bool IsEventRemoveMethod => _isEventRemoveMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: false);
 
-    public bool IsEventAccessorMethod => _isEventAccessorMethod ??= IsEventAddMethod || IsEventRemoveMethod;
+    internal bool IsEventAccessorMethod => _isEventAccessorMethod ??= IsEventAddMethod || IsEventRemoveMethod;
 
     /// <summary>
     /// Gets a entryFactory indicating whether the method is an accessor method (property or event).<br/>
     /// This entryFactory exclusively describes accessor methods and therefore also returns <see langword="false"/> for non-accessor methods.
     /// </summary>
-    public bool IsAccessorMethod => IsPropertyAccessorMethod || IsEventAccessorMethod;
+    internal bool IsAccessorMethod => IsPropertyAccessorMethod || IsEventAccessorMethod;
 
     /// <summary>
     /// If the current <see cref="MethodData"/> instance is an accessor method, gets the <see cref="PropertyData"/> or <see cref="EventData"/> that is accessed by this accessor method.
@@ -1048,27 +1048,27 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     /// method is an accessor before accessing this property.</remarks>
     /// <exception cref="InvalidOperationException">Thrown if the current method is not an accessor method.</exception>
     /// <entryFactory>The <see cref="PropertyData"/> or <see cref="EventData"/> representing the property or event accessed by this accessor method.</entryFactory>
-    public MemberData AccessedMember => IsAccessorMethod
+    internal MemberData AccessedMember => IsAccessorMethod
         ? _accessedMember! // The earlier call to MethodData.IsAccessorMethod ensured that _accessedMember is set.
         : throw new InvalidOperationException($"The current method is not an accessor. Call {nameof(MethodData.IsAccessorMethod)} before accessing this property to avoid this exception.");
 
-    public bool IsOperatorOverload => _isOperatorOverload ??= MethodData.IsOperator(this);
+    internal bool IsOperatorOverload => _isOperatorOverload ??= MethodData.IsOperator(this);
 
-    public bool IsVoidMethod => _isVoidMethod ??= ReturnTypeData.Type == typeof(void);
+    internal bool IsVoidMethod => _isVoidMethod ??= ReturnTypeData.Type == typeof(void);
 
-    public TypeList GenericMethodParameters => _genericMethodArguments ??= TypeListBuilder.CreateGenericTypeArgumentList(this);
+    internal TypeList GenericMethodParameters => _genericMethodArguments ??= TypeListBuilder.CreateGenericTypeArgumentList(this);
 
-    public override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
+    internal override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
         ? (_accessModifier = MethodData.GetAccessModifier(this))
         : _accessModifier;
 
-    public bool IsExtensionMethod => _isExtensionMethod ??= MethodData.IsMethodExtensionMethod(this);
+    internal bool IsExtensionMethod => _isExtensionMethod ??= MethodData.IsMethodExtensionMethod(this);
 
-    public bool IsAsync => _isAsync ??= IsMarkedAsync(this);
+    internal bool IsAsync => _isAsync ??= IsMarkedAsync(this);
 
-    public bool IsAwaitable => _isAwaitable ??= ReturnTypeData.IsAwaitable;
+    internal bool IsAwaitable => _isAwaitable ??= ReturnTypeData.IsAwaitable;
 
-    public bool IsAwaitableTask
+    internal bool IsAwaitableTask
     {
         get
         {
@@ -1091,7 +1091,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    public bool IsAwaitableValueTask
+    internal bool IsAwaitableValueTask
     {
         get
         {
@@ -1114,7 +1114,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    public bool IsAwaitableGenericValueTask
+    internal bool IsAwaitableGenericValueTask
     {
         get
         {
@@ -1137,7 +1137,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    public bool IsAwaitableGenericTask
+    internal bool IsAwaitableGenericTask
     {
         get
         {
@@ -1160,53 +1160,53 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    public bool IsOverride => _isOverride ??= MethodData.IsMethodOverride(this);
+    internal bool IsOverride => _isOverride ??= MethodData.IsMethodOverride(this);
 
-    public bool IsReturnValueReadOnly => _isReturnValueReadOnly ??= MethodInfo.ReturnParameter.GetCustomAttribute<IsReadOnlyAttribute>() != null;
+    internal bool IsReturnValueReadOnly => _isReturnValueReadOnly ??= MethodInfo.ReturnParameter.GetCustomAttribute<IsReadOnlyAttribute>() != null;
 
-    public bool IsReturnValueByRef => _isReturnValueByRef ??= ReturnTypeData.IsByRef;
+    internal bool IsReturnValueByRef => _isReturnValueByRef ??= ReturnTypeData.IsByRef;
 
-    public override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
+    internal override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
         ? (_symbolAttributes = MethodData.GetAttributes(this))
         : _symbolAttributes;
 
-    public override SymbolComponentInfo SymbolComponentInfo => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+    internal override SymbolComponentInfo SymbolComponentInfo => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
-    public override string Signature => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+    internal override string Signature => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortSignature => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
+    internal override string ShortSignature => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
 
-    public override string ShortCompactSignature => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
+    internal override string ShortCompactSignature => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedSignature => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+    internal override string FullyQualifiedSignature => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
-    public override string FullyQualifiedRuntimeSignature => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+    internal override string FullyQualifiedRuntimeSignature => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeSignature => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+    internal override string RuntimeSignature => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortSignature => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
+    internal override string RuntimeShortSignature => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
 
-    public override string RuntimeShortCompactSignature => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
+    internal override string RuntimeShortCompactSignature => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
-    public override string DisplayName => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+    internal override string DisplayName => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
-    public override string ShortDisplayName => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+    internal override string ShortDisplayName => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
-    public override string FullyQualifiedDisplayName => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+    internal override string FullyQualifiedDisplayName => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
-    public override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
+    internal override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
-    public TypeData ReturnTypeData => _returnTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(MethodInfo.ReturnType);
+    internal TypeData ReturnTypeData => _returnTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(MethodInfo.ReturnType);
 
-    public bool IsGenericMethod => _isGenericMethod ??= MethodInfo.IsGenericMethod;
+    internal bool IsGenericMethod => _isGenericMethod ??= MethodInfo.IsGenericMethod;
 
-    public bool IsGenericMethodDefinition => _isGenericTypeMethod ??= MethodInfo.IsGenericMethodDefinition;
+    internal bool IsGenericMethodDefinition => _isGenericTypeMethod ??= MethodInfo.IsGenericMethodDefinition;
 
-    public bool ContainsGenericParameters => _containsGenericParameters ??= MethodInfo.ContainsGenericParameters;
+    internal bool ContainsGenericParameters => _containsGenericParameters ??= MethodInfo.ContainsGenericParameters;
 
-    public bool IsOpenGenericMethodOrGenericMethodDefinition => (IsGenericMethod && ContainsGenericParameters) || IsGenericMethodDefinition;
+    internal bool IsOpenGenericMethodOrGenericMethodDefinition => (IsGenericMethod && ContainsGenericParameters) || IsGenericMethodDefinition;
 
-    public override ParameterizedSymbolKind ParameterizedSymbolKind => _parameterizedSymbolKind ??= IsPropertySetMethod
+    internal override ParameterizedSymbolKind ParameterizedSymbolKind => _parameterizedSymbolKind ??= IsPropertySetMethod
         ? ParameterizedSymbolKind.MemberNormalPropertySet
         : IsIndexerPropertyGetMethod
             ? ParameterizedSymbolKind.MemberIndexerPropertyGet
@@ -1449,7 +1449,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
                 new InterfaceMappingKey(implementingType.Handle, interfaceTypeData.Handle),
                 _ => InterfaceMappingEntryFactory(implementingType, interfaceTypeData));
             if (interfaceMapping.ImplementedMethodCacheKeyTable.TryGetValue(methodData.CacheKey, out int mappingIndex)
-                && interfaceMapping.ReverseInterfaceMethodsCacheKeyTable.TryGetValue(mappingIndex, out SymbolReflectionInfoCacheKey interfaceMethodCacheKey))
+                && interfaceMapping.ReverseInterfaceMethodsCacheKeyTable.TryGetValue(mappingIndex, out SymbolReflectionInfoCacheKeyInternal interfaceMethodCacheKey))
             {
                 MethodData interfaceMethod = SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(interfaceMethodCacheKey);
                 declaringInterfaceTypeData = interfaceMethod.DeclaringTypeData;
@@ -1466,8 +1466,8 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private static InterfaceMappingEntry InterfaceMappingEntryFactory(TypeData declaringTypeData, TypeData interfaceTypeData)
     {
         InterfaceMapping mapping = declaringTypeData.Type.GetInterfaceMap(interfaceTypeData.Type);
-        IEnumerable<SymbolReflectionInfoCacheKey> implementedMethodCacheKeys = mapping.TargetMethods.Select(m => m.ToMethodData().CacheKey);
-        IEnumerable<SymbolReflectionInfoCacheKey> interfaceMethodCacheKeys = mapping.InterfaceMethods.Select(m => m.ToMethodData().CacheKey);
+        IEnumerable<SymbolReflectionInfoCacheKeyInternal> implementedMethodCacheKeys = mapping.TargetMethods.Select(m => m.ToMethodData().CacheKey);
+        IEnumerable<SymbolReflectionInfoCacheKeyInternal> interfaceMethodCacheKeys = mapping.InterfaceMethods.Select(m => m.ToMethodData().CacheKey);
 
         return new InterfaceMappingEntry(implementedMethodCacheKeys, interfaceMethodCacheKeys);
     }
@@ -1586,15 +1586,15 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     #region InterfaceMappingEntry
     private readonly struct InterfaceMappingEntry : IEquatable<InterfaceMappingEntry>
     {
-        public InterfaceMappingEntry(IEnumerable<SymbolReflectionInfoCacheKey> implementedMethodCacheKeys, IEnumerable<SymbolReflectionInfoCacheKey> interfaceMethodsCacheKeys)
+        public InterfaceMappingEntry(IEnumerable<SymbolReflectionInfoCacheKeyInternal> implementedMethodCacheKeys, IEnumerable<SymbolReflectionInfoCacheKeyInternal> interfaceMethodsCacheKeys)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(implementedMethodCacheKeys);
             ArgumentNullExceptionAdvanced.ThrowIfNull(interfaceMethodsCacheKeys);
 
             int index = 0;
-            Dictionary<SymbolReflectionInfoCacheKey, int> implementedMethodCacheKeyDictionary = [];
-            Dictionary<int, SymbolReflectionInfoCacheKey> reverseImplementedMethodCacheKeyDictionary = [];
-            foreach (SymbolReflectionInfoCacheKey cacheKey in implementedMethodCacheKeys)
+            Dictionary<SymbolReflectionInfoCacheKeyInternal, int> implementedMethodCacheKeyDictionary = [];
+            Dictionary<int, SymbolReflectionInfoCacheKeyInternal> reverseImplementedMethodCacheKeyDictionary = [];
+            foreach (SymbolReflectionInfoCacheKeyInternal cacheKey in implementedMethodCacheKeys)
             {
                 implementedMethodCacheKeyDictionary[cacheKey] = index;
                 reverseImplementedMethodCacheKeyDictionary[index] = cacheKey;
@@ -1605,9 +1605,9 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             ReverseImplementedMethodCacheKeyTable = reverseImplementedMethodCacheKeyDictionary.ToImmutableDictionary();
 
             index = 0;
-            Dictionary<SymbolReflectionInfoCacheKey, int> interfaceMethodCacheKeyDictionary = [];
-            Dictionary<int, SymbolReflectionInfoCacheKey> reverseInterfaceMethodCacheKeyDictionary = [];
-            foreach (SymbolReflectionInfoCacheKey cacheKey in interfaceMethodsCacheKeys)
+            Dictionary<SymbolReflectionInfoCacheKeyInternal, int> interfaceMethodCacheKeyDictionary = [];
+            Dictionary<int, SymbolReflectionInfoCacheKeyInternal> reverseInterfaceMethodCacheKeyDictionary = [];
+            foreach (SymbolReflectionInfoCacheKeyInternal cacheKey in interfaceMethodsCacheKeys)
             {
                 interfaceMethodCacheKeyDictionary[cacheKey] = index;
                 reverseInterfaceMethodCacheKeyDictionary[index] = cacheKey;
@@ -1618,10 +1618,10 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             ReverseInterfaceMethodsCacheKeyTable = reverseInterfaceMethodCacheKeyDictionary.ToImmutableDictionary();
         }
 
-        public ImmutableDictionary<SymbolReflectionInfoCacheKey, int> ImplementedMethodCacheKeyTable { get; }
-        public ImmutableDictionary<int, SymbolReflectionInfoCacheKey> ReverseImplementedMethodCacheKeyTable { get; }
-        public ImmutableDictionary<SymbolReflectionInfoCacheKey, int> InterfaceMethodsCacheKeyTable { get; }
-        public ImmutableDictionary<int, SymbolReflectionInfoCacheKey> ReverseInterfaceMethodsCacheKeyTable { get; }
+        public ImmutableDictionary<SymbolReflectionInfoCacheKeyInternal, int> ImplementedMethodCacheKeyTable { get; }
+        public ImmutableDictionary<int, SymbolReflectionInfoCacheKeyInternal> ReverseImplementedMethodCacheKeyTable { get; }
+        public ImmutableDictionary<SymbolReflectionInfoCacheKeyInternal, int> InterfaceMethodsCacheKeyTable { get; }
+        public ImmutableDictionary<int, SymbolReflectionInfoCacheKeyInternal> ReverseInterfaceMethodsCacheKeyTable { get; }
         public bool Equals(InterfaceMappingEntry other) => ImplementedMethodCacheKeyTable.Equals(other.ImplementedMethodCacheKeyTable)
             && InterfaceMethodsCacheKeyTable.Equals(other.InterfaceMethodsCacheKeyTable)
             && ReverseImplementedMethodCacheKeyTable.Equals(other.ReverseImplementedMethodCacheKeyTable)

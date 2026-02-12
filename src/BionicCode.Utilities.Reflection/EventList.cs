@@ -9,7 +9,7 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
 {
     private static EventList Empty { get; } = new EventList();
     private readonly int _hashCode; // precomputed
-    private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
+    private readonly SymbolReflectionInfoCacheKeyInternal _declaringTypeCacheKey;
     public readonly Dictionary<string, EventData> _eventNameIndex;
 
     public EventList(EventData[] items) : this((IEnumerable<EventData>)items)
@@ -72,7 +72,7 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
     public bool IsEmpty => Events.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<EventData> Events { get; }
-    public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
+    public SymbolReflectionInfoCacheKeyInternal DeclaringTypeCacheKey
         => HasItems
             ? _declaringTypeCacheKey
             : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeCacheKey)));
@@ -81,7 +81,7 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringTypeCacheKey;
             return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeData)));
@@ -227,7 +227,7 @@ internal sealed class ExplicitMemberImplementationList<TMemberData> : IReadOnlyL
     public bool IsEmpty => Events.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<TMemberData> Events { get; }
-    public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
+    public SymbolReflectionInfoCacheKeyInternal DeclaringTypeCacheKey
         => HasItems
             ? _declaringTypeCacheKey
             : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeCacheKey)));
@@ -236,7 +236,7 @@ internal sealed class ExplicitMemberImplementationList<TMemberData> : IReadOnlyL
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringTypeCacheKey;
             return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeData)));

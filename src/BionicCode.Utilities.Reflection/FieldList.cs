@@ -10,7 +10,7 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
     public static FieldList Empty { get; } = new FieldList();
     private readonly int _hashCode; // precomputed
     private readonly Dictionary<string, FieldData> _fieldNameIndex;
-    private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
+    private readonly SymbolReflectionInfoCacheKeyInternal _declaringTypeCacheKey;
 
     public FieldList(FieldData[] items) : this((IEnumerable<FieldData>)items)
     {
@@ -70,7 +70,7 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
     public bool IsEmpty => Fields.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<FieldData> Fields { get; }
-    public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
+    public SymbolReflectionInfoCacheKeyInternal DeclaringTypeCacheKey
         => HasItems
             ? _declaringTypeCacheKey
             : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeCacheKey)));
@@ -79,7 +79,7 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringTypeCacheKey;
             return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeData)));

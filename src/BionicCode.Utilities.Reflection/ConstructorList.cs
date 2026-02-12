@@ -9,7 +9,7 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
 {
     public static ConstructorList Empty { get; } = new ConstructorList();
     private readonly int _hashCode; // precomputed
-    private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
+    private readonly SymbolReflectionInfoCacheKeyInternal _declaringTypeCacheKey;
 
     public ConstructorList(ConstructorData[] items) : this((IEnumerable<ConstructorData>)items)
     {
@@ -59,7 +59,7 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
     public bool IsEmpty => Constructors.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<ConstructorData> Constructors { get; }
-    public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
+    public SymbolReflectionInfoCacheKeyInternal DeclaringTypeCacheKey
         => HasItems
             ? _declaringTypeCacheKey
             : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeCacheKey)));
@@ -68,7 +68,7 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringTypeCacheKey;
             return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeData)));

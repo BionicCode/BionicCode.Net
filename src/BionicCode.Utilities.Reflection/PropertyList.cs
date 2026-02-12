@@ -12,7 +12,7 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
 {
     public static PropertyList Empty { get; } = new PropertyList();
     private readonly int _hashCode; // precomputed
-    private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
+    private readonly SymbolReflectionInfoCacheKeyInternal _declaringTypeCacheKey;
     private readonly Dictionary<string, PropertyData> _propertyNameIndex;
 
     public PropertyList(PropertyData[] items) : this((IEnumerable<PropertyData>)items)
@@ -74,7 +74,7 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
     public bool IsEmpty => Properties.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<PropertyData> Properties { get; }
-    public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
+    public SymbolReflectionInfoCacheKeyInternal DeclaringTypeCacheKey
         => HasItems
             ? _declaringTypeCacheKey
             : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeCacheKey)));
@@ -83,7 +83,7 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
     {
         get
         {
-            SymbolReflectionInfoCacheKey cacheKey = DeclaringTypeCacheKey;
+            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringTypeCacheKey;
             return HasItems
                 ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(DeclaringTypeData)));
