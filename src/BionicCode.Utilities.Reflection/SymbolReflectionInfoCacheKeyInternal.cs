@@ -114,7 +114,7 @@ internal readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<Symbo
     /// <param name="eventDescriptor">The event descriptor.</param>
     /// <returns>The unique cache key for the event symbol.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventDescriptor"/> is <see langword="null"/>.</exception>
-    public static SymbolReflectionInfoCacheKeyInternal CreateForEvent(WellKnownEventDescriptor eventDescriptor)
+    internal static SymbolReflectionInfoCacheKeyInternal CreateForEvent(WellKnownEventDescriptor eventDescriptor)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(eventDescriptor);
 
@@ -142,7 +142,7 @@ internal readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<Symbo
     /// <item><paramref name="propertyDescriptor"/> or its declaring type is <see langword="default"/>.</item>
     /// </list>
     /// </exception>
-    public static SymbolReflectionInfoCacheKeyInternal CreateForProperty(WellKnownPropertyDescriptor propertyDescriptor)
+    internal static SymbolReflectionInfoCacheKeyInternal CreateForProperty(WellKnownPropertyDescriptor propertyDescriptor)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(propertyDescriptor);
 
@@ -165,7 +165,7 @@ internal readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<Symbo
     /// <remarks>This method creates a unique cache key for well-known or anonymous method symbols, including regular methods, property accessors, and event accessors.
     /// <para/>For maximum performance and zero ambiguity, always prefer to create method cache keys using well-known <see cref="MethodInfo"/> instances via the <see cref="Net.WellKnownMethodDescriptor"/>.</remarks>
     /// <returns>The unique cache key for the well-known method symbol.</returns>
-    public static SymbolReflectionInfoCacheKeyInternal CreateForMethod(WellKnownMethodDescriptor methodDescriptor)
+    internal static SymbolReflectionInfoCacheKeyInternal CreateForMethod(WellKnownMethodDescriptor methodDescriptor)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(methodDescriptor);
 
@@ -181,7 +181,7 @@ internal readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<Symbo
             default);
     }
 
-    public static SymbolReflectionInfoCacheKeyInternal CreateForType(WellKnownTypeDescriptor typeDescriptor)
+    internal static SymbolReflectionInfoCacheKeyInternal CreateForType(WellKnownTypeDescriptor typeDescriptor)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(typeDescriptor);
 
@@ -197,7 +197,7 @@ internal readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<Symbo
             default);
     }
 
-    public static SymbolReflectionInfoCacheKeyInternal CreateForField(WellKnownFieldDescriptor fieldDescriptor)
+    internal static SymbolReflectionInfoCacheKeyInternal CreateForField(WellKnownFieldDescriptor fieldDescriptor)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(fieldDescriptor);
 
@@ -221,7 +221,7 @@ internal readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<Symbo
     /// <param name="constructorDescriptor"></param>
     /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKeyInternal"/> representing the specified well-known constructor.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="constructorDescriptor"/> is <see langword="default"/>.</exception>
-    public static SymbolReflectionInfoCacheKeyInternal CreateForConstructor(WellKnownConstructorDescriptor constructorDescriptor)
+    internal static SymbolReflectionInfoCacheKeyInternal CreateForConstructor(WellKnownConstructorDescriptor constructorDescriptor)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(constructorDescriptor);
 
@@ -237,7 +237,7 @@ internal readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<Symbo
             default);
     }
 
-    public static SymbolReflectionInfoCacheKeyInternal CreateForWellKnownParameter(WellKnownParameterDescriptor parameterDescriptor)
+    internal static SymbolReflectionInfoCacheKeyInternal CreateForWellKnownParameter(WellKnownParameterDescriptor parameterDescriptor)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterDescriptor);
 
@@ -280,8 +280,7 @@ internal readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<Symbo
         }
     }
 
-    public override bool Equals(object obj)
-        => obj is SymbolReflectionInfoCacheKeyInternal other && Equals(other);
+    public override bool Equals(object obj) => obj is SymbolReflectionInfoCacheKeyInternal other && Equals(other);
 
     public bool Equals(SymbolReflectionInfoCacheKeyInternal other) => SymbolName == other.SymbolName
         && SymbolKind == other.SymbolKind
@@ -541,8 +540,7 @@ internal readonly partial struct AnonymousSymbolDescriptorContainer : IEquatable
         }
     }
 
-    public override bool Equals(object obj)
-        => obj is AnonymousSymbolDescriptorContainer other && Equals(other);
+    public override bool Equals(object obj) => obj is AnonymousSymbolDescriptorContainer other && Equals(other);
 
     public bool Equals(AnonymousSymbolDescriptorContainer other) => SymbolName == other.SymbolName
         && SymbolKind == other.SymbolKind
@@ -566,53 +564,5 @@ internal readonly partial struct AnonymousSymbolDescriptorContainer : IEquatable
         return allowedSymbolKinds.Length > 1
             ? throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(SymbolKind)}' returns any of the following values: {allowedKinds}.")
             : throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(SymbolKind)}' returns the value '{allowedKinds[0]}'.");
-    }
-}
-
-public readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectionInfoCacheKey>
-{
-    private readonly RuntimeTypeHandle _declaringTypeHandle;
-
-    public string SymbolName { get; }
-    public SymbolKind SymbolKind { get; }
-    public bool IsAnonymousKey { get; }
-    public RuntimeMethodHandle MethodHandle { get; }
-    public RuntimeTypeHandle DeclaringTypeHandle => _declaringTypeHandle;
-    public RuntimeTypeHandle TypHandle { get; }
-    public RuntimeFieldHandle FieldHandle { get; }
-    public bool IsProperty => SymbolKind is SymbolKind.MemberProperty;
-    public RuntimeMethodHandle PropertySetMethodHandle { get; }
-    public RuntimeMethodHandle PropertyGetMethodHandle { get; }
-    public RuntimeTypeHandle PropertyTypeHandle { get; }
-    public bool IsField => SymbolKind is SymbolKind.MemberField;
-    public bool IsType => SymbolKind is SymbolKind.Type;
-    public bool IsEvent => SymbolKind is SymbolKind.MemberEvent;
-    public RuntimeMethodHandle EventAddMethodHandle { get; }
-    public RuntimeMethodHandle EventRemoveMethodHandle { get; }
-    public bool IsMethodOrConstructor => SymbolKind is SymbolKind.MemberConstructor or SymbolKind.MemberMethod;
-    public bool IsParameter => SymbolKind is SymbolKind.Parameter;
-    public ParameterKind ParameterModifier { get; }
-    public RuntimeTypeHandle ParameterTypeHandle { get; }
-
-    public bool Equals(SymbolReflectionInfoCacheKey other) => throw new NotImplementedException();
-
-    public override bool Equals(object obj)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override int GetHashCode()
-    {
-        throw new NotImplementedException();
-    }
-
-    public static bool operator ==(SymbolReflectionInfoCacheKey left, SymbolReflectionInfoCacheKey right)
-    {
-        return left.Equals(right);
-    }
-
-    public static bool operator !=(SymbolReflectionInfoCacheKey left, SymbolReflectionInfoCacheKey right)
-    {
-        return !(left == right);
     }
 }

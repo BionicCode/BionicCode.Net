@@ -143,7 +143,7 @@ internal sealed class EventData : MemberData
     internal MethodData EventInvokerMethodData => _invocatorMethodData ??= EventHandlerTypeData?.DelegateInvokeMethodData!;
 
     internal TypeData EventHandlerTypeData => _eventHandlerTypeData ??= EventInfo.EventHandlerType is Type eventHandlerType
-        ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventHandlerType)
+        ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(eventHandlerType)
         : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an event handler type.");
 
     internal EventInfo EventInfo { get; }

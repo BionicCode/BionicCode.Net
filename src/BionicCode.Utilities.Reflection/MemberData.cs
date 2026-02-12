@@ -45,12 +45,12 @@ internal abstract class MemberData : SymbolInfoData
 
     internal TypeData DeclaringTypeData
       => _declaringTypeData ??= Type.GetTypeFromHandle(DeclaringTypeHandle) is Type declaringType
-            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType)
+            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(declaringType)
             : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(DeclaringTypeHandle)}' is not valid.");
 
     internal TypeData ImplementingTypeData
         => _implementingTypeData ??= Type.GetTypeFromHandle(ImplementingTypeHandle) is Type implementingType
-            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(implementingType)
+            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(implementingType)
             : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(ImplementingTypeHandle)}' is not valid.");
 
     internal override string Namespace

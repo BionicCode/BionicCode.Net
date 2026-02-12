@@ -31,7 +31,7 @@
             List<TypeData> typeDataList = new List<TypeData>(types.Count);
             foreach (Type type in types)
             {
-                TypeData tyoeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+                TypeData tyoeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
                 typeDataList.Add(tyoeData);
             }
 
@@ -43,7 +43,7 @@
             ArgumentNullException.ThrowIfNull(type, nameof(type));
 
             return type.GetInterfaces()
-                .Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry)
+                .Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal)
                 .ToTypeList();
         }
 
@@ -53,7 +53,7 @@
 
             Type type = typeData.Type;
             return type.GetInterfaces()
-                .Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry)
+                .Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal)
                 .ToTypeList();
         }
 
@@ -123,7 +123,7 @@
                 return TypeList.Empty;
             }
 
-            IEnumerable<TypeData> typeDataList = types.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<TypeData> typeDataList = types.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal);
 
             return typeDataList.ToTypeList();
         }
@@ -136,7 +136,7 @@
                 return TypeList.Empty;
             }
 
-            IEnumerable<TypeData> typeDataList = types.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<TypeData> typeDataList = types.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal);
 
             return typeDataList.ToTypeList();
         }
@@ -151,7 +151,7 @@
                 return TypeList.Empty;
             }
 
-            IEnumerable<TypeData> typeDataList = types.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<TypeData> typeDataList = types.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal);
 
             return typeDataList.ToTypeList();
         }

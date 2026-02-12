@@ -5,6 +5,7 @@ using System.Reflection;
 
 public interface ISymbolInfoDataView
 {
+    SymbolReflectionInfoCacheKey CacheKey { get; }
     string AssemblyName { get; }
     string Namespace { get; }
     IList<CustomAttributeData> AttributeData { get; }

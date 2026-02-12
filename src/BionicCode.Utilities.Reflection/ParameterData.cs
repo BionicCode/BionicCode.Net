@@ -169,7 +169,7 @@ internal sealed class ParameterData : SymbolInfoData
         _ => throw new NotImplementedException(),
     };
 
-    internal TypeData ParameterTypeData => _parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo.ParameterType);
+    internal TypeData ParameterTypeData => _parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(ParameterInfo.ParameterType);
 
     internal TypeData DeclaringTypeData => _declaringTypeData ??= MemberData.DeclaringTypeData;
 

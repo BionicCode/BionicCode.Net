@@ -147,7 +147,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.ShortSignature;
     }
 
@@ -170,7 +170,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.Signature;
     }
 
@@ -193,7 +193,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.FullyQualifiedSignature;
     }
 
@@ -216,7 +216,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.RuntimeShortSignature;
     }
 
@@ -239,7 +239,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.RuntimeSignature;
     }
 
@@ -715,7 +715,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return entry.AccessModifier;
     }
 
@@ -870,7 +870,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.DisplayName;
     }
 
@@ -1013,7 +1013,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.FullyQualifiedDisplayName;
     }
 
@@ -1122,7 +1122,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.IsDelegate;
     }
 
@@ -1326,7 +1326,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.IsAwaitable;
     }
 
@@ -1352,7 +1352,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.IsStatic;
     }
 
@@ -1365,7 +1365,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.IsBuiltInType;
     }
 
@@ -1444,7 +1444,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.CanDeclareExtensionMethod;
     }
 
@@ -1544,7 +1544,7 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+        TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
         return typeData.SymbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct);
     }
 

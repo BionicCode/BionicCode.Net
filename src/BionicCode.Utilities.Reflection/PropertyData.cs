@@ -896,7 +896,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         }
     }
 
-    internal TypeData PropertyTypeData => _propertyTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(PropertyInfo.PropertyType);
+    internal TypeData PropertyTypeData => _propertyTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(PropertyInfo.PropertyType);
 
     internal PropertyInfo PropertyInfo { get; }
 

@@ -90,6 +90,7 @@ internal class TypeData : SymbolInfoData
     private PropertyList? _explicitInterfaceProperties;
     private MethodList? _explicitInterfaceMethods;
     private EventList? _explicitInterfaceEvents;
+    private ITypeDataView? _typeDataView;
     private readonly WellKnownTypeDescriptor _descriptor;
 
     internal TypeData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
@@ -685,7 +686,7 @@ internal class TypeData : SymbolInfoData
             else
             {
                 Type genericTypeDefinitionType = Type.GetGenericTypeDefinition();
-                _genericTypeDefinition = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericTypeDefinitionType);
+                _genericTypeDefinition = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(genericTypeDefinitionType);
             }
 
             return _genericTypeDefinition;
@@ -816,12 +817,14 @@ internal class TypeData : SymbolInfoData
                 Type? baseType = Type.BaseType;
                 _baseTypes = baseType is null
                     ? null
-                    : SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(baseType);
+                    : SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(baseType);
             }
 
             return _baseTypes;
         }
     }
+
+    internal ITypeDataView TypeDataView => _typeDataView ??= new TypeDataView(CacheKey);
 
     /// <summary>
     /// If the TypeData represents a delegate, this property returns metadata information for the delegate's Invoke method.

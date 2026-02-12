@@ -2002,7 +2002,7 @@
                         typeof(string),
                     ])!;
 
-            TypeData helperExtensionsCommonTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(ReflectionHelperExtensions));
+            TypeData helperExtensionsCommonTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(typeof(ReflectionHelperExtensions));
             const string extensionMethodName = nameof(ReflectionHelperExtensions.ToFullyQualifiedSignatureName);
             var typeCacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForType(typeof(Type));
             MethodData toFullyQualifiedSignatureNameExtensionMethodData = helperExtensionsCommonTypeData.Methods[extensionMethodName, new MethodParameterInfo(typeCacheKey)];
