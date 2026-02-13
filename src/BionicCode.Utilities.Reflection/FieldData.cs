@@ -209,7 +209,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
 
     internal override bool IsStatic => _isStatic ??= FieldInfo.IsStatic;
 
-    internal TypeData FieldTypeData => _fieldTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(FieldInfo.FieldType);
+    internal TypeData FieldTypeData => _fieldTypeData ??= SymbolReflectionInfoCache.GetOrCreateEntryInternal(FieldInfo.FieldType);
 
     internal bool IsRef => _isRef ??= FieldTypeData.IsByRef;
 

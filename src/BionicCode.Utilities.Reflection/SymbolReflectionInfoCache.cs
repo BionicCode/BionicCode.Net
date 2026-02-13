@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using BionicCode.Utilities.Net.Reflection.Exceptions;
 using Microsoft.CodeAnalysis;
 
 internal static class SymbolReflectionInfoCache
@@ -17,6 +18,8 @@ internal static class SymbolReflectionInfoCache
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeMethodHandle> s_reverseWellKnownMethodAndConstructorCacheKeyTable = new();
     private static readonly ConcurrentDictionary<RuntimeTypeHandle, SymbolReflectionInfoCacheKeyInternal> s_wellKnownTypeCacheKeyTable = new();
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeTypeHandle> s_reverseWellKnownTypeCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<PropertyInfo, SymbolReflectionInfoCacheKeyInternal> s_wellKnownPropertyCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, PropertyInfo> s_reverseWellKnownPropertyCacheKeyTable = new();
     private static readonly ConcurrentDictionary<AssemblyLoadContextMonitor.AssemblyLoadContextInfo, ConcurrentHashSet<SymbolReflectionInfoCacheKeyInternal>> s_assemblyLoadContextIdToCacheKeyMap = new();
     private static readonly ConcurrentDictionary<AnonymousSymbolDescriptorContainer, SymbolReflectionInfoCacheKeyInternal> s_normalizedAnonymousCacheKeyMap = new();
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, AnonymousSymbolDescriptorContainer> s_reverseNormalizedAnonymousCacheKeyMap = new();
@@ -43,6 +46,7 @@ internal static class SymbolReflectionInfoCache
                     ClearWellKnownMethodAndConstructorCacheKeyTable(cacheKey);
                     ClearIndexerParameterSymbolDataCacheKeyMap(cacheKey);
                     ClearWellKnownTypeCacheKeyTable(cacheKey);
+                    ClearWellKnownPropertyCacheKeyTable(cacheKey);
                     ClearPublicCacheKeyMap(cacheKey);
                 }
 
@@ -85,6 +89,14 @@ internal static class SymbolReflectionInfoCache
         }
     }
 
+    private static void ClearWellKnownPropertyCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
+    {
+        if (SymbolReflectionInfoCache.s_reverseWellKnownPropertyCacheKeyTable.TryRemove(cacheKey, out PropertyInfo? propertyInfo))
+        {
+            _ = SymbolReflectionInfoCache.s_wellKnownPropertyCacheKeyTable.TryRemove(propertyInfo, out _);
+        }
+    }
+
     private static void ClearIndexerParameterSymbolDataCacheKeyMap(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
         if (SymbolReflectionInfoCache.s_reverseIndexerParameterSymbolDataCacheKeyMap.TryRemove(cacheKey, out AmbiguousIndexerPropertyKey ambiguousKey))
@@ -105,7 +117,7 @@ internal static class SymbolReflectionInfoCache
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type);
 
-        return GetOrCreateSymbolInfoDataCacheEntryInternal(type);
+        return GetOrCreateEntryInternal(type);
     }
 
     /// <summary>
@@ -119,7 +131,7 @@ internal static class SymbolReflectionInfoCache
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
 
-        return GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
+        return GetOrCreateEntryInternal(methodInfo);
     }
 
     /// <summary>
@@ -161,7 +173,7 @@ internal static class SymbolReflectionInfoCache
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo);
 
-        return GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
+        return GetOrCreateEntryInternal(propertyInfo);
     }
 
     /// <summary>
@@ -189,7 +201,7 @@ internal static class SymbolReflectionInfoCache
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo);
 
-        return GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+        return GetOrCreateCacheEntry(parameterInfo);
     }
     #endregion Extension Methods
 
@@ -199,7 +211,12 @@ internal static class SymbolReflectionInfoCache
     /// <param name="type"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">Thrown when attempting to register a type while the assembly load context has already been unloaded.</exception>
-    public static ITypeDataView GetOrCreateSymbolInfoDataCacheEntry(Type type) => GetOrCreateSymbolInfoDataCacheEntryInternal(type).TypeDataView;
+    public static ITypeDataView GetOrCreateCacheEntry(Type type)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(type);
+
+        return GetOrCreateEntryInternal(type).View;
+    }
 
     /// <summary>
     /// 
@@ -207,10 +224,8 @@ internal static class SymbolReflectionInfoCache
     /// <param name="type"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">Thrown when attempting to register a type while the assembly load context has already been unloaded.</exception>
-    internal static TypeData GetOrCreateSymbolInfoDataCacheEntryInternal(Type type)
+    private static TypeData GetOrCreateEntryInternal(Type type)
     {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(type);
-
         RuntimeTypeHandle typeHandle = type.TypeHandle;
         if (SymbolReflectionInfoCache.s_wellKnownTypeCacheKeyTable.TryGetValue(typeHandle, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
@@ -255,7 +270,7 @@ internal static class SymbolReflectionInfoCache
         return typeData;
     }
 
-    public static MethodData GetOrCreateSymbolReflectionInfoCacheEntry(MethodInfo methodInfo)
+    private static MethodData GetOrCreateEntryInternal(MethodInfo methodInfo)
     {
         SymbolInfoData? symbolInfoData;
         RuntimeMethodHandle methodHandle = methodInfo.MethodHandle;
@@ -402,23 +417,6 @@ internal static class SymbolReflectionInfoCache
         return (FieldData)symbolInfoData;
     }
 
-    public static PropertyData GetOrCreateSymbolReflectionInfoCacheEntry(PropertyInfo propertyInfo, bool isExplicitInterfaceImplementation = false)
-    {
-        // This call also validates that the 'PropertyInfo.DeclaringType' returns an interface type when 'isExplicitInterfaceImplementation' is true.
-        SymbolReflectionInfoCacheKeyInternal cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForProperty(propertyInfo, isExplicitInterfaceImplementation);
-
-        SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key =>
-        {
-
-            return new PropertyData(propertyInfo, key, isExplicitInterfaceImplementation);
-        });
-
-        // REMOVE::after testing
-        Debug.WriteLine($"Found SymbolInfoData entry for {propertyInfo.GetType()}");
-
-        return (PropertyData)symbolInfoData;
-    }
-
     public static EventData GetOrCreateSymbolReflectionInfoCacheEntry(EventInfo eventInfo)
     {
         descriptor = new WellKnownEventDescriptor(eventInfo);
@@ -446,7 +444,7 @@ internal static class SymbolReflectionInfoCache
         return (EventData)symbolInfoData;
     }
 
-    public static ParameterData GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
+    public static ParameterData GetOrCreateCacheEntry(ParameterInfo parameterInfo)
     {
         MemberInfo member = parameterInfo.Member;
         SymbolReflectionInfoCacheKeyInternal cacheKey;
@@ -481,7 +479,7 @@ internal static class SymbolReflectionInfoCache
             $"The provided argument '{nameof(parameterInfo)}' is not ambiguous. The provided parameter info must be ambiguous in that it was obtained via '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}.{nameof(PropertyInfo.GetIndexParameters)}()' belong to a property to be considered ambiguous.");
 
         var propertyInfo = parameterInfo.Member as PropertyInfo;
-        PropertyData propertyData = GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo!);
+        PropertyData propertyData = GetOrCreateEntryInternal(propertyInfo!);
 
         // By convention, the getter takes precedence over the setter
         MethodData accessorData = propertyData.CanRead
@@ -652,6 +650,93 @@ internal static class SymbolReflectionInfoCache
         return fieldData;
     }
 
+    #region Property Cache API
+    public static IPropertyDataView GetOrCreateCacheEntry(PropertyInfo propertyInfo)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo);
+
+        return GetOrCreateEntryInternal(propertyInfo).View;
+    }
+
+    private static PropertyData GetOrCreateEntryInternal(PropertyInfo propertyInfo)
+    {
+        if (SymbolReflectionInfoCache.s_wellKnownPropertyCacheKeyTable.TryGetValue(propertyInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        {
+            // If we found a key in the cache, we can use it to omit key generation costs
+            if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData) && symbolInfoData is PropertyData existingPropertyData)
+            {
+                return existingPropertyData;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Inconsistent state detected in the symbol reflection info cache. A cache key was found for the property '{cacheKey.PropertyDescriptor.PropertyName}', but no corresponding symbol info existingTypeData entry exists.");
+            }
+        }
+
+        Type? declaringType = propertyInfo.DeclaringType;
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType, nameof(propertyInfo), $"The '{nameof(PropertyInfo.DeclaringType)}' property of the provided '{nameof(propertyInfo)}' is null. Property must have a declaring type.");
+
+        var descriptor = new WellKnownPropertyDescriptor(propertyInfo);
+        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForProperty(descriptor);
+        SymbolReflectionInfoCache.s_wellKnownPropertyCacheKeyTable[propertyInfo] = cacheKey;
+        SymbolReflectionInfoCache.s_reverseWellKnownPropertyCacheKeyTable[cacheKey] = propertyInfo;
+        MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
+        var propertyData = (PropertyData)SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(cacheKey));
+        var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForProperty(propertyData);
+        s_publicCacheKeyMap[publicCacheKey] = cacheKey;
+        s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
+
+        // REMOVE::after testing
+        Debug.WriteLine($"Found SymbolInfoData entry for {propertyInfo.GetType()}");
+
+        return propertyData;
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the cached property data view associated with the specified cache key.
+    /// </summary>
+    /// <remarks>This method validates the cache key before attempting to retrieve the property data. If the
+    /// cache key is invalid or does not correspond to a property, the method returns <see langword="false"/> and sets
+    /// <paramref name="propertyDataView"/> to <see langword="null"/>.
+    /// <para/>The <paramref name="cacheKey"/> is considered invalid if the referenced cache entry was GC collected due to its associated assembly had been unloaded.
+    /// <para/>The cache is designed to not return any real cache entry. Instead interaction is represented by a view.
+    /// <br/>This is to prevent potential memory leaks in scenarios where the caller holds on to the returned cache entry for an extended period of time (e.g. via static variables) while the underlying cache entry may need to be collected (e.g. in ALC unloading scenarios).
+    /// </remarks>
+    /// <param name="cacheKey">The <see cref="SymbolReflectionInfoCacheKey"/> key that identifies the property's cache entry. 
+    /// <br/>Must not be <see langword="default"/> and must have a symbol kind of <see cref="SymbolKind.MemberProperty"/>.</param>
+    /// <param name="propertyDataView">When this method returns <see langword="true"/>, contains the property data view of type <see cref="IPropertyDataView"/> associated with the specified
+    /// cache key; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+    /// <returns><see langword="true"/> if the property cache entry is found and the property data view is retrieved; otherwise,
+    /// <see langword="false"/> when the underlying cache entry was collected or the cache key is invalid.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKey"/> is <see langword="default"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="cacheKey"/> does not have a symbol kind of <see cref="SymbolKind.MemberProperty"/>.</exception>
+    public static bool TryGetPropertyCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out IPropertyDataView? propertyDataView)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.MemberProperty],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a property symbol.");
+
+        propertyDataView = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing property data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        if (TryGetPropertyDataCacheEntryInternal(internalCacheKey, out PropertyData propertyData))
+        {
+            propertyDataView = propertyData.View;
+            return true;
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
     /// entry if one does not exist.
@@ -660,23 +745,64 @@ internal static class SymbolReflectionInfoCache
     /// its normalized form.</param>
     /// <returns>The property existingTypeData associated with the cache entry identified by the specified key.</returns>
     /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static PropertyData GetOrCreatePropertyDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
+    private static bool TryGetPropertyDataCacheEntry(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out PropertyData propertyData)
     {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(internalCacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            internalCacheKey.SymbolKind,
+            [SymbolKind.MemberProperty],
+            nameof(internalCacheKey),
+             $"The symbol kind '{internalCacheKey.SymbolKind}' is not valid for creating a property symbol.");
+
+        return TryGetPropertyDataCacheEntryInternal(internalCacheKey, out propertyData);
+    }
+
+    /// <summary>
+    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
+    /// entry if one does not exist.
+    /// </summary>
+    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
+    /// its normalized form.</param>
+    /// <returns>The property existingTypeData associated with the cache entry identified by the specified key.</returns>
+    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
+    private static bool TryGetPropertyDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out PropertyData? propertyData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
             [SymbolKind.MemberProperty],
             nameof(cacheKey),
              $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a property symbol.");
 
-        // Optimization: Avoid normalization for non-anonymous symbols
-        PropertyData propertyData = cacheKey.IsAnonymousSymbolKey
-            ? GetOrCreateNormalizedSymbolInfoDataCacheEntry<PropertyData>(ref cacheKey)
-            : SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is PropertyData existingPropertyData
-                ? existingPropertyData
-                : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing property existingTypeData found for the provided non-anonymous cache key.");
+        propertyData = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing property data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
 
-        return propertyData;
+        return TryGetPropertyDataCacheEntryInternal(internalCacheKey, out propertyData);
     }
+
+    private static bool TryGetPropertyDataCacheEntryInternal(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out PropertyData propertyData)
+    {
+        propertyData = null!;
+        if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(internalCacheKey, out SymbolInfoData? existingEntry) && existingEntry is PropertyData existingPropertyData)
+        {
+            propertyData = existingPropertyData;
+
+            return true;
+        }
+
+        // No existing property data found for the provided public cache key.
+        // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+        // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+
+        return false;
+    }
+    #endregion Property Cache API
 
     /// <summary>
     /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
@@ -850,7 +976,7 @@ internal static class SymbolReflectionInfoCache
 
         Type? type = Type.GetTypeFromHandle(anonymousCacheKey.SymbolTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.SymbolTypeHandle)}' does not contain a valid handle for the type.");
 
-        return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type);
+        return SymbolReflectionInfoCache.GetOrCreateEntryInternal(type);
     }
 
     private static PropertyData CreatePropertyData(SymbolReflectionInfoCacheKeyInternal anonymousCacheKey)
@@ -873,7 +999,7 @@ internal static class SymbolReflectionInfoCache
 
         Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
-        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(declaringType);
+        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(declaringType);
 
         // Find the property by name and parameter types (for indexers)
         if (!string.IsNullOrWhiteSpace(anonymousCacheKey.SymbolName)
@@ -924,7 +1050,7 @@ internal static class SymbolReflectionInfoCache
 
         Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
-        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(declaringType);
+        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(declaringType);
 
         if (anonymousCacheKey.ParameterList.HasItems
             && declaringTypeData.TryGetConstructorByParameterList(anonymousCacheKey.ParameterList, out ConstructorData? constructorData))
@@ -967,7 +1093,7 @@ internal static class SymbolReflectionInfoCache
 
         Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
-        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(declaringType);
+        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(declaringType);
 
         return declaringTypeData.TryGetFieldByName(anonymousCacheKey.SymbolName, out FieldData? fieldData)
             ? fieldData!
@@ -992,7 +1118,7 @@ internal static class SymbolReflectionInfoCache
         {
             methodInfo = MethodBase.GetMethodFromHandle(anonymousCacheKey.MethodHandle) as MethodInfo ?? throw new InvalidReflectionCacheKeyException("Method info could not be retrieved from the provided method handle.");
 
-            MethodData method = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
+            MethodData method = SymbolReflectionInfoCache.GetOrCreateEntryInternal(methodInfo);
             return method;
         }
 
@@ -1003,7 +1129,7 @@ internal static class SymbolReflectionInfoCache
 
         Type? declaringType = Type.GetTypeFromHandle(anonymousCacheKey.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
-        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(declaringType);
+        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(declaringType);
 
         if (anonymousCacheKey.ParameterList.HasItems
             && declaringTypeData.TryGetMethod(anonymousCacheKey.SymbolName, anonymousCacheKey.GenericParameterList, anonymousCacheKey.ParameterList, out MethodData? methodData))
@@ -1024,7 +1150,7 @@ internal static class SymbolReflectionInfoCache
         RuntimeTypeHandle declaringTypeHandle = eventDescriptor.ImplementingTypeHandle;
         Type? declaringType = Type.GetTypeFromHandle(declaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The property '{nameof(AnonymousEventDescriptor)}.{nameof(AnonymousEventDescriptor.ImplementingTypeHandle)}' does not return a valid handle for the declaring type.");
 
-        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(declaringType);
+        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(declaringType);
         EventData eventData = eventDescriptor.IsExplicitInterfaceImplementation
             ? declaringTypeData.TryGetExplicitEvent(eventDescriptor.DeclaringInterfaceTypeHandle, eventDescriptor.EventName, out EventData? explicitMemberEventData)
                 ? explicitMemberEventData!
@@ -1074,7 +1200,7 @@ internal static class SymbolReflectionInfoCache
             else
             {
                 var methodInfo = (MethodInfo)methodBase;
-                MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
+                MethodData methodData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(methodInfo);
                 if (TryFindParameterCandidate(parameterDescriptor, methodData.Parameters, out parameterDataCandidate, out InvalidReflectionCacheKeyException? exception))
                 {
                     return parameterDataCandidate!;
@@ -1093,7 +1219,7 @@ internal static class SymbolReflectionInfoCache
 
         Type? declaringType = Type.GetTypeFromHandle(declaringMemberDescriptor.DeclaringTypeHandle) ?? throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolReflectionInfoCacheKeyInternal)}.{nameof(SymbolReflectionInfoCacheKeyInternal.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type handle.");
 
-        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(declaringType);
+        TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(declaringType);
 
         // Before enumerating the members of the declaring type, check for special types that have known parameter members
         // like delegates and their invoker methods.
@@ -1582,4 +1708,54 @@ internal static class SymbolReflectionInfoCache
     }
 
     #endregion
+
+    #region SymbolDataViewBase
+    internal abstract class SymbolDataViewBase
+    {
+        private protected SymbolDataViewBase(SymbolReflectionInfoCacheKey cacheKey) => CacheKey = cacheKey;
+
+        internal SymbolReflectionInfoCacheKey CacheKey { get; }
+
+        // central helper for "get or throw"
+        private protected PropertyData GetPropertyDataOrThrow()
+            => TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException();
+
+        // central helper for "get or throw"
+        private protected TypeData GetTypeDataOrThrow()
+            => TryGetTypeDataCacheEntry(CacheKey, out TypeData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException();
+
+        // central helper for "get or throw"
+        private protected EventData GetEventDataOrThrow()
+            => TryGetEventDataCacheEntry(CacheKey, out EventData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException();
+    }
+    #endregion SymbolDataViewBase
+
+    #region SymbolInfoDataCacheProvider
+    internal abstract class SymbolInfoDataCacheProvider
+    {
+        protected static PropertyData GetOrCreateCacheEntry(PropertyInfo propertyInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo);
+            return SymbolReflectionInfoCache.GetOrCreateEntryInternal(propertyInfo);
+        }
+
+        protected static TypeData GetOrCreateCacheEntry(Type type)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type);
+            return SymbolReflectionInfoCache.GetOrCreateEntryInternal(type);
+        }
+
+        protected static MethodData GetOrCreateCacheEntry(MethodInfo methodInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
+            return SymbolReflectionInfoCache.GetOrCreateEntryInternal(methodInfo);
+        }
+    }
+    #endregion SymbolInfoDataCacheProvider
 }

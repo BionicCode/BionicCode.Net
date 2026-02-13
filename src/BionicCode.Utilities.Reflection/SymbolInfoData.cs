@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Reflection;
 
 [DebuggerDisplay("{RuntimeShortSignature}")]
-internal abstract class SymbolInfoData
+internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDataCacheProvider
 {
     protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolReflectionInfoCacheKeyInternal cacheKey)
     {

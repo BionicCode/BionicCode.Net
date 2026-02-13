@@ -36,7 +36,7 @@
             SymbolInfoData? member = null;
             foreach (ParameterInfo parameterInfo in parameterInfoList)
             {
-                ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+                ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateCacheEntry(parameterInfo);
 
                 if (member == null)
                 {
@@ -123,7 +123,7 @@
                 return ParameterList.Empty;
             }
 
-            IEnumerable<ParameterData> parameters = parameterInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<ParameterData> parameters = parameterInfoList.Select(SymbolReflectionInfoCache.GetOrCreateCacheEntry);
 
             return parameters.ToParameterList();
         }

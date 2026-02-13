@@ -515,7 +515,7 @@ internal class TypeData : SymbolInfoData
         switch (typeof(TMemberData))
         {
             case Type memberType when memberType == typeof(PropertyData):
-                readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((PropertyInfo)memberInfo);
+                readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateEntryInternal((PropertyInfo)memberInfo);
                 IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(Handle);
                 IPropertyListBuilder explicitPropertyListBuilder = PropertyListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = memberData =>
@@ -539,7 +539,7 @@ internal class TypeData : SymbolInfoData
                 memberKind = SymbolKind.MemberProperty;
                 break;
             case Type memberType when memberType == typeof(MethodData):
-                readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((MethodInfo)memberInfo);
+                readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((MethodInfo)memberInfo);
                 IMethodListBuilder methodListBuilder = MethodListBuilder.New(Handle);
                 IMethodListBuilder explicitMethodListBuilder = MethodListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = methodData =>
@@ -686,7 +686,7 @@ internal class TypeData : SymbolInfoData
             else
             {
                 Type genericTypeDefinitionType = Type.GetGenericTypeDefinition();
-                _genericTypeDefinition = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(genericTypeDefinitionType);
+                _genericTypeDefinition = GetOrCreateCacheEntry(genericTypeDefinitionType);
             }
 
             return _genericTypeDefinition;
@@ -817,14 +817,14 @@ internal class TypeData : SymbolInfoData
                 Type? baseType = Type.BaseType;
                 _baseTypes = baseType is null
                     ? null
-                    : SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(baseType);
+                    : GetOrCreateCacheEntry(baseType);
             }
 
             return _baseTypes;
         }
     }
 
-    internal ITypeDataView TypeDataView => _typeDataView ??= new TypeDataView(CacheKey);
+    internal ITypeDataView View => _typeDataView ??= new TypeDataView(CacheKey);
 
     /// <summary>
     /// If the TypeData represents a delegate, this property returns metadata information for the delegate's Invoke method.

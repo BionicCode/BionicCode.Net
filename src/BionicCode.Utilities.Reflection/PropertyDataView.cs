@@ -1,17 +1,251 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using BionicCode.Utilities.Net;
+using BionicCode.Utilities.Net.Reflection.Exceptions;
 
+[SuppressMessage(
+    "Design",
+    "CA1065:Do not raise exceptions in unexpected locations",
+    Justification = "PropertyDataView is a live cache-backed view. After ALC unload, the underlying symbol is unavailable and the only correct behavior is to throw.")]
 public class PropertyDataView : IPropertyDataView
 {
+    internal PropertyDataView(SymbolReflectionInfoCacheKey cacheKey) => CacheKey = cacheKey;
+
     public SymbolReflectionInfoCacheKey CacheKey { get; }
-    public bool CanRead { get; }
-    public bool CanWrite { get; }
-    public AccessModifier GetAccessorAccessModifier { get; }
-    public bool IsIndexer { get; }
-    public bool IsInit { get; }
-    public bool IsOverride { get; }
+
+    /// <summary>
+    /// Returns whether the property has a get accessor. 
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetCanRead(out bool)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public bool CanRead => GetPropertyDataOrThrow(CacheKey).CanRead;
+
+    /// <summary>
+    /// Attempts to retrieve a value indicating whether the associated property can be read from.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
+    /// the <paramref name="canRead"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="CanRead"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="canRead">When this method returns successfully, contains a value indicating whether the property can be written to.</param>
+    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetCanRead(out bool canRead)
+    {
+        if (SymbolReflectionInfoCache.TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? propertyData))
+        {
+            canRead = propertyData!.CanRead;
+            return true;
+        }
+        else
+        {
+            canRead = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns whether the property has a set accessor. 
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetCanWrite(out bool)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public bool CanWrite => GetPropertyDataOrThrow(CacheKey).CanWrite;
+
+    /// <summary>
+    /// Attempts to retrieve a value indicating whether the associated property can be written to.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="canWrite"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="CanWrite"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="canWrite">When this method returns successfully, contains a value indicating whether the property can be written to.</param>
+    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetCanWrite(out bool canWrite)
+    {
+        if (SymbolReflectionInfoCache.TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? propertyData))
+        {
+            canWrite = propertyData!.CanWrite;
+            return true;
+        }
+        else
+        {
+            canWrite = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns the access modifier of the property's getter. 
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetGetAccessorAccessModifier(out AccessModifier)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public AccessModifier GetAccessorAccessModifier => GetPropertyDataOrThrow(CacheKey).GetAccessorAccessModifier;
+
+    /// <summary>
+    /// Attempts to retrieve the <see cref="AccessModifier"/> of the property's getter.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="getMethodAccessModifier"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="GetAccessorAccessModifier"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="getMethodAccessModifier">When this method returns successfully, contains the <see cref="AccessModifier"/> of the property's getter.</param>
+    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetGetAccessorAccessModifier(out AccessModifier getMethodAccessModifier)
+    {
+        if (SymbolReflectionInfoCache.TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? propertyData))
+        {
+            getMethodAccessModifier = propertyData!.GetAccessorAccessModifier;
+            return true;
+        }
+        else
+        {
+            getMethodAccessModifier = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns the access modifier of the property's setter. 
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetSetAccessorAccessModifier(out AccessModifier)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public AccessModifier SetAccessorAccessModifier => GetPropertyDataOrThrow(CacheKey).SetAccessorAccessModifier;
+
+    /// <summary>
+    /// Attempts to retrieve the <see cref="AccessModifier"/> of the property's setter.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="getMethodAccessModifier"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="SetAccessorAccessModifier"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="getMethodAccessModifier">When this method returns successfully, contains the <see cref="AccessModifier"/> of the property's setter.</param>
+    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetSetAccessorAccessModifier(out AccessModifier getMethodAccessModifier)
+    {
+        if (SymbolReflectionInfoCache.TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? propertyData))
+        {
+            getMethodAccessModifier = propertyData!.SetAccessorAccessModifier;
+            return true;
+        }
+        else
+        {
+            getMethodAccessModifier = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns whether the property is an indexer. 
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetIsIndexer(out bool)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public bool IsIndexer => GetPropertyDataOrThrow(CacheKey).IsIndexer;
+
+    /// <summary>
+    /// Attempts to retrieve a value indicating whether the associated property is an indexer.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="isIndexer"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="IsIndexer"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="isIndexer">When this method returns successfully, contains a value indicating whether the property is an indexer.</param>
+    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetIsIndexer(out bool isIndexer)
+    {
+        if (SymbolReflectionInfoCache.TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? propertyData))
+        {
+            isIndexer = propertyData!.IsIndexer;
+            return true;
+        }
+        else
+        {
+            isIndexer = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns whether the property is an init-only property. 
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetIsInit(out bool)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public bool IsInit => GetPropertyDataOrThrow(CacheKey).IsInit;
+
+    /// <summary>
+    /// Attempts to retrieve a value indicating whether the property is an init-only property.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="isInit"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="IsInit"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="isInit">When this method returns successfully, contains a value indicating whether the property is an init-only property.</param>
+    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetIsInit(out bool isInit)
+    {
+        if (SymbolReflectionInfoCache.TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? propertyData))
+        {
+            isInit = propertyData!.IsInit;
+            return true;
+        }
+        else
+        {
+            isInit = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns whether the property is an override. 
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetIsOverride(out bool)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public bool IsOverride => GetPropertyDataOrThrow(CacheKey).IsOverride;
+
+    /// <summary>
+    /// Attempts to retrieve a value indicating whether the property is an override.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="isOverride"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="IsOverride"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="isOverride">When this method returns successfully, contains a value indicating whether the property is an override.</param>
+    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetIsOverride(out bool isOverride)
+    {
+        if (SymbolReflectionInfoCache.TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? propertyData))
+        {
+            isOverride = propertyData!.IsOverride;
+            return true;
+        }
+        else
+        {
+            isOverride = default;
+            return false;
+        }
+    }
+
     public bool IsReadOnly { get; }
     public bool IsSealed { get; }
     public bool IsSetMethodReadOnly { get; }
@@ -20,7 +254,6 @@ public class PropertyDataView : IPropertyDataView
     public IMethodDataView? PropertySetMethodData { get; }
     public IParameterListView PropertySetMethodParameters { get; }
     public ITypeDataView? PropertyTypeData { get; }
-    public AccessModifier SetAccessorAccessModifier { get; }
     public AccessModifier AccessModifier { get; }
     public BindingFlags BindingFlagsVisibilityMask { get; }
     public ITypeDataView? DeclaringTypData { get; }
@@ -65,4 +298,8 @@ public class PropertyDataView : IPropertyDataView
     public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, object[]? indexerPropertyIndex = null) where TTarget : struct => throw new NotImplementedException();
     public void SetValue(object? target, object? value) => throw new NotImplementedException();
     public void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class => throw new NotImplementedException();
+
+    private static PropertyData GetPropertyDataOrThrow(SymbolReflectionInfoCacheKey cacheKey) => SymbolReflectionInfoCache.TryGetPropertyDataCacheEntry(cacheKey, out PropertyData? propertyData)
+        ? propertyData!
+        : throw new ReflectionCacheEntryAlcNotAvailableException();
 }

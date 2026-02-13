@@ -1196,7 +1196,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
 
     internal override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
-    internal TypeData ReturnTypeData => _returnTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(MethodInfo.ReturnType);
+    internal TypeData ReturnTypeData => _returnTypeData ??= SymbolReflectionInfoCache.GetOrCreateEntryInternal(MethodInfo.ReturnType);
 
     internal bool IsGenericMethod => _isGenericMethod ??= MethodInfo.IsGenericMethod;
 

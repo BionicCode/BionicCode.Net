@@ -129,7 +129,7 @@
                 return MethodParameterInfoList.Empty;
             }
 
-            IEnumerable<ParameterData> parameters = parameterInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<ParameterData> parameters = parameterInfoList.Select(SymbolReflectionInfoCache.GetOrCreateCacheEntry);
 
             return parameters.AsMethodParameterInfoList();
         }
@@ -142,7 +142,7 @@
                 return MethodParameterInfoList.Empty;
             }
 
-            IEnumerable<ParameterData> parameters = indexParameters.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<ParameterData> parameters = indexParameters.Select(SymbolReflectionInfoCache.GetOrCreateCacheEntry);
             return parameters.AsMethodParameterInfoList();
         }
 

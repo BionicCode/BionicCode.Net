@@ -37,7 +37,7 @@
             RuntimeTypeHandle declaringTypeHandle = default;
             foreach (PropertyInfo propertyInfo in propertyInfoList)
             {
-                PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
+                PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(propertyInfo);
 
                 if (declaringTypeHandle.Equals(default))
                 {
@@ -75,7 +75,7 @@
                 return PropertyList.Empty;
             }
 
-            IEnumerable<PropertyData> properties = propertyInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
+            IEnumerable<PropertyData> properties = propertyInfoList.Select(SymbolReflectionInfoCache.GetOrCreateEntryInternal);
 
             return properties.ToPropertyList();
         }

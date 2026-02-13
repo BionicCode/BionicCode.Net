@@ -15,7 +15,7 @@ internal static class SymbolSignatureGenerator
 {
     private const char ExpressionTerminator = ';';
     private const string ParameterSeparator = ", ";
-    private static readonly AccessModifierComparer s_accessModifierComparer = new AccessModifierComparer();
+    private static readonly AccessModifierComparer s_accessModifierComparer = new();
 
     internal static FrozenSet<string> IgnorableParameterAttributes { get; } = new HashSet<string>
         {
@@ -52,23 +52,15 @@ internal static class SymbolSignatureGenerator
     /// </remarks>
     internal static string ToDisplayNameInternal(SymbolInfoData symbolInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
     {
-        using PooledStringBuilder nameBuilder = PooledStringBuilder.GetOrCreate();
+        using var nameBuilder = PooledStringBuilder.GetOrCreate();
 
-        switch (symbolInfoData)
+        _ = symbolInfoData switch
         {
-            case ParameterData parameterData:
-                _ = nameBuilder.AppendDisplayNameInternal(parameterData);
-                break;
-            case TypeData typeData:
-                _ = nameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isGenericTypeParameterIncluded);
-                break;
-            case MemberData memberInfoData:
-                _ = nameBuilder.AppendDisplayNameInternal(memberInfoData, isFullyQualifiedName, isGenericTypeParameterIncluded, isDeclaringTypeIncluded);
-                break;
-            default:
-                throw new NotImplementedException();
-        }
-
+            ParameterData parameterData => nameBuilder.AppendDisplayNameInternal(parameterData),
+            TypeData typeData => nameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isGenericTypeParameterIncluded),
+            MemberData memberInfoData => nameBuilder.AppendDisplayNameInternal(memberInfoData, isFullyQualifiedName, isGenericTypeParameterIncluded, isDeclaringTypeIncluded),
+            _ => throw new NotImplementedException(),
+        };
         string symbolName = nameBuilder.ToString();
 
         return symbolName;
@@ -92,7 +84,7 @@ internal static class SymbolSignatureGenerator
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodData);
 
-        using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+        using var symbolComponents = new SymbolComponentInfo(isKeyword: false)
         {
             IsSymbol = true,
             HasExpressionTerminator = true,
@@ -214,7 +206,7 @@ internal static class SymbolSignatureGenerator
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(typeData);
 
-        using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: typeData.IsBuiltInType)
+        using var symbolComponents = new SymbolComponentInfo(isKeyword: typeData.IsBuiltInType)
         {
             IsSymbol = true,
         };
@@ -413,7 +405,7 @@ internal static class SymbolSignatureGenerator
         ArgumentNullExceptionAdvanced.ThrowIfNull(parameterData);
 
         TypeData parameterTypeData = parameterData.ParameterTypeData;
-        using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: parameterTypeData.IsBuiltInType)
+        using var symbolComponents = new SymbolComponentInfo(isKeyword: parameterTypeData.IsBuiltInType)
         {
             IsSymbol = false,
             IsParameter = true,
@@ -485,7 +477,7 @@ internal static class SymbolSignatureGenerator
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(fieldData);
 
-        using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+        using var symbolComponents = new SymbolComponentInfo(isKeyword: false)
         {
             IsSymbol = true,
             HasExpressionTerminator = true,
@@ -556,7 +548,7 @@ internal static class SymbolSignatureGenerator
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(eventData);
 
-        using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+        using var symbolComponents = new SymbolComponentInfo(isKeyword: false)
         {
             IsSymbol = true,
             HasExpressionTerminator = true,
@@ -624,7 +616,7 @@ internal static class SymbolSignatureGenerator
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(propertyData);
 
-        using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+        using var symbolComponents = new SymbolComponentInfo(isKeyword: false)
         {
             IsSymbol = true,
             HasExpressionTerminator = false,
@@ -740,7 +732,7 @@ internal static class SymbolSignatureGenerator
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(constructorData);
 
-        using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+        using var symbolComponents = new SymbolComponentInfo(isKeyword: false)
         {
             IsSymbol = true,
             HasExpressionTerminator = true,
@@ -748,7 +740,7 @@ internal static class SymbolSignatureGenerator
 
         SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
         IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
-        using PooledStringBuilder signatureNameBuilder = PooledStringBuilder.GetOrCreate();
+        using var signatureNameBuilder = PooledStringBuilder.GetOrCreate();
 
         if (symbolAttributes.HasFlag(SymbolAttributes.Final))
         {
@@ -1791,7 +1783,7 @@ internal static class SymbolSignatureGenerator
         ArgumentNullExceptionAdvanced.ThrowIfNull(propertyData);
 
         SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
-        using PooledStringBuilder signatureNameBuilder = PooledStringBuilder.GetOrCreate();
+        using var signatureNameBuilder = PooledStringBuilder.GetOrCreate();
 
         if (!(isRuntimeSymbol || isCompact))
         {
@@ -1957,7 +1949,7 @@ internal static class SymbolSignatureGenerator
         Debug.WriteLine($"Generating method signature");
 
         SymbolComponentInfo? symbolComponents = null;
-        using PooledStringBuilder signatureNameBuilder = PooledStringBuilder.GetOrCreate();
+        using var signatureNameBuilder = PooledStringBuilder.GetOrCreate();
         SymbolAttributes symbolAttributes = methodData.SymbolAttributes;
 
         if (!isRuntimeSymbol)
@@ -2139,7 +2131,7 @@ internal static class SymbolSignatureGenerator
         ArgumentNullExceptionAdvanced.ThrowIfNull(eventData);
 
         SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
-        using PooledStringBuilder signatureNameBuilder = PooledStringBuilder.GetOrCreate();
+        using var signatureNameBuilder = PooledStringBuilder.GetOrCreate();
         if (!(isRuntimeSymbol || isCompact))
         {
             IEnumerable<CustomAttributeData> customAttributesData = eventData.AttributeData;
@@ -2223,7 +2215,7 @@ internal static class SymbolSignatureGenerator
         ArgumentNullExceptionAdvanced.ThrowIfNull(fieldData);
 
         SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
-        using PooledStringBuilder signatureNameBuilder = PooledStringBuilder.GetOrCreate();
+        using var signatureNameBuilder = PooledStringBuilder.GetOrCreate();
 
         if (!(isRuntimeSymbol || isCompact))
         {
@@ -2307,7 +2299,7 @@ internal static class SymbolSignatureGenerator
         ArgumentNullExceptionAdvanced.ThrowIfNull(typeData);
 
         SymbolAttributes symbolAttributes = typeData.SymbolAttributes;
-        using PooledStringBuilder signatureNameBuilder = PooledStringBuilder.GetOrCreate();
+        using var signatureNameBuilder = PooledStringBuilder.GetOrCreate();
         if (!isRuntimeSymbol)
         {
             if (typeData.IsGenericType && !typeData.IsGenericTypeDefinition)
@@ -2503,7 +2495,7 @@ internal static class SymbolSignatureGenerator
         ArgumentNullExceptionAdvanced.ThrowIfNull(constructorData);
 
         SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
-        using PooledStringBuilder signatureNameBuilder = PooledStringBuilder.GetOrCreate();
+        using var signatureNameBuilder = PooledStringBuilder.GetOrCreate();
 
         if (!(isRuntimeSymbol || isCompact))
         {

@@ -137,7 +137,7 @@ public static partial class ReflectionHelperExtensions
         Type type = typeData.Type;
         if (typeData.IsByRef)
         {
-            typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(type.GetElementType());
+            typeData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(type.GetElementType());
             type = typeData.Type;
         }
 

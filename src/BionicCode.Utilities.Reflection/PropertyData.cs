@@ -54,6 +54,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     private RuntimeTypeHandle? _declaringTypeHandle;
     private RuntimeTypeHandle? _implementingTypeHandle;
     private bool? _isExplicitInterfaceImplementation;
+    private IPropertyDataView? _propertyDataView;
 
     internal PropertyData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.PropertyDescriptor.PropertyName, SymbolKind.MemberProperty, symbolInfoDataCacheKey)
@@ -766,8 +767,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return GetIndexerGetterInternal<TTarget, TIndex1, TIndex2, TIndex3, TValue>();
     }
 
-    private Func<object?, object?> GetPropertyGetterInternal()
-        => _propertyGetInvoker ??= DelegateProvider.CreateGetter(this);
+    private Func<object?, object?> GetPropertyGetterInternal() => _propertyGetInvoker ??= DelegateProvider.CreateGetter(this);
 
     private PropertyGetter<TTarget, TValue> GetPropertyGetterInternal<TTarget, TValue>()
     {
@@ -779,8 +779,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return (PropertyGetter<TTarget, TValue>)invoker;
     }
 
-    private Func<object?, object[], object?> GetIndexerGetterInternal()
-        => _indexerPropertyGetInvoker ??= DelegateProvider.CreateIndexerGetter(this);
+    private Func<object?, object[], object?> GetIndexerGetterInternal() => _indexerPropertyGetInvoker ??= DelegateProvider.CreateIndexerGetter(this);
 
     private IndexerPropertyGetter<TTarget, TIndex, TValue> GetIndexerGetterInternal<TTarget, TIndex, TValue>()
     {
@@ -822,8 +821,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return (IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TIndex3, TValue>)invoker;
     }
 
-    private Action<object?, object?> GetSetInvokerInternal()
-        => _propertySetInvoker ??= DelegateProvider.CreateSetter(this);
+    private Action<object?, object?> GetSetInvokerInternal() => _propertySetInvoker ??= DelegateProvider.CreateSetter(this);
 
     private PropertySetter<TTarget, TValue> GetSetInvokerInternal<TTarget, TValue>() where TTarget : class
     {
@@ -842,6 +840,9 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         _setAccessorAccessModifier = setMethodModifier;
         _getAccessorAccessModifier = getMethodModifier;
     }
+
+    internal IPropertyDataView View => _propertyDataView
+        ??= new PropertyDataView(SymbolReflectionInfoCacheKey.CreateForProperty(this));
 
     internal bool IsIndexer => CanRead
         ? PropertyGetMethodParameters.HasItems
@@ -896,7 +897,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         }
     }
 
-    internal TypeData PropertyTypeData => _propertyTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntryInternal(PropertyInfo.PropertyType);
+    internal TypeData PropertyTypeData => _propertyTypeData ??= GetOrCreateCacheEntry(PropertyInfo.PropertyType);
 
     internal PropertyInfo PropertyInfo { get; }
 
@@ -915,17 +916,24 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
     internal bool CanRead => _canRead ??= PropertyInfo.CanRead;
 
+    /// <summary>
+    /// Returns whether the property is an init-only property.
+    /// </summary>
+    /// <remarks>This is determined by checking if the property has a setter method and if that setter method is marked with the <see cref="IsExternalInit"/> attribute, 
+    /// which is used by the C# compiler to indicate init-only properties. 
+    /// If the property does not have a setter or if the setter is not marked as init-only, this property returns <see langword="false"/>.</remarks>
+    /// <value><see langword="true"/> if the property is an init-only property; otherwise, <see langword="false"/>.</value>
     internal bool IsInit => _isInit ??= CanWrite && PropertyData.IsPropertyInit(this);
 
     internal MethodData PropertyGetMethodData => _getMethodData ??= PropertyInfo is PropertyInfo propertyInfo && propertyInfo.CanRead
         ? propertyInfo.GetGetMethod(true) is MethodInfo propertyGetter
-            ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyGetter)
+            ? GetOrCreateCacheEntry(propertyGetter)
             : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{PropertyInfo.Name}' does not have a get method.")
         : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{PropertyInfo.Name}' does not have a get method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanRead)}' before access.");
 
     internal MethodData PropertySetMethodData => _setMethodData ??= PropertyInfo is PropertyInfo propertyInfo && propertyInfo.CanWrite
         ? propertyInfo.GetSetMethod(true) is MethodInfo propertySetter
-            ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertySetter)
+            ? GetOrCreateCacheEntry(propertySetter)
             : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{PropertyInfo.Name}' does not have a set method.")
         : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{PropertyInfo.Name}' does not have a set method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanWrite)}' before access.");
 
