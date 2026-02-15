@@ -30,6 +30,7 @@ internal sealed class ConstructorData : ParameterizedMemberData
     private Func<object?[], object>? _invocator;
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
+    private IConstructorDataView? _constructorDataView;
 
     internal ConstructorData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey)
@@ -42,6 +43,9 @@ internal sealed class ConstructorData : ParameterizedMemberData
         ImplementingTypeHandle = DeclaringTypeHandle;
         IsExplicitInterfaceImplementation = false;
     }
+
+    internal IConstructorDataView View => _constructorDataView
+        ??= new ConstructorDataView(SymbolReflectionInfoCacheKey.CreateForConstructor(this));
 
     internal ConstructorInfo ConstructorInfo { get; }
 

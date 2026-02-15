@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using BionicCode.Utilities.Net.Reflection;
 
 /// <summary>
@@ -43,6 +44,7 @@ internal sealed class ParameterData : SymbolInfoData
     private bool? _isIndexerPropertySetterParameter;
     private bool? _isIndexerPropertyGetterParameter;
     private bool? _isPropertySetterParameter;
+    private IParameterDataView? _parameterDataView;
 
     internal ParameterData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.ParameterDescriptor.ParameterName, SymbolKind.Parameter, symbolInfoDataCacheKey)
@@ -51,6 +53,9 @@ internal sealed class ParameterData : SymbolInfoData
 
         ParameterInfo = symbolInfoDataCacheKey.ParameterDescriptor.ParameterInfo;
     }
+
+    internal IParameterDataView View => _parameterDataView
+        ??= new ParameterDataView(SymbolReflectionInfoCacheKey.CreateForParameter(this));
 
     internal RuntimeTypeHandle DeclaringTypeHandle => _declaringTypeHandle ??= ParameterInfo.Member.DeclaringType?.TypeHandle ?? throw new NotSupportedException($"The underlying '{typeof(ParameterInfo).FullName}' belongs to a member that does not return a declaring type.");
 
@@ -267,6 +272,10 @@ internal sealed class ParameterData : SymbolInfoData
             && parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is null;
     }
 
+    private static readonly string s_isReadOnlyAttributeFullName = typeof(IsReadOnlyAttribute).FullName ?? string.Empty;
+    private static readonly string s_requiresLocationAttributeFullName = typeof(RequiresLocationAttribute).FullName ?? string.Empty;
+    private static readonly string s_inAttributeFullName = typeof(InAttribute).FullName ?? string.Empty;
+
     /// <summary>
     /// Determine whether the parameter is passed by reference using the <see langword="ref"/> <see langword="readonly"/> keywords.
     /// </summary>
@@ -279,12 +288,24 @@ internal sealed class ParameterData : SymbolInfoData
             return false;
         }
 
+        bool isMethodReturnParameter = parameterData.MemberData is MethodData methodData && ReferenceEquals(methodData.ReturnParameterData, parameterData);
+        if (isMethodReturnParameter)
+        {
+            return HasOptionalCustomModifier(parameterData, s_inAttributeFullName)
+                || HasAttribute<IsReadOnlyAttribute>(parameterData, s_inAttributeFullName);
+        }
+
         // No readonly markers → plain ref readonly
-        ParameterInfo parameterInfo = parameterData.ParameterInfo;
-        return parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is not null;
+        return HasAttribute<RequiresLocationAttribute>(parameterData, s_requiresLocationAttributeFullName) // For normal parameters
+            || HasOptionalCustomModifier(parameterData, s_requiresLocationAttributeFullName); // Support fnptr modopt cases
     }
 
-    private static bool IsOutParameter(ParameterData parameterData) => parameterData.IsByRef && parameterData.IsOut;
+    private static bool HasAttribute<TAttribute>(ParameterData parameterData, string attributeName) where TAttribute : Attribute => parameterData.ParameterInfo.IsDefined(typeof(TAttribute), inherit: false)
+        || parameterData.ParameterInfo.GetCustomAttributesData().Any(attribute => attribute.AttributeType.FullName?.Equals(attributeName, StringComparison.Ordinal) ?? false);
+
+    private static bool HasOptionalCustomModifier(ParameterData parameterData, string modifierName) => parameterData.ParameterInfo.GetOptionalCustomModifiers().Any(modifier => modifier.FullName?.Equals(modifierName, StringComparison.Ordinal) ?? false);
+
+    private static bool IsOutParameter(ParameterData parameterData) => parameterData.IsByRef && parameterData.ParameterInfo.IsOut;
 
     private static bool IsInParameter(ParameterData parameterData)
     {
@@ -294,11 +315,10 @@ internal sealed class ParameterData : SymbolInfoData
         }
 
         // C# 'in' → IsReadOnlyAttribute, but not ref readonly
-        ParameterInfo parameterInfo = parameterData.ParameterInfo;
-        bool hasReadOnly = parameterInfo.GetCustomAttribute<IsReadOnlyAttribute>() is not null;
-        bool hasReqLoc = parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is not null;
+        bool isMarkedReadOnly = HasAttribute<IsReadOnlyAttribute>(parameterData, s_isReadOnlyAttributeFullName)
+            && !IsRefReadOnlyInternal(parameterData);
 
-        return hasReadOnly && !hasReqLoc;
+        return isMarkedReadOnly;
     }
 
     /// <summary>

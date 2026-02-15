@@ -39,6 +39,7 @@ public interface IMethodDataView : IParameterizedMemberDataView, IMemberDataView
     bool IsReturnValueReadOnly { get; }
     bool IsVoidMethod { get; }
     ITypeDataView ReturnTypeData { get; }
+    IParameterDataView ReturnParameterData { get; }
     bool EqualsBySignature(IMethodDataView other);
     object? Invoke(object? target, params object?[]? args);
     object? Invoke(object? target, ReadOnlySpan<object?> args);

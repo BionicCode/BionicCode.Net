@@ -14,12 +14,12 @@ internal static class SymbolReflectionInfoCache
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, SymbolInfoData> s_symbolInfoDataCache = new();
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolReflectionInfoCacheKeyInternal> s_publicCacheKeyMap = new();
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, SymbolReflectionInfoCacheKey> s_reversePublicCacheKeyMap = new();
-    private static readonly ConcurrentDictionary<RuntimeMethodHandle, SymbolReflectionInfoCacheKeyInternal> s_wellKnownMethodAndConstructorCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeMethodHandle> s_reverseWellKnownMethodAndConstructorCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<RuntimeTypeHandle, SymbolReflectionInfoCacheKeyInternal> s_wellKnownTypeCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeTypeHandle> s_reverseWellKnownTypeCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<PropertyInfo, SymbolReflectionInfoCacheKeyInternal> s_wellKnownPropertyCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, PropertyInfo> s_reverseWellKnownPropertyCacheKeyTable = new();
+    //private static readonly ConcurrentDictionary<RuntimeMethodHandle, SymbolReflectionInfoCacheKeyInternal> s_wellKnownMethodAndConstructorCacheKeyTable = new();
+    //private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeMethodHandle> s_reverseWellKnownMethodAndConstructorCacheKeyTable = new();
+    //private static readonly ConcurrentDictionary<RuntimeTypeHandle, SymbolReflectionInfoCacheKeyInternal> s_wellKnownTypeCacheKeyTable = new();
+    //private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeTypeHandle> s_reverseWellKnownTypeCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<object, SymbolReflectionInfoCacheKeyInternal> s_wellKnownSymbolCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, object> s_reverseWellKnownSymbolCacheKeyTable = new();
     private static readonly ConcurrentDictionary<AssemblyLoadContextMonitor.AssemblyLoadContextInfo, ConcurrentHashSet<SymbolReflectionInfoCacheKeyInternal>> s_assemblyLoadContextIdToCacheKeyMap = new();
     private static readonly ConcurrentDictionary<AnonymousSymbolDescriptorContainer, SymbolReflectionInfoCacheKeyInternal> s_normalizedAnonymousCacheKeyMap = new();
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, AnonymousSymbolDescriptorContainer> s_reverseNormalizedAnonymousCacheKeyMap = new();
@@ -43,10 +43,10 @@ internal static class SymbolReflectionInfoCache
 
                     ClearEventDataViewTable(cacheKey);
                     ClearAnonymousCacheKeyMap(cacheKey);
-                    ClearWellKnownMethodAndConstructorCacheKeyTable(cacheKey);
+                    //ClearWellKnownMethodAndConstructorCacheKeyTable(cacheKey);
                     ClearIndexerParameterSymbolDataCacheKeyMap(cacheKey);
-                    ClearWellKnownTypeCacheKeyTable(cacheKey);
-                    ClearWellKnownPropertyCacheKeyTable(cacheKey);
+                    //ClearWellKnownTypeCacheKeyTable(cacheKey);
+                    ClearWellKnownSymbolCacheKeyTable(cacheKey);
                     ClearPublicCacheKeyMap(cacheKey);
                 }
 
@@ -73,27 +73,27 @@ internal static class SymbolReflectionInfoCache
         }
     }
 
-    private static void ClearWellKnownMethodAndConstructorCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
-    {
-        if (SymbolReflectionInfoCache.s_reverseWellKnownMethodAndConstructorCacheKeyTable.TryRemove(cacheKey, out RuntimeMethodHandle methodHandle))
-        {
-            _ = SymbolReflectionInfoCache.s_wellKnownMethodAndConstructorCacheKeyTable.TryRemove(methodHandle, out _);
-        }
-    }
+    //private static void ClearWellKnownMethodAndConstructorCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
+    //{
+    //    if (SymbolReflectionInfoCache.s_reverseWellKnownMethodAndConstructorCacheKeyTable.TryRemove(cacheKey, out RuntimeMethodHandle methodHandle))
+    //    {
+    //        _ = SymbolReflectionInfoCache.s_wellKnownMethodAndConstructorCacheKeyTable.TryRemove(methodHandle, out _);
+    //    }
+    //}
 
-    private static void ClearWellKnownTypeCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
-    {
-        if (SymbolReflectionInfoCache.s_reverseWellKnownTypeCacheKeyTable.TryRemove(cacheKey, out RuntimeTypeHandle typeHandle))
-        {
-            _ = SymbolReflectionInfoCache.s_wellKnownTypeCacheKeyTable.TryRemove(typeHandle, out _);
-        }
-    }
+    //private static void ClearWellKnownTypeCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
+    //{
+    //    if (SymbolReflectionInfoCache.s_reverseWellKnownTypeCacheKeyTable.TryRemove(cacheKey, out RuntimeTypeHandle typeHandle))
+    //    {
+    //        _ = SymbolReflectionInfoCache.s_wellKnownTypeCacheKeyTable.TryRemove(typeHandle, out _);
+    //    }
+    //}
 
-    private static void ClearWellKnownPropertyCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
+    private static void ClearWellKnownSymbolCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
-        if (SymbolReflectionInfoCache.s_reverseWellKnownPropertyCacheKeyTable.TryRemove(cacheKey, out PropertyInfo? propertyInfo))
+        if (SymbolReflectionInfoCache.s_reverseWellKnownSymbolCacheKeyTable.TryRemove(cacheKey, out MemberInfo? memberInfo))
         {
-            _ = SymbolReflectionInfoCache.s_wellKnownPropertyCacheKeyTable.TryRemove(propertyInfo, out _);
+            _ = SymbolReflectionInfoCache.s_wellKnownSymbolCacheKeyTable.TryRemove(memberInfo, out _);
         }
     }
 
@@ -173,7 +173,7 @@ internal static class SymbolReflectionInfoCache
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo);
 
-        return GetOrCreateEntryInternal(propertyInfo);
+        return (PropertyData)GetOrCreateEntryInternal(propertyInfo);
     }
 
     /// <summary>
@@ -205,451 +205,6 @@ internal static class SymbolReflectionInfoCache
     }
     #endregion Extension Methods
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    /// <exception cref="InvalidOperationException">Thrown when attempting to register a type while the assembly load context has already been unloaded.</exception>
-    public static ITypeDataView GetOrCreateCacheEntry(Type type)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(type);
-
-        return GetOrCreateEntryInternal(type).View;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    /// <exception cref="InvalidOperationException">Thrown when attempting to register a type while the assembly load context has already been unloaded.</exception>
-    private static TypeData GetOrCreateEntryInternal(Type type)
-    {
-        RuntimeTypeHandle typeHandle = type.TypeHandle;
-        if (SymbolReflectionInfoCache.s_wellKnownTypeCacheKeyTable.TryGetValue(typeHandle, out SymbolReflectionInfoCacheKeyInternal cacheKey))
-        {
-            // If we found a key in the cache, we can use it to omit key generation costs
-            if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData) && symbolInfoData is TypeData existingTypeData)
-            {
-                return existingTypeData;
-            }
-            else
-            {
-                throw new InvalidOperationException($"Inconsistent state detected in the symbol reflection info cache. A cache key was found for type handle '{typeHandle.Value}', but no corresponding symbol info existingTypeData entry exists.");
-            }
-        }
-
-        var descriptor = new WellKnownTypeDescriptor(type);
-        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForType(descriptor);
-        SymbolReflectionInfoCache.s_wellKnownTypeCacheKeyTable[typeHandle] = cacheKey;
-        SymbolReflectionInfoCache.s_reverseWellKnownTypeCacheKeyTable[cacheKey] = typeHandle;
-        MonitorAssemblyLoadContextOfType(cacheKey, type);
-        var typeData = (TypeData)SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(cacheKey));
-        var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForType(typeData);
-        s_publicCacheKeyMap[publicCacheKey] = cacheKey;
-        s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
-
-        // REMOVE::after testing
-        Debug.WriteLine($"Found SymbolInfoData entry for {type.GetType()}");
-
-        // TODO::Return e.g. IEventView facade to hide the reflection cache existingTypeData structures
-        // so that the caller can't hold strong references to the cache entries
-        // and potentially cause memory leaks in context of ALC unloading.
-        // The view must be cached  and mapped to the cache entry by the SymbolReflectionCacheKey
-        // to ensure that the same view instance is returned for the same cache entry
-        // to enable callers to have constant representation.
-        //
-        // IMPORTANT: the facade must wrap the cache itself and not the individual cache entries
-        // to ensure that the facade can manage the lifetime of the cache entries and prevent memory leaks
-        // in scenarios where the caller holds on to the facade for an extended period of time (e.g. via static variables)
-        // while the underlying cache entries may need to be collected (e.g. in ALC unloading scenarios).
-        // Basically return a view object that wraps the cache with the cache key associated (stored in property)
-        // and provides access to the represented cache entry via a set of read-only properties and methods that delegate the underlying cache entry obtained from the cache based on the stored key.
-        // This way the cache entries themselves are private to the scope of the cache and cannot be held strongly by the caller.
-        return typeData;
-    }
-
-    private static MethodData GetOrCreateEntryInternal(MethodInfo methodInfo)
-    {
-        SymbolInfoData? symbolInfoData;
-        RuntimeMethodHandle methodHandle = methodInfo.MethodHandle;
-        if (SymbolReflectionInfoCache.s_wellKnownMethodAndConstructorCacheKeyTable.TryGetValue(methodHandle, out SymbolReflectionInfoCacheKeyInternal cacheKey))
-        {
-            // If we found a key in the cache, we can use it to omit key generation costs
-            if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out symbolInfoData) && symbolInfoData is MethodData methodData)
-            {
-                return methodData;
-            }
-            else
-            {
-                throw new InvalidOperationException($"Inconsistent state detected in the symbol reflection info cache. A cache key was found for method handle '{methodHandle.Value}', but no corresponding symbol info existingTypeData entry exists.");
-            }
-        }
-
-        Type? declaringType = methodInfo.DeclaringType;
-        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType, nameof(methodInfo), $"The '{nameof(MethodInfo.DeclaringType)}' property of the provided '{nameof(methodInfo)}' is null. Method must have a declaring type.");
-
-        WellKnownMethodDescriptor descriptor;
-        if (!declaringType!.IsInterface
-            && TryGetExplicitInterfaceImplementationInfo(methodInfo, out Type declaringInterfaceType, out Type implementingType, out MethodInfo declaredInterfaceMethodInfo))
-        {
-            descriptor = new WellKnownMethodDescriptor(declaredInterfaceMethodInfo, isExplicitInterfaceImplementation: true, implementingType);
-        }
-        else
-        {
-            descriptor = new WellKnownMethodDescriptor(methodInfo, isExplicitInterfaceImplementation: false, null);
-        }
-
-        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForMethod(descriptor);
-        SymbolReflectionInfoCache.s_wellKnownMethodAndConstructorCacheKeyTable[methodHandle] = cacheKey;
-        SymbolReflectionInfoCache.s_reverseWellKnownMethodAndConstructorCacheKeyTable[cacheKey] = methodHandle;
-        MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
-        symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, key));
-
-        // REMOVE::after testing
-        Debug.WriteLine($"Found SymbolInfoData entry for {methodInfo.GetType()}");
-
-        // TODO::Return e.g. IEventView facade to hide the reflection cache existingTypeData structures
-        // so that the caller can't hold strong references to the cache entries
-        // and potentially cause memory leaks in context of ALC unloading.
-        // The view must be cached  and mapped to the cache entry by the SymbolReflectionCacheKey
-        // to ensure that the same view instance is returned for the same cache entry
-        // to enable callers to have constant representation.
-        //
-        // IMPORTANT: the facade must wrap the cache itself and not the individual cache entries
-        // to ensure that the facade can manage the lifetime of the cache entries and prevent memory leaks
-        // in scenarios where the caller holds on to the facade for an extended period of time (e.g. via static variables)
-        // while the underlying cache entries may need to be collected (e.g. in ALC unloading scenarios).
-        // Basically return a view object that wraps the cache with the cache key associated (stored in property)
-        // and provides access to the represented cache entry via a set of read-only properties and methods that delegate the underlying cache entry obtained from the cache based on the stored key.
-        // This way the cache entrries themselves are private to the scope of the cache and cannot be held strongly by the caller.
-        return (MethodData)symbolInfoData;
-    }
-
-    public static MethodData GetOrCreateSymbolReflectionInfoCacheEntry(RuntimeMethodHandle interfaceDeclaredMethodHandle, RuntimeMethodHandle implementationMethodHandle, RuntimeTypeHandle declaringInterfaceTypeHandle, RuntimeTypeHandle implementingTypeHandle)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(
-            interfaceDeclaredMethodHandle,
-            nameof(interfaceDeclaredMethodHandle),
-            $"The value 'default' is not a valid value for the argument '{nameof(interfaceDeclaredMethodHandle)}'. The argument must reference a valid runtime method handle of an interface declared method.");
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(
-            implementationMethodHandle,
-            nameof(implementationMethodHandle),
-            $"The value 'default' is not a valid value for the argument '{nameof(implementationMethodHandle)}'. The argument must reference a valid runtime method handle of an implementing method.");
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(
-            declaringInterfaceTypeHandle,
-            nameof(declaringInterfaceTypeHandle),
-            $"The argument '{nameof(declaringInterfaceTypeHandle)}' cannot be null. The argument must reference a valid runtime type handle of an interface type that declares the method.");
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(
-            implementingTypeHandle,
-            nameof(implementingTypeHandle),
-            $"The argument '{nameof(implementingTypeHandle)}' cannot be null. The argument must reference a valid runtime type handle of a type that implements the interface declaring the method.");
-
-        WellKnownMethodDescriptor descriptor;
-        Type? declaringType = methodInfo.DeclaringType;
-        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType, nameof(methodInfo), $"The '{nameof(MethodInfo.DeclaringType)}' property of the provided '{nameof(methodInfo)}' is null. Method must have a declaring type.");
-
-        MethodInfo declaredInterfaceMethodInfo = MethodBase.GetMethodFromHandle(interfaceDeclaredMethodHandle, declaringInterfaceTypeHandle) as MethodInfo
-            ?? throw new ArgumentExceptionAdvanced($"The provided '{nameof(interfaceDeclaredMethodHandle)}' does not reference a valid method handle of a method declared by the interface type referenced by the '{nameof(declaringInterfaceTypeHandle)}'.", nameof(interfaceDeclaredMethodHandle));
-        Type implementingType = Type.GetTypeFromHandle(implementingTypeHandle)
-            ?? throw new ArgumentExceptionAdvanced($"The provided '{nameof(implementingTypeHandle)}' does not reference a valid type handle of a type that implements the interface declaring the method.", nameof(implementingTypeHandle));
-
-        descriptor = new WellKnownMethodDescriptor(declaredInterfaceMethodInfo, isExplicitInterfaceImplementation: true, implementingType);
-
-        var cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForMethod(descriptor);
-        MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
-        SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, key));
-
-        // REMOVE::after testing
-        Debug.WriteLine($"Found SymbolInfoData entry for {methodInfo.GetType()}");
-
-        return (MethodData)symbolInfoData;
-    }
-
-    private static bool TryGetExplicitInterfaceImplementationInfo(MethodInfo methodInfo, out Type declaringInterfaceType, out Type implementingType, out MethodInfo declaredInterfaceMethodInfo)
-    {
-        Type declaringType = methodInfo.DeclaringType!;
-        Type[] implementedInterfaces = declaringType.GetInterfaces();
-
-        foreach (Type interfaceType in implementedInterfaces)
-        {
-            InterfaceMapping interfaceMapping = declaringType.GetInterfaceMap(interfaceType);
-            for (int i = 0; i < interfaceMapping.TargetMethods.Length; i++)
-            {
-                if (interfaceMapping.TargetMethods[i] == methodInfo)
-                {
-                    // The method is an explicit interface implementation
-                    declaringInterfaceType = interfaceType;
-                    implementingType = declaringType;
-                    declaredInterfaceMethodInfo = interfaceMapping.InterfaceMethods[i];
-                    return true;
-                }
-            }
-        }
-
-        declaringInterfaceType = null!;
-        declaredInterfaceMethodInfo = null!;
-        implementingType = null!;
-
-        return false;
-    }
-
-    public static ConstructorData GetOrCreateSymbolReflectionInfoCacheEntry(ConstructorInfo constructorInfo)
-    {
-        SymbolReflectionInfoCacheKeyInternal cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForConstructor(constructorInfo);
-        SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(constructorInfo, key));
-
-        // REMOVE::after testing
-        Debug.WriteLine($"Found SymbolInfoData entry for {constructorInfo.GetType()}");
-
-        return (ConstructorData)symbolInfoData;
-    }
-
-    public static FieldData GetOrCreateSymbolReflectionInfoCacheEntry(FieldInfo fieldInfo)
-    {
-        SymbolReflectionInfoCacheKeyInternal cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForField(fieldInfo);
-        SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(fieldInfo, key));
-
-        // REMOVE::after testing
-        Debug.WriteLine($"Found SymbolInfoData entry for {fieldInfo.GetType()}");
-
-        return (FieldData)symbolInfoData;
-    }
-
-    public static EventData GetOrCreateSymbolReflectionInfoCacheEntry(EventInfo eventInfo)
-    {
-        descriptor = new WellKnownEventDescriptor(eventInfo);
-        SymbolReflectionInfoCacheKeyInternal cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForEvent(eventInfo);
-        SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(key));
-        _ = s_eventDataViewTable.TryAdd(cacheKey, new EventDataView(cacheKey));
-
-        // REMOVE::after testing
-        Debug.WriteLine($"Found SymbolInfoData entry for {eventInfo.GetType()}");
-
-        // TODO::Return e.g. IEventView facade to hide the reflection cache existingTypeData structures
-        // so that the caller can't hold strong references to the cache entries
-        // and potentially cause memory leaks in context of ALC unloading.
-        // The view must be cached  and mapped to the cache entry by the SymbolReflectionCacheKey
-        // to ensure that the same view instance is returned for the same cache entry
-        // to enable callers to have constant representation.
-        //
-        // IMPORTANT: the facade must wrap the cache itself and not the individual cache entries
-        // to ensure that the facade can manage the lifetime of the cache entries and prevent memory leaks
-        // in scenarios where the caller holds on to the facade for an extended period of time (e.g. via static variables)
-        // while the underlying cache entries may need to be collected (e.g. in ALC unloading scenarios).
-        // Basically return a view object that wraps the cache with the cache key associated (stored in property)
-        // and provides access to the represented cache entry via a set of read-only properties and methods that delegate the underlying cache entry obtained from the cache based on the stored key.
-        // This way the cache entrries themselves are private to the scope of the cache and cannot be held strongly by the caller.
-        return (EventData)symbolInfoData;
-    }
-
-    public static ParameterData GetOrCreateCacheEntry(ParameterInfo parameterInfo)
-    {
-        MemberInfo member = parameterInfo.Member;
-        SymbolReflectionInfoCacheKeyInternal cacheKey;
-        // If the 'ParameterInfo.Member' property returns a 'PropertyInfo' then the current parameter 'parameterInfo'
-        // was obtained via PropertyInfo.GetIndexParameters method call. As a result, the parameter's association to the property's accessors is ambiguous.
-        // We need to normalize it to remove association ambiguity by explicitly associating it with a property's accessor method.
-        // We basically replace the current 'GetIndexerParameters()' based 'propertyInfo' argument with a PropertyInfo from an accessor method.
-        if (member is PropertyInfo propertyInfo)
-        {
-            ParameterData normalizedParameterData = ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(parameterInfo);
-
-            return normalizedParameterData;
-        }
-        else
-        {
-            cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForParameter(parameterInfo);
-        }
-
-        SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(parameterInfo, key));
-
-        // REMOVE::after testing
-        Debug.WriteLine($"Found SymbolInfoData entry for {parameterInfo.GetType()}");
-
-        return (ParameterData)symbolInfoData;
-    }
-
-    internal static ParameterData ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(ParameterInfo parameterInfo)
-    {
-        ArgumentExceptionAdvanced.ThrowIfFalse(
-            parameterInfo.Member is PropertyInfo,
-            nameof(parameterInfo),
-            $"The provided argument '{nameof(parameterInfo)}' is not ambiguous. The provided parameter info must be ambiguous in that it was obtained via '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}.{nameof(PropertyInfo.GetIndexParameters)}()' belong to a property to be considered ambiguous.");
-
-        var propertyInfo = parameterInfo.Member as PropertyInfo;
-        PropertyData propertyData = GetOrCreateEntryInternal(propertyInfo!);
-
-        // By convention, the getter takes precedence over the setter
-        MethodData accessorData = propertyData.CanRead
-            ? propertyData.PropertyGetMethodData
-            : propertyData.PropertySetMethodData;
-
-        SymbolReflectionInfoCacheKeyInternal accessorMethodCacheKey = accessorData.CacheKey;
-        var ambiguousKey = new AmbiguousIndexerPropertyKey(parameterInfo.Position, accessorMethodCacheKey);
-        SymbolReflectionInfoCacheKeyInternal normalizedParameterDataCacheKey = SymbolReflectionInfoCache.s_indexerParameterSymbolDataCacheKeyMap.GetOrAdd(ambiguousKey,
-            key =>
-            {
-                var accessorData = (MethodData)SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(key.AccessorMethodCacheKey, CreateMethodData);
-                ParameterList accessorParameters = accessorData.Parameters;
-                ParameterData parameterData = accessorParameters[key.ParameterIndex];
-                SymbolReflectionInfoCacheKeyInternal normalizedParameterCacheKey = parameterData.CacheKey;
-                SymbolReflectionInfoCache.s_reverseIndexerParameterSymbolDataCacheKeyMap[normalizedParameterCacheKey] = key;
-
-                return normalizedParameterCacheKey;
-            });
-
-        return (ParameterData)SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(normalizedParameterDataCacheKey, CreateParameterData);
-    }
-
-    /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
-    /// </summary>
-    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The event existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    internal static EventData GetOrCreateEventDataCacheEntry(SymbolReflectionInfoCacheKeyInternal cacheKey)
-    {
-        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
-            cacheKey.SymbolKind,
-            [SymbolKind.MemberEvent],
-            nameof(cacheKey),
-            $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating an event symbol.");
-
-        // Optimization: Avoid normalization for non-anonymous symbols
-        EventData eventData = SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is EventData existingEventData
-            ? existingEventData
-            : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing event existingTypeData found for the provided non-anonymous cache key.");
-
-        // TODO::Return e.g. IEventView facade to hide the reflection cache existingTypeData structures
-        // so that the caller can't hold strong references to the cache entries
-        // and potentially cause memory leaks in context of ALC unloading.
-        // The view must be cached  and mapped to the cache entry by the SymbolReflectionCacheKey
-        // to ensure that the same view instance is returned for the same cache entry
-        // to enable callers to have constant representation.
-        //
-        // IMPORTANT: the facade must wrap the cache itself and not the individual cache entries
-        // to ensure that the facade can manage the lifetime of the cache entries and prevent memory leaks
-        // in scenarios where the caller holds on to the facade for an extended period of time (e.g. via static variables)
-        // while the underlying cache entries may need to be collected (e.g. in ALC unloading scenarios).
-        // Basically return a view object that wraps the cache with the cache key associated (stored in property)
-        // and provides access to the represented cache entry via a set of read-only properties and methods that delegate the underlying cache entry obtained from the cache based on the stored key.
-        // This way the cache entrries themselves are private to the scope of the cache and cannot be held strongly by the caller.
-        return eventData;
-    }
-
-    /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
-    /// </summary>
-    /// <param name="anonymousCacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The event existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="anonymousCacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    internal static EventData GetOrCreateEventDataCacheEntry(AnonymousEventDescriptor eventDescriptor, out SymbolReflectionInfoCacheKeyInternal cacheKey)
-    {
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(
-            eventDescriptor,
-            nameof(eventDescriptor),
-            $"The value 'default' is not a valid value for the argument '{nameof(eventDescriptor)}'. The argument must reference a valid anonymous event descriptor.");
-
-        // Use 'AnonymousSymbolDescriptorContainer' wrapper to enable to use the same normalization logic (eliminate overloads for this case)
-        var anonymousDescriptorContainer = AnonymousSymbolDescriptorContainer.CreateForEvent(eventDescriptor);
-        EventData eventData = GetOrCreateNormalizedSymbolInfoDataCacheEntry<EventData>(anonymousDescriptorContainer, out cacheKey);
-        return eventData;
-    }
-
-    /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
-    /// </summary>
-    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The event existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static EventData GetOrCreateEventDataView(SymbolReflectionInfoCacheKeyInternal cacheKey)
-    {
-        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
-            cacheKey.SymbolKind,
-            [SymbolKind.MemberEvent],
-            nameof(cacheKey),
-            $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating an event symbol.");
-
-        // Optimization: Avoid normalization for non-anonymous symbols
-        EventData eventData = SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is EventData existingEventData
-            ? existingEventData
-            : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing event existingTypeData found for the provided non-anonymous cache key.");
-
-        // TODO::Return e.g. IEventView facade to hide the reflection cache existingTypeData structures
-        // so that the caller can't hold strong references to the cache entries
-        // and potentially cause memory leaks in context of ALC unloading.
-        // The view must be cached  and mapped to the cache entry by the SymbolReflectionCacheKey
-        // to ensure that the same view instance is returned for the same cache entry
-        // to enable callers to have constant representation.
-        //
-        // IMPORTANT: the facade must wrap the cache itself and not the individual cache entries
-        // to ensure that the facade can manage the lifetime of the cache entries and prevent memory leaks
-        // in scenarios where the caller holds on to the facade for an extended period of time (e.g. via static variables)
-        // while the underlying cache entries may need to be collected (e.g. in ALC unloading scenarios).
-        // Basically return a view object that wraps the cache with the cache key associated (stored in property)
-        // and provides access to the represented cache entry via a set of read-only properties and methods that delegate the underlying cache entry obtained from the cache based on the stored key.
-        // This way the cache entries themselves are private to the scope of the cache and cannot be held strongly by the caller.
-        return eventData;
-    }
-
-    /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
-    /// </summary>
-    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The method existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static MethodData GetOrCreateMethodDataCacheEntry(SymbolReflectionInfoCacheKeyInternal cacheKey)
-    {
-        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
-            cacheKey.SymbolKind,
-            [SymbolKind.MemberMethod],
-            nameof(cacheKey),
-            $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a method symbol.");
-
-        // Optimization: Avoid normalization for non-anonymous symbols
-        MethodData methodData = SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is MethodData existingMethodData
-            ? existingMethodData
-            : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing method existingTypeData found for the provided non-anonymous cache key.");
-
-        return methodData;
-    }
-
-    /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
-    /// </summary>
-    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The field existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static FieldData GetOrCreateFieldDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
-    {
-        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
-            cacheKey.SymbolKind,
-            [SymbolKind.MemberField],
-            nameof(cacheKey),
-            $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a field symbol.");
-
-        // Optimization: Avoid normalization for non-anonymous symbols
-        FieldData fieldData = cacheKey.IsAnonymousSymbolKey
-            ? GetOrCreateNormalizedSymbolInfoDataCacheEntry<FieldData>(ref cacheKey)
-            : SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is FieldData existingFieldData
-                ? existingFieldData
-                : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing field existingTypeData found for the provided non-anonymous cache key.");
-
-        return fieldData;
-    }
-
     #region Property Cache API
     public static IPropertyDataView GetOrCreateCacheEntry(PropertyInfo propertyInfo)
     {
@@ -660,10 +215,11 @@ internal static class SymbolReflectionInfoCache
 
     private static PropertyData GetOrCreateEntryInternal(PropertyInfo propertyInfo)
     {
-        if (SymbolReflectionInfoCache.s_wellKnownPropertyCacheKeyTable.TryGetValue(propertyInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(propertyInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
-            if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData) && symbolInfoData is PropertyData existingPropertyData)
+            if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
+                && symbolInfoData is PropertyData existingPropertyData)
             {
                 return existingPropertyData;
             }
@@ -678,10 +234,10 @@ internal static class SymbolReflectionInfoCache
 
         var descriptor = new WellKnownPropertyDescriptor(propertyInfo);
         cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForProperty(descriptor);
-        SymbolReflectionInfoCache.s_wellKnownPropertyCacheKeyTable[propertyInfo] = cacheKey;
-        SymbolReflectionInfoCache.s_reverseWellKnownPropertyCacheKeyTable[cacheKey] = propertyInfo;
+        s_wellKnownSymbolCacheKeyTable[propertyInfo] = cacheKey;
+        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = propertyInfo;
         MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
-        var propertyData = (PropertyData)SymbolReflectionInfoCache.s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(cacheKey));
+        var propertyData = (PropertyData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(cacheKey));
         var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForProperty(propertyData);
         s_publicCacheKeyMap[publicCacheKey] = cacheKey;
         s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
@@ -737,14 +293,6 @@ internal static class SymbolReflectionInfoCache
         return false;
     }
 
-    /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
-    /// </summary>
-    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The property existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
     private static bool TryGetPropertyDataCacheEntry(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out PropertyData propertyData)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(internalCacheKey);
@@ -757,14 +305,6 @@ internal static class SymbolReflectionInfoCache
         return TryGetPropertyDataCacheEntryInternal(internalCacheKey, out propertyData);
     }
 
-    /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
-    /// </summary>
-    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The property existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
     private static bool TryGetPropertyDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out PropertyData? propertyData)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
@@ -789,7 +329,7 @@ internal static class SymbolReflectionInfoCache
     private static bool TryGetPropertyDataCacheEntryInternal(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out PropertyData propertyData)
     {
         propertyData = null!;
-        if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(internalCacheKey, out SymbolInfoData? existingEntry) && existingEntry is PropertyData existingPropertyData)
+        if (s_symbolInfoDataCache.TryGetValue(internalCacheKey, out SymbolInfoData? existingEntry) && existingEntry is PropertyData existingPropertyData)
         {
             propertyData = existingPropertyData;
 
@@ -804,83 +344,871 @@ internal static class SymbolReflectionInfoCache
     }
     #endregion Property Cache API
 
-    /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
-    /// </summary>
-    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The parameter existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static ParameterData GetOrCreateParameterDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
+    #region Event Cache API
+    public static IEventDataView GetOrCreateCacheEntry(EventInfo eventInfo)
     {
-        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
-            cacheKey.SymbolKind,
-            [SymbolKind.Parameter],
-            nameof(cacheKey),
-             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a parameter symbol.");
+        ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo);
 
-        // Optimization: Avoid normalization for non-anonymous symbols
-        ParameterData parameterData = cacheKey.IsAnonymousSymbolKey
-            ? GetOrCreateNormalizedSymbolInfoDataCacheEntry<ParameterData>(ref cacheKey)
-            : SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is ParameterData existingParameterData
-                ? existingParameterData
-                : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing parameter existingTypeData found for the provided non-anonymous cache key.");
+        return GetOrCreateEntryInternal(eventInfo).View;
+    }
 
-        return parameterData;
+    private static EventData GetOrCreateEntryInternal(EventInfo eventInfo)
+    {
+        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(eventInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        {
+            // If we found a key in the cache, we can use it to omit key generation costs
+            if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
+                && symbolInfoData is EventData existingEventData)
+            {
+                return existingEventData;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Inconsistent state detected in the symbol reflection info cache. A cache key was found for the event '{cacheKey.EventDescriptor.EventName}', but no corresponding symbol info existingTypeData entry exists.");
+            }
+        }
+
+        Type? declaringType = eventInfo.DeclaringType;
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType, nameof(eventInfo), $"The '{nameof(EventInfo.DeclaringType)}' property of the provided '{nameof(eventInfo)}' is null. Event must have a declaring type.");
+
+        var descriptor = new WellKnownEventDescriptor(eventInfo);
+        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForEvent(descriptor);
+        s_wellKnownSymbolCacheKeyTable[eventInfo] = cacheKey;
+        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = eventInfo;
+        MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
+        var eventData = (EventData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(cacheKey));
+        var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForEvent(eventData);
+        s_publicCacheKeyMap[publicCacheKey] = cacheKey;
+        s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
+
+        // REMOVE::after testing
+        Debug.WriteLine($"Found SymbolInfoData entry for {eventInfo.GetType()}");
+
+        return eventData;
     }
 
     /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
+    /// Attempts to retrieve the cached event data view associated with the specified cache key.
     /// </summary>
-    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The constructor existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static ConstructorData GetOrCreateConstructorDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
+    /// <remarks>This method validates the cache key before attempting to retrieve the event data. If the
+    /// cache key is invalid or does not correspond to an event, the method returns <see langword="false"/> and sets
+    /// <paramref name="eventDataView"/> to <see langword="null"/>.
+    /// <para/>The <paramref name="cacheKey"/> is considered invalid if the referenced cache entry was GC collected due to its associated assembly had been unloaded.
+    /// <para/>The cache is designed to not return any real cache entry. Instead interaction is represented by a view.
+    /// <br/>This is to prevent potential memory leaks in scenarios where the caller holds on to the returned cache entry for an extended period of time (e.g. via static variables) while the underlying cache entry may need to be collected (e.g. in ALC unloading scenarios).
+    /// </remarks>
+    /// <param name="cacheKey">The <see cref="SymbolReflectionInfoCacheKey"/> key that identifies the event's cache entry. 
+    /// <br/>Must not be <see langword="default"/> and must have a symbol kind of <see cref="SymbolKind.MemberEvent"/>.</param>
+    /// <param name="eventDataView">When this method returns <see langword="true"/>, contains the event data view of type <see cref="IEventDataView"/> associated with the specified
+    /// cache key; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+    /// <returns><see langword="true"/> if the event cache entry is found and the event data view is retrieved; otherwise,
+    /// <see langword="false"/> when the underlying cache entry was collected or the cache key is invalid.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKey"/> is <see langword="default"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="cacheKey"/> does not have a symbol kind of <see cref="SymbolKind.MemberEvent"/>.</exception>
+    public static bool TryGetEventCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out IEventDataView? eventDataView)
     {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.MemberEvent],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating an event symbol.");
+
+        eventDataView = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing event data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        if (TryGetEventDataCacheEntryInternal(internalCacheKey, out EventData eventData))
+        {
+            eventDataView = eventData.View;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetEventDataCacheEntry(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out EventData eventData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(internalCacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            internalCacheKey.SymbolKind,
+            [SymbolKind.MemberEvent],
+            nameof(internalCacheKey),
+             $"The symbol kind '{internalCacheKey.SymbolKind}' is not valid for creating an event symbol.");
+
+        return TryGetEventDataCacheEntryInternal(internalCacheKey, out eventData);
+    }
+
+    private static bool TryGetEventDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out EventData? eventData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.MemberEvent],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating an event symbol.");
+
+        eventData = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing event data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        return TryGetEventDataCacheEntryInternal(internalCacheKey, out eventData);
+    }
+
+    private static bool TryGetEventDataCacheEntryInternal(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out EventData eventData)
+    {
+        eventData = null!;
+        if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(internalCacheKey, out SymbolInfoData? existingEntry) && existingEntry is EventData existingEventData)
+        {
+            eventData = existingEventData;
+
+            return true;
+        }
+
+        // No existing event data found for the provided public cache key.
+        // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+        // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+
+        return false;
+    }
+    #endregion Event Cache API
+
+    #region Field Cache API
+    public static IFieldDataView GetOrCreateCacheEntry(FieldInfo fieldInfo)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo);
+
+        return GetOrCreateEntryInternal(fieldInfo).View;
+    }
+
+    private static FieldData GetOrCreateEntryInternal(FieldInfo fieldInfo)
+    {
+        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(fieldInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        {
+            // If we found a key in the cache, we can use it to omit key generation costs
+            if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
+                && symbolInfoData is FieldData existingFieldData)
+            {
+                return existingFieldData;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Inconsistent state detected in the symbol reflection info cache. A cache key was found for the field '{cacheKey.FieldDescriptor.FieldName}', but no corresponding symbol info existingTypeData entry exists.");
+            }
+        }
+
+        Type? declaringType = fieldInfo.DeclaringType;
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType, nameof(fieldInfo), $"The '{nameof(FieldInfo.DeclaringType)}' property of the provided '{nameof(fieldInfo)}' is null. Field must have a declaring type.");
+
+        var descriptor = new WellKnownFieldDescriptor(fieldInfo);
+        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForField(descriptor);
+        s_wellKnownSymbolCacheKeyTable[fieldInfo] = cacheKey;
+        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = fieldInfo;
+        MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
+        var fieldData = (FieldData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(cacheKey));
+        var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForField(fieldData);
+        s_publicCacheKeyMap[publicCacheKey] = cacheKey;
+        s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
+
+        // REMOVE::after testing
+        Debug.WriteLine($"Found SymbolInfoData entry for {fieldInfo.GetType()}");
+
+        return fieldData;
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the cached field data view associated with the specified cache key.
+    /// </summary>
+    /// <remarks>This method validates the cache key before attempting to retrieve the field data. If the
+    /// cache key is invalid or does not correspond to a field, the method returns <see langword="false"/> and sets
+    /// <paramref name="fieldDataView"/> to <see langword="null"/>.
+    /// <para/>The <paramref name="cacheKey"/> is considered invalid if the referenced cache entry was GC collected due to its associated assembly had been unloaded.
+    /// <para/>The cache is designed to not return any real cache entry. Instead interaction is represented by a view.
+    /// <br/>This is to prevent potential memory leaks in scenarios where the caller holds on to the returned cache entry for an extended period of time (e.g. via static variables) while the underlying cache entry may need to be collected (e.g. in ALC unloading scenarios).
+    /// </remarks>
+    /// <param name="cacheKey">The <see cref="SymbolReflectionInfoCacheKey"/> key that identifies the field's cache entry. 
+    /// <br/>Must not be <see langword="default"/> and must have a symbol kind of <see cref="SymbolKind.MemberField"/>.</param>
+    /// <param name="fieldDataView">When this method returns <see langword="true"/>, contains the field data view of type <see cref="IFieldDataView"/> associated with the specified
+    /// cache key; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+    /// <returns><see langword="true"/> if the field cache entry is found and the field data view is retrieved; otherwise,
+    /// <see langword="false"/> when the underlying cache entry was collected or the cache key is invalid.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKey"/> is <see langword="default"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="cacheKey"/> does not have a symbol kind of <see cref="SymbolKind.MemberField"/>.</exception>
+    public static bool TryGetFieldCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out IFieldDataView? fieldDataView)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.MemberField],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a field symbol.");
+
+        fieldDataView = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing field data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        if (TryGetFieldDataCacheEntryInternal(internalCacheKey, out FieldData fieldData))
+        {
+            fieldDataView = fieldData.View;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetFieldDataCacheEntry(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out FieldData fieldData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(internalCacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            internalCacheKey.SymbolKind,
+            [SymbolKind.MemberField],
+            nameof(internalCacheKey),
+             $"The symbol kind '{internalCacheKey.SymbolKind}' is not valid for creating a field symbol.");
+
+        return TryGetFieldDataCacheEntryInternal(internalCacheKey, out fieldData);
+    }
+
+    private static bool TryGetFieldDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out FieldData? fieldData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.MemberField],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a field symbol.");
+
+        fieldData = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing field data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        return TryGetFieldDataCacheEntryInternal(internalCacheKey, out fieldData);
+    }
+
+    private static bool TryGetFieldDataCacheEntryInternal(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out FieldData fieldData)
+    {
+        fieldData = null!;
+        if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(internalCacheKey, out SymbolInfoData? existingEntry) && existingEntry is FieldData existingFieldData)
+        {
+            fieldData = existingFieldData;
+
+            return true;
+        }
+
+        // No existing field data found for the provided public cache key.
+        // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+        // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+
+        return false;
+    }
+    #endregion Field Cache API
+
+    #region Method Cache API
+    public static IMethodDataView GetOrCreateCacheEntry(MethodInfo methodInfo)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
+
+        return GetOrCreateEntryInternal(methodInfo).View;
+    }
+
+    private static MethodData GetOrCreateEntryInternal(MethodInfo methodInfo)
+    {
+        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(methodInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        {
+            // If we found a key in the cache, we can use it to omit key generation costs
+            if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
+                && symbolInfoData is MethodData existingMethodData)
+            {
+                return existingMethodData;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Inconsistent state detected in the symbol reflection info cache. A cache key was found for the method '{cacheKey.MethodDescriptor.MethodName}', but no corresponding symbol info existingTypeData entry exists.");
+            }
+        }
+
+        Type? declaringType = methodInfo.DeclaringType;
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType, nameof(methodInfo), $"The '{nameof(MethodInfo.DeclaringType)}' property of the provided '{nameof(methodInfo)}' is null. Method must have a declaring type.");
+
+        var descriptor = new WellKnownMethodDescriptor(methodInfo);
+        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForMethod(descriptor);
+        s_wellKnownSymbolCacheKeyTable[methodInfo] = cacheKey;
+        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = methodInfo;
+        MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
+        var methodData = (MethodData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(cacheKey));
+        var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForMethod(methodData);
+        s_publicCacheKeyMap[publicCacheKey] = cacheKey;
+        s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
+
+        // REMOVE::after testing
+        Debug.WriteLine($"Found SymbolInfoData entry for {methodInfo.GetType()}");
+
+        return methodData;
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the cached method data view associated with the specified cache key.
+    /// </summary>
+    /// <remarks>This method validates the cache key before attempting to retrieve the method data. If the
+    /// cache key is invalid or does not correspond to a method, the method returns <see langword="false"/> and sets
+    /// <paramref name="methodDataView"/> to <see langword="null"/>.
+    /// <para/>The <paramref name="cacheKey"/> is considered invalid if the referenced cache entry was GC collected due to its associated assembly had been unloaded.
+    /// <para/>The cache is designed to not return any real cache entry. Instead interaction is represented by a view.
+    /// <br/>This is to prevent potential memory leaks in scenarios where the caller holds on to the returned cache entry for an extended period of time (e.g. via static variables) while the underlying cache entry may need to be collected (e.g. in ALC unloading scenarios).
+    /// </remarks>
+    /// <param name="cacheKey">The <see cref="SymbolReflectionInfoCacheKey"/> key that identifies the method's cache entry. 
+    /// <br/>Must not be <see langword="default"/> and must have a symbol kind of <see cref="SymbolKind.MemberMethod"/>.</param>
+    /// <param name="methodDataView">When this method returns <see langword="true"/>, contains the method data view of type <see cref="IMethodDataView"/> associated with the specified
+    /// cache key; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+    /// <returns><see langword="true"/> if the method cache entry is found and the method data view is retrieved; otherwise,
+    /// <see langword="false"/> when the underlying cache entry was collected or the cache key is invalid.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKey"/> is <see langword="default"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="cacheKey"/> does not have a symbol kind of <see cref="SymbolKind.MemberMethod"/>.</exception>
+    public static bool TryGetMethodCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out IMethodDataView? methodDataView)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.MemberMethod],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a method symbol.");
+
+        methodDataView = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing method data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        if (TryGetMethodDataCacheEntryInternal(internalCacheKey, out MethodData methodData))
+        {
+            methodDataView = methodData.View;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetMethodDataCacheEntry(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out MethodData methodData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(internalCacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            internalCacheKey.SymbolKind,
+            [SymbolKind.MemberMethod],
+            nameof(internalCacheKey),
+             $"The symbol kind '{internalCacheKey.SymbolKind}' is not valid for creating a method symbol.");
+
+        return TryGetMethodDataCacheEntryInternal(internalCacheKey, out methodData);
+    }
+
+    private static bool TryGetMethodDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out MethodData? methodData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.MemberMethod],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a method symbol.");
+
+        methodData = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing method data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        return TryGetMethodDataCacheEntryInternal(internalCacheKey, out methodData);
+    }
+
+    private static bool TryGetMethodDataCacheEntryInternal(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out MethodData methodData)
+    {
+        methodData = null!;
+        if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(internalCacheKey, out SymbolInfoData? existingEntry) && existingEntry is MethodData existingMethodData)
+        {
+            methodData = existingMethodData;
+
+            return true;
+        }
+
+        // No existing method data found for the provided public cache key.
+        // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+        // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+
+        return false;
+    }
+    #endregion Method Cache API
+
+    #region Constructor Cache API
+    public static IConstructorDataView GetOrCreateCacheEntry(ConstructorInfo constructorInfo)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo);
+
+        return GetOrCreateEntryInternal(constructorInfo).View;
+    }
+
+    private static ConstructorData GetOrCreateEntryInternal(ConstructorInfo constructorInfo)
+    {
+        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(constructorInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        {
+            // If we found a key in the cache, we can use it to omit key generation costs
+            if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
+                && symbolInfoData is ConstructorData existingConstructorData)
+            {
+                return existingConstructorData;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Inconsistent state detected in the symbol reflection info cache. A cache key was found for the constructor, but no corresponding symbol info existingTypeData entry exists.");
+            }
+        }
+
+        Type? declaringType = constructorInfo.DeclaringType;
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType, nameof(constructorInfo), $"The '{nameof(ConstructorInfo.DeclaringType)}' property of the provided '{nameof(constructorInfo)}' is null. Constructor must have a declaring type.");
+
+        var descriptor = new WellKnownConstructorDescriptor(constructorInfo);
+        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForConstructor(descriptor);
+        s_wellKnownSymbolCacheKeyTable[constructorInfo] = cacheKey;
+        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = constructorInfo;
+        MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
+        var constructorData = (ConstructorData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(cacheKey));
+        var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForConstructor(constructorData);
+        s_publicCacheKeyMap[publicCacheKey] = cacheKey;
+        s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
+
+        // REMOVE::after testing
+        Debug.WriteLine($"Found SymbolInfoData entry for {constructorInfo.GetType()}");
+
+        return constructorData;
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the cached constructor data view associated with the specified cache key.
+    /// </summary>
+    /// <remarks>This method validates the cache key before attempting to retrieve the constructor data. If the
+    /// cache key is invalid or does not correspond to a constructor, the method returns <see langword="false"/> and sets
+    /// <paramref name="constructorDataView"/> to <see langword="null"/>.
+    /// <para/>The <paramref name="cacheKey"/> is considered invalid if the referenced cache entry was GC collected due to its associated assembly had been unloaded.
+    /// <para/>The cache is designed to not return any real cache entry. Instead interaction is represented by a view.
+    /// <br/>This is to prevent potential memory leaks in scenarios where the caller holds on to the returned cache entry for an extended period of time (e.g. via static variables) while the underlying cache entry may need to be collected (e.g. in ALC unloading scenarios).
+    /// </remarks>
+    /// <param name="cacheKey">The <see cref="SymbolReflectionInfoCacheKey"/> key that identifies the constructor's cache entry. 
+    /// <br/>Must not be <see langword="default"/> and must have a symbol kind of <see cref="SymbolKind.MemberConstructor"/>.</param>
+    /// <param name="constructorDataView">When this method returns <see langword="true"/>, contains the constructor data view of type <see cref="IConstructorDataView"/> associated with the specified
+    /// cache key; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+    /// <returns><see langword="true"/> if the constructor cache entry is found and the constructor data view is retrieved; otherwise,
+    /// <see langword="false"/> when the underlying cache entry was collected or the cache key is invalid.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKey"/> is <see langword="default"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="cacheKey"/> does not have a symbol kind of <see cref="SymbolKind.MemberConstructor"/>.</exception>
+    public static bool TryGetConstructorCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out IConstructorDataView? constructorDataView)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
             [SymbolKind.MemberConstructor],
             nameof(cacheKey),
              $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a constructor symbol.");
 
-        // Optimization: Avoid normalization for non-anonymous symbols
-        ConstructorData constructorData = cacheKey.IsAnonymousSymbolKey
-            ? GetOrCreateNormalizedSymbolInfoDataCacheEntry<ConstructorData>(ref cacheKey)
-            : SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is ConstructorData existingConstructorData
-                ? existingConstructorData
-                : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing constructor existingTypeData found for the provided non-anonymous cache key.");
+        constructorDataView = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing constructor data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
 
-        return constructorData;
+        if (TryGetConstructorDataCacheEntryInternal(internalCacheKey, out ConstructorData constructorData))
+        {
+            constructorDataView = constructorData.View;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetConstructorDataCacheEntry(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out ConstructorData constructorData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(internalCacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            internalCacheKey.SymbolKind,
+            [SymbolKind.MemberConstructor],
+            nameof(internalCacheKey),
+             $"The symbol kind '{internalCacheKey.SymbolKind}' is not valid for creating a constructor symbol.");
+
+        return TryGetConstructorDataCacheEntryInternal(internalCacheKey, out constructorData);
+    }
+
+    private static bool TryGetConstructorDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out ConstructorData? constructorData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.MemberConstructor],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a constructor symbol.");
+
+        constructorData = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing constructor data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        return TryGetConstructorDataCacheEntryInternal(internalCacheKey, out constructorData);
+    }
+
+    private static bool TryGetConstructorDataCacheEntryInternal(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out ConstructorData fieldData)
+    {
+        fieldData = null!;
+        if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(internalCacheKey, out SymbolInfoData? existingEntry) && existingEntry is ConstructorData existingFieldData)
+        {
+            fieldData = existingFieldData;
+
+            return true;
+        }
+
+        // No existing field data found for the provided public cache key.
+        // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+        // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+
+        return false;
+    }
+    #endregion Constructor Cache API
+
+    #region Type Cache API
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">Thrown when attempting to register a type while the assembly load context has already been unloaded.</exception>
+    public static ITypeDataView GetOrCreateCacheEntry(Type type)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(type);
+
+        return GetOrCreateEntryInternal(type).View;
+    }
+
+    private static TypeData GetOrCreateEntryInternal(Type type)
+    {
+        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(type, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        {
+            // If we found a key in the cache, we can use it to omit key generation costs
+            if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
+                && symbolInfoData is TypeData existingTypeData)
+            {
+                return existingTypeData;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Inconsistent state detected in the symbol reflection info cache. A cache key was found for the type '{cacheKey.TypeDescriptor.TypeName}', but no corresponding symbol info existingTypeData entry exists.");
+            }
+        }
+
+        var descriptor = new WellKnownTypeDescriptor(type);
+        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForType(descriptor);
+        s_wellKnownSymbolCacheKeyTable[type] = cacheKey;
+        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = type;
+        MonitorAssemblyLoadContextOfType(cacheKey, type);
+        var typeData = (TypeData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(cacheKey));
+        var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForType(typeData);
+        s_publicCacheKeyMap[publicCacheKey] = cacheKey;
+        s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
+
+        // REMOVE::after testing
+        Debug.WriteLine($"Found SymbolInfoData entry for {type.GetType()}");
+
+        return typeData;
     }
 
     /// <summary>
-    /// Gets the existing symbol information existingTypeData cache entry associated with the specified key, or creates a new
-    /// entry if one does not exist.
+    /// Attempts to retrieve the cached type data view associated with the specified cache key.
     /// </summary>
-    /// <param name="cacheKey">A reference to the key used to identify the symbol information existingTypeData cache entry. The key may be updated to
-    /// its normalized form.</param>
-    /// <returns>The type existingTypeData associated with the cache entry identified by the specified key.</returns>
-    /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-    public static TypeData GetOrCreateTypeDataCacheEntry(ref SymbolReflectionInfoCacheKeyInternal cacheKey)
+    /// <remarks>This method validates the cache key before attempting to retrieve the type data. If the
+    /// cache key is invalid or does not correspond to a type, the method returns <see langword="false"/> and sets
+    /// <paramref name="typeDataView"/> to <see langword="null"/>.
+    /// <para/>The <paramref name="cacheKey"/> is considered invalid if the referenced cache entry was GC collected due to its associated assembly had been unloaded.
+    /// <para/>The cache is designed to not return any real cache entry. Instead interaction is represented by a view.
+    /// <br/>This is to prevent potential memory leaks in scenarios where the caller holds on to the returned cache entry for an extended period of time (e.g. via static variables) while the underlying cache entry may need to be collected (e.g. in ALC unloading scenarios).
+    /// </remarks>
+    /// <param name="cacheKey">The <see cref="SymbolReflectionInfoCacheKey"/> key that identifies the type's cache entry. 
+    /// <br/>Must not be <see langword="default"/> and must have a symbol kind of <see cref="SymbolKind.Type"/>.</param>
+    /// <param name="typeDataView">When this method returns <see langword="true"/>, contains the type data view of type <see cref="ITypeDataView"/> associated with the specified
+    /// cache key; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+    /// <returns><see langword="true"/> if the type cache entry is found and the type data view is retrieved; otherwise,
+    /// <see langword="false"/> when the underlying cache entry was collected or the cache key is invalid.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKey"/> is <see langword="default"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="cacheKey"/> does not have a symbol kind of <see cref="SymbolKind.Type"/>.</exception>
+    public static bool TryGetTypeCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out ITypeDataView? typeDataView)
     {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
         ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
             cacheKey.SymbolKind,
             [SymbolKind.Type],
             nameof(cacheKey),
              $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a type symbol.");
 
-        // Optimization: Avoid normalization for non-anonymous symbols
-        TypeData typeData = cacheKey.IsAnonymousSymbolKey
-            ? GetOrCreateNormalizedSymbolInfoDataCacheEntry<TypeData>(ref cacheKey)
-            : SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? existingEntry) && existingEntry is TypeData existingTypeData
-                ? existingTypeData
-                : throw new ArgumentExceptionAdvanced($"Invalid argument '{nameof(cacheKey)}'. No existing type existingTypeData found for the provided non-anonymous cache key.");
+        typeDataView = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing type data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
 
-        return typeData;
+        if (TryGetTypeDataCacheEntryInternal(internalCacheKey, out TypeData typeData))
+        {
+            typeDataView = typeData.View;
+            return true;
+        }
+
+        return false;
     }
+
+    private static bool TryGetTypeDataCacheEntry(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out TypeData typeData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(internalCacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            internalCacheKey.SymbolKind,
+            [SymbolKind.Type],
+            nameof(internalCacheKey),
+             $"The symbol kind '{internalCacheKey.SymbolKind}' is not valid for creating a type symbol.");
+
+        return TryGetTypeDataCacheEntryInternal(internalCacheKey, out typeData);
+    }
+
+    private static bool TryGetTypeDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out TypeData? typeData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.Type],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a type symbol.");
+
+        typeData = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing type data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        return TryGetTypeDataCacheEntryInternal(internalCacheKey, out typeData);
+    }
+
+    private static bool TryGetTypeDataCacheEntryInternal(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out TypeData typeData)
+    {
+        typeData = null!;
+        if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(internalCacheKey, out SymbolInfoData? existingEntry) && existingEntry is TypeData existingTypeData)
+        {
+            typeData = existingTypeData;
+
+            return true;
+        }
+
+        // No existing type data found for the provided public cache key.
+        // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+        // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+
+        return false;
+    }
+    #endregion Type Cache API
+
+    #region Parameter Cache API
+    public static IParameterDataView GetOrCreateCacheEntry(ParameterInfo parameter)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(parameter);
+
+        return GetOrCreateEntryInternal(parameter).View;
+    }
+
+    private static ParameterData GetOrCreateEntryInternal(ParameterInfo parameter)
+    {
+        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(parameter, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        {
+            // If we found a key in the cache, we can use it to omit key generation costs
+            if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
+                && symbolInfoData is ParameterData existingParameterData)
+            {
+                return existingParameterData;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Inconsistent state detected in the symbol reflection info cache. A cache key was found for the parameter '{cacheKey.TypeDescriptor.TypeName}', but no corresponding symbol info existingParameterData entry exists.");
+            }
+        }
+
+        if (parameter.Member is PropertyInfo)
+        {
+            // Handle the case where the parameter is obtained from an indexer property via PropertyInfo.GetIndexParameters()
+            // Such parameters are considered "ambiguous" since they don't have a unique identity on their own and are shared between the getter and setter of the indexer property.
+            // To provide a consistent caching experience, we will normalize such parameters to be associated with either the getter or setter method (by convention, we choose the getter if it exists) of the indexer property.
+            return ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(parameter);
+        }
+
+        var descriptor = new WellKnownParameterDescriptor(parameter);
+        cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForParameter(descriptor);
+        s_wellKnownSymbolCacheKeyTable[parameter] = cacheKey;
+        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = parameter;
+
+        Type declaringType = parameter.Member.DeclaringType ?? throw new InvalidOperationException($"The declaring type of the member '{parameter.Member.Name}' for the parameter '{parameter.Name}' cannot be null.");
+        MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
+        var parameterData = (ParameterData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(cacheKey));
+        var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForParameter(parameterData);
+        s_publicCacheKeyMap[publicCacheKey] = cacheKey;
+        s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
+
+        // REMOVE::after testing
+        Debug.WriteLine($"Found SymbolInfoData entry for {parameter.GetType()}");
+
+        return parameterData;
+    }
+
+    private static ParameterData ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(ParameterInfo parameterInfo)
+    {
+        ArgumentExceptionAdvanced.ThrowIfFalse(
+            parameterInfo.Member is PropertyInfo,
+            nameof(parameterInfo),
+            $"The provided argument '{nameof(parameterInfo)}' is not ambiguous. The provided parameter info must be ambiguous in that it was obtained via '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}.{nameof(PropertyInfo.GetIndexParameters)}()' belong to a property to be considered ambiguous.");
+
+        var propertyInfo = parameterInfo.Member as PropertyInfo;
+        PropertyData propertyData = GetOrCreateEntryInternal(propertyInfo!);
+
+        // Since we came here from PropertyInfo.GetIndexParameters() call, the parameter can't be the 'value' parameter of the setter.
+        // By convention, the getter takes precedence over the setter
+        MethodData accessorData = propertyData.CanRead
+            ? propertyData.PropertyGetMethodData
+            : propertyData.PropertySetMethodData;
+
+        ParameterData accessorParameter = accessorData.Parameters[parameterInfo.Position];
+
+        return accessorParameter;
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the cached parameter data view associated with the specified cache key.
+    /// </summary>
+    /// <remarks>This method validates the cache key before attempting to retrieve the parameter data. If the
+    /// cache key is invalid or does not correspond to a parameter, the method returns <see langword="false"/> and sets
+    /// <paramref name="parameterDataView"/> to <see langword="null"/>.
+    /// <para/>The <paramref name="cacheKey"/> is considered invalid if the referenced cache entry was GC collected due to its associated assembly had been unloaded.
+    /// <para/>The cache is designed to not return any real cache entry. Instead interaction is represented by a view.
+    /// <br/>This is to prevent potential memory leaks in scenarios where the caller holds on to the returned cache entry for an extended period of time (e.g. via static variables) while the underlying cache entry may need to be collected (e.g. in ALC unloading scenarios).
+    /// </remarks>
+    /// <param name="cacheKey">The <see cref="SymbolReflectionInfoCacheKey"/> key that identifies the parameter's cache entry. 
+    /// <br/>Must not be <see langword="default"/> and must have a symbol kind of <see cref="SymbolKind.Parameter"/>.</param>
+    /// <param name="parameterDataView">When this method returns <see langword="true"/>, contains the parameter data view of type <see cref="IParameterDataView"/> associated with the specified
+    /// cache key; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+    /// <returns><see langword="true"/> if the parameter cache entry is found and the parameter data view is retrieved; otherwise,
+    /// <see langword="false"/> when the underlying cache entry was collected or the cache key is invalid.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKey"/> is <see langword="default"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="cacheKey"/> does not have a symbol kind of <see cref="SymbolKind.Parameter"/>.</exception>
+    public static bool TryGetParameterCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out IParameterDataView? parameterDataView)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.Parameter],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a parameter symbol.");
+
+        parameterDataView = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing parameter data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        if (TryGetParameterDataCacheEntryInternal(internalCacheKey, out ParameterData parameterData))
+        {
+            parameterDataView = parameterData.View;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetParameterDataCacheEntry(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out ParameterData parameterData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(internalCacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            internalCacheKey.SymbolKind,
+            [SymbolKind.Parameter],
+            nameof(internalCacheKey),
+             $"The symbol kind '{internalCacheKey.SymbolKind}' is not valid for creating a parameter symbol.");
+
+        return TryGetParameterDataCacheEntryInternal(internalCacheKey, out parameterData);
+    }
+
+    private static bool TryGetParameterDataCacheEntry(SymbolReflectionInfoCacheKey cacheKey, out ParameterData? parameterData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey);
+        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
+            cacheKey.SymbolKind,
+            [SymbolKind.Parameter],
+            nameof(cacheKey),
+             $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a parameter symbol.");
+
+        parameterData = null;
+        if (!s_publicCacheKeyMap.TryGetValue(cacheKey, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+        {
+            // No existing parameter data found for the provided public cache key.
+            // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+            // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+            return false;
+        }
+
+        return TryGetParameterDataCacheEntryInternal(internalCacheKey, out parameterData);
+    }
+
+    private static bool TryGetParameterDataCacheEntryInternal(SymbolReflectionInfoCacheKeyInternal internalCacheKey, out ParameterData parameterData)
+    {
+        parameterData = null!;
+        if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryGetValue(internalCacheKey, out SymbolInfoData? existingEntry) && existingEntry is ParameterData existingParameterData)
+        {
+            parameterData = existingParameterData;
+
+            return true;
+        }
+
+        // No existing parameter data found for the provided public cache key.
+        // Since keys can't be created via constructor by the client, the only reason for an invalid public key is
+        // that the cached entry had been evicted e.g. in the course of an assembly load context unloading event.
+
+        return false;
+    }
+    #endregion Parameter Cache API
 
     public static bool TryGetSymbolInfoDataCacheEntry<TEntry>(SymbolReflectionInfoCacheKeyInternal key, out TEntry? entry)
       where TEntry : SymbolInfoData
@@ -1714,13 +2042,16 @@ internal static class SymbolReflectionInfoCache
     {
         private protected SymbolDataViewBase(SymbolReflectionInfoCacheKey cacheKey) => CacheKey = cacheKey;
 
-        internal SymbolReflectionInfoCacheKey CacheKey { get; }
+        public SymbolReflectionInfoCacheKey CacheKey { get; }
 
         // central helper for "get or throw"
         private protected PropertyData GetPropertyDataOrThrow()
             => TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? data)
                 ? data!
                 : throw new ReflectionCacheEntryAlcNotAvailableException();
+
+        private protected bool TryGetPropertyData(out PropertyData? propertyData)
+            => TryGetPropertyDataCacheEntry(CacheKey, out propertyData);
 
         // central helper for "get or throw"
         private protected TypeData GetTypeDataOrThrow()
@@ -1742,7 +2073,7 @@ internal static class SymbolReflectionInfoCache
         protected static PropertyData GetOrCreateCacheEntry(PropertyInfo propertyInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo);
-            return SymbolReflectionInfoCache.GetOrCreateEntryInternal(propertyInfo);
+            return (PropertyData)SymbolReflectionInfoCache.GetOrCreateEntryInternal(propertyInfo);
         }
 
         protected static TypeData GetOrCreateCacheEntry(Type type)

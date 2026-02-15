@@ -3,9 +3,10 @@
 using System;
 using System.Reflection;
 
-public class EventDataView : IEventDataView
+public class EventDataView : SymbolReflectionInfoCache.SymbolDataViewBase, IEventDataView
 {
-    internal EventDataView(SymbolReflectionInfoCacheKey cacheKey) => CacheKey = cacheKey;
+    internal EventDataView(SymbolReflectionInfoCacheKey cacheKey) : base(cacheKey)
+    { }
 
     public AccessModifier AccessModifier => SymbolReflectionInfoCache.GetOrCreateEventDataCacheEntry(CacheKey).AccessModifier;
     public IMethodDataView AddMethodDataView { get; }

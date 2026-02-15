@@ -36,6 +36,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
     private readonly WellKnownFieldDescriptor _descriptor;
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
+    private IFieldDataView? _fieldDataView;
 
     internal FieldData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.FieldDescriptor.FieldName, SymbolKind.MemberField, symbolInfoDataCacheKey)
@@ -50,6 +51,8 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
         IsExplicitInterfaceImplementation = false; // Fields cannot be explicit interface implementations
         ImplementingTypeHandle = DeclaringTypeHandle;
     }
+    internal IFieldDataView View => _fieldDataView
+        ??= new FieldDataView(SymbolReflectionInfoCacheKey.CreateForField(this));
 
     internal FieldInfo FieldInfo { get; }
 

@@ -177,6 +177,29 @@ public readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectio
             false);
     }
 
+    internal static SymbolReflectionInfoCacheKey CreateForParameter(ParameterData parameterData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(parameterData);
+
+        return new SymbolReflectionInfoCacheKey(
+            parameterData.DeclaringTypeHandle,
+            default,
+            default,
+            default,
+            default,
+            default,
+            default,
+            default,
+            default,
+            parameterData.ParameterKind,
+            parameterData.Position,
+            parameterData.ParameterTypeHandle,
+            parameterData.MemberData.Handle,
+            parameterData.Name,
+            SymbolKind.Parameter,
+            false);
+    }
+
     public string SymbolName { get; }
     public SymbolKind SymbolKind { get; }
     public bool IsAnonymousKey { get; }

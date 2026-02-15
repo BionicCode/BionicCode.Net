@@ -38,6 +38,7 @@ internal sealed class EventData : MemberData
     private RuntimeTypeHandle? _declaringTypeHandle;
     private RuntimeTypeHandle? _implementingTypeHandle;
     private bool? _isExplicitInterfaceImplementation;
+    private IEventDataView? _eventDataView;
 
     internal EventData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.EventDescriptor.EventName, SymbolKind.MemberEvent, symbolInfoDataCacheKey)
@@ -47,6 +48,9 @@ internal sealed class EventData : MemberData
         _descriptor = symbolInfoDataCacheKey.EventDescriptor;
         EventInfo = symbolInfoDataCacheKey.EventDescriptor.EventInfo;
     }
+
+    internal IEventDataView View => _eventDataView
+        ??= new EventDataView(SymbolReflectionInfoCacheKey.CreateForEvent(this));
 
     protected override MemberInfo GetMemberInfo()
       => EventInfo;

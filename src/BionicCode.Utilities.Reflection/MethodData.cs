@@ -39,6 +39,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private string? _shortCompactSignature;
     private string? _fullyQualifiedSignature;
     private TypeData? _returnTypeData;
+    private ParameterData? _returnParameterData;
     private bool? _isGenericMethod;
     private bool? _isGenericTypeMethod;
     private MethodData? _genericMethodDefinitionData;
@@ -74,6 +75,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private RuntimeTypeHandle? _declaringTypeHandle;
     private RuntimeTypeHandle? _implementingTypeHandle;
     private bool? _isExplicitInterfaceImplementation;
+    private IMethodDataView? _methodDataView;
 
     internal MethodData(SymbolReflectionInfoCacheKeyInternal symbolReflectionInfoCacheKey)
         : base(symbolReflectionInfoCacheKey)
@@ -87,6 +89,9 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
 
         _methodSignatureEqualityComparer = new MethodSignatureEqualityComparer();
     }
+
+    internal IMethodDataView View => _methodDataView
+        ??= new MethodDataView(SymbolReflectionInfoCacheKey.CreateForMethod(this));
 
     internal MethodInfo MethodInfo { get; }
 
@@ -1197,6 +1202,8 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     internal override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
     internal TypeData ReturnTypeData => _returnTypeData ??= SymbolReflectionInfoCache.GetOrCreateEntryInternal(MethodInfo.ReturnType);
+
+    internal ParameterData ReturnParameterData => _returnParameterData ??= SymbolReflectionInfoCache.GetOrCreateEntryInternal(MethodInfo.ReturnParameter);
 
     internal bool IsGenericMethod => _isGenericMethod ??= MethodInfo.IsGenericMethod;
 
