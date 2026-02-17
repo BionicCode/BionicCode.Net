@@ -111,7 +111,7 @@
         }
 
         internal static ParameterList Create(ParameterizedMemberData parameterizedMember)
-            => Create(parameterizedMember.GetMethodBase());
+            => Create(parameterizedMember.MethodBase);
 
         internal static ParameterList Create(MethodBase methodBase)
         {

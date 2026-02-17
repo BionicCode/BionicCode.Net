@@ -515,7 +515,7 @@ internal class TypeData : SymbolInfoData
         switch (typeof(TMemberData))
         {
             case Type memberType when memberType == typeof(PropertyData):
-                readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateEntryInternal((PropertyInfo)memberInfo);
+                readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((PropertyInfo)memberInfo);
                 IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(Handle);
                 IPropertyListBuilder explicitPropertyListBuilder = PropertyListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = memberData =>
@@ -562,14 +562,14 @@ internal class TypeData : SymbolInfoData
                 memberKind = SymbolKind.MemberMethod;
                 break;
             case Type memberType when memberType == typeof(FieldData):
-                readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((FieldInfo)memberInfo);
+                readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((FieldInfo)memberInfo);
                 IFieldListBuilder fieldListBuilder = FieldListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = fieldData => fieldListBuilder.Add((FieldData)fieldData);
                 fieldInitializer = () => _fields = fieldListBuilder.Build();
                 memberKind = SymbolKind.MemberField;
                 break;
             case Type memberType when memberType == typeof(EventData):
-                readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((EventInfo)memberInfo);
+                readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((EventInfo)memberInfo);
                 IEventListBuilder eventListBuilder = EventListBuilder.New(Handle);
                 IEventListBuilder explicitEventListBuilder = EventListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = eventData =>
@@ -592,7 +592,7 @@ internal class TypeData : SymbolInfoData
                 memberKind = SymbolKind.MemberEvent;
                 break;
             case Type memberType when memberType == typeof(ConstructorData):
-                readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((ConstructorInfo)memberInfo);
+                readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((ConstructorInfo)memberInfo);
                 IConstructorListBuilder constructorListBuilder = ConstructorListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = constructorData => constructorListBuilder.Add((ConstructorData)constructorData);
                 fieldInitializer = () => _constructors = constructorListBuilder.Build();
@@ -1039,6 +1039,9 @@ internal class TypeData : SymbolInfoData
             return _constructors!;
         }
     }
+
+    internal override bool IsDefined(Type attributeType, bool inherit = false) => Type.IsDefined(attributeType, inherit);
+    internal override bool IsDefined<TAttribute>(bool inherit = false) => Type.IsDefined(typeof(TAttribute), inherit);
 
     private static bool IsTypeStatic(TypeData typeData)
       => typeData.IsAbstract && typeData.IsSealed;

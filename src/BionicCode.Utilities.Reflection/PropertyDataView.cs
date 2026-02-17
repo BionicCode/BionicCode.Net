@@ -286,8 +286,75 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
         }
     }
 
-    public bool IsReadOnly { get; }
-    public bool IsSealed { get; }
+    /// <summary>
+    /// Returns whether the property is sealed. 
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetIsSealed(out bool)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    /// <value><see langword="true"/> if the property is sealed; otherwise, <see langword="false"/>.</value>
+    public bool IsSealed => GetPropertyDataOrThrow(CacheKey).IsSealed;
+
+    /// <summary>
+    /// Attempts to retrieve a value indicating whether the associated property is sealed.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
+    /// the <paramref name="isSealed"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="IsSealed"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="isSealed">When this method returns successfully, contains a value indicating whether the property is sealed.
+    /// <br/>The value is <see langword="true"/> if the property is sealed.</param>
+    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetIsSealed(out bool isSealed)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            isSealed = propertyData!.IsSealed;
+            return true;
+        }
+        else
+        {
+            isSealed = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns whether the property is sealed. 
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetIsSealed(out bool)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    /// <value><see langword="true"/> if the property is sealed; otherwise, <see langword="false"/>.</value>
+    public bool IsSealed => GetPropertyDataOrThrow(CacheKey).IsSealed;
+
+    /// <summary>
+    /// Attempts to retrieve a value indicating whether the associated property is sealed.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
+    /// the <paramref name="isSealed"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="IsSealed"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="isSealed">When this method returns successfully, contains a value indicating whether the property is sealed.
+    /// <br/>The value is <see langword="true"/> if the property is sealed.</param>
+    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetIsSealed(out bool isSealed)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            isSealed = propertyData!.IsSealed;
+            return true;
+        }
+        else
+        {
+            isSealed = default;
+            return false;
+        }
+    }
     public bool IsSetMethodReadOnly { get; }
     public IMethodDataView? PropertyGetMethodData { get; }
     public IParameterListView PropertyGetMethodParameters { get; }

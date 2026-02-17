@@ -1,5 +1,8 @@
 ﻿namespace BionicCode.Utilities.Net;
 
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+
 /// <summary>
 /// Provides a set of constant string values that are commonly used in reflection scenarios, particularly when working with properties, indexers, events, delegates, and operator methods in .NET. These constants can be used to ensure consistency and avoid hardcoding string literals throughout the codebase when performing reflection operations or generating code dynamically.
 /// </summary>
@@ -81,4 +84,9 @@ public static class ReflectionConstants
     public const string OperatorMethodNamePrefix = "op_";
 
     public const string PropertySetterValueParameterName = "value";
+
+    public const string IsReadOnlyAttributeFullName = "System.Runtime.CompilerServices.IsReadOnlyAttribute";
+    public const string RequiresLocationAttributeFullName = "System.Runtime.CompilerServices.RequiresLocationAttribute";
+    public const string InAttributeFullName = "System.Runtime.InteropServices.InAttribute";
+    public const string IsExternalInitFullName = "System.Runtime.CompilerServices.IsExternalInit";
 }

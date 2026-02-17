@@ -56,7 +56,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
 
     internal FieldInfo FieldInfo { get; }
 
-    protected override MemberInfo GetMemberInfo() => FieldInfo;
+    protected override MemberInfo MemberInfo => FieldInfo;
 
     internal object? GetValue(object? target) => (_getValueInvoker ??= DelegateProvider.CreateGetter(this)).Invoke(target);
 
@@ -212,7 +212,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
 
     internal override bool IsStatic => _isStatic ??= FieldInfo.IsStatic;
 
-    internal TypeData FieldTypeData => _fieldTypeData ??= SymbolReflectionInfoCache.GetOrCreateEntryInternal(FieldInfo.FieldType);
+    internal TypeData FieldTypeData => _fieldTypeData ??= GetOrCreateCacheEntry(FieldInfo.FieldType);
 
     internal bool IsRef => _isRef ??= FieldTypeData.IsByRef;
 

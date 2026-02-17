@@ -52,7 +52,7 @@ internal sealed class EventData : MemberData
     internal IEventDataView View => _eventDataView
         ??= new EventDataView(SymbolReflectionInfoCacheKey.CreateForEvent(this));
 
-    protected override MemberInfo GetMemberInfo()
+    protected override MemberInfo MemberInfo
       => EventInfo;
 
     internal object? RaiseEvent(object? target, params object?[]? arguments)
@@ -137,17 +137,17 @@ internal sealed class EventData : MemberData
     internal void RemoveEventHandler<TEventSource>(TEventSource eventSource, Delegate handler) => RemoveMethodData.Invoke(eventSource, handler);
 
     internal MethodData AddMethodData => _addMethodData ??= EventInfo.GetAddMethod() is MethodInfo methodInfo
-        ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo)
+        ? GetOrCreateCacheEntry(methodInfo)
         : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an add method.");
 
     internal MethodData RemoveMethodData => EventInfo.GetRemoveMethod() is MethodInfo methodInfo
-        ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo)
+        ? GetOrCreateCacheEntry(methodInfo)
         : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have a remove method.");
 
     internal MethodData EventInvokerMethodData => _invocatorMethodData ??= EventHandlerTypeData?.DelegateInvokeMethodData!;
 
     internal TypeData EventHandlerTypeData => _eventHandlerTypeData ??= EventInfo.EventHandlerType is Type eventHandlerType
-        ? SymbolReflectionInfoCache.GetOrCreateEntryInternal(eventHandlerType)
+        ? GetOrCreateCacheEntry(eventHandlerType)
         : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an event handler type.");
 
     internal EventInfo EventInfo { get; }
@@ -212,9 +212,9 @@ internal sealed class EventData : MemberData
     /// <inheritdoc/>
     internal override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
-    internal bool CanAdd => _canAdd ??= _addMethodData is not null || (_addMethodData = EventInfo.GetAddMethod(true)?.ToMethodData()) is not null;
+    internal bool CanAdd => _canAdd ??= _addMethodData is not null || (EventInfo.GetAddMethod(true) is MethodInfo addMethodInfo && (_addMethodData = GetOrCreateCacheEntry(addMethodInfo)) is not null);
 
-    internal bool CanRemove => _canRemove ??= _removeMethodData is not null || (_removeMethodData = EventInfo.GetRemoveMethod(true)?.ToMethodData()) is not null;
+    internal bool CanRemove => _canRemove ??= _removeMethodData is not null || (EventInfo.GetRemoveMethod(true) is MethodInfo removeMethodInfo && (_removeMethodData = GetOrCreateCacheEntry(removeMethodInfo)) is not null);
 
     internal bool IsOverride => _isOverride ??= AddMethodData!.IsOverride;
 

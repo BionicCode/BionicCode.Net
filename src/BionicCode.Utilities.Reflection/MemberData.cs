@@ -17,7 +17,7 @@ internal abstract class MemberData : SymbolInfoData
     {
     }
 
-    protected abstract MemberInfo GetMemberInfo();
+    protected abstract MemberInfo MemberInfo { get; }
 
     private BindingFlags ComputeVisibilityBindingFlagsMask()
     {
@@ -55,6 +55,9 @@ internal abstract class MemberData : SymbolInfoData
 
     internal override string Namespace
         => _namespace ??= DeclaringTypeData!.Namespace;
+
+    internal override bool IsDefined(Type attributeType, bool inherit = false) => MemberInfo.IsDefined(attributeType, inherit);
+    internal override bool IsDefined<TAttribute>(bool inherit = false) => MemberInfo.IsDefined(typeof(TAttribute), inherit);
 
     /// <summary>
     /// The declaring type handle of the member. This is the runtime type handle of the type that declares the member. For example, for a method declared in a class, this would be the runtime type handle of that class. 
@@ -99,5 +102,5 @@ internal abstract class MemberData : SymbolInfoData
     internal BindingFlags BindingFlagsVisibilityMask => _bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
 
     /// <inheritdoc/>
-    internal override IList<CustomAttributeData> AttributeData => _attributeData ??= [.. GetMemberInfo().GetCustomAttributesData()];
+    internal override IList<CustomAttributeData> AttributeData => _attributeData ??= [.. MemberInfo.GetCustomAttributesData()];
 }

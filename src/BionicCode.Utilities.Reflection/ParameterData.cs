@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using BionicCode.Utilities.Net.Reflection;
 
 /// <summary>
 /// Represents metadata and reflection information for a method, constructor, or property parameter, including its
@@ -45,6 +43,9 @@ internal sealed class ParameterData : SymbolInfoData
     private bool? _isIndexerPropertyGetterParameter;
     private bool? _isPropertySetterParameter;
     private IParameterDataView? _parameterDataView;
+    private bool? _isMethodReturnParameter;
+    private TypeList? _requiredModifiers;
+    private TypeList? _optionalModifiers;
 
     internal ParameterData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.ParameterDescriptor.ParameterName, SymbolKind.Parameter, symbolInfoDataCacheKey)
@@ -132,7 +133,7 @@ internal sealed class ParameterData : SymbolInfoData
     /// <value>The position of the parameter.</value>
     internal int Position => _position ??= ParameterInfo.Position;
 
-    internal bool IsParams => _isParams ??= ParameterInfo.GetCustomAttribute<ParamArrayAttribute>() != null;
+    internal bool IsParams => _isParams ??= IsDefined<ParamArrayAttribute>();
 
     internal ParameterInfo ParameterInfo { get; }
 
@@ -157,7 +158,7 @@ internal sealed class ParameterData : SymbolInfoData
     /// <value>The <see cref="ParameterizedMemberData"/> (which is either a <see cref="MethodData"/> or <see cref="ConstructorData"/>) that declares this parameter.</value>
     internal ParameterizedMemberData MemberData => _member ??= ParameterInfo.Member switch
     {
-        ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo),
+        ConstructorInfo constructorInfo => GetOrCreateCacheEntry(constructorInfo),
 
         // If ParameterInfo.Member is a PropertyInfo, it is ALWAYS an indexer property
         // and the current parameter was obtained via PropertyInfo.GetIndexerParameters(). Since the returned parameter list excludes the "value" parameter for the setter,
@@ -170,11 +171,11 @@ internal sealed class ParameterData : SymbolInfoData
         //      * ConstructorInfo.GetParameters() or
         //      * PropertyInfo.GetGetMethod().GetParameters() or
         //      * PropertyInfo.GetSetMethod().GetParameters() (which, opposed to PropertyInfo.GetIndexerParameters(), includes the "value" parameter of the property setter).
-        MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo),
+        MethodInfo methodInfo => GetOrCreateCacheEntry(methodInfo),
         _ => throw new NotImplementedException(),
     };
 
-    internal TypeData ParameterTypeData => _parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateEntryInternal(ParameterInfo.ParameterType);
+    internal TypeData ParameterTypeData => _parameterTypeData ??= GetOrCreateCacheEntry(ParameterInfo.ParameterType);
 
     internal TypeData DeclaringTypeData => _declaringTypeData ??= MemberData.DeclaringTypeData;
 
@@ -184,6 +185,8 @@ internal sealed class ParameterData : SymbolInfoData
     /// Gets a value indicating whether the parameter is passed by reference.
     /// </summary>
     internal bool IsByRef => _isByRef ??= ParameterTypeData.Type.IsByRef;
+
+    internal bool IsMethodReturnParameter => _isMethodReturnParameter ??= Position == -1;
 
     internal bool IsIndexerPropertyParameter => _isIndexerPropertyParameter ??= MemberData is MethodData methodData && (methodData.IsIndexerPropertyGetMethod || methodData.IsIndexerPropertySetMethod);
 
@@ -254,6 +257,26 @@ internal sealed class ParameterData : SymbolInfoData
 
     internal override string Namespace => string.Empty;
 
+    internal TypeList RequiredModifiers => _requiredModifiers ??= TypeListBuilder.Create([.. ParameterInfo.GetRequiredCustomModifiers()]);
+    internal TypeList OptionalModifiers => _optionalModifiers ??= TypeListBuilder.Create([.. ParameterInfo.GetOptionalCustomModifiers()]);
+
+    internal override bool IsDefined(Type attributeType, bool inherit = false) => ParameterInfo.IsDefined(attributeType, inherit);
+    internal override bool IsDefined<TAttribute>(bool inherit = false) => ParameterInfo.IsDefined(typeof(TAttribute), inherit);
+
+    internal bool HasOptionalCustomModifier(string modifierName)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(modifierName);
+
+        return OptionalModifiers.ContainsTypeWithName(modifierName);
+    }
+
+    internal bool HasRequiredCustomModifier(string modifierName)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(modifierName);
+
+        return RequiredModifiers.ContainsTypeWithName(modifierName);
+    }
+
     /// <summary>
     /// Determine whether the parameter is passed by reference using the <see langword="ref"/> keyword.
     /// </summary>
@@ -267,14 +290,9 @@ internal sealed class ParameterData : SymbolInfoData
         }
 
         // No readonly markers → plain ref
-        ParameterInfo parameterInfo = parameterData.ParameterInfo;
-        return parameterInfo.GetCustomAttribute<IsReadOnlyAttribute>() is null
-            && parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is null;
+        return !parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName)
+            && !parameterData.HasCompilerAttribute<RequiresLocationAttribute>(ReflectionConstants.RequiresLocationAttributeFullName);
     }
-
-    private static readonly string s_isReadOnlyAttributeFullName = typeof(IsReadOnlyAttribute).FullName ?? string.Empty;
-    private static readonly string s_requiresLocationAttributeFullName = typeof(RequiresLocationAttribute).FullName ?? string.Empty;
-    private static readonly string s_inAttributeFullName = typeof(InAttribute).FullName ?? string.Empty;
 
     /// <summary>
     /// Determine whether the parameter is passed by reference using the <see langword="ref"/> <see langword="readonly"/> keywords.
@@ -288,22 +306,18 @@ internal sealed class ParameterData : SymbolInfoData
             return false;
         }
 
-        bool isMethodReturnParameter = parameterData.MemberData is MethodData methodData && ReferenceEquals(methodData.ReturnParameterData, parameterData);
-        if (isMethodReturnParameter)
+        if (parameterData.IsMethodReturnParameter)
         {
-            return HasOptionalCustomModifier(parameterData, s_inAttributeFullName)
-                || HasAttribute<IsReadOnlyAttribute>(parameterData, s_inAttributeFullName);
+            return parameterData.HasOptionalCustomModifier(ReflectionConstants.InAttributeFullName)
+                || parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName);
         }
-
-        // No readonly markers → plain ref readonly
-        return HasAttribute<RequiresLocationAttribute>(parameterData, s_requiresLocationAttributeFullName) // For normal parameters
-            || HasOptionalCustomModifier(parameterData, s_requiresLocationAttributeFullName); // Support fnptr modopt cases
+        else
+        {
+            // Only 'RequiresLocationAttribute' marker (no 'IsReadOnlyAttribute') → plain ref readonly
+            return parameterData.HasCompilerAttribute<RequiresLocationAttribute>(ReflectionConstants.RequiresLocationAttributeFullName) // For normal parameters
+                || parameterData.HasOptionalCustomModifier(ReflectionConstants.RequiresLocationAttributeFullName); // Support fnptr modopt cases
+        }
     }
-
-    private static bool HasAttribute<TAttribute>(ParameterData parameterData, string attributeName) where TAttribute : Attribute => parameterData.ParameterInfo.IsDefined(typeof(TAttribute), inherit: false)
-        || parameterData.ParameterInfo.GetCustomAttributesData().Any(attribute => attribute.AttributeType.FullName?.Equals(attributeName, StringComparison.Ordinal) ?? false);
-
-    private static bool HasOptionalCustomModifier(ParameterData parameterData, string modifierName) => parameterData.ParameterInfo.GetOptionalCustomModifiers().Any(modifier => modifier.FullName?.Equals(modifierName, StringComparison.Ordinal) ?? false);
 
     private static bool IsOutParameter(ParameterData parameterData) => parameterData.IsByRef && parameterData.ParameterInfo.IsOut;
 
@@ -315,7 +329,7 @@ internal sealed class ParameterData : SymbolInfoData
         }
 
         // C# 'in' → IsReadOnlyAttribute, but not ref readonly
-        bool isMarkedReadOnly = HasAttribute<IsReadOnlyAttribute>(parameterData, s_isReadOnlyAttributeFullName)
+        bool isMarkedReadOnly = parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName)
             && !IsRefReadOnlyInternal(parameterData);
 
         return isMarkedReadOnly;

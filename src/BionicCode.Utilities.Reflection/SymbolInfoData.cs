@@ -20,10 +20,15 @@ internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDat
         CacheKey = cacheKey;
     }
 
+    internal abstract bool IsDefined<TAttribute>(bool inherit = false) where TAttribute : Attribute;
+    internal abstract bool IsDefined(Type attributeType, bool inherit = false);
+
     internal string Name { get; }
     internal SymbolKind SymbolKind { get; }
     internal abstract string Namespace { get; }
     internal abstract IList<CustomAttributeData> AttributeData { get; }
+    private ILookup<string, CustomAttributeData> _attributeDataLookup;
+    internal ILookup<string, CustomAttributeData> AttributeDataLookup => _attributeDataLookup ??= AttributeData.ToLookup(attribute => attribute.AttributeType.FullName ?? string.Empty);
     internal abstract SymbolAttributes SymbolAttributes { get; }
     internal abstract string AssemblyName { get; }
 
@@ -139,4 +144,29 @@ internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDat
     internal string IndentationString { get; private set; }
 
     internal SymbolReflectionInfoCacheKeyInternal CacheKey { get; }
+
+    internal bool HasCompilerAttribute<TAttribute>(string? attributeName = null, bool inherit = false)
+        where TAttribute : Attribute => HasCompilerAttribute(typeof(TAttribute), attributeName, inherit);
+
+    internal bool HasCompilerAttribute(Type? attributeType, string? attributeName = null, bool inherit = false)
+    {
+        if (attributeType is null && string.IsNullOrWhiteSpace(attributeName))
+        {
+            throw new ArgumentException("Either the attribute type or the attribute name must be provided.", nameof(attributeType));
+        }
+
+        if (attributeType is not null && IsDefined(attributeType, inherit: false))
+        {
+            return true;
+        }
+
+        return !string.IsNullOrWhiteSpace(attributeName) && HasCompilerAttribute(attributeName, inherit);
+    }
+
+    internal bool HasCompilerAttribute(string attributeName, bool inherit = false)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(attributeName);
+        return AttributeData
+            .Any(attribute => attribute.AttributeType.FullName?.Equals(attributeName, StringComparison.Ordinal) ?? false);
+    }
 }

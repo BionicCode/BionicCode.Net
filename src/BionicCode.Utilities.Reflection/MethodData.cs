@@ -76,6 +76,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private RuntimeTypeHandle? _implementingTypeHandle;
     private bool? _isExplicitInterfaceImplementation;
     private IMethodDataView? _methodDataView;
+    private bool? _isReadonly;
 
     internal MethodData(SymbolReflectionInfoCacheKeyInternal symbolReflectionInfoCacheKey)
         : base(symbolReflectionInfoCacheKey)
@@ -95,21 +96,19 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
 
     internal MethodInfo MethodInfo { get; }
 
-    protected override MemberInfo GetMemberInfo() => MethodInfo;
-
-    internal override MethodBase GetMethodBase() => MethodInfo;
+    internal override MethodBase MethodBase => MethodInfo;
 
     internal MethodData MakeGenericMethodData(TypeList typeDataArguments)
     {
         Type[] typeArguments = typeDataArguments.Select(t => t.Type).ToArray();
         MethodInfo genericMethodInfo = MethodInfo.MakeGenericMethod(typeArguments);
-        return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
+        return GetOrCreateCacheEntry(genericMethodInfo);
     }
 
     internal MethodData MakeGenericMethodData(params Type[] typeArguments)
     {
         MethodInfo genericMethodInfo = MethodInfo.MakeGenericMethod(typeArguments);
-        return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
+        return GetOrCreateCacheEntry(genericMethodInfo);
     }
 
     internal MethodInfo MakeGenericMethodInfo(TypeList typeArguments) => MethodInfo.MakeGenericMethod(typeArguments.Select(t => t.Type).ToArray());
@@ -904,7 +903,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
                 if (IsGenericMethod && !IsGenericMethodDefinition)
                 {
                     MethodInfo genericMethodDefinition = MethodInfo.GetGenericMethodDefinition();
-                    var genericMethodDefinitionData = genericMethodDefinition.ToMethodData();
+                    MethodData genericMethodDefinitionData = GetOrCreateCacheEntry(genericMethodDefinition);
                     _basicMethodFingerprint = genericMethodDefinitionData.BasicMethodFingerprint;
                 }
                 else
@@ -933,7 +932,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             else
             {
                 MethodInfo genericMethodDefinitionMethodInfo = MethodInfo.GetGenericMethodDefinition();
-                _genericMethodDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodDefinitionMethodInfo);
+                _genericMethodDefinitionData = GetOrCreateCacheEntry(genericMethodDefinitionMethodInfo);
             }
 
             return _genericMethodDefinitionData;
@@ -1165,9 +1164,12 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
+    internal bool IsReadonly => _isReadonly
+        ??= DeclaringTypeData.IsStruct && HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName);
+
     internal bool IsOverride => _isOverride ??= MethodData.IsMethodOverride(this);
 
-    internal bool IsReturnValueReadOnly => _isReturnValueReadOnly ??= MethodInfo.ReturnParameter.GetCustomAttribute<IsReadOnlyAttribute>() != null;
+    internal bool IsReturnValueReadOnly => _isReturnValueReadOnly ??= ReturnParameterData.IsRefReadOnly;
 
     internal bool IsReturnValueByRef => _isReturnValueByRef ??= ReturnTypeData.IsByRef;
 
@@ -1201,9 +1203,9 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
 
     internal override string AssemblyName => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
-    internal TypeData ReturnTypeData => _returnTypeData ??= SymbolReflectionInfoCache.GetOrCreateEntryInternal(MethodInfo.ReturnType);
+    internal TypeData ReturnTypeData => _returnTypeData ??= GetOrCreateCacheEntry(MethodInfo.ReturnType);
 
-    internal ParameterData ReturnParameterData => _returnParameterData ??= SymbolReflectionInfoCache.GetOrCreateEntryInternal(MethodInfo.ReturnParameter);
+    internal ParameterData ReturnParameterData => _returnParameterData ??= GetOrCreateCacheEntry(MethodInfo.ReturnParameter);
 
     internal bool IsGenericMethod => _isGenericMethod ??= MethodInfo.IsGenericMethod;
 
@@ -1237,15 +1239,15 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             return false;
         }
 
-        MethodInfo methodInfo = methodData.MethodInfo;
-        Attribute methodExtensionAttribute = methodInfo.GetCustomAttribute(ReflectionHelperExtensions.ExtensionAttributeType, false);
-        if (methodExtensionAttribute == null)
+        bool hasExtensionMethodMarker = methodData.HasCompilerAttribute(ReflectionHelperExtensions.ExtensionAttributeType, ReflectionHelperExtensions.ExtensionAttributeType.FullName);
+        if (!hasExtensionMethodMarker)
         {
             return false;
         }
 
-        // Must have at least the 'this' parameter
         ParameterList parameterInfoData = methodData.Parameters;
+
+        // Must have at least the 'this' parameter
         if (parameterInfoData.Count < 1)
         {
             return false;
@@ -1434,7 +1436,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         interfaceDeclaration = null;
         declaringInterfaceTypeData = null;
 
-        TypeData implementingType = methodData.MethodInfo.DeclaringType?.ToTypeData() ?? throw new InvalidOperationException("Declaring type handle is not available.");
+        TypeData implementingType = GetOrCreateCacheEntry(methodData.MethodInfo.DeclaringType ?? throw new InvalidOperationException("Declaring type is not available."));
 
         if (implementingType.IsInterface
             || methodData.IsPublic)
@@ -1458,7 +1460,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             if (interfaceMapping.ImplementedMethodCacheKeyTable.TryGetValue(methodData.CacheKey, out int mappingIndex)
                 && interfaceMapping.ReverseInterfaceMethodsCacheKeyTable.TryGetValue(mappingIndex, out SymbolReflectionInfoCacheKeyInternal interfaceMethodCacheKey))
             {
-                MethodData interfaceMethod = SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(interfaceMethodCacheKey);
+                MethodData interfaceMethod = GetOrCreateCacheEntry<MethodData>(interfaceMethodCacheKey);
                 declaringInterfaceTypeData = interfaceMethod.DeclaringTypeData;
                 interfaceDeclaration = interfaceMethod;
                 implementingTypeData = implementingType;
@@ -1473,8 +1475,8 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private static InterfaceMappingEntry InterfaceMappingEntryFactory(TypeData declaringTypeData, TypeData interfaceTypeData)
     {
         InterfaceMapping mapping = declaringTypeData.Type.GetInterfaceMap(interfaceTypeData.Type);
-        IEnumerable<SymbolReflectionInfoCacheKeyInternal> implementedMethodCacheKeys = mapping.TargetMethods.Select(m => m.ToMethodData().CacheKey);
-        IEnumerable<SymbolReflectionInfoCacheKeyInternal> interfaceMethodCacheKeys = mapping.InterfaceMethods.Select(m => m.ToMethodData().CacheKey);
+        IEnumerable<SymbolReflectionInfoCacheKeyInternal> implementedMethodCacheKeys = mapping.TargetMethods.Select(m => GetOrCreateCacheEntry(m).CacheKey);
+        IEnumerable<SymbolReflectionInfoCacheKeyInternal> interfaceMethodCacheKeys = mapping.InterfaceMethods.Select(m => GetOrCreateCacheEntry(m).CacheKey);
 
         return new InterfaceMappingEntry(implementedMethodCacheKeys, interfaceMethodCacheKeys);
     }

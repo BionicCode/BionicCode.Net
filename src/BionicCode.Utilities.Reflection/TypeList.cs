@@ -35,6 +35,12 @@ internal sealed class TypeList : IReadOnlyList<TypeData>, IEquatable<TypeList>
         return typeList.HasItems;
     }
 
+    public bool ContainsTypeWithName(string typeName)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(typeName);
+        return _typeNameIndex.Contains(typeName);
+    }
+
     public int Count => Types.Count;
     public bool IsEmpty => Types.IsEmpty;
     public bool HasItems => !IsEmpty;

@@ -91,9 +91,9 @@ internal static class SymbolReflectionInfoCache
 
     private static void ClearWellKnownSymbolCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
-        if (SymbolReflectionInfoCache.s_reverseWellKnownSymbolCacheKeyTable.TryRemove(cacheKey, out MemberInfo? memberInfo))
+        if (SymbolReflectionInfoCache.s_reverseWellKnownSymbolCacheKeyTable.TryRemove(cacheKey, out object? symbolInfo))
         {
-            _ = SymbolReflectionInfoCache.s_wellKnownSymbolCacheKeyTable.TryRemove(memberInfo, out _);
+            _ = SymbolReflectionInfoCache.s_wellKnownSymbolCacheKeyTable.TryRemove(symbolInfo, out _);
         }
     }
 
@@ -113,11 +113,11 @@ internal static class SymbolReflectionInfoCache
     /// <param name="type">The type to convert to a <see cref="TypeData"/> instance. Cannot be <see langword="null"/>.</param>
     /// <returns>A <see cref="TypeData"/> instance that describes the specified type. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="TypeData"/> instances for the same type.</remarks>
-    public static TypeData ToTypeData(this Type type)
+    public static ITypeDataView ToTypeDataView(this Type type)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(type);
 
-        return GetOrCreateEntryInternal(type);
+        return GetOrCreateEntryInternal(type).View;
     }
 
     /// <summary>
@@ -127,11 +127,11 @@ internal static class SymbolReflectionInfoCache
     /// <param name="methodInfo">The method to convert to a <see cref="MethodData"/> instance. Cannot be <see langword="null"/>.</param>
     /// <returns>A <see cref="MethodData"/> instance that describes the specified method. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="MethodData"/> instances for the same method.</remarks>
-    public static MethodData ToMethodData(this MethodInfo methodInfo)
+    public static IMethodDataView ToMethodDataView(this MethodInfo methodInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
 
-        return GetOrCreateEntryInternal(methodInfo);
+        return GetOrCreateEntryInternal(methodInfo).View;
     }
 
     /// <summary>
@@ -141,11 +141,11 @@ internal static class SymbolReflectionInfoCache
     /// <param name="constructorInfo">The constructor to convert to a <see cref="ConstructorData"/> instance. Cannot be <see langword="null"/>.</param>
     /// <returns>A <see cref="ConstructorData"/> instance that describes the specified constructor. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="ConstructorData"/> instances for the same constructor.</remarks>
-    public static ConstructorData ToConstructorData(this ConstructorInfo constructorInfo)
+    public static IConstructorDataView ToConstructorDataView(this ConstructorInfo constructorInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo);
 
-        return GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
+        return GetOrCreateEntryInternal(constructorInfo).View;
     }
 
     /// <summary>
@@ -155,11 +155,11 @@ internal static class SymbolReflectionInfoCache
     /// <param name="fieldInfo">The field to convert to a <see cref="FieldData"/> instance. Cannot be <see langword="null"/>.</param>
     /// <returns>A <see cref="FieldData"/> instance that describes the specified field. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="FieldData"/> instances for the same field.</remarks>
-    public static FieldData ToFieldData(this FieldInfo fieldInfo)
+    public static IFieldDataView ToFieldDataView(this FieldInfo fieldInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo);
 
-        return GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
+        return GetOrCreateEntryInternal(fieldInfo).View;
     }
 
     /// <summary>
@@ -169,11 +169,11 @@ internal static class SymbolReflectionInfoCache
     /// <param name="propertyInfo">The property to convert to a <see cref="PropertyData"/> instance. Cannot be <see langword="null"/>.</param>
     /// <returns>A <see cref="PropertyData"/> instance that describes the specified property. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="PropertyData"/> instances for the same property.</remarks>
-    public static PropertyData ToPropertyData(this PropertyInfo propertyInfo)
+    public static IPropertyDataView ToPropertyDataView(this PropertyInfo propertyInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo);
 
-        return (PropertyData)GetOrCreateEntryInternal(propertyInfo);
+        return GetOrCreateEntryInternal(propertyInfo).View;
     }
 
     /// <summary>
@@ -183,11 +183,11 @@ internal static class SymbolReflectionInfoCache
     /// <param name="eventInfo">The event to convert to a <see cref="EventData"/> instance. Cannot be <see langword="null"/>.</param>
     /// <returns>A <see cref="EventData"/> instance that describes the specified event. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="EventData"/> instances for the same event.</remarks>
-    public static EventData ToEventData(this EventInfo eventInfo)
+    public static IEventDataView ToEventDataView(this EventInfo eventInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo);
 
-        return GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
+        return GetOrCreateEntryInternal(eventInfo).View;
     }
 
     /// <summary>
@@ -197,11 +197,11 @@ internal static class SymbolReflectionInfoCache
     /// <param name="parameterInfo">The parameter to convert to a <see cref="ParameterData"/> instance. Cannot be <see langword="null"/>.</param>
     /// <returns>A <see cref="ParameterData"/> instance that describes the specified parameter. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="ParameterData"/> instances for the same parameter.</remarks>
-    public static ParameterData ToParameterData(this ParameterInfo parameterInfo)
+    public static IParameterDataView ToParameterDataView(this ParameterInfo parameterInfo)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo);
 
-        return GetOrCreateCacheEntry(parameterInfo);
+        return GetOrCreateEntryInternal(parameterInfo).View;
     }
     #endregion Extension Methods
 
@@ -2086,6 +2086,68 @@ internal static class SymbolReflectionInfoCache
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
             return SymbolReflectionInfoCache.GetOrCreateEntryInternal(methodInfo);
+        }
+
+        protected static ConstructorData GetOrCreateCacheEntry(ConstructorInfo constructorInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo);
+            return SymbolReflectionInfoCache.GetOrCreateEntryInternal(constructorInfo);
+        }
+
+        protected static FieldData GetOrCreateCacheEntry(FieldInfo fieldInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo);
+            return SymbolReflectionInfoCache.GetOrCreateEntryInternal(fieldInfo);
+        }
+
+        protected static EventData GetOrCreateCacheEntry(EventInfo eventInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo);
+            return SymbolReflectionInfoCache.GetOrCreateEntryInternal(eventInfo);
+        }
+
+        protected static ParameterData GetOrCreateCacheEntry(ParameterInfo parameterInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo);
+            return SymbolReflectionInfoCache.GetOrCreateEntryInternal(parameterInfo);
+        }
+
+        protected static TSymbolInfoData GetOrCreateCacheEntry<TSymbolInfoData>(SymbolReflectionInfoCacheKeyInternal cacheKeyInternal)
+            where TSymbolInfoData : SymbolInfoData
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKeyInternal);
+            return typeof(TSymbolInfoData) switch
+            {
+                Type type when type == typeof(PropertyData) => SymbolReflectionInfoCache.TryGetPropertyDataCacheEntryInternal(cacheKeyInternal, out PropertyData? data)
+                    && data is TSymbolInfoData typedData
+                        ? typedData
+                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
+                Type type when type == typeof(TypeData) => SymbolReflectionInfoCache.TryGetTypeDataCacheEntryInternal(cacheKeyInternal, out TypeData? data)
+                    && data is TSymbolInfoData typedData
+                        ? typedData
+                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
+                Type type when type == typeof(EventData) => SymbolReflectionInfoCache.TryGetEventDataCacheEntryInternal(cacheKeyInternal, out EventData? data)
+                    && data is TSymbolInfoData typedData
+                        ? typedData
+                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
+                Type type when type == typeof(MethodData) => SymbolReflectionInfoCache.TryGetMethodDataCacheEntryInternal(cacheKeyInternal, out MethodData? data)
+                    && data is TSymbolInfoData typedData
+                        ? typedData
+                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
+                Type type when type == typeof(ConstructorData) => SymbolReflectionInfoCache.TryGetConstructorDataCacheEntryInternal(cacheKeyInternal, out ConstructorData? data)
+                    && data is TSymbolInfoData typedData
+                        ? typedData
+                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
+                Type type when type == typeof(FieldData) => SymbolReflectionInfoCache.TryGetFieldDataCacheEntryInternal(cacheKeyInternal, out FieldData? data)
+                    && data is TSymbolInfoData typedData
+                        ? typedData
+                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
+                Type type when type == typeof(ParameterData) => SymbolReflectionInfoCache.TryGetParameterDataCacheEntryInternal(cacheKeyInternal, out ParameterData? data)
+                    && data is TSymbolInfoData typedData
+                        ? typedData
+                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
+                _ => throw new NotSupportedException($"The specified symbol info data type '{typeof(TSymbolInfoData).FullName}' is not supported.")
+            };
         }
     }
     #endregion SymbolInfoDataCacheProvider

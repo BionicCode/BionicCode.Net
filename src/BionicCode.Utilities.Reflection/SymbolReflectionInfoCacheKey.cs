@@ -200,28 +200,28 @@ public readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectio
             false);
     }
 
-    public string SymbolName { get; }
-    public SymbolKind SymbolKind { get; }
-    public bool IsAnonymousKey { get; }
-    public RuntimeMethodHandle MethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberMethod, SymbolKind.MemberConstructor], _methodHandle);
-    public RuntimeTypeHandle DeclaringTypeHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberMethod, SymbolKind.MemberConstructor, SymbolKind.MemberProperty, SymbolKind.MemberField, SymbolKind.MemberEvent], _declaringTypeHandle);
-    public RuntimeTypeHandle TypHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Type], _typeHandle);
-    public RuntimeFieldHandle FieldHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberField], _fieldHandle);
-    public bool IsProperty => SymbolKind is SymbolKind.MemberProperty;
-    public RuntimeMethodHandle PropertySetMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberProperty], _propertySetMethodHandle);
-    public RuntimeMethodHandle PropertyGetMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberProperty], _propertyGetMethodHandle);
-    public RuntimeTypeHandle PropertyTypeHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberProperty], _propertyTypeHandle);
-    public bool IsField => SymbolKind is SymbolKind.MemberField;
-    public bool IsType => SymbolKind is SymbolKind.Type;
-    public bool IsEvent => SymbolKind is SymbolKind.MemberEvent;
-    public RuntimeMethodHandle EventAddMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberEvent], _eventAddMethodHandle);
-    public RuntimeMethodHandle EventRemoveMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberEvent], _eventRemoveMethodHandle);
-    public bool IsMethodOrConstructor => SymbolKind is SymbolKind.MemberConstructor or SymbolKind.MemberMethod;
-    public bool IsParameter => SymbolKind is SymbolKind.Parameter;
-    public ParameterKind ParameterModifier => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterModifier);
-    public RuntimeTypeHandle ParameterTypeHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterTypeHandle);
-    public int ParameterPosition => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterPosition);
-    public RuntimeMethodHandle ParameterDeclaringMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterDeclaringMethodHandle);
+    public readonly string SymbolName { get; }
+    public readonly SymbolKind SymbolKind { get; }
+    public readonly bool IsAnonymousKey { get; }
+    public readonly RuntimeMethodHandle MethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberMethod, SymbolKind.MemberConstructor], _methodHandle);
+    public readonly RuntimeTypeHandle DeclaringTypeHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberMethod, SymbolKind.MemberConstructor, SymbolKind.MemberProperty, SymbolKind.MemberField, SymbolKind.MemberEvent], _declaringTypeHandle);
+    public readonly RuntimeTypeHandle TypHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Type], _typeHandle);
+    public readonly RuntimeFieldHandle FieldHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberField], _fieldHandle);
+    public readonly bool IsProperty => SymbolKind is SymbolKind.MemberProperty;
+    public readonly RuntimeMethodHandle PropertySetMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberProperty], _propertySetMethodHandle);
+    public readonly RuntimeMethodHandle PropertyGetMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberProperty], _propertyGetMethodHandle);
+    public readonly RuntimeTypeHandle PropertyTypeHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberProperty], _propertyTypeHandle);
+    public readonly bool IsField => SymbolKind is SymbolKind.MemberField;
+    public readonly bool IsType => SymbolKind is SymbolKind.Type;
+    public readonly bool IsEvent => SymbolKind is SymbolKind.MemberEvent;
+    public readonly RuntimeMethodHandle EventAddMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberEvent], _eventAddMethodHandle);
+    public readonly RuntimeMethodHandle EventRemoveMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberEvent], _eventRemoveMethodHandle);
+    public readonly bool IsMethodOrConstructor => SymbolKind is SymbolKind.MemberConstructor or SymbolKind.MemberMethod;
+    public readonly bool IsParameter => SymbolKind is SymbolKind.Parameter;
+    public readonly ParameterKind ParameterModifier => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterModifier);
+    public readonly RuntimeTypeHandle ParameterTypeHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterTypeHandle);
+    public readonly int ParameterPosition => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterPosition);
+    public readonly RuntimeMethodHandle ParameterDeclaringMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterDeclaringMethodHandle);
 
     public bool Equals(SymbolReflectionInfoCacheKey other) => SymbolKind == other.SymbolKind
         && SymbolName.Equals(other.SymbolName, StringComparison.Ordinal)
@@ -238,7 +238,7 @@ public readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectio
         && ParameterModifier == other.ParameterModifier
         && ParameterTypeHandle.Equals(other.ParameterTypeHandle);
 
-    public override bool Equals(object obj) => obj is SymbolReflectionInfoCacheKey other && Equals(other);
+    public readonly override bool Equals(object obj) => obj is SymbolReflectionInfoCacheKey other && Equals(other);
 
     public override int GetHashCode()
     {

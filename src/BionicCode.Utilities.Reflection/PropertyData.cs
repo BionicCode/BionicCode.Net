@@ -49,7 +49,8 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     private readonly ConcurrentDictionary<RuntimeTypeHandle, Delegate> _invokerTable;
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
-    private bool? _isSetMethodReadOnly;
+    private bool? _isReadOnlySetMethodOnStruct;
+    private bool? _isReadOnlyGetMethodOnStruct;
     private readonly WellKnownPropertyDescriptor _descriptor;
     private RuntimeTypeHandle? _declaringTypeHandle;
     private RuntimeTypeHandle? _implementingTypeHandle;
@@ -66,7 +67,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         PropertyInfo = symbolInfoDataCacheKey.PropertyDescriptor.PropertyInfo;
     }
 
-    protected override MemberInfo GetMemberInfo() => PropertyInfo;
+    protected override MemberInfo MemberInfo => PropertyInfo;
 
     /// <summary>
     /// Gets the value of the property represented by this instance for the specified target object.
@@ -912,9 +913,30 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
     internal bool CanWrite => _canWrite ??= PropertyInfo.CanWrite;
 
+    internal bool CanRead => _canRead ??= PropertyInfo.CanRead;
+
+    /// <summary>
+    /// Gets a value indicating whether the current property has a setter or not.
+    /// </summary>
+    /// <remarks>A read-only instance cannot be modified. Use this property to determine if changes to the
+    /// instance are permitted.</remarks>
+    /// <value><see langword="true"/> if the property does not have a setter and is therefore read-only; otherwise, <see langword="false"/>.</value>
     internal bool IsReadOnly => !CanWrite;
 
-    internal bool CanRead => _canRead ??= PropertyInfo.CanRead;
+    /// <summary>
+    /// Gets whether the property’s set accessor is a <see langword="readonly"/> instance member (struct-only), meaning it doesn’t modify the struct’s instance state.
+    /// </summary>
+    internal bool IsReadOnlySetMethodOnStruct => _isReadOnlySetMethodOnStruct ??= CanWrite && (PropertySetMethodData.IsReadonly || IsReadOnlyPropertyOnStruct);
+
+    /// <summary>
+    /// Gets whether the property’s get accessor is a <see langword="readonly"/> instance member (struct-only), meaning it doesn’t modify the struct’s instance state.
+    /// </summary>
+    internal bool IsReadOnlyGetMethodOnStruct => _isReadOnlyGetMethodOnStruct ??= CanRead && (PropertyGetMethodData.IsReadonly || IsReadOnlyPropertyOnStruct);
+
+    /// <summary>
+    /// Gets whether the property itself is a <see langword="readonly"/> instance member on a struct type, meaning it doesn’t modify the struct’s instance state. This is determined by checking if the property has the <see cref="IsReadOnlyAttribute"/> applied, which is used by the C# compiler to indicate that a struct member is readonly. If the property does not have this attribute, this property returns <see langword="false"/>. Note that for reference types, this property will always return <see langword="false"/>, as the concept of a readonly instance member only applies to value types (structs).
+    /// </summary>
+    internal bool IsReadOnlyPropertyOnStruct => HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName);
 
     /// <summary>
     /// Returns whether the property is an init-only property.
@@ -969,8 +991,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
     internal override bool IsStatic => _isStatic ??= (CanRead && PropertyGetMethodData!.IsStatic)
         || (CanWrite && PropertySetMethodData!.IsStatic);
-
-    internal bool IsSetMethodReadOnly => _isSetMethodReadOnly ??= CanWrite && PropertySetMethodData!.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
 
     internal bool IsOverride => _isOverride ??= (CanRead && PropertyGetMethodData!.IsOverride)
         || (CanWrite && PropertySetMethodData!.IsOverride);
@@ -1079,19 +1099,8 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return propertyAttributes;
     }
 
-    private static bool IsPropertyInit(PropertyData propertyData)
-    {
-        if (propertyData.CanWrite)
-        {
-            Type[] requiredModifiers = propertyData.PropertySetMethodData!.MethodInfo.ReturnParameter.GetRequiredCustomModifiers();
-            if (requiredModifiers.Length > 0)
-            {
-                return requiredModifiers.FirstOrDefault(type => type == typeof(IsExternalInit)) != default;
-            }
-        }
-
-        return false;
-    }
+    private static bool IsPropertyInit(PropertyData propertyData) => propertyData.CanWrite 
+        && propertyData.PropertySetMethodData.ReturnParameterData.HasCompilerAttribute(typeof(IsExternalInit), ReflectionConstants.IsExternalInitFullName);
 
     private static (AccessModifier PropertyModifier, AccessModifier GetMethodModifier, AccessModifier SetMethodModifier) GetPropertyAccessModifier(MethodData? getMethodData, MethodData? setMethodData)
     {

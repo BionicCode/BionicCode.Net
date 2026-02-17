@@ -23,11 +23,12 @@ internal abstract class ParameterizedMemberData : MemberData
         : base(symbolReflectionInfoCacheKey.SymbolName, symbolReflectionInfoCacheKey.SymbolKind, symbolReflectionInfoCacheKey)
         => ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolReflectionInfoCacheKey.SymbolKind, [SymbolKind.MemberMethod, SymbolKind.MemberConstructor], nameof(symbolReflectionInfoCacheKey));
 
+    protected override MemberInfo MemberInfo => MethodBase;
     internal abstract ParameterList Parameters { get; }
     internal abstract bool HasParamsParameter { get; }
     internal abstract RuntimeMethodHandle Handle { get; }
     internal abstract ParameterizedSymbolKind ParameterizedSymbolKind { get; }
-    internal abstract MethodBase GetMethodBase();
+    internal abstract MethodBase MethodBase { get; }
 
     /// <summary>
     /// Gets a value indicating whether this method has a special name.
@@ -50,33 +51,33 @@ internal abstract class ParameterizedMemberData : MemberData
     /// │ Delegates       │ Invoke, BeginInvoke, EndInvoke           │ Invoke(int)             │
     /// └─────────────────┴──────────────────────────────────────────┴─────────────────────────┘
     /// </remarks>
-    internal bool IsSpecializedName => ((MethodBase)GetMethodBase()).IsSpecialName;
+    internal bool IsSpecializedName => MethodBase.IsSpecialName;
 
-    internal bool IsAbstract => _isAbstract ??= GetMethodBase().IsAbstract;
+    internal bool IsAbstract => _isAbstract ??= MethodBase.IsAbstract;
 
-    internal bool IsVirtual => _isVirtual ??= GetMethodBase().IsVirtual;
+    internal bool IsVirtual => _isVirtual ??= MethodBase.IsVirtual;
 
-    internal override bool IsStatic => _isStatic ??= GetMethodBase().IsStatic;
+    internal override bool IsStatic => _isStatic ??= MethodBase.IsStatic;
 
     internal bool IsSealed => IsFinal;
 
-    internal bool IsFinal => _isFinal ??= GetMethodBase().IsFinal;
+    internal bool IsFinal => _isFinal ??= MethodBase.IsFinal;
 
-    internal override bool IsPublic => _isPublic ??= GetMethodBase().IsPublic;
+    internal override bool IsPublic => _isPublic ??= MethodBase.IsPublic;
 
-    internal override bool IsPrivate => _isPrivate ??= GetMethodBase().IsPrivate;
+    internal override bool IsPrivate => _isPrivate ??= MethodBase.IsPrivate;
 
-    internal override bool IsAssembly => _isAssembly ??= GetMethodBase().IsAssembly;
+    internal override bool IsAssembly => _isAssembly ??= MethodBase.IsAssembly;
 
-    internal override bool IsFamily => _isFamily ??= GetMethodBase().IsFamily;
+    internal override bool IsFamily => _isFamily ??= MethodBase.IsFamily;
 
-    internal override bool IsFamilyOrAssembly => _isFamilyOrAssembly ??= GetMethodBase().IsFamilyOrAssembly;
+    internal override bool IsFamilyOrAssembly => _isFamilyOrAssembly ??= MethodBase.IsFamilyOrAssembly;
 
-    internal override bool IsFamilyAndAssembly => _isFamilyAndAssembly ??= GetMethodBase().IsFamilyAndAssembly;
+    internal override bool IsFamilyAndAssembly => _isFamilyAndAssembly ??= MethodBase.IsFamilyAndAssembly;
 
-    internal bool IsConstructor => _isConstructor ??= GetMethodBase() is ConstructorInfo;
+    internal bool IsConstructor => _isConstructor ??= MethodBase is ConstructorInfo;
 
-    internal bool IsMethod => _isMethod ??= GetMethodBase() is MethodInfo;
+    internal bool IsMethod => _isMethod ??= MethodBase is MethodInfo;
 
-    internal bool IsSpecialName => _isSpecialName ??= GetMethodBase().IsSpecialName;
+    internal bool IsSpecialName => _isSpecialName ??= MethodBase.IsSpecialName;
 }

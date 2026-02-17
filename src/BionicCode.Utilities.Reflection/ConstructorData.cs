@@ -49,9 +49,7 @@ internal sealed class ConstructorData : ParameterizedMemberData
 
     internal ConstructorInfo ConstructorInfo { get; }
 
-    internal override MethodBase GetMethodBase() => ConstructorInfo;
-
-    protected override MemberInfo GetMemberInfo() => ConstructorInfo;
+    internal override MethodBase MethodBase => ConstructorInfo;
 
     internal object Invoke(params object?[] arguments)
     {
