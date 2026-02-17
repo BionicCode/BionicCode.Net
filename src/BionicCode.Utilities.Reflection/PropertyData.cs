@@ -3,10 +3,8 @@ namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Microsoft.CodeAnalysis;
 
 internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 {
@@ -49,8 +47,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     private readonly ConcurrentDictionary<RuntimeTypeHandle, Delegate> _invokerTable;
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
-    private bool? _isReadOnlySetMethodOnStruct;
-    private bool? _isReadOnlyGetMethodOnStruct;
     private readonly WellKnownPropertyDescriptor _descriptor;
     private RuntimeTypeHandle? _declaringTypeHandle;
     private RuntimeTypeHandle? _implementingTypeHandle;
@@ -924,21 +920,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     internal bool IsReadOnly => !CanWrite;
 
     /// <summary>
-    /// Gets whether the property’s set accessor is a <see langword="readonly"/> instance member (struct-only), meaning it doesn’t modify the struct’s instance state.
-    /// </summary>
-    internal bool IsReadOnlySetMethodOnStruct => _isReadOnlySetMethodOnStruct ??= CanWrite && (PropertySetMethodData.IsReadonly || IsReadOnlyPropertyOnStruct);
-
-    /// <summary>
-    /// Gets whether the property’s get accessor is a <see langword="readonly"/> instance member (struct-only), meaning it doesn’t modify the struct’s instance state.
-    /// </summary>
-    internal bool IsReadOnlyGetMethodOnStruct => _isReadOnlyGetMethodOnStruct ??= CanRead && (PropertyGetMethodData.IsReadonly || IsReadOnlyPropertyOnStruct);
-
-    /// <summary>
-    /// Gets whether the property itself is a <see langword="readonly"/> instance member on a struct type, meaning it doesn’t modify the struct’s instance state. This is determined by checking if the property has the <see cref="IsReadOnlyAttribute"/> applied, which is used by the C# compiler to indicate that a struct member is readonly. If the property does not have this attribute, this property returns <see langword="false"/>. Note that for reference types, this property will always return <see langword="false"/>, as the concept of a readonly instance member only applies to value types (structs).
-    /// </summary>
-    internal bool IsReadOnlyPropertyOnStruct => HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName);
-
-    /// <summary>
     /// Returns whether the property is an init-only property.
     /// </summary>
     /// <remarks>This is determined by checking if the property has a setter method and if that setter method is marked with the <see cref="IsExternalInit"/> attribute, 
@@ -1099,8 +1080,8 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return propertyAttributes;
     }
 
-    private static bool IsPropertyInit(PropertyData propertyData) => propertyData.CanWrite 
-        && propertyData.PropertySetMethodData.ReturnParameterData.HasCompilerAttribute(typeof(IsExternalInit), ReflectionConstants.IsExternalInitFullName);
+    private static bool IsPropertyInit(PropertyData propertyData) => propertyData.CanWrite
+        && propertyData.PropertySetMethodData.ReturnParameterData.HasRequiredCustomModifier(ReflectionConstants.IsExternalInitFullName);
 
     private static (AccessModifier PropertyModifier, AccessModifier GetMethodModifier, AccessModifier SetMethodModifier) GetPropertyAccessModifier(MethodData? getMethodData, MethodData? setMethodData)
     {

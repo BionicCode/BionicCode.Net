@@ -76,7 +76,6 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private RuntimeTypeHandle? _implementingTypeHandle;
     private bool? _isExplicitInterfaceImplementation;
     private IMethodDataView? _methodDataView;
-    private bool? _isReadonly;
 
     internal MethodData(SymbolReflectionInfoCacheKeyInternal symbolReflectionInfoCacheKey)
         : base(symbolReflectionInfoCacheKey)
@@ -1164,12 +1163,9 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         }
     }
 
-    internal bool IsReadonly => _isReadonly
-        ??= DeclaringTypeData.IsStruct && HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName);
-
     internal bool IsOverride => _isOverride ??= MethodData.IsMethodOverride(this);
 
-    internal bool IsReturnValueReadOnly => _isReturnValueReadOnly ??= ReturnParameterData.IsRefReadOnly;
+    internal bool IsReturnValueRefReadOnly => _isReturnValueReadOnly ??= ReturnParameterData.IsRefReadOnly;
 
     internal bool IsReturnValueByRef => _isReturnValueByRef ??= ReturnTypeData.IsByRef;
 
@@ -1239,7 +1235,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             return false;
         }
 
-        bool hasExtensionMethodMarker = methodData.HasCompilerAttribute(ReflectionHelperExtensions.ExtensionAttributeType, ReflectionHelperExtensions.ExtensionAttributeType.FullName);
+        bool hasExtensionMethodMarker = methodData.HasCompilerAttribute<ExtensionAttribute>(ReflectionConstants.ExtensionAttributeFullName);
         if (!hasExtensionMethodMarker)
         {
             return false;

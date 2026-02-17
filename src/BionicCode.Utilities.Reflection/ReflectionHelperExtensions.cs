@@ -6,12 +6,10 @@ using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Microsoft.CSharp;
 
 /// <summary>
@@ -40,7 +38,6 @@ public static partial class ReflectionHelperExtensions
     internal const BindingFlags AllMembersFullHierarchyFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
     internal static CSharpCodeProvider CodeProvider { get; } = new CSharpCodeProvider();
-    internal static Type ExtensionAttributeType { get; } = typeof(ExtensionAttribute);
     internal static Type IsReadOnlyAttributeType { get; } = typeof(IsReadOnlyAttribute);
 
     internal static PooledStringBuilder AppendCustomAttributes(this PooledStringBuilder nameBuilder, IEnumerable<CustomAttributeData> attributes, bool isAppendNewLineEnabled)
@@ -110,23 +107,16 @@ public static partial class ReflectionHelperExtensions
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(value);
 
-        switch (value)
+        return value switch
         {
-            case string stringValue:
-                return $"\"{stringValue}\"";
-            case char charValue:
-                return $"'{charValue}'";
-            case double doubleValue:
-                return string.Format(CultureInfo.InvariantCulture, "{0}", doubleValue);
-            case Enum enumValue:
-                return $"{value.GetType().ToDisplayName()}.{enumValue.ToString()}";
-            case Type type:
-                return $"typeof({type.ToDisplayName()})";
-            case IEnumerable enumerableValue:
-                return $"new[] {{ {string.Join(", ", enumerableValue.OfType<object>().Select(val => val.ToArgumentDisplayValue()))} }}";
-            default:
-                return value.ToString();
-        }
+            string stringValue => $"\"{stringValue}\"",
+            char charValue => $"'{charValue}'",
+            double doubleValue => string.Format(CultureInfo.InvariantCulture, "{0}", doubleValue),
+            Enum enumValue => $"{value.GetType().ToDisplayName()}.{enumValue.ToString()}",
+            Type type => $"typeof({type.ToDisplayName()})",
+            IEnumerable enumerableValue => $"new[] {{ {string.Join(", ", enumerableValue.OfType<object>().Select(val => val.ToArgumentDisplayValue()))} }}",
+            _ => value.ToString(),
+        };
     }
 
     internal static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, TypeData typeData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded)

@@ -1067,8 +1067,7 @@ internal class TypeData : SymbolInfoData
             return false;
         }
 
-        Attribute? typeExtensionAttribute = typeInfo.GetCustomAttribute(ReflectionHelperExtensions.ExtensionAttributeType, false);
-        return typeExtensionAttribute != null;
+        return typeData.HasCompilerAttribute<ExtensionAttribute>(ReflectionConstants.ExtensionAttributeFullName);
     }
 
     /// <summary>
@@ -1174,7 +1173,7 @@ internal class TypeData : SymbolInfoData
             && s_delegateType.IsAssignableFrom(type);
     }
 
-    private static bool IsReadOnlyStructInternal(TypeData typeData) => typeData.IsStruct && typeData.Type.GetCustomAttribute(ReflectionHelperExtensions.IsReadOnlyAttributeType) != null;
+    private static bool IsReadOnlyStructInternal(TypeData typeData) => typeData.IsStruct && typeData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName);
 
     /// <summary>
     /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.

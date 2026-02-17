@@ -166,7 +166,6 @@ internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDat
     internal bool HasCompilerAttribute(string attributeName, bool inherit = false)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(attributeName);
-        return AttributeData
-            .Any(attribute => attribute.AttributeType.FullName?.Equals(attributeName, StringComparison.Ordinal) ?? false);
+        return AttributeDataLookup.Contains(attributeName);
     }
 }

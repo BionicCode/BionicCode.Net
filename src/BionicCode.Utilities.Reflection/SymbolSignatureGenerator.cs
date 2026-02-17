@@ -146,7 +146,7 @@ internal static class SymbolSignatureGenerator
             symbolComponents.AddModifier("ref");
         }
 
-        if (methodData.IsReturnValueReadOnly)
+        if (methodData.IsReturnValueRefReadOnly)
         {
             symbolComponents.AddModifier("readonly");
         }
@@ -2027,7 +2027,7 @@ internal static class SymbolSignatureGenerator
               .Append(' ');
         }
 
-        if (methodData.IsReturnValueReadOnly)
+        if (methodData.IsReturnValueRefReadOnly)
         {
             _ = signatureNameBuilder
               .Append("readonly")

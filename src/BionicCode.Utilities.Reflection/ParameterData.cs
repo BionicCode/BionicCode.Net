@@ -46,6 +46,7 @@ internal sealed class ParameterData : SymbolInfoData
     private bool? _isMethodReturnParameter;
     private TypeList? _requiredModifiers;
     private TypeList? _optionalModifiers;
+    private bool? _isDynamic;
 
     internal ParameterData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
         : base(symbolInfoDataCacheKey.ParameterDescriptor.ParameterName, SymbolKind.Parameter, symbolInfoDataCacheKey)
@@ -61,6 +62,16 @@ internal sealed class ParameterData : SymbolInfoData
     internal RuntimeTypeHandle DeclaringTypeHandle => _declaringTypeHandle ??= ParameterInfo.Member.DeclaringType?.TypeHandle ?? throw new NotSupportedException($"The underlying '{typeof(ParameterInfo).FullName}' belongs to a member that does not return a declaring type.");
 
     internal RuntimeTypeHandle ParameterTypeHandle => _propertyTypeHandle ??= ParameterInfo.ParameterType.TypeHandle;
+
+    internal bool IsDynamic => _isDynamic ??= HasCompilerAttribute<DynamicAttribute>(ReflectionConstants.DynamicAttributeFullName);
+
+    /// <summary>
+    /// Gets a value indicating whether the current type represents a generic type or method parameter.
+    /// </summary>
+    /// <remarks>This property returns <see langword="true"/> if the type is either a generic type parameter
+    /// or a generic method parameter. Use this property to determine whether the type is a placeholder for a generic
+    /// argument in type or method definitions.</remarks>
+    internal bool IsGeneric => IsGenericTypeParameter || IsGenericMethodParameter;
 
     /// <summary>
     /// Gets a value indicating whether the current type is passed by reference using the <see langword="ref"/> keyword.
@@ -182,7 +193,7 @@ internal sealed class ParameterData : SymbolInfoData
     internal override IList<CustomAttributeData> AttributeData => _attributeData ??= [.. ParameterInfo.GetCustomAttributesData()];
 
     /// <summary>
-    /// Gets a value indicating whether the parameter is passed by reference.
+    /// Gets a value indicating whether the parameter is passed by reference (<see langword="in"/>, <see langword="out"/>, <see langword="ref"/> or <see langword="ref"/><see langword="readonly"/>).
     /// </summary>
     internal bool IsByRef => _isByRef ??= ParameterTypeData.Type.IsByRef;
 
@@ -284,7 +295,9 @@ internal sealed class ParameterData : SymbolInfoData
     /// <returns></returns>
     private static bool IsRefInternal(ParameterData parameterData)
     {
-        if (!parameterData.IsByRef || parameterData.IsOut)
+        if (parameterData.IsMethodReturnParameter 
+            || !parameterData.IsByRef 
+            || parameterData.IsOut)
         {
             return false;
         }
@@ -308,8 +321,9 @@ internal sealed class ParameterData : SymbolInfoData
 
         if (parameterData.IsMethodReturnParameter)
         {
-            return parameterData.HasOptionalCustomModifier(ReflectionConstants.InAttributeFullName)
-                || parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName);
+            return parameterData.HasRequiredCustomModifier(ReflectionConstants.InAttributeFullName)
+                || parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName)
+                || parameterData.HasRequiredCustomModifier(ReflectionConstants.IsReadOnlyAttributeFullName);
         }
         else
         {
@@ -319,11 +333,15 @@ internal sealed class ParameterData : SymbolInfoData
         }
     }
 
-    private static bool IsOutParameter(ParameterData parameterData) => parameterData.IsByRef && parameterData.ParameterInfo.IsOut;
+    private static bool IsOutParameter(ParameterData parameterData) => !parameterData.IsMethodReturnParameter 
+        && parameterData.IsByRef 
+        && parameterData.ParameterInfo.IsOut;
 
     private static bool IsInParameter(ParameterData parameterData)
     {
-        if (!parameterData.ParameterTypeData.IsByRef || parameterData.IsOut)
+        if (parameterData.IsMethodReturnParameter
+            || !parameterData.ParameterTypeData.IsByRef 
+            || parameterData.IsOut)
         {
             return false;
         }

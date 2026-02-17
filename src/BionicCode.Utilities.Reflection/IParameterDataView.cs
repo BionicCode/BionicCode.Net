@@ -10,6 +10,8 @@ public interface IParameterDataView : ISymbolInfoDataView
     RuntimeTypeHandle DeclaringTypeHandle { get; }
     object? DefaultValue { get; }
     bool IsByRef { get; }
+    bool IsDynamic { get; } 
+    bool IsGeneric { get; }
     bool IsGenericMethodParameter { get; }
     bool IsGenericTypeParameter { get; }
     bool IsIn { get; }
