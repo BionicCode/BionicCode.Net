@@ -91,7 +91,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     }
 
     internal IMethodDataView View => _methodDataView
-        ??= new MethodDataView(SymbolReflectionInfoCacheKey.CreateForMethod(this));
+        ??= new MethodDataView(GetPublicCacheKey());
 
     internal MethodInfo MethodInfo { get; }
 

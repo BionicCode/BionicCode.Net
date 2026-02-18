@@ -2059,17 +2059,99 @@ internal static class SymbolReflectionInfoCache
                 ? data!
                 : throw new ReflectionCacheEntryAlcNotAvailableException();
 
+        private protected bool TryGetTypeData(out TypeData? typeData)
+            => TryGetTypeDataCacheEntry(CacheKey, out typeData);
+
         // central helper for "get or throw"
         private protected EventData GetEventDataOrThrow()
             => TryGetEventDataCacheEntry(CacheKey, out EventData? data)
                 ? data!
                 : throw new ReflectionCacheEntryAlcNotAvailableException();
+
+        private protected bool TryGetEventData(out EventData? eventData)
+            => TryGetEventDataCacheEntry(CacheKey, out eventData);
+
+        // central helper for "get or throw"
+        private protected ConstructorData GetConstructorDataOrThrow()
+            => TryGetConstructorDataCacheEntry(CacheKey, out ConstructorData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException();
+
+        private protected bool TryGetConstructorData(out ConstructorData? constructorData)
+            => TryGetConstructorDataCacheEntry(CacheKey, out constructorData);
+
+        // central helper for "get or throw"
+        private protected FieldData GetFieldDataOrThrow()
+            => TryGetFieldDataCacheEntry(CacheKey, out FieldData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException();
+
+        private protected bool TryGetFieldData(out FieldData? fieldData)
+            => TryGetFieldDataCacheEntry(CacheKey, out fieldData);
+
+        // central helper for "get or throw"
+        private protected ParameterData GetParameterDataOrThrow()
+            => TryGetParameterDataCacheEntry(CacheKey, out ParameterData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException();
+
+        private protected bool TryGetParameterData(out ParameterData? parameterData)
+            => TryGetParameterDataCacheEntry(CacheKey, out parameterData);
+
+        // central helper for "get or throw"
+        private protected SymbolInfoData GetSymbolInfoDataOrThrow() => CacheKey.SymbolKind switch
+        {
+            SymbolKind.MemberProperty => TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+            SymbolKind.Type => TryGetTypeDataCacheEntry(CacheKey, out TypeData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+            SymbolKind.MemberEvent => TryGetEventDataCacheEntry(CacheKey, out EventData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+            SymbolKind.MemberMethod => TryGetMethodDataCacheEntry(CacheKey, out MethodData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+            SymbolKind.MemberConstructor => TryGetConstructorDataCacheEntry(CacheKey, out ConstructorData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+            SymbolKind.MemberField => TryGetFieldDataCacheEntry(CacheKey, out FieldData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+            SymbolKind.Parameter => TryGetParameterDataCacheEntry(CacheKey, out ParameterData? data)
+                ? data!
+                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+            _ => throw new NotSupportedException($"The specified symbol kind '{CacheKey.SymbolKind}' is not supported.")
+        };
+
+        private protected bool TryGetSymbolInfoData(out SymbolInfoData? symbolInfoData) => CacheKey.SymbolKind switch
+        {
+            SymbolKind.MemberProperty => (symbolInfoData = TryGetPropertyDataCacheEntry(CacheKey, out PropertyData? data) ? data! : null) is not null,
+            SymbolKind.Type => (symbolInfoData = TryGetTypeDataCacheEntry(CacheKey, out TypeData? data) ? data! : null) is not null,
+            SymbolKind.MemberEvent => (symbolInfoData = TryGetEventDataCacheEntry(CacheKey, out EventData? data) ? data! : null) is not null,
+            SymbolKind.MemberMethod => (symbolInfoData = TryGetMethodDataCacheEntry(CacheKey, out MethodData? data) ? data! : null) is not null,
+            SymbolKind.MemberConstructor => (symbolInfoData = TryGetConstructorDataCacheEntry(CacheKey, out ConstructorData? data) ? data! : null) is not null,
+            SymbolKind.MemberField => (symbolInfoData = TryGetFieldDataCacheEntry(CacheKey, out FieldData? data) ? data! : null) is not null,
+            SymbolKind.Parameter => (symbolInfoData = TryGetParameterDataCacheEntry(CacheKey, out ParameterData? data) ? data! : null) is not null,
+            _ => throw new NotSupportedException($"The specified symbol kind '{CacheKey.SymbolKind}' is not supported.")
+        };
     }
     #endregion SymbolDataViewBase
 
     #region SymbolInfoDataCacheProvider
     internal abstract class SymbolInfoDataCacheProvider
     {
+        internal SymbolReflectionInfoCacheKeyInternal CacheKey { get; }
+
+        protected SymbolInfoDataCacheProvider(SymbolReflectionInfoCacheKeyInternal cacheKey) => CacheKey = cacheKey;
+
+        protected SymbolReflectionInfoCacheKey GetPublicCacheKey()
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(CacheKey);
+            return s_reversePublicCacheKeyMap[CacheKey];
+        }
+
         protected static PropertyData GetOrCreateCacheEntry(PropertyInfo propertyInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo);

@@ -50,7 +50,7 @@ internal sealed class EventData : MemberData
     }
 
     internal IEventDataView View => _eventDataView
-        ??= new EventDataView(SymbolReflectionInfoCacheKey.CreateForEvent(this));
+        ??= new EventDataView(GetPublicCacheKey());
 
     protected override MemberInfo MemberInfo
       => EventInfo;

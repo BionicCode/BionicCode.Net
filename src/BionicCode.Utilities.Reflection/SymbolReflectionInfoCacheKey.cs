@@ -200,6 +200,23 @@ public readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectio
             false);
     }
 
+    internal static SymbolReflectionInfoCacheKey CreateForSymbolInfoData(SymbolInfoData symbolInfoData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(symbolInfoData);
+
+        return symbolInfoData.SymbolKind switch
+        {
+            SymbolKind.MemberProperty => CreateForProperty((PropertyData)symbolInfoData),
+            SymbolKind.MemberField => CreateForField((FieldData)symbolInfoData),
+            SymbolKind.Type => CreateForType((TypeData)symbolInfoData),
+            SymbolKind.MemberMethod => CreateForMethod((MethodData)symbolInfoData),
+            SymbolKind.MemberConstructor => CreateForConstructor((ConstructorData)symbolInfoData),
+            SymbolKind.MemberEvent => CreateForEvent((EventData)symbolInfoData),
+            SymbolKind.Parameter => CreateForParameter((ParameterData)symbolInfoData),
+            _ => throw new InvalidOperationException($"Unsupported symbol kind '{symbolInfoData.SymbolKind}' in the provided symbol info data.")
+        };
+    }
+
     public readonly string SymbolName { get; }
     public readonly SymbolKind SymbolKind { get; }
     public readonly bool IsAnonymousKey { get; }

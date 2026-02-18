@@ -45,7 +45,7 @@ internal sealed class ConstructorData : ParameterizedMemberData
     }
 
     internal IConstructorDataView View => _constructorDataView
-        ??= new ConstructorDataView(SymbolReflectionInfoCacheKey.CreateForConstructor(this));
+        ??= new ConstructorDataView(GetPublicCacheKey());
 
     internal ConstructorInfo ConstructorInfo { get; }
 

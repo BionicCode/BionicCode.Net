@@ -52,7 +52,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
         ImplementingTypeHandle = DeclaringTypeHandle;
     }
     internal IFieldDataView View => _fieldDataView
-        ??= new FieldDataView(SymbolReflectionInfoCacheKey.CreateForField(this));
+        ??= new FieldDataView(GetPublicCacheKey());
 
     internal FieldInfo FieldInfo { get; }
 

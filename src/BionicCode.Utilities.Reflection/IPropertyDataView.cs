@@ -13,7 +13,6 @@ public interface IPropertyDataView : IMemberDataView, ISymbolInfoDataView
     bool IsOverride { get; }
     bool IsReadOnly { get; }
     bool IsSealed { get; }
-    bool IsSetMethodReadOnly { get; }
     IMethodDataView PropertyGetMethodData { get; }
     IParameterListView PropertyGetMethodParameters { get; }
     IMethodDataView PropertySetMethodData { get; }

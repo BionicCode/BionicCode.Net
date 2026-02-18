@@ -7,7 +7,10 @@ using System.Reflection;
 [DebuggerDisplay("{RuntimeShortSignature}")]
 internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDataCacheProvider
 {
+    private ISymbolInfoDataView? _symbolInfoDataView;
+
     protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolReflectionInfoCacheKeyInternal cacheKey)
+        : base(cacheKey)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
         ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
@@ -17,8 +20,10 @@ internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDat
         Name = name;
         SymbolKind = symbolKind;
         FormattingIndentation = 4;
-        CacheKey = cacheKey;
     }
+
+    internal ISymbolInfoDataView View => _symbolInfoDataView
+        ??= new SymbolInfoDataView(GetPublicCacheKey());
 
     internal abstract bool IsDefined<TAttribute>(bool inherit = false) where TAttribute : Attribute;
     internal abstract bool IsDefined(Type attributeType, bool inherit = false);
@@ -142,8 +147,6 @@ internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDat
     /// </summary>
     /// <value>The spaces to indent a line based on the <see cref="FormattingIndentation"/> property.</value>
     internal string IndentationString { get; private set; }
-
-    internal SymbolReflectionInfoCacheKeyInternal CacheKey { get; }
 
     internal bool HasCompilerAttribute<TAttribute>(string? attributeName = null, bool inherit = false)
         where TAttribute : Attribute => HasCompilerAttribute(typeof(TAttribute), attributeName, inherit);

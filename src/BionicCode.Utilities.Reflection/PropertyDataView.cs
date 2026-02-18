@@ -9,7 +9,7 @@ using BionicCode.Utilities.Net.Reflection.Exceptions;
     "Design",
     "CA1065:Do not raise exceptions in unexpected locations",
     Justification = "PropertyDataView is a live cache-backed view. After ALC unload, the underlying symbol is unavailable and the only correct behavior is to throw.")]
-internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, IPropertyDataView
+internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
 {
     internal PropertyDataView(SymbolReflectionInfoCacheKey cacheKey) : base(cacheKey)
     { }
@@ -24,7 +24,7 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     /// </remarks>
     /// <value><see langword="true"/> if the property has a get accessor and can be read from; otherwise, <see langword="false"/>.</value>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    public bool CanRead => GetPropertyDataOrThrow(CacheKey).CanRead;
+    public bool CanRead => GetPropertyDataOrThrow().CanRead;
 
     /// <summary>
     /// Attempts to retrieve a value indicating whether the associated property has a get accessor i.e. can be read from.
@@ -58,7 +58,7 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     /// </remarks>
     /// <value><see langword="true"/> if the property has a set accessor and can be written to; otherwise, <see langword="false"/>.</value>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    public bool CanWrite => GetPropertyDataOrThrow(CacheKey).CanWrite;
+    public bool CanWrite => GetPropertyDataOrThrow().CanWrite;
 
     /// <summary>
     /// Attempts to retrieve a value indicating whether the associated property can be written to.
@@ -92,7 +92,7 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     /// </remarks>
     /// <value>The <see cref="AccessModifier"/> of the property's getter if it exists; otherwise, returns a default value.</value>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    public AccessModifier GetAccessorAccessModifier => GetPropertyDataOrThrow(CacheKey).GetAccessorAccessModifier;
+    public AccessModifier GetAccessorAccessModifier => GetPropertyDataOrThrow().GetAccessorAccessModifier;
 
     /// <summary>
     /// Attempts to retrieve the <see cref="AccessModifier"/> of the property's getter.
@@ -126,7 +126,7 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
     /// <value>The <see cref="AccessModifier"/> of the property's setter if it exists; otherwise, returns a default value.</value>
-    public AccessModifier SetAccessorAccessModifier => GetPropertyDataOrThrow(CacheKey).SetAccessorAccessModifier;
+    public AccessModifier SetAccessorAccessModifier => GetPropertyDataOrThrow().SetAccessorAccessModifier;
 
     /// <summary>
     /// Attempts to retrieve the <see cref="AccessModifier"/> of the property's setter.
@@ -160,7 +160,7 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     /// </remarks>
     /// <value><see langword="true"/> if the property is an indexer; otherwise, <see langword="false"/>.</value>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    public bool IsIndexer => GetPropertyDataOrThrow(CacheKey).IsIndexer;
+    public bool IsIndexer => GetPropertyDataOrThrow().IsIndexer;
 
     /// <summary>
     /// Attempts to retrieve a value indicating whether the associated property is an indexer.
@@ -194,7 +194,7 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     /// </remarks>
     /// <value><see langword="true"/> if the property is an init-only property; otherwise, <see langword="false"/>.</value>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    public bool IsInit => GetPropertyDataOrThrow(CacheKey).IsInit;
+    public bool IsInit => GetPropertyDataOrThrow().IsInit;
 
     /// <summary>
     /// Attempts to retrieve a value indicating whether the property is an init-only property.
@@ -227,7 +227,7 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     /// <para/>To avoid the exception, use <see cref="TryGetIsOverride(out bool)"/> which returns a boolean indicating success or failure instead of throwing.
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    public bool IsOverride => GetPropertyDataOrThrow(CacheKey).IsOverride;
+    public bool IsOverride => GetPropertyDataOrThrow().IsOverride;
 
     /// <summary>
     /// Attempts to retrieve a value indicating whether the property is an override.
@@ -261,7 +261,7 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
     /// <value><see langword="true"/> if the property is read-only (which is when <see cref="CanRead"/> returns <see langword="true"/> and <see cref="CanWrite"/> returns <see langword="false"/>); otherwise, <see langword="false"/>.</value>
-    public bool IsReadOnly => GetPropertyDataOrThrow(CacheKey).IsReadOnly;
+    public bool IsReadOnly => GetPropertyDataOrThrow().IsReadOnly;
 
     /// <summary>
     /// Attempts to retrieve a value indicating whether the associated property can be read from.
@@ -296,7 +296,7 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
     /// <value><see langword="true"/> if the property is sealed; otherwise, <see langword="false"/>.</value>
-    public bool IsSealed => GetPropertyDataOrThrow(CacheKey).IsSealed;
+    public bool IsSealed => GetPropertyDataOrThrow().IsSealed;
 
     /// <summary>
     /// Attempts to retrieve a value indicating whether the associated property is sealed.
@@ -322,43 +322,76 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     }
 
     /// <summary>
-    /// Returns whether the property is sealed. 
+    /// Returns <see cref="IMethodDataView"/> representing the get method of the property, if available.
     /// </summary>
     /// <remarks>
     /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
     /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
-    /// <para/>To avoid the exception, use <see cref="TryGetIsSealed(out bool)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// <para/>To avoid the exception, use <see cref="TryGetPropertyGetMethodData(out IMethodDataView?)"/> which returns a boolean indicating success or failure instead of throwing.
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    /// <value><see langword="true"/> if the property is sealed; otherwise, <see langword="false"/>.</value>
-    public bool IsSealed => GetPropertyDataOrThrow(CacheKey).IsSealed;
+    /// <exception cref="NotSupportedException">Thrown if the property does not have a get method.</exception>
+    /// <value><see cref="IMethodDataView"/> representing the get method of the property".</value>
+    public IMethodDataView PropertyGetMethodData => GetPropertyDataOrThrow().PropertyGetMethodData.View;
 
     /// <summary>
-    /// Attempts to retrieve a value indicating whether the associated property is sealed.
+    /// Attempts to retrieve the get method of the property.
     /// </summary>
     /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
-    /// the <paramref name="isSealed"/> parameter is set to its default value and the method returns <see langword="false"/>.
-    /// <para/>Use the property <see cref="IsSealed"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
-    /// <param name="isSealed">When this method returns successfully, contains a value indicating whether the property is sealed.
+    /// the <paramref name="getMethodData"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="PropertyGetMethodData"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="getMethodData">When this method returns successfully, contains the get method of the property.
     /// <br/>The value is <see langword="true"/> if the property is sealed.</param>
-    /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
-    public bool TryGetIsSealed(out bool isSealed)
+    /// <returns>Returns <see langword="true"/> if the property has a getter and the data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetPropertyGetMethodData(out IMethodDataView? getMethodData)
     {
-        if (TryGetPropertyData(out PropertyData? propertyData))
+        if (TryGetPropertyData(out PropertyData? propertyData) && propertyData!.CanRead)
         {
-            isSealed = propertyData!.IsSealed;
+            getMethodData = propertyData.PropertyGetMethodData.View;
             return true;
         }
         else
         {
-            isSealed = default;
+            getMethodData = default;
             return false;
         }
     }
-    public bool IsSetMethodReadOnly { get; }
-    public IMethodDataView? PropertyGetMethodData { get; }
+
+    /// <summary>
+    /// Returns <see cref="IMethodDataView"/> representing the set method of the property, if available.
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetPropertySetMethodData(out IMethodDataView?)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    /// <exception cref="NotSupportedException">Thrown if the property does not have a set method.</exception>
+    /// <value><see cref="IMethodDataView"/> representing the set method of the property.</value>
+    public IMethodDataView PropertySetMethodData => GetPropertyDataOrThrow().PropertySetMethodData.View;
+
+    /// <summary>
+    /// Attempts to retrieve the set method of the property.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
+    /// the <paramref name="setMethodData"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="PropertySetMethodData"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="setMethodData">When this method returns successfully, contains the set method of the property.
+    /// <returns>Returns <see langword="true"/> if the property has a setter and the data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetPropertySetMethodData(out IMethodDataView? setMethodData)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData) && propertyData!.CanWrite)
+        {
+            setMethodData = propertyData.PropertySetMethodData.View;
+            return true;
+        }
+        else
+        {
+            setMethodData = default;
+            return false;
+        }
+    }
     public IParameterListView PropertyGetMethodParameters { get; }
-    public IMethodDataView? PropertySetMethodData { get; }
     public IParameterListView PropertySetMethodParameters { get; }
     public ITypeDataView? PropertyTypeData { get; }
     public AccessModifier AccessModifier { get; }
@@ -375,26 +408,6 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     public bool IsPrivate { get; }
     public bool IsPublic { get; }
     public bool IsStatic { get; }
-    public string? AssemblyName { get; }
-    public string? Namespace { get; }
-    public IList<CustomAttributeData>? AttributeData { get; }
-    public string? DisplayName { get; }
-    public int FormattingIndentation { get; set; }
-    public string? FullyQualifiedDisplayName { get; }
-    public string? FullyQualifiedRuntimeSignature { get; }
-    public string? FullyQualifiedSignature { get; }
-    public string? IndentationString { get; }
-    public string? Name { get; }
-    public string? RuntimeShortCompactSignature { get; }
-    public string? RuntimeShortSignature { get; }
-    public string? RuntimeSignature { get; }
-    public string? ShortCompactSignature { get; }
-    public string? ShortDisplayName { get; }
-    public string? ShortSignature { get; }
-    public string? Signature { get; }
-    public SymbolAttributes SymbolAttributes { get; }
-    public SymbolComponentInfo? SymbolComponentInfo { get; }
-    public SymbolKind SymbolKind { get; }
 
     public object? GetIndexerValue(object? target, object?[] indexerPropertyParameters) => throw new NotImplementedException();
     public TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indexerPropertyParameters) => throw new NotImplementedException();
@@ -405,8 +418,4 @@ internal class PropertyDataView : SymbolReflectionInfoCache.SymbolDataViewBase, 
     public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, object[]? indexerPropertyIndex = null) where TTarget : struct => throw new NotImplementedException();
     public void SetValue(object? target, object? value) => throw new NotImplementedException();
     public void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class => throw new NotImplementedException();
-
-    private static PropertyData GetPropertyDataOrThrow(SymbolReflectionInfoCacheKey cacheKey) => SymbolReflectionInfoCache.TryGetPropertyDataCacheEntry(cacheKey, out PropertyData? propertyData)
-        ? propertyData!
-        : throw new ReflectionCacheEntryAlcNotAvailableException();
 }

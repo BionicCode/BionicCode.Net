@@ -839,7 +839,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     }
 
     internal IPropertyDataView View => _propertyDataView
-        ??= new PropertyDataView(SymbolReflectionInfoCacheKey.CreateForProperty(this));
+        ??= new PropertyDataView(GetPublicCacheKey());
 
     internal bool IsIndexer => CanRead
         ? PropertyGetMethodParameters.HasItems
@@ -912,11 +912,21 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     internal bool CanRead => _canRead ??= PropertyInfo.CanRead;
 
     /// <summary>
-    /// Gets a value indicating whether the current property has a setter or not.
+    /// Gets a value indicating whether the current property has a setter.
     /// </summary>
-    /// <remarks>The <see cref="IsReadOnly"/> property is an alias for the inverted <see cref="CanWrite"/>:
-    /// <br/><c>IsReadOnly == !CanWrite</c></remarks>
-    /// <value><see langword="true"/> if the property does not have a setter and is therefore read-only; otherwise, <see langword="false"/>.</value>
+    /// <remarks>
+    /// <para>
+    /// <see cref="IsReadOnly"/> is an alias for the inverted <see cref="CanWrite"/>:
+    /// <c>IsReadOnly == !CanWrite</c>.
+    /// </para>
+    /// <para>
+    /// Note: <see cref="CanWrite"/> is <see langword="true"/> if a set accessor exists (even if non-public).
+    /// Init-only properties still have a setter, so they are not considered read-only by this flag.
+    /// </para>
+    /// </remarks>
+    /// <value>
+    /// <see langword="true"/> if the property does not have a set accessor; otherwise, <see langword="false"/>.
+    /// </value>
     internal bool IsReadOnly => !CanWrite;
 
     /// <summary>

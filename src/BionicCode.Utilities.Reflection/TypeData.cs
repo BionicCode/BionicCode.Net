@@ -824,7 +824,7 @@ internal class TypeData : SymbolInfoData
         }
     }
 
-    internal ITypeDataView View => _typeDataView ??= new TypeDataView(CacheKey);
+    internal ITypeDataView View => _typeDataView ??= new TypeDataView(GetPublicCacheKey());
 
     /// <summary>
     /// If the TypeData represents a delegate, this property returns metadata information for the delegate's Invoke method.
