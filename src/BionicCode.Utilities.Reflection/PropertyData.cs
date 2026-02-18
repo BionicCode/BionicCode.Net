@@ -914,15 +914,15 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <summary>
     /// Gets a value indicating whether the current property has a setter or not.
     /// </summary>
-    /// <remarks>A read-only instance cannot be modified. Use this property to determine if changes to the
-    /// instance are permitted.</remarks>
+    /// <remarks>The <see cref="IsReadOnly"/> property is an alias for the inverted <see cref="CanWrite"/>:
+    /// <br/><c>IsReadOnly == !CanWrite</c></remarks>
     /// <value><see langword="true"/> if the property does not have a setter and is therefore read-only; otherwise, <see langword="false"/>.</value>
     internal bool IsReadOnly => !CanWrite;
 
     /// <summary>
     /// Returns whether the property is an init-only property.
     /// </summary>
-    /// <remarks>This is determined by checking if the property has a setter method and if that setter method is marked with the <see cref="IsExternalInit"/> attribute, 
+    /// <remarks>This is determined by checking if the property has a setter method and if that setter method is marked with the <see cref="IsExternalInit"/> modifier, 
     /// which is used by the C# compiler to indicate init-only properties. 
     /// If the property does not have a setter or if the setter is not marked as init-only, this property returns <see langword="false"/>.</remarks>
     /// <value><see langword="true"/> if the property is an init-only property; otherwise, <see langword="false"/>.</value>

@@ -197,7 +197,7 @@ internal sealed class ParameterData : SymbolInfoData
     /// </summary>
     internal bool IsByRef => _isByRef ??= ParameterTypeData.Type.IsByRef;
 
-    internal bool IsMethodReturnParameter => _isMethodReturnParameter ??= Position == -1;
+    internal bool IsMethodReturnParameter => _isMethodReturnParameter ??= Position < 0 || ParameterInfo.IsRetval;
 
     internal bool IsIndexerPropertyParameter => _isIndexerPropertyParameter ??= MemberData is MethodData methodData && (methodData.IsIndexerPropertyGetMethod || methodData.IsIndexerPropertySetMethod);
 
@@ -321,8 +321,8 @@ internal sealed class ParameterData : SymbolInfoData
 
         if (parameterData.IsMethodReturnParameter)
         {
-            return parameterData.HasRequiredCustomModifier(ReflectionConstants.InAttributeFullName)
-                || parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName)
+            return parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName)
+                ||parameterData.HasRequiredCustomModifier(ReflectionConstants.InAttributeFullName)
                 || parameterData.HasRequiredCustomModifier(ReflectionConstants.IsReadOnlyAttributeFullName);
         }
         else
@@ -347,7 +347,9 @@ internal sealed class ParameterData : SymbolInfoData
         }
 
         // C# 'in' → IsReadOnlyAttribute, but not ref readonly
-        bool isMarkedReadOnly = parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName)
+        bool isMarkedReadOnly = (parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName)
+            || parameterData.HasRequiredCustomModifier(ReflectionConstants.IsReadOnlyAttributeFullName)
+            || parameterData.HasOptionalCustomModifier(ReflectionConstants.IsReadOnlyAttributeFullName))
             && !IsRefReadOnlyInternal(parameterData);
 
         return isMarkedReadOnly;
