@@ -77,12 +77,12 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private bool? _isExplicitInterfaceImplementation;
     private IMethodDataView? _methodDataView;
 
-    internal MethodData(SymbolReflectionInfoCacheKeyInternal symbolReflectionInfoCacheKey)
-        : base(symbolReflectionInfoCacheKey)
+    internal MethodData(WellKnownMethodDescriptor descriptor)
+        : base(descriptor.MethodName, SymbolKind.MemberMethod)
     {
-        ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolReflectionInfoCacheKey.SymbolKind, [SymbolKind.MemberMethod], nameof(symbolReflectionInfoCacheKey));
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(descriptor);
 
-        _descriptor = symbolReflectionInfoCacheKey.MethodDescriptor;
+        _descriptor = descriptor;
         _invokerTable = new ConcurrentDictionary<MethodDataGenericTypeVariantKey, Delegate>();
         Handle = _descriptor.MethodHandle;
         MethodInfo = _descriptor.MethodInfo;
@@ -90,7 +90,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         _methodSignatureEqualityComparer = new MethodSignatureEqualityComparer();
     }
 
-    internal IMethodDataView View => _methodDataView
+    internal new IMethodDataView View => _methodDataView
         ??= new MethodDataView(GetPublicCacheKey());
 
     internal MethodInfo MethodInfo { get; }
@@ -1453,10 +1453,9 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             InterfaceMappingEntry interfaceMapping = s_interfaceMappingTable.GetOrAdd(
                 new InterfaceMappingKey(implementingType.Handle, interfaceTypeData.Handle),
                 _ => InterfaceMappingEntryFactory(implementingType, interfaceTypeData));
-            if (interfaceMapping.ImplementedMethodCacheKeyTable.TryGetValue(methodData.CacheKey, out int mappingIndex)
-                && interfaceMapping.ReverseInterfaceMethodsCacheKeyTable.TryGetValue(mappingIndex, out SymbolReflectionInfoCacheKeyInternal interfaceMethodCacheKey))
+            if (interfaceMapping.ImplementedMethodCacheKeyTable.TryGetValue(methodData, out int mappingIndex)
+                && interfaceMapping.ReverseInterfaceMethodsCacheKeyTable.TryGetValue(mappingIndex, out MethodData interfaceMethod))
             {
-                MethodData interfaceMethod = GetOrCreateCacheEntry<MethodData>(interfaceMethodCacheKey);
                 declaringInterfaceTypeData = interfaceMethod.DeclaringTypeData;
                 interfaceDeclaration = interfaceMethod;
                 implementingTypeData = implementingType;
@@ -1471,8 +1470,8 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     private static InterfaceMappingEntry InterfaceMappingEntryFactory(TypeData declaringTypeData, TypeData interfaceTypeData)
     {
         InterfaceMapping mapping = declaringTypeData.Type.GetInterfaceMap(interfaceTypeData.Type);
-        IEnumerable<SymbolReflectionInfoCacheKeyInternal> implementedMethodCacheKeys = mapping.TargetMethods.Select(m => GetOrCreateCacheEntry(m).CacheKey);
-        IEnumerable<SymbolReflectionInfoCacheKeyInternal> interfaceMethodCacheKeys = mapping.InterfaceMethods.Select(m => GetOrCreateCacheEntry(m).CacheKey);
+        IEnumerable<MethodData> implementedMethodCacheKeys = mapping.TargetMethods.Select(GetOrCreateCacheEntry);
+        IEnumerable<MethodData> interfaceMethodCacheKeys = mapping.InterfaceMethods.Select(GetOrCreateCacheEntry);
 
         return new InterfaceMappingEntry(implementedMethodCacheKeys, interfaceMethodCacheKeys);
     }
@@ -1591,15 +1590,15 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
     #region InterfaceMappingEntry
     private readonly struct InterfaceMappingEntry : IEquatable<InterfaceMappingEntry>
     {
-        public InterfaceMappingEntry(IEnumerable<SymbolReflectionInfoCacheKeyInternal> implementedMethodCacheKeys, IEnumerable<SymbolReflectionInfoCacheKeyInternal> interfaceMethodsCacheKeys)
+        public InterfaceMappingEntry(IEnumerable<MethodData> implementedMethodCacheKeys, IEnumerable<MethodData> interfaceMethodsCacheKeys)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(implementedMethodCacheKeys);
             ArgumentNullExceptionAdvanced.ThrowIfNull(interfaceMethodsCacheKeys);
 
             int index = 0;
-            Dictionary<SymbolReflectionInfoCacheKeyInternal, int> implementedMethodCacheKeyDictionary = [];
-            Dictionary<int, SymbolReflectionInfoCacheKeyInternal> reverseImplementedMethodCacheKeyDictionary = [];
-            foreach (SymbolReflectionInfoCacheKeyInternal cacheKey in implementedMethodCacheKeys)
+            Dictionary<MethodData, int> implementedMethodCacheKeyDictionary = [];
+            Dictionary<int, MethodData> reverseImplementedMethodCacheKeyDictionary = [];
+            foreach (MethodData cacheKey in implementedMethodCacheKeys)
             {
                 implementedMethodCacheKeyDictionary[cacheKey] = index;
                 reverseImplementedMethodCacheKeyDictionary[index] = cacheKey;
@@ -1610,9 +1609,9 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             ReverseImplementedMethodCacheKeyTable = reverseImplementedMethodCacheKeyDictionary.ToImmutableDictionary();
 
             index = 0;
-            Dictionary<SymbolReflectionInfoCacheKeyInternal, int> interfaceMethodCacheKeyDictionary = [];
-            Dictionary<int, SymbolReflectionInfoCacheKeyInternal> reverseInterfaceMethodCacheKeyDictionary = [];
-            foreach (SymbolReflectionInfoCacheKeyInternal cacheKey in interfaceMethodsCacheKeys)
+            Dictionary<MethodData, int> interfaceMethodCacheKeyDictionary = [];
+            Dictionary<int, MethodData> reverseInterfaceMethodCacheKeyDictionary = [];
+            foreach (MethodData cacheKey in interfaceMethodsCacheKeys)
             {
                 interfaceMethodCacheKeyDictionary[cacheKey] = index;
                 reverseInterfaceMethodCacheKeyDictionary[index] = cacheKey;
@@ -1623,10 +1622,10 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
             ReverseInterfaceMethodsCacheKeyTable = reverseInterfaceMethodCacheKeyDictionary.ToImmutableDictionary();
         }
 
-        public ImmutableDictionary<SymbolReflectionInfoCacheKeyInternal, int> ImplementedMethodCacheKeyTable { get; }
-        public ImmutableDictionary<int, SymbolReflectionInfoCacheKeyInternal> ReverseImplementedMethodCacheKeyTable { get; }
-        public ImmutableDictionary<SymbolReflectionInfoCacheKeyInternal, int> InterfaceMethodsCacheKeyTable { get; }
-        public ImmutableDictionary<int, SymbolReflectionInfoCacheKeyInternal> ReverseInterfaceMethodsCacheKeyTable { get; }
+        public ImmutableDictionary<MethodData, int> ImplementedMethodCacheKeyTable { get; }
+        public ImmutableDictionary<int, MethodData> ReverseImplementedMethodCacheKeyTable { get; }
+        public ImmutableDictionary<MethodData, int> InterfaceMethodsCacheKeyTable { get; }
+        public ImmutableDictionary<int, MethodData> ReverseInterfaceMethodsCacheKeyTable { get; }
         public bool Equals(InterfaceMappingEntry other) => ImplementedMethodCacheKeyTable.Equals(other.ImplementedMethodCacheKeyTable)
             && InterfaceMethodsCacheKeyTable.Equals(other.InterfaceMethodsCacheKeyTable)
             && ReverseImplementedMethodCacheKeyTable.Equals(other.ReverseImplementedMethodCacheKeyTable)

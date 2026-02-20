@@ -5,6 +5,7 @@ using System.Reflection;
 
 internal sealed class ConstructorData : ParameterizedMemberData
 {
+    public static string ConstructorDefaultName { get; } = ConstructorInfo.ConstructorName;
     private string? _displayName;
     private string? _shortDisplayName;
     private string? _fullyQualifiedDisplayName;
@@ -31,20 +32,22 @@ internal sealed class ConstructorData : ParameterizedMemberData
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
     private IConstructorDataView? _constructorDataView;
+    private readonly WellKnownConstructorDescriptor _descriptor;
 
-    internal ConstructorData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
-        : base(symbolInfoDataCacheKey)
+    internal ConstructorData(WellKnownConstructorDescriptor descriptor)
+        : base(ConstructorDefaultName, SymbolKind.MemberConstructor)
     {
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey);
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(descriptor);
 
-        Handle = symbolInfoDataCacheKey.ConstructorDescriptor.ConstructorInfo.MethodHandle;
-        ConstructorInfo = symbolInfoDataCacheKey.ConstructorDescriptor.ConstructorInfo;
+        _descriptor = descriptor;
+        Handle = _descriptor.ConstructorInfo.MethodHandle;
+        ConstructorInfo = _descriptor.ConstructorInfo;
         DeclaringTypeHandle = ConstructorInfo.DeclaringType?.TypeHandle ?? throw new InvalidOperationException("Declaring type handle is not available.");
         ImplementingTypeHandle = DeclaringTypeHandle;
         IsExplicitInterfaceImplementation = false;
     }
 
-    internal IConstructorDataView View => _constructorDataView
+    internal new IConstructorDataView View => _constructorDataView
         ??= new ConstructorDataView(GetPublicCacheKey());
 
     internal ConstructorInfo ConstructorInfo { get; }

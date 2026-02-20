@@ -7,19 +7,20 @@ using System.Reflection;
 [DebuggerDisplay("{RuntimeShortSignature}")]
 internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDataCacheProvider
 {
+    public const int DefaultIndentation = 4;
     private ISymbolInfoDataView? _symbolInfoDataView;
 
-    protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolReflectionInfoCacheKeyInternal cacheKey)
-        : base(cacheKey)
+    protected SymbolInfoData(string name, SymbolKind symbolKind)
     {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(name, nameof(name));
         ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
         ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
         ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(symbolKind, [SymbolKind.Undefined], nameof(symbolKind));
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey, nameof(cacheKey));
 
         Name = name;
         SymbolKind = symbolKind;
-        FormattingIndentation = 4;
+        IndentationString = new string(' ', DefaultIndentation);
+        FormattingIndentation = DefaultIndentation;
     }
 
     internal ISymbolInfoDataView View => _symbolInfoDataView
@@ -32,7 +33,7 @@ internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDat
     internal SymbolKind SymbolKind { get; }
     internal abstract string Namespace { get; }
     internal abstract IList<CustomAttributeData> AttributeData { get; }
-    private ILookup<string, CustomAttributeData> _attributeDataLookup;
+    private ILookup<string, CustomAttributeData>? _attributeDataLookup;
     internal ILookup<string, CustomAttributeData> AttributeDataLookup => _attributeDataLookup ??= AttributeData.ToLookup(attribute => attribute.AttributeType.FullName ?? string.Empty);
     internal abstract SymbolAttributes SymbolAttributes { get; }
     internal abstract string AssemblyName { get; }

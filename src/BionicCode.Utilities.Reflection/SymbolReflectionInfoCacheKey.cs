@@ -255,7 +255,7 @@ public readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectio
         && ParameterModifier == other.ParameterModifier
         && ParameterTypeHandle.Equals(other.ParameterTypeHandle);
 
-    public readonly override bool Equals(object obj) => obj is SymbolReflectionInfoCacheKey other && Equals(other);
+    public override readonly bool Equals(object? obj) => obj is SymbolReflectionInfoCacheKey other && Equals(other);
 
     public override int GetHashCode()
     {

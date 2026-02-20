@@ -67,7 +67,7 @@ internal class TypeData : SymbolInfoData
     private SymbolComponentInfo? _symbolComponentInfo;
     private SymbolComponentInfo? _compactSymbolComponentInfo;
     private bool? _containsGenericParameters;
-    private readonly ConcurrentHashSet<SymbolReflectionInfoCacheKeyInternal> _memberTable;
+    private readonly ConcurrentHashSet<MemberData> _memberTable;
     private readonly ConcurrentDictionary<SymbolKind, bool> _memberTableStateFlagTable;
     private bool? _isByRefLike;
     private bool? _isGenericTypeParameter;
@@ -93,12 +93,12 @@ internal class TypeData : SymbolInfoData
     private ITypeDataView? _typeDataView;
     private readonly WellKnownTypeDescriptor _descriptor;
 
-    internal TypeData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
-        : base(symbolInfoDataCacheKey.TypeDescriptor.TypeNamespace, SymbolKind.Type, symbolInfoDataCacheKey)
+    internal TypeData(WellKnownTypeDescriptor descriptor)
+        : base(descriptor.TypeNamespace, SymbolKind.Type)
     {
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey, nameof(symbolInfoDataCacheKey));
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(descriptor, nameof(descriptor));
 
-        _descriptor = symbolInfoDataCacheKey.TypeDescriptor;
+        _descriptor = descriptor;
         Type = _descriptor.Type;
         Handle = _descriptor.TypeHandle;
         _namespace = _descriptor.TypeNamespace;
@@ -107,6 +107,8 @@ internal class TypeData : SymbolInfoData
     }
 
     internal Type Type { get; }
+
+    internal ITypeDataView View => _typeDataView ??= new TypeDataView(GetPublicCacheKey());
 
     /// <summary>
     /// Returns the underlying <see cref="Type"/> represented by this handle.
@@ -612,8 +614,7 @@ internal class TypeData : SymbolInfoData
 
             var memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
             addMemberToTypeDataMemberList.Invoke(memberDataFromReflectionCache);
-            SymbolReflectionInfoCacheKeyInternal cacheKey = memberDataFromReflectionCache.CacheKey;
-            _ = _memberTable.TryAdd(cacheKey);
+            _ = _memberTable.TryAdd(memberDataFromReflectionCache);
         }
 
         _ = _memberTableStateFlagTable.TryAdd(memberKind, true);
@@ -823,8 +824,6 @@ internal class TypeData : SymbolInfoData
             return _baseTypes;
         }
     }
-
-    internal ITypeDataView View => _typeDataView ??= new TypeDataView(GetPublicCacheKey());
 
     /// <summary>
     /// If the TypeData represents a delegate, this property returns metadata information for the delegate's Invoke method.

@@ -320,8 +320,7 @@ public static partial class ReflectionHelperExtensions
             {
                 if (!hasSingleNewLine)
                 {
-                    _ = constraintBuilder.AppendLine()
-                    .Append(' ', lineIndentation);
+                    _ = constraintBuilder.AppendIndentedLine(indentationLevel: lineIndentation);
                     hasSingleNewLine = true;
                 }
                 else
@@ -331,8 +330,7 @@ public static partial class ReflectionHelperExtensions
             }
             else
             {
-                _ = constraintBuilder.AppendLine()
-                    .Append(' ', lineIndentation);
+                _ = constraintBuilder.AppendIndentedLine(indentationLevel: lineIndentation);
             }
 
             _ = constraintBuilder.Append("where")

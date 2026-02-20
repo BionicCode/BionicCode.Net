@@ -27,16 +27,19 @@ internal readonly struct WellKnownConstructorDescriptor : IEquatable<WellKnownCo
         ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo);
 
         ConstructorInfo = constructorInfo;
+        ConstructorName = ConstructorData.ConstructorDefaultName;
         IsAnonymous = false;
     }
 
+    public string ConstructorName { get; }
     public ConstructorInfo ConstructorInfo { get; }
     public RuntimeMethodHandle ConstructorHandle { get; }
     public bool IsAnonymous { get; }
 
     public bool Equals(WellKnownConstructorDescriptor other) => IsAnonymous == other.IsAnonymous
         && ConstructorHandle == other.ConstructorHandle
-        && ReferenceEquals(ConstructorInfo, other.ConstructorInfo);
+        && ReferenceEquals(ConstructorInfo, other.ConstructorInfo)
+        && string.Equals(ConstructorName, other.ConstructorName, StringComparison.Ordinal);
 
     public override int GetHashCode()
     {
@@ -44,6 +47,7 @@ internal readonly struct WellKnownConstructorDescriptor : IEquatable<WellKnownCo
         hashCode.Add(IsAnonymous);
         hashCode.Add(ConstructorInfo);
         hashCode.Add(ConstructorHandle);
+        hashCode.Add(ConstructorName, StringComparer.Ordinal);
 
         return hashCode.ToHashCode();
     }

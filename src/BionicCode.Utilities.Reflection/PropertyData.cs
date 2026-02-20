@@ -53,14 +53,14 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     private bool? _isExplicitInterfaceImplementation;
     private IPropertyDataView? _propertyDataView;
 
-    internal PropertyData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
-        : base(symbolInfoDataCacheKey.PropertyDescriptor.PropertyName, SymbolKind.MemberProperty, symbolInfoDataCacheKey)
+    internal PropertyData(WellKnownPropertyDescriptor descriptor)
+        : base(descriptor.PropertyName, SymbolKind.MemberProperty)
     {
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey);
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(descriptor);
 
-        _descriptor = symbolInfoDataCacheKey.PropertyDescriptor;
+        _descriptor = descriptor;
         _invokerTable = new ConcurrentDictionary<RuntimeTypeHandle, Delegate>();
-        PropertyInfo = symbolInfoDataCacheKey.PropertyDescriptor.PropertyInfo;
+        PropertyInfo = _descriptor.PropertyInfo;
     }
 
     protected override MemberInfo MemberInfo => PropertyInfo;
@@ -838,7 +838,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         _getAccessorAccessModifier = getMethodModifier;
     }
 
-    internal IPropertyDataView View => _propertyDataView
+    internal new IPropertyDataView View => _propertyDataView
         ??= new PropertyDataView(GetPublicCacheKey());
 
     internal bool IsIndexer => CanRead

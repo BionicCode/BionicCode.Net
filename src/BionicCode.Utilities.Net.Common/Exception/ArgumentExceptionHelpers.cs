@@ -400,7 +400,7 @@ public class ArgumentExceptionAdvanced : ArgumentException
 
         if (message is null)
         {
-            List<TEnum> disallowedValues = Enum.GetValues<TEnum>()
+            var disallowedValues = Enum.GetValues<TEnum>()
                 .Except(allowedValues.ToArray())
                 .ToList();
 
@@ -441,7 +441,7 @@ public class ArgumentExceptionAdvanced : ArgumentException
             {
                 if (message is null)
                 {
-                    List<TEnum> allowedValues = Enum.GetValues<TEnum>()
+                    var allowedValues = Enum.GetValues<TEnum>()
                         .Except(disallowedValues.ToArray())
                         .ToList();
 
@@ -543,6 +543,73 @@ public class ArgumentExceptionAdvanced : ArgumentException
         {
             throw new ArgumentException(
                 message ?? $"The provided type is not assignable to the expected type. Allowed: '{target.FullName}', Found: '{value.FullName}'.",
+                paramName);
+        }
+    }
+
+    /// <summary>
+    /// Throws an exception if the specified type is not assignable to the target type.
+    /// </summary>
+    /// <param name="value">The type to validate for assignability. Cannot be null.</param>
+    /// <param name="target">The target type to check assignability against. Cannot be null.</param>
+    /// <param name="paramName">The name of the parameter representing the type to validate. This value is typically provided automatically
+    /// and should not be set explicitly in most cases.</param>
+    /// <param name="message">An optional exception message.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not assignable to <paramref name="target"/>.</exception>
+    public static void ThrowIfNotAssignableTo<TValue, TTarget>([NotNull] TValue value, [NotNull] TTarget target, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+    {
+        ArgumentNullException.ThrowIfNull(value, paramName);
+        ArgumentNullException.ThrowIfNull(target);
+
+        Type targetType = target.GetType();
+        Type valueType = value.GetType();
+        if (!valueType.IsAssignableTo(targetType))
+        {
+            throw new ArgumentException(
+                message ?? $"The provided type is not assignable to the expected type. Allowed: '{targetType.FullName}', Found: '{valueType.FullName}'.",
+                paramName);
+        }
+    }
+
+    /// <summary>
+    /// Throws an exception if the specified type is not assignable to the target type.
+    /// </summary>
+    /// <typeparam name="TValue">The type to validate for assignability. Cannot be null.</param>
+    /// <typeparam name="TTarget">The target type to check assignability against. Cannot be null.</param>
+    /// <param name="paramName">The name of the parameter representing the type to validate. This value is typically provided automatically
+    /// and should not be set explicitly in most cases.</param>
+    /// <param name="message">An optional exception message.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not assignable to <paramref name="target"/>.</exception>
+    public static void ThrowIfNotAssignableTo<TValue, TTarget>(string? message = null)
+    {
+        Type targetType = typeof(TTarget);
+        Type valueType = typeof(TValue);
+        if (!valueType.IsAssignableTo(targetType))
+        {
+            throw new ArgumentException(
+                message ?? $"The provided type is not assignable to the expected type. Allowed: '{targetType.FullName}', Found: '{valueType.FullName}'.",
+                string.Empty);
+        }
+    }
+
+    /// <summary>
+    /// Throws an exception if the specified type is not assignable to the target type.
+    /// </summary>
+    /// <param name="value">The type to validate for assignability. Cannot be null.</param>
+    /// <param name="paramName">The name of the parameter representing the type to validate. This value is typically provided automatically
+    /// and should not be set explicitly in most cases.</param>
+    /// <typeparam name="TTarget"> The target type to check assignability against. Cannot be null.</typeparam>
+    /// <param name="message">An optional exception message.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not assignable to <paramref name="target"/>.</exception>
+    public static void ThrowIfNotAssignableTo<TTarget>([NotNull] object value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+    {
+        ArgumentNullException.ThrowIfNull(value, paramName);
+        Type targetType = typeof(TTarget);
+        Type valueType = value.GetType();
+        if (!valueType.IsAssignableTo(targetType))
+        {
+            throw new ArgumentException(
+                message ?? $"The provided type is not assignable to the expected type. Allowed: '{targetType.FullName}', Found: '{valueType.FullName}'.",
                 paramName);
         }
     }

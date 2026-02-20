@@ -63,6 +63,7 @@ internal static class SymbolSignatureGenerator
         };
         string symbolName = nameBuilder.ToString();
 
+        _ = SymbolReflectionInfoCache.SymbolReflectionInfoCacheKeyInternal.CreateForProperty(default);
         return symbolName;
     }
 

@@ -12,8 +12,8 @@ internal abstract class MemberData : SymbolInfoData
     private BindingFlags? _bindingFlagsVisibilityMask;
     private TypeData? _implementingTypeData;
 
-    protected MemberData(string memberName, SymbolKind symbolKind, SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
-        : base(memberName, symbolKind, symbolInfoDataCacheKey)
+    protected MemberData(string memberName, SymbolKind symbolKind)
+        : base(memberName, symbolKind)
     {
     }
 

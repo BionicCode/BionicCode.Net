@@ -6,20 +6,22 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using BionicCode.Utilities.Net.Reflection.Exceptions;
 using Microsoft.CodeAnalysis;
 
 internal static class SymbolReflectionInfoCache
 {
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, SymbolInfoData> s_symbolInfoDataCache = new();
+    private static readonly ConcurrentDictionary<SymbolInfoData, SymbolReflectionInfoCacheKeyInternal> s_reverseSymbolInfoDataCache = new();
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolReflectionInfoCacheKeyInternal> s_publicCacheKeyMap = new();
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, SymbolReflectionInfoCacheKey> s_reversePublicCacheKeyMap = new();
     //private static readonly ConcurrentDictionary<RuntimeMethodHandle, SymbolReflectionInfoCacheKeyInternal> s_wellKnownMethodAndConstructorCacheKeyTable = new();
     //private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeMethodHandle> s_reverseWellKnownMethodAndConstructorCacheKeyTable = new();
     //private static readonly ConcurrentDictionary<RuntimeTypeHandle, SymbolReflectionInfoCacheKeyInternal> s_wellKnownTypeCacheKeyTable = new();
     //private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, RuntimeTypeHandle> s_reverseWellKnownTypeCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<object, SymbolReflectionInfoCacheKeyInternal> s_wellKnownSymbolCacheKeyTable = new();
-    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, object> s_reverseWellKnownSymbolCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<object, SymbolReflectionInfoCacheKeyInternal> s_wellKnownSymbolInfoCacheKeyTable = new();
+    private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, object> s_reverseWellKnownSymbolInfoCacheKeyTable = new();
     private static readonly ConcurrentDictionary<AssemblyLoadContextMonitor.AssemblyLoadContextInfo, ConcurrentHashSet<SymbolReflectionInfoCacheKeyInternal>> s_assemblyLoadContextIdToCacheKeyMap = new();
     private static readonly ConcurrentDictionary<AnonymousSymbolDescriptorContainer, SymbolReflectionInfoCacheKeyInternal> s_normalizedAnonymousCacheKeyMap = new();
     private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKeyInternal, AnonymousSymbolDescriptorContainer> s_reverseNormalizedAnonymousCacheKeyMap = new();
@@ -35,11 +37,14 @@ internal static class SymbolReflectionInfoCache
         AssemblyLoadContextMonitor.AssemblyLoadContextInfo assemblyLoadContextInfo = e.AssemblyLoadContextInfo;
         lock (assemblyLoadContextInfo.SyncLock)
         {
-            if (SymbolReflectionInfoCache.s_assemblyLoadContextIdToCacheKeyMap.TryRemove(assemblyLoadContextInfo, out ConcurrentHashSet<SymbolReflectionInfoCacheKeyInternal>? cacheKeysOfAssemblyLoadContext))
+            if (s_assemblyLoadContextIdToCacheKeyMap.TryRemove(assemblyLoadContextInfo, out ConcurrentHashSet<SymbolReflectionInfoCacheKeyInternal>? cacheKeysOfAssemblyLoadContext))
             {
                 foreach (SymbolReflectionInfoCacheKeyInternal cacheKey in cacheKeysOfAssemblyLoadContext)
                 {
-                    _ = SymbolReflectionInfoCache.s_symbolInfoDataCache.TryRemove(cacheKey, out _);
+                    if (s_symbolInfoDataCache.TryRemove(cacheKey, out SymbolInfoData? symbolInfoData))
+                    {
+                        _ = s_reverseSymbolInfoDataCache.TryRemove(symbolInfoData, out _);
+                    }
 
                     ClearEventDataViewTable(cacheKey);
                     ClearAnonymousCacheKeyMap(cacheKey);
@@ -91,9 +96,9 @@ internal static class SymbolReflectionInfoCache
 
     private static void ClearWellKnownSymbolCacheKeyTable(SymbolReflectionInfoCacheKeyInternal cacheKey)
     {
-        if (SymbolReflectionInfoCache.s_reverseWellKnownSymbolCacheKeyTable.TryRemove(cacheKey, out object? symbolInfo))
+        if (SymbolReflectionInfoCache.s_reverseWellKnownSymbolInfoCacheKeyTable.TryRemove(cacheKey, out object? symbolInfo))
         {
-            _ = SymbolReflectionInfoCache.s_wellKnownSymbolCacheKeyTable.TryRemove(symbolInfo, out _);
+            _ = SymbolReflectionInfoCache.s_wellKnownSymbolInfoCacheKeyTable.TryRemove(symbolInfo, out _);
         }
     }
 
@@ -215,7 +220,7 @@ internal static class SymbolReflectionInfoCache
 
     private static PropertyData GetOrCreateEntryInternal(PropertyInfo propertyInfo)
     {
-        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(propertyInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        if (s_wellKnownSymbolInfoCacheKeyTable.TryGetValue(propertyInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
             if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
@@ -234,10 +239,11 @@ internal static class SymbolReflectionInfoCache
 
         var descriptor = new WellKnownPropertyDescriptor(propertyInfo);
         cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForProperty(descriptor);
-        s_wellKnownSymbolCacheKeyTable[propertyInfo] = cacheKey;
-        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = propertyInfo;
+        s_wellKnownSymbolInfoCacheKeyTable[propertyInfo] = cacheKey;
+        s_reverseWellKnownSymbolInfoCacheKeyTable[cacheKey] = propertyInfo;
         MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
-        var propertyData = (PropertyData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(cacheKey));
+        var propertyData = (PropertyData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(descriptor));
+        s_reverseSymbolInfoDataCache[propertyData] = cacheKey;
         var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForProperty(propertyData);
         s_publicCacheKeyMap[publicCacheKey] = cacheKey;
         s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
@@ -354,7 +360,7 @@ internal static class SymbolReflectionInfoCache
 
     private static EventData GetOrCreateEntryInternal(EventInfo eventInfo)
     {
-        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(eventInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        if (s_wellKnownSymbolInfoCacheKeyTable.TryGetValue(eventInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
             if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
@@ -373,10 +379,11 @@ internal static class SymbolReflectionInfoCache
 
         var descriptor = new WellKnownEventDescriptor(eventInfo);
         cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForEvent(descriptor);
-        s_wellKnownSymbolCacheKeyTable[eventInfo] = cacheKey;
-        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = eventInfo;
+        s_wellKnownSymbolInfoCacheKeyTable[eventInfo] = cacheKey;
+        s_reverseWellKnownSymbolInfoCacheKeyTable[cacheKey] = eventInfo;
         MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
-        var eventData = (EventData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(cacheKey));
+        var eventData = (EventData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(descriptor));
+        s_reverseSymbolInfoDataCache[eventData] = cacheKey;
         var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForEvent(eventData);
         s_publicCacheKeyMap[publicCacheKey] = cacheKey;
         s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
@@ -493,7 +500,7 @@ internal static class SymbolReflectionInfoCache
 
     private static FieldData GetOrCreateEntryInternal(FieldInfo fieldInfo)
     {
-        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(fieldInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        if (s_wellKnownSymbolInfoCacheKeyTable.TryGetValue(fieldInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
             if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
@@ -512,10 +519,11 @@ internal static class SymbolReflectionInfoCache
 
         var descriptor = new WellKnownFieldDescriptor(fieldInfo);
         cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForField(descriptor);
-        s_wellKnownSymbolCacheKeyTable[fieldInfo] = cacheKey;
-        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = fieldInfo;
+        s_wellKnownSymbolInfoCacheKeyTable[fieldInfo] = cacheKey;
+        s_reverseWellKnownSymbolInfoCacheKeyTable[cacheKey] = fieldInfo;
         MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
-        var fieldData = (FieldData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(cacheKey));
+        var fieldData = (FieldData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(descriptor));
+        s_reverseSymbolInfoDataCache[fieldData] = cacheKey;
         var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForField(fieldData);
         s_publicCacheKeyMap[publicCacheKey] = cacheKey;
         s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
@@ -632,7 +640,7 @@ internal static class SymbolReflectionInfoCache
 
     private static MethodData GetOrCreateEntryInternal(MethodInfo methodInfo)
     {
-        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(methodInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        if (s_wellKnownSymbolInfoCacheKeyTable.TryGetValue(methodInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
             if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
@@ -651,10 +659,11 @@ internal static class SymbolReflectionInfoCache
 
         var descriptor = new WellKnownMethodDescriptor(methodInfo);
         cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForMethod(descriptor);
-        s_wellKnownSymbolCacheKeyTable[methodInfo] = cacheKey;
-        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = methodInfo;
+        s_wellKnownSymbolInfoCacheKeyTable[methodInfo] = cacheKey;
+        s_reverseWellKnownSymbolInfoCacheKeyTable[cacheKey] = methodInfo;
         MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
-        var methodData = (MethodData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(cacheKey));
+        var methodData = (MethodData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(descriptor));
+        s_reverseSymbolInfoDataCache[methodData] = cacheKey;
         var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForMethod(methodData);
         s_publicCacheKeyMap[publicCacheKey] = cacheKey;
         s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
@@ -771,7 +780,7 @@ internal static class SymbolReflectionInfoCache
 
     private static ConstructorData GetOrCreateEntryInternal(ConstructorInfo constructorInfo)
     {
-        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(constructorInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        if (s_wellKnownSymbolInfoCacheKeyTable.TryGetValue(constructorInfo, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
             if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
@@ -790,10 +799,11 @@ internal static class SymbolReflectionInfoCache
 
         var descriptor = new WellKnownConstructorDescriptor(constructorInfo);
         cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForConstructor(descriptor);
-        s_wellKnownSymbolCacheKeyTable[constructorInfo] = cacheKey;
-        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = constructorInfo;
+        s_wellKnownSymbolInfoCacheKeyTable[constructorInfo] = cacheKey;
+        s_reverseWellKnownSymbolInfoCacheKeyTable[cacheKey] = constructorInfo;
         MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
-        var constructorData = (ConstructorData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(cacheKey));
+        var constructorData = (ConstructorData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(descriptor));
+        s_reverseSymbolInfoDataCache[constructorData] = cacheKey;
         var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForConstructor(constructorData);
         s_publicCacheKeyMap[publicCacheKey] = cacheKey;
         s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
@@ -917,7 +927,7 @@ internal static class SymbolReflectionInfoCache
 
     private static TypeData GetOrCreateEntryInternal(Type type)
     {
-        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(type, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        if (s_wellKnownSymbolInfoCacheKeyTable.TryGetValue(type, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
             if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
@@ -933,10 +943,11 @@ internal static class SymbolReflectionInfoCache
 
         var descriptor = new WellKnownTypeDescriptor(type);
         cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForType(descriptor);
-        s_wellKnownSymbolCacheKeyTable[type] = cacheKey;
-        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = type;
+        s_wellKnownSymbolInfoCacheKeyTable[type] = cacheKey;
+        s_reverseWellKnownSymbolInfoCacheKeyTable[cacheKey] = type;
         MonitorAssemblyLoadContextOfType(cacheKey, type);
-        var typeData = (TypeData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(cacheKey));
+        var typeData = (TypeData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(descriptor));
+        s_reverseSymbolInfoDataCache[typeData] = cacheKey;
         var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForType(typeData);
         s_publicCacheKeyMap[publicCacheKey] = cacheKey;
         s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
@@ -1053,7 +1064,7 @@ internal static class SymbolReflectionInfoCache
 
     private static ParameterData GetOrCreateEntryInternal(ParameterInfo parameter)
     {
-        if (s_wellKnownSymbolCacheKeyTable.TryGetValue(parameter, out SymbolReflectionInfoCacheKeyInternal cacheKey))
+        if (s_wellKnownSymbolInfoCacheKeyTable.TryGetValue(parameter, out SymbolReflectionInfoCacheKeyInternal cacheKey))
         {
             // If we found a key in the cache, we can use it to omit key generation costs
             if (s_symbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? symbolInfoData)
@@ -1077,12 +1088,13 @@ internal static class SymbolReflectionInfoCache
 
         var descriptor = new WellKnownParameterDescriptor(parameter);
         cacheKey = SymbolReflectionInfoCacheKeyInternal.CreateForParameter(descriptor);
-        s_wellKnownSymbolCacheKeyTable[parameter] = cacheKey;
-        s_reverseWellKnownSymbolCacheKeyTable[cacheKey] = parameter;
+        s_wellKnownSymbolInfoCacheKeyTable[parameter] = cacheKey;
+        s_reverseWellKnownSymbolInfoCacheKeyTable[cacheKey] = parameter;
 
         Type declaringType = parameter.Member.DeclaringType ?? throw new InvalidOperationException($"The declaring type of the member '{parameter.Member.Name}' for the parameter '{parameter.Name}' cannot be null.");
         MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
-        var parameterData = (ParameterData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(cacheKey));
+        var parameterData = (ParameterData)s_symbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(descriptor));
+        s_reverseSymbolInfoDataCache[parameterData] = cacheKey;
         var publicCacheKey = SymbolReflectionInfoCacheKey.CreateForParameter(parameterData);
         s_publicCacheKeyMap[publicCacheKey] = cacheKey;
         s_reversePublicCacheKeyMap[cacheKey] = publicCacheKey;
@@ -2142,14 +2154,15 @@ internal static class SymbolReflectionInfoCache
     #region SymbolInfoDataCacheProvider
     internal abstract class SymbolInfoDataCacheProvider
     {
-        internal SymbolReflectionInfoCacheKeyInternal CacheKey { get; }
-
-        protected SymbolInfoDataCacheProvider(SymbolReflectionInfoCacheKeyInternal cacheKey) => CacheKey = cacheKey;
-
         protected SymbolReflectionInfoCacheKey GetPublicCacheKey()
         {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(CacheKey);
-            return s_reversePublicCacheKeyMap[CacheKey];
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo<SymbolInfoData>(this);
+            if (!s_reverseSymbolInfoDataCache.TryGetValue((SymbolInfoData)this, out SymbolReflectionInfoCacheKeyInternal internalCacheKey))
+            {
+                return s_reversePublicCacheKeyMap[internalCacheKey];
+            }
+
+            throw new InvalidOperationException("The cache key for the symbol info data instance could not be found. This indicates a problem with the cache key management in the SymbolReflectionInfoCache and should be reported.");
         }
 
         protected static PropertyData GetOrCreateCacheEntry(PropertyInfo propertyInfo)
@@ -2194,43 +2207,345 @@ internal static class SymbolReflectionInfoCache
             return SymbolReflectionInfoCache.GetOrCreateEntryInternal(parameterInfo);
         }
 
-        protected static TSymbolInfoData GetOrCreateCacheEntry<TSymbolInfoData>(SymbolReflectionInfoCacheKeyInternal cacheKeyInternal)
-            where TSymbolInfoData : SymbolInfoData
-        {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKeyInternal);
-            return typeof(TSymbolInfoData) switch
-            {
-                Type type when type == typeof(PropertyData) => SymbolReflectionInfoCache.TryGetPropertyDataCacheEntryInternal(cacheKeyInternal, out PropertyData? data)
-                    && data is TSymbolInfoData typedData
-                        ? typedData
-                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
-                Type type when type == typeof(TypeData) => SymbolReflectionInfoCache.TryGetTypeDataCacheEntryInternal(cacheKeyInternal, out TypeData? data)
-                    && data is TSymbolInfoData typedData
-                        ? typedData
-                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
-                Type type when type == typeof(EventData) => SymbolReflectionInfoCache.TryGetEventDataCacheEntryInternal(cacheKeyInternal, out EventData? data)
-                    && data is TSymbolInfoData typedData
-                        ? typedData
-                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
-                Type type when type == typeof(MethodData) => SymbolReflectionInfoCache.TryGetMethodDataCacheEntryInternal(cacheKeyInternal, out MethodData? data)
-                    && data is TSymbolInfoData typedData
-                        ? typedData
-                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
-                Type type when type == typeof(ConstructorData) => SymbolReflectionInfoCache.TryGetConstructorDataCacheEntryInternal(cacheKeyInternal, out ConstructorData? data)
-                    && data is TSymbolInfoData typedData
-                        ? typedData
-                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
-                Type type when type == typeof(FieldData) => SymbolReflectionInfoCache.TryGetFieldDataCacheEntryInternal(cacheKeyInternal, out FieldData? data)
-                    && data is TSymbolInfoData typedData
-                        ? typedData
-                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
-                Type type when type == typeof(ParameterData) => SymbolReflectionInfoCache.TryGetParameterDataCacheEntryInternal(cacheKeyInternal, out ParameterData? data)
-                    && data is TSymbolInfoData typedData
-                        ? typedData
-                        : throw new ReflectionCacheEntryAlcNotAvailableException(),
-                _ => throw new NotSupportedException($"The specified symbol info data type '{typeof(TSymbolInfoData).FullName}' is not supported.")
-            };
-        }
+        //protected static TSymbolInfoData GetOrCreateCacheEntry<TSymbolInfoData>(SymbolReflectionInfoCacheKeyInternal cacheKeyInternal)
+        //    where TSymbolInfoData : SymbolInfoData
+        //{
+        //    ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKeyInternal);
+        //    return typeof(TSymbolInfoData) switch
+        //    {
+        //        Type type when type == typeof(PropertyData) => SymbolReflectionInfoCache.TryGetPropertyDataCacheEntryInternal(cacheKeyInternal, out PropertyData? data)
+        //            && data is TSymbolInfoData typedData
+        //                ? typedData
+        //                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+        //        Type type when type == typeof(TypeData) => SymbolReflectionInfoCache.TryGetTypeDataCacheEntryInternal(cacheKeyInternal, out TypeData? data)
+        //            && data is TSymbolInfoData typedData
+        //                ? typedData
+        //                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+        //        Type type when type == typeof(EventData) => SymbolReflectionInfoCache.TryGetEventDataCacheEntryInternal(cacheKeyInternal, out EventData? data)
+        //            && data is TSymbolInfoData typedData
+        //                ? typedData
+        //                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+        //        Type type when type == typeof(MethodData) => SymbolReflectionInfoCache.TryGetMethodDataCacheEntryInternal(cacheKeyInternal, out MethodData? data)
+        //            && data is TSymbolInfoData typedData
+        //                ? typedData
+        //                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+        //        Type type when type == typeof(ConstructorData) => SymbolReflectionInfoCache.TryGetConstructorDataCacheEntryInternal(cacheKeyInternal, out ConstructorData? data)
+        //            && data is TSymbolInfoData typedData
+        //                ? typedData
+        //                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+        //        Type type when type == typeof(FieldData) => SymbolReflectionInfoCache.TryGetFieldDataCacheEntryInternal(cacheKeyInternal, out FieldData? data)
+        //            && data is TSymbolInfoData typedData
+        //                ? typedData
+        //                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+        //        Type type when type == typeof(ParameterData) => SymbolReflectionInfoCache.TryGetParameterDataCacheEntryInternal(cacheKeyInternal, out ParameterData? data)
+        //            && data is TSymbolInfoData typedData
+        //                ? typedData
+        //                : throw new ReflectionCacheEntryAlcNotAvailableException(),
+        //        _ => throw new NotSupportedException($"The specified symbol info data type '{typeof(TSymbolInfoData).FullName}' is not supported.")
+        //    };
+        //}
     }
     #endregion SymbolInfoDataCacheProvider
+
+    #region SymbolReflectionInfoCacheKeyInternal
+    /// <summary>
+    /// Represents a unique cache key for a well-known symbol, such as a type, method, property, event, field, constructor, or
+    /// parameter, used in reflection-based symbol lookup and caching scenarios.
+    /// </summary>
+    /// <remarks>A <see cref="SymbolReflectionInfoCacheKeyInternal"/> encapsulates identifying information for a symbol, supporting
+    /// both well-known symbols (with runtime metadata) and anonymous symbols (identified by signature). This struct is
+    /// used to efficiently cache and retrieve reflection information for various symbol kinds, including support for
+    /// explicit interface implementations and anonymous members. Instances are typically created using the provided
+    /// static factory methods, which enforce correct construction for each symbol kind. <see cref="SymbolReflectionInfoCacheKeyInternal"/> is
+    /// immutable and can be used as a key in hash-based collections.
+    /// </remarks>
+    private readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<SymbolReflectionInfoCacheKeyInternal>
+    {
+        /// <summary>
+        /// Represents an unknown or unspecified parameter count.
+        /// </summary>
+        /// <remarks>Use this constant to indicate that the number of parameters is not known or cannot be
+        /// determined. This value is typically used in APIs where the parameter count is optional or
+        /// variable.</remarks>
+        public const int UnknownParameterCountOrPosition = -1;
+
+        // TODO::Throw exceptions based on SymbolKind and  IsAnonymousKey when properties are accessed that are not valid for the specific SymbolKind.
+
+        /// <summary>
+        /// Gets the name of the symbol represented by this instance.
+        /// </summary>
+        /// <value>The name of the symbol, such as the method name, property name, event name, field name, or type name.</value>
+        public readonly string SymbolName { get; }
+
+        /// <summary>
+        /// Gets the kind of symbol represented by this instance.
+        /// </summary>
+        /// <value>The kind of symbol, such as type, method, property, event, field, constructor, or parameter.</value>
+        public readonly SymbolKind SymbolKind { get; }
+
+        private readonly WellKnownParameterDescriptor _parameterDescriptor;
+        public WellKnownParameterDescriptor ParameterDescriptor => SymbolKind is SymbolKind.Parameter
+            ? _parameterDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownParameterDescriptor>([SymbolKind.Parameter]);
+
+        private readonly WellKnownPropertyDescriptor _propertyDescriptor;
+        public WellKnownPropertyDescriptor PropertyDescriptor => SymbolKind is SymbolKind.MemberProperty
+            ? _propertyDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownPropertyDescriptor>([SymbolKind.MemberProperty]);
+
+        private readonly WellKnownMethodDescriptor _methodDescriptor;
+        public WellKnownMethodDescriptor MethodDescriptor => SymbolKind is SymbolKind.MemberMethod
+            ? _methodDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownMethodDescriptor>([SymbolKind.MemberMethod]);
+
+        private readonly WellKnownConstructorDescriptor _constructorDescriptor;
+        public WellKnownConstructorDescriptor ConstructorDescriptor => SymbolKind is SymbolKind.MemberConstructor
+            ? _constructorDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownConstructorDescriptor>([SymbolKind.MemberConstructor]);
+
+        private readonly WellKnownTypeDescriptor _typeDescriptor;
+        public WellKnownTypeDescriptor TypeDescriptor => SymbolKind is SymbolKind.Type
+            ? _typeDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownTypeDescriptor>([SymbolKind.Type]);
+
+        private readonly WellKnownFieldDescriptor _fieldDescriptor;
+        public WellKnownFieldDescriptor FieldDescriptor => SymbolKind is SymbolKind.MemberField
+            ? _fieldDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownFieldDescriptor>([SymbolKind.MemberField]);
+
+        private readonly WellKnownEventDescriptor _eventDescriptor;
+        public WellKnownEventDescriptor EventDescriptor => SymbolKind is SymbolKind.MemberEvent
+            ? _eventDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownEventDescriptor>([SymbolKind.MemberEvent]);
+
+        private readonly int _hashCode;
+
+        private SymbolReflectionInfoCacheKeyInternal(
+            string name,
+            SymbolKind symbolKind,
+            WellKnownTypeDescriptor typeDescriptor,
+            WellKnownParameterDescriptor parameterDescriptor,
+            WellKnownMethodDescriptor methodDescriptor,
+            WellKnownConstructorDescriptor constructorDescriptor,
+            WellKnownPropertyDescriptor propertyDescriptor,
+            WellKnownFieldDescriptor fieldDescriptor,
+            WellKnownEventDescriptor eventDescriptor)
+        {
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
+            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(symbolKind, [SymbolKind.Undefined], nameof(symbolKind));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
+
+            SymbolKind = symbolKind;
+            _typeDescriptor = typeDescriptor;
+            _parameterDescriptor = parameterDescriptor;
+            _methodDescriptor = methodDescriptor;
+            _constructorDescriptor = constructorDescriptor;
+            _propertyDescriptor = propertyDescriptor;
+            _fieldDescriptor = fieldDescriptor;
+            _eventDescriptor = eventDescriptor;
+            SymbolName = name;
+
+            _hashCode = ComputeHashCode();
+        }
+
+        /// <summary>
+        /// Creates a cache key for an event symbol.
+        /// </summary>
+        /// <param name="eventDescriptor">The event descriptor.</param>
+        /// <returns>The unique cache key for the event symbol.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventDescriptor"/> is <see langword="null"/>.</exception>
+        internal static SymbolReflectionInfoCacheKeyInternal CreateForEvent(WellKnownEventDescriptor eventDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(eventDescriptor);
+
+            return new SymbolReflectionInfoCacheKeyInternal(
+                eventDescriptor.EventInfo.Name,
+                SymbolKind.MemberEvent,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default);
+        }
+
+        /// <summary>
+        /// Creates a cache key for a well-known property symbol.
+        /// </summary>
+        /// <param name="propertyDescriptor">The <see cref="Net.WellKnownPropertyDescriptor"/> that describes a well-known property (which is where the <see cref="PropertyInfo"/> is available) or an anonymous property (which when only signature information is available).</param>
+        /// <remarks>This method creates a unique cache key for well-known or anonymous property symbols, including indexer properties.
+        /// <para/>For maximum performance and zero ambiguity, always prefer to create property cache keys using well-known <see cref="PropertyInfo"/> instances via the <see cref="Net.WellKnownPropertyDescriptor"/>.</remarks>
+        /// <returns>The unique cache key for the well-known property symbol.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when
+        /// <list type="bullet">
+        /// <item><paramref name="propertyDescriptor"/> or its declaring type is <see langword="default"/>.</item>
+        /// </list>
+        /// </exception>
+        public static SymbolReflectionInfoCacheKeyInternal CreateForProperty(WellKnownPropertyDescriptor propertyDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(propertyDescriptor);
+
+            return new SymbolReflectionInfoCacheKeyInternal(
+                propertyDescriptor.PropertyInfo.Name,
+                SymbolKind.MemberProperty,
+                default,
+                default,
+                default,
+                default,
+                propertyDescriptor,
+                default,
+                default);
+        }
+
+        /// <summary>
+        /// Creates a cache key for a well-known method symbol.
+        /// </summary>
+        /// <param name="methodDescriptor">The <see cref="Net.WellKnownMethodDescriptor"/> that describes a well-known method (which is where the <see cref="MethodInfo"/> is available).</param>
+        /// <remarks>This method creates a unique cache key for well-known or anonymous method symbols, including regular methods, property accessors, and event accessors.
+        /// <para/>For maximum performance and zero ambiguity, always prefer to create method cache keys using well-known <see cref="MethodInfo"/> instances via the <see cref="Net.WellKnownMethodDescriptor"/>.</remarks>
+        /// <returns>The unique cache key for the well-known method symbol.</returns>
+        internal static SymbolReflectionInfoCacheKeyInternal CreateForMethod(WellKnownMethodDescriptor methodDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(methodDescriptor);
+
+            return new SymbolReflectionInfoCacheKeyInternal(
+                methodDescriptor.MethodName,
+                SymbolKind.MemberMethod,
+                default,
+                default,
+                methodDescriptor,
+                default,
+                default,
+                default,
+                default);
+        }
+
+        internal static SymbolReflectionInfoCacheKeyInternal CreateForType(WellKnownTypeDescriptor typeDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(typeDescriptor);
+
+            return new SymbolReflectionInfoCacheKeyInternal(
+                typeDescriptor.TypeName,
+                SymbolKind.Type,
+                typeDescriptor,
+                default,
+                default,
+                default,
+                default,
+                default,
+                default);
+        }
+
+        internal static SymbolReflectionInfoCacheKeyInternal CreateForField(WellKnownFieldDescriptor fieldDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(fieldDescriptor);
+
+            return new SymbolReflectionInfoCacheKeyInternal(
+                fieldDescriptor.FieldName,
+                SymbolKind.MemberField,
+                default,
+                default,
+                default,
+                default,
+                default,
+                fieldDescriptor,
+                default);
+        }
+
+        /// <summary>
+        /// Creates a new cache key for a well-known constructor using the specified <see cref="WellKnownMethodDescriptor"/>.
+        /// </summary>
+        /// <remarks>This method is used to create a unique cache key for constructor symbols of which the caller does not have a direct representation <see cref="ConstructorInfo"/> and instead only signature information is available.
+        ///<para/>For maximum performance and zero ambiguity, always prefer to create constructor cache keys using well-known <see cref="ConstructorInfo"/> instances via the <see cref="Net.WellKnownMethodDescriptor"/>.</remarks>
+        /// <param name="constructorDescriptor"></param>
+        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKeyInternal"/> representing the specified well-known constructor.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="constructorDescriptor"/> is <see langword="default"/>.</exception>
+        internal static SymbolReflectionInfoCacheKeyInternal CreateForConstructor(WellKnownConstructorDescriptor constructorDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(constructorDescriptor);
+
+            return new SymbolReflectionInfoCacheKeyInternal(
+                string.Empty,
+                SymbolKind.MemberConstructor,
+                default,
+                default,
+                default,
+                constructorDescriptor,
+                default,
+                default,
+                default);
+        }
+
+        internal static SymbolReflectionInfoCacheKeyInternal CreateForParameter(WellKnownParameterDescriptor parameterDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterDescriptor);
+
+            return new SymbolReflectionInfoCacheKeyInternal(
+                parameterDescriptor.ParameterName,
+                SymbolKind.Parameter,
+                default,
+                parameterDescriptor,
+                default,
+                default,
+                default,
+                default,
+                default);
+        }
+
+        public override int GetHashCode()
+            => _hashCode;
+
+        private int ComputeHashCode()
+        {
+            unchecked
+            {
+                if (_hashCode != 0)
+                {
+                    return _hashCode;
+                }
+
+                var hashCode = new HashCode();
+                hashCode.Add(SymbolName);
+                hashCode.Add(SymbolKind);
+                hashCode.Add(_parameterDescriptor);
+                hashCode.Add(_methodDescriptor);
+                hashCode.Add(_constructorDescriptor);
+                hashCode.Add(_propertyDescriptor);
+                hashCode.Add(_fieldDescriptor);
+                hashCode.Add(_eventDescriptor);
+                hashCode.Add(_typeDescriptor);
+
+                return hashCode.ToHashCode();
+            }
+        }
+
+        public override bool Equals(object obj) => obj is SymbolReflectionInfoCacheKeyInternal other && Equals(other);
+
+        public bool Equals(SymbolReflectionInfoCacheKeyInternal other) => SymbolName == other.SymbolName
+            && SymbolKind == other.SymbolKind
+            && _parameterDescriptor == other._parameterDescriptor
+            && _methodDescriptor == other._methodDescriptor
+            && _constructorDescriptor == other._constructorDescriptor
+            && _propertyDescriptor == other._propertyDescriptor
+            && _fieldDescriptor == other._fieldDescriptor
+            && _eventDescriptor == other._eventDescriptor
+            && _typeDescriptor == other._typeDescriptor;
+
+        public static bool operator ==(SymbolReflectionInfoCacheKeyInternal left, SymbolReflectionInfoCacheKeyInternal right) => left.Equals(right);
+        public static bool operator !=(SymbolReflectionInfoCacheKeyInternal left, SymbolReflectionInfoCacheKeyInternal right) => !(left == right);
+
+        [DoesNotReturn]
+        private TResult ThrowInvalidPropertyContextException<TResult>(ReadOnlySpan<SymbolKind> allowedSymbolKinds, [CallerMemberName] string? propertyName = null)
+        {
+            ArgumentExceptionAdvanced.ThrowIfTrue(allowedSymbolKinds.IsEmpty, nameof(allowedSymbolKinds), "At least one allowed symbol kind must be provided.");
+
+            string allowedKinds = allowedSymbolKinds.JoinToString(kind => $"{typeof(SymbolKind).FullName}.{kind}", ", ");
+            return allowedSymbolKinds.Length > 1
+                ? throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(SymbolKind)}' returns any of the following values: {allowedKinds}.")
+                : throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(SymbolKind)}' returns the value '{allowedKinds[0]}'.");
+        }
+    }
+    #endregion SymbolReflectionInfoCacheKeyInternal
 }
+

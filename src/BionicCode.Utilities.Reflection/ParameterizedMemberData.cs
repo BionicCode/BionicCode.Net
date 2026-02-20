@@ -19,9 +19,9 @@ internal abstract class ParameterizedMemberData : MemberData
     private bool? _isMethod;
     private bool? _isSpecialName;
 
-    protected ParameterizedMemberData(SymbolReflectionInfoCacheKeyInternal symbolReflectionInfoCacheKey)
-        : base(symbolReflectionInfoCacheKey.SymbolName, symbolReflectionInfoCacheKey.SymbolKind, symbolReflectionInfoCacheKey)
-        => ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolReflectionInfoCacheKey.SymbolKind, [SymbolKind.MemberMethod, SymbolKind.MemberConstructor], nameof(symbolReflectionInfoCacheKey));
+    protected ParameterizedMemberData(string symbolName, SymbolKind symbolKind)
+        : base(symbolName, symbolKind)
+        => ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolKind, [SymbolKind.MemberMethod, SymbolKind.MemberConstructor], nameof(symbolKind));
 
     protected override MemberInfo MemberInfo => MethodBase;
     internal abstract ParameterList Parameters { get; }

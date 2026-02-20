@@ -40,13 +40,13 @@ internal sealed class EventData : MemberData
     private bool? _isExplicitInterfaceImplementation;
     private IEventDataView? _eventDataView;
 
-    internal EventData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
-        : base(symbolInfoDataCacheKey.EventDescriptor.EventName, SymbolKind.MemberEvent, symbolInfoDataCacheKey)
+    internal EventData(WellKnownEventDescriptor descriptor)
+        : base(descriptor.EventName, SymbolKind.MemberEvent)
     {
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey.EventDescriptor, nameof(symbolInfoDataCacheKey));
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(descriptor, nameof(descriptor));
 
-        _descriptor = symbolInfoDataCacheKey.EventDescriptor;
-        EventInfo = symbolInfoDataCacheKey.EventDescriptor.EventInfo;
+        _descriptor = descriptor;
+        EventInfo = _descriptor.EventInfo;
     }
 
     internal IEventDataView View => _eventDataView

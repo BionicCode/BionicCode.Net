@@ -47,16 +47,18 @@ internal sealed class ParameterData : SymbolInfoData
     private TypeList? _requiredModifiers;
     private TypeList? _optionalModifiers;
     private bool? _isDynamic;
+    private readonly WellKnownParameterDescriptor _descriptor;
 
-    internal ParameterData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
-        : base(symbolInfoDataCacheKey.ParameterDescriptor.ParameterName, SymbolKind.Parameter, symbolInfoDataCacheKey)
+    internal ParameterData(WellKnownParameterDescriptor descriptor)
+        : base(descriptor.ParameterName, SymbolKind.Parameter)
     {
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey);
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(descriptor);
 
-        ParameterInfo = symbolInfoDataCacheKey.ParameterDescriptor.ParameterInfo;
+        _descriptor = descriptor;
+        ParameterInfo = _descriptor.ParameterInfo;
     }
 
-    internal IParameterDataView View => _parameterDataView
+    internal new IParameterDataView View => _parameterDataView
         ??= new ParameterDataView(GetPublicCacheKey());
 
     internal RuntimeTypeHandle DeclaringTypeHandle => _declaringTypeHandle ??= ParameterInfo.Member.DeclaringType?.TypeHandle ?? throw new NotSupportedException($"The underlying '{typeof(ParameterInfo).FullName}' belongs to a member that does not return a declaring type.");
@@ -295,8 +297,8 @@ internal sealed class ParameterData : SymbolInfoData
     /// <returns></returns>
     private static bool IsRefInternal(ParameterData parameterData)
     {
-        if (parameterData.IsMethodReturnParameter 
-            || !parameterData.IsByRef 
+        if (parameterData.IsMethodReturnParameter
+            || !parameterData.IsByRef
             || parameterData.IsOut)
         {
             return false;
@@ -322,7 +324,7 @@ internal sealed class ParameterData : SymbolInfoData
         if (parameterData.IsMethodReturnParameter)
         {
             return parameterData.HasCompilerAttribute<IsReadOnlyAttribute>(ReflectionConstants.IsReadOnlyAttributeFullName)
-                ||parameterData.HasRequiredCustomModifier(ReflectionConstants.InAttributeFullName)
+                || parameterData.HasRequiredCustomModifier(ReflectionConstants.InAttributeFullName)
                 || parameterData.HasRequiredCustomModifier(ReflectionConstants.IsReadOnlyAttributeFullName);
         }
         else
@@ -333,14 +335,14 @@ internal sealed class ParameterData : SymbolInfoData
         }
     }
 
-    private static bool IsOutParameter(ParameterData parameterData) => !parameterData.IsMethodReturnParameter 
-        && parameterData.IsByRef 
+    private static bool IsOutParameter(ParameterData parameterData) => !parameterData.IsMethodReturnParameter
+        && parameterData.IsByRef
         && parameterData.ParameterInfo.IsOut;
 
     private static bool IsInParameter(ParameterData parameterData)
     {
         if (parameterData.IsMethodReturnParameter
-            || !parameterData.ParameterTypeData.IsByRef 
+            || !parameterData.ParameterTypeData.IsByRef
             || parameterData.IsOut)
         {
             return false;

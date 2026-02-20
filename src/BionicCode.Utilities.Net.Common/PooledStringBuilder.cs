@@ -10,10 +10,13 @@ using System.Text;
 public class PooledStringBuilder : IDisposable
 {
     private const string StringBuilderRecycledExceptionMessage = "Underlying StringBuilder has been recycled. Create a new PooledStringBuilder instance.";
-
+    public const char DefaultIndentationChar = ' ';
+    public const int DefaultIndentationLevel = 4;
     private StringBuilder? _stringBuilder;
     private StringBuilder StringBuilder
         => _stringBuilder ?? throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
+
+    public char IndentationChar { get; set; } = DefaultIndentationChar;
 
     public bool IsDisposed => IsRecycled;
 
@@ -49,10 +52,10 @@ public class PooledStringBuilder : IDisposable
         => StringBuilderFactory.GetOrCreate(seed);
 
     public static PooledStringBuilder Create(StringBuilder stringBuilder)
-        => new PooledStringBuilder(stringBuilder);
+        => new(stringBuilder);
 
     internal static PooledStringBuilder CreateInternal(StringBuilder stringBuilder)
-        => new PooledStringBuilder(stringBuilder);
+        => new(stringBuilder);
 
     // ============================================================================
     // CAPACITY & CONVERSION METHODS
@@ -99,6 +102,8 @@ public class PooledStringBuilder : IDisposable
 
     public PooledStringBuilder Append(char value, int repeatCount)
     {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(repeatCount);
+
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value, repeatCount);
         return this;
@@ -111,10 +116,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(char value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(IndentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(bool value)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(bool value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(IndentationChar, indentationLevel)
+            .Append(value);
         return this;
     }
 
@@ -125,10 +150,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(sbyte value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(IndentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(byte value)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(byte value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(IndentationChar, indentationLevel)
+            .Append(value);
         return this;
     }
 
@@ -139,10 +184,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(short value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(IndentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(int value)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(int value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
         return this;
     }
 
@@ -153,10 +218,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(long value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(float value)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(float value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
         return this;
     }
 
@@ -167,10 +252,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(double value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(decimal value)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(decimal value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
         return this;
     }
 
@@ -181,10 +286,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(ushort value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(uint value)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(uint value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
         return this;
     }
 
@@ -195,10 +320,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(ulong value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(object? value)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(object? value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
         return this;
     }
 
@@ -209,10 +354,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(string value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(string? value, int startIndex, int count)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value, startIndex, count);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(string? value, int startIndex, int count, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value, startIndex, count);
         return this;
     }
 
@@ -223,10 +388,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(char[]? value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(char[]? value, int startIndex, int charCount)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value, startIndex, charCount);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(char[]? value, int startIndex, int charCount, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value, startIndex, charCount);
         return this;
     }
 
@@ -237,10 +422,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(ReadOnlySpan<char> value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
+        return this;
+    }
+
     public PooledStringBuilder Append(ReadOnlyMemory<char> value)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(ReadOnlyMemory<char> value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
         return this;
     }
 
@@ -251,10 +456,30 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(ReadOnlySpan<char> value, int startIndex, int count, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value.Slice(startIndex, count));
+        return this;
+    }
+
     public PooledStringBuilder Append(StringBuilder? value)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.Append(value);
+        return this;
+    }
+
+    public PooledStringBuilder AppendIndented(StringBuilder? value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value);
         return this;
     }
 
@@ -265,6 +490,16 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public PooledStringBuilder AppendIndented(StringBuilder? value, int startIndex, int count, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value, startIndex, count);
+        return this;
+    }
+
     public unsafe PooledStringBuilder Append(char* value, int valueCount)
     {
         StringBuilder builder = StringBuilder;
@@ -272,10 +507,26 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    public unsafe PooledStringBuilder AppendIndented(char* value, int valueCount, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .Append(value, valueCount);
+        return this;
+    }
+
     public PooledStringBuilder Append([InterpolatedStringHandlerArgument("")] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
         => this;
 
+    public PooledStringBuilder AppendIndented(int indentationLevel, char indentationChar, [InterpolatedStringHandlerArgument("", nameof(indentationLevel), nameof(indentationChar))] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
+        => this;
+
     public PooledStringBuilder Append(IFormatProvider? provider, [InterpolatedStringHandlerArgument("", nameof(provider))] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
+        => this;
+
+    public PooledStringBuilder AppendIndented(IFormatProvider? provider, int indentationLevel, char indentationChar, [InterpolatedStringHandlerArgument("", nameof(provider), nameof(indentationLevel), nameof(indentationChar))] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
         => this;
 
     // ============================================================================
@@ -289,6 +540,31 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Appends the default line terminator to the end of the current <see cref="PooledStringBuilder"/> object 
+    /// <br/>and indents the next line using the specified indentation character and level, followed by the default line terminator.
+    /// </summary>
+    /// <param name="indentationLevel">The level of indentation to apply. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <returns>The current <see cref="PooledStringBuilder"/> instance.</returns>
+    public PooledStringBuilder AppendIndentedLine(int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.AppendLine()
+            .Append(indentationChar, indentationLevel);
+        return this;
+    }
+
+    /// <summary>
+    /// Appends the specified string followed by the default line terminator to the current instance of the
+    /// PooledStringBuilder.
+    /// </summary>
+    /// <remarks>This method is useful for efficiently building multi-line strings. The line terminator
+    /// appended is determined by the underlying StringBuilder implementation.</remarks>
+    /// <param name="value">The string to append. If <see langword="null"/>, only the line terminator is appended.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
     public PooledStringBuilder AppendLine(string? value)
     {
         StringBuilder builder = StringBuilder;
@@ -296,11 +572,34 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Appends a value using the specified indentation character and level, followed by the default line terminator. The indentation is applied before the value.
+    /// </summary>
+    /// <param name="value">The value to append.</param>
+    /// <param name="indentationLevel">The level of indentation to apply. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <returns>The current <see cref="PooledStringBuilder"/> instance.</returns>
+    public PooledStringBuilder AppendIndentedLine(string value, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendLine(value);
+        return this;
+    }
+
     public PooledStringBuilder AppendLine([InterpolatedStringHandlerArgument("")] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
         => AppendLine();
 
+    public PooledStringBuilder AppendIndentedLine(int indentationLevel, char indentationChar, [InterpolatedStringHandlerArgument("", nameof(indentationLevel), nameof(indentationChar))] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
+        => AppendIndentedLine(indentationLevel, indentationChar);
+
     public PooledStringBuilder AppendLine(IFormatProvider? provider, [InterpolatedStringHandlerArgument("", nameof(provider))] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
         => AppendLine();
+
+    public PooledStringBuilder AppendIndentedLine(IFormatProvider? provider, int indentationLevel, char indentationChar, [InterpolatedStringHandlerArgument("", nameof(provider), nameof(indentationLevel), nameof(indentationChar))] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
+        => AppendIndentedLine(indentationLevel, indentationChar);
 
     // ============================================================================
     // APPENDJOIN METHODS
@@ -313,10 +612,53 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <param name="separator">The string to use as a separator between the values. If null, no separator is inserted.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">An array of objects to join and append. Each <see cref="object"/> is converted to its <see cref="string"/> representation.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin(string? separator, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar, params object?[] values)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
+        return this;
+    }
+
     public PooledStringBuilder AppendJoin<T>(string? separator, IEnumerable<T> values)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.AppendJoin(separator, values);
+        return this;
+    }
+
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <typeparam name="T">The type of the elements in the collection to join. Each element is converted to its string representation.</typeparam>
+    /// <param name="separator">The string to use as a separator between the values. If null, no separator is inserted.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">A collection of objects to join and append. Each item is converted to its <see cref="string"/> representation.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin<T>(string? separator, IEnumerable<T> values, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
         return this;
     }
 
@@ -327,10 +669,52 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <param name="separator">The string to use as a separator between the values. If null, no separator is inserted.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">An array of <see cref="string"/> to join and append.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin(string? separator, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar, params string?[] values)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
+        return this;
+    }
+
     public PooledStringBuilder AppendJoin(char separator, params object?[] values)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.AppendJoin(separator, values);
+        return this;
+    }
+
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <param name="separator">The character to use as a separator between the values.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">An array of objects to join and append. Each <see cref="object"/> is converted to its <see cref="string"/> representation.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin(char separator, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar, params object?[] values)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
         return this;
     }
 
@@ -341,10 +725,53 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <typeparam name="T">The type of the elements in the collection to join. Each element is converted to its string representation.</typeparam>
+    /// <param name="separator">The character to use as a separator between the values.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">A collection of objects to join and append. Each object is converted to its <see cref="string"/> representation.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin<T>(char separator, IEnumerable<T> values, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
+        return this;
+    }
+
     public PooledStringBuilder AppendJoin(char separator, params string?[] values)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.AppendJoin(separator, values);
+        return this;
+    }
+
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <param name="separator">The character to use as a separator between the values.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">An array of <see cref="string"/> to join and append.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin(char separator, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar, params string?[] values)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
         return this;
     }
 
@@ -357,10 +784,52 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <param name="separator">The string to use as a separator between the values. If null, no separator is inserted.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">An array of <see cref="ReadOnlySpan{T}"/> to join and append. Each <see cref="object"/> is converted to its <see cref="string"/> representation.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin(string? separator, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar, params ReadOnlySpan<object?> values)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
+        return this;
+    }
+
     public PooledStringBuilder AppendJoin(string? separator, params ReadOnlySpan<string?> values)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.AppendJoin(separator, values);
+        return this;
+    }
+
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <param name="separator">The string to use as a separator between the values. If null, no separator is inserted.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">An array of <see cref="ReadOnlySpan{T}"/> to join and append.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin(string? separator, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar, params ReadOnlySpan<string?> values)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
         return this;
     }
 
@@ -371,10 +840,52 @@ public class PooledStringBuilder : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <param name="separator">The string to use as a separator between the values. If null, no separator is inserted.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">An array of <see cref="ReadOnlySpan{T}"/> to join and append. Each <see cref="object"/> is converted to its <see cref="string"/> representation.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin(char separator, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar, params ReadOnlySpan<object?> values)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
+        return this;
+    }
+
     public PooledStringBuilder AppendJoin(char separator, params ReadOnlySpan<string?> values)
     {
         StringBuilder builder = StringBuilder;
         _ = builder.AppendJoin(separator, values);
+        return this;
+    }
+
+    /// <summary>
+    /// Appends the specified values to the current instance, joined by a separator and preceded by a repeated
+    /// indentation character.
+    /// </summary>
+    /// <remarks>This method is useful for formatting structured text output with indentation, such as
+    /// generating code or hierarchical data representations.</remarks>
+    /// <param name="separator">The character to use as a separator between the values. If null, no separator is inserted.</param>
+    /// <param name="indentationLevel">The number of times to repeat the indentation character. Must be zero or greater. The default is <see cref="DefaultIndentationLevel"/>.</param>
+    /// <param name="indentationChar">The character to use for indentation. Defaults to a space character if not specified. The default is <see cref="DefaultIndentationChar"/>.</param>
+    /// <param name="values">An array of <see cref="ReadOnlySpan{T}"/> to join and append.</param>
+    /// <returns>The current instance of the <see cref="PooledStringBuilder"/>, enabling method chaining.</returns>
+    public PooledStringBuilder AppendIndentedJoin(char separator, int indentationLevel = DefaultIndentationLevel, char indentationChar = DefaultIndentationChar, params ReadOnlySpan<string?> values)
+    {
+        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+        StringBuilder builder = StringBuilder;
+        _ = builder.Append(indentationChar, indentationLevel)
+            .AppendJoin(separator, values);
         return this;
     }
 
@@ -802,6 +1313,48 @@ public class PooledStringBuilder : IDisposable
                 formattedCount,
                 wrappedStringBuilder,
                 provider);
+        }
+
+        // Constructor for Append(provider, indentationChar, indentationLevel, $"...")
+        public AppendInterpolatedStringHandler(
+            int literalLength,
+            int formattedCount,
+            PooledStringBuilder pooledBuilder,
+            IFormatProvider? provider,
+            char indentationChar,
+            int indentationLevel)
+        {
+            ArgumentNullException.ThrowIfNull(pooledBuilder);
+            ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+            StringBuilder wrappedStringBuilder = pooledBuilder.StringBuilder
+                .Append(indentationChar, indentationLevel);
+
+            _inner = new StringBuilder.AppendInterpolatedStringHandler(
+                literalLength,
+                formattedCount,
+                wrappedStringBuilder,
+                provider);
+        }
+
+        // Constructor for Append(indentationChar, indentationLevel, $"...")
+        public AppendInterpolatedStringHandler(
+            int literalLength,
+            int formattedCount,
+            PooledStringBuilder pooledBuilder,
+            char indentationChar,
+            int indentationLevel)
+        {
+            ArgumentNullException.ThrowIfNull(pooledBuilder);
+            ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(indentationLevel);
+
+            StringBuilder wrappedStringBuilder = pooledBuilder.StringBuilder
+                .Append(indentationChar, indentationLevel);
+
+            _inner = new StringBuilder.AppendInterpolatedStringHandler(
+                literalLength,
+                formattedCount,
+                wrappedStringBuilder);
         }
 
         // Forward all calls to the inner handler

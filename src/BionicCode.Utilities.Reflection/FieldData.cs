@@ -38,20 +38,20 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
     private SymbolComponentInfo? _symbolComponentInfo;
     private IFieldDataView? _fieldDataView;
 
-    internal FieldData(SymbolReflectionInfoCacheKeyInternal symbolInfoDataCacheKey)
-        : base(symbolInfoDataCacheKey.FieldDescriptor.FieldName, SymbolKind.MemberField, symbolInfoDataCacheKey)
+    internal FieldData(WellKnownFieldDescriptor descriptor)
+        : base(descriptor.FieldName, SymbolKind.MemberField)
     {
-        ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey);
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(descriptor);
 
-        _descriptor = symbolInfoDataCacheKey.FieldDescriptor;
+        _descriptor = descriptor;
         _valueTypeSetValueInvokerTable = new ConcurrentDictionary<RuntimeTypeHandle, Delegate>();
-        FieldInfo = symbolInfoDataCacheKey.FieldDescriptor.FieldInfo;
+        FieldInfo = _descriptor.FieldInfo;
         Handle = FieldInfo.FieldHandle;
         DeclaringTypeHandle = FieldInfo.DeclaringType?.TypeHandle ?? throw new InvalidOperationException("Declaring type handle is not available.");
         IsExplicitInterfaceImplementation = false; // Fields cannot be explicit interface implementations
         ImplementingTypeHandle = DeclaringTypeHandle;
     }
-    internal IFieldDataView View => _fieldDataView
+    internal new IFieldDataView View => _fieldDataView
         ??= new FieldDataView(GetPublicCacheKey());
 
     internal FieldInfo FieldInfo { get; }
