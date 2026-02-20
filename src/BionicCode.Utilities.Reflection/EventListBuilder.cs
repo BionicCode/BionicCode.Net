@@ -1,106 +1,96 @@
-﻿namespace BionicCode.Utilities.Net.Reflection
+﻿namespace BionicCode.Utilities.Net.Reflection;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+internal interface IEventListBuilder
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+    TypeData DeclaringType { get; }
+    IEventListBuilder Add(EventData propertyData);
+    EventList Build();
+}
 
-    internal interface IEventListBuilder
+internal class EventListBuilder : SymbolDataListBuilder<EventData>, IEventListBuilder
+{
+    private EventList? _builderResult;
+    private readonly TypeData _declaringType;
+
+    private EventListBuilder(TypeData declaringType) : base(declaringType.Handle) => _declaringType = declaringType;
+
+    public static IEventListBuilder New(TypeData declaringType)
     {
-        IEventListBuilder Add(EventData propertyData);
-        EventList Build();
+        ArgumentNullException.ThrowIfNull(declaringType);
+
+        var builder = new EventListBuilder(declaringType);
+        return builder;
     }
 
-    internal class EventListBuilder : SymbolDataListBuilder<EventData>, IEventListBuilder
+    public static EventList Create(IEnumerable<EventInfo>? items)
     {
-        private EventList? _builderResult;
-
-        private EventListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        var eventInfoList = items?.ToList();
+        if (eventInfoList is null || eventInfoList.IsEmpty())
         {
+            return EventList.Empty;
         }
 
-        public static IEventListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        var events = new List<EventData>(eventInfoList.Count);
+        TypeData? declaringType = null;
+        foreach (EventInfo eventInfo in eventInfoList)
         {
-            var builder = new EventListBuilder(declaringTypeHandle);
-            return builder;
-        }
+            EventData eventData = GetOrCreateCacheEntry(eventInfo);
 
-        public static EventList Create(IEnumerable<EventInfo>? items)
-        {
-            List<EventInfo>? eventInfoList = items?.ToList();
-            if (eventInfoList is null || eventInfoList.IsEmpty())
+            declaringType ??= eventData.DeclaringTypeData;
+
+            if (!ReferenceEquals(eventData.DeclaringTypeData, declaringType))
             {
-                return EventList.Empty;
+                throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(EventInfo)}' items must belong to the same declaring type.");
             }
 
-            List<EventData> events = new List<EventData>(eventInfoList.Count);
-            RuntimeTypeHandle declaringTypeHandle = default;
-            foreach (EventInfo eventInfo in eventInfoList)
-            {
-                EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
-
-                if (declaringTypeHandle.Equals(default))
-                {
-                    declaringTypeHandle = eventData.DeclaringTypeHandle;
-                }
-
-                if (!eventData.DeclaringTypeHandle.Equals(declaringTypeHandle))
-                {
-                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(EventInfo)}' items must belong to the same declaring type.");
-                }
-
-                events.Add(eventData);
-            }
-
-            return events.ToEventList();
+            events.Add(eventData);
         }
 
-        public static EventList Create(TypeData declaringTypeData)
-        {
-            ArgumentNullException.ThrowIfNull(declaringTypeData);
-            return CreateInternal(declaringTypeData.Type);
-        }
-
-        public static EventList Create(Type declaringType)
-        {
-            ArgumentNullException.ThrowIfNull(declaringType);
-            return CreateInternal(declaringType);
-        }
-
-        private static EventList CreateInternal(Type declaringType)
-        {
-            EventInfo[] eventInfoList = declaringType.GetEvents(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-            if (eventInfoList.IsEmpty())
-            {
-                return EventList.Empty;
-            }
-
-            IEnumerable<EventData> events = eventInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
-
-            return events.ToEventList();
-        }
-
-        IEventListBuilder IEventListBuilder.Add(EventData eventData)
-        {
-            Add(eventData);
-            return this;
-        }
-
-        EventList IEventListBuilder.Build()
-            => _builderResult ??= new EventList(Build(), isIntegrityValidationEnabled: false);
+        return events.ToEventList(declaringType);
     }
 
-    internal static class EventListBuilderExtensions
+    public static EventList Create(TypeData declaringTypeData)
     {
-        public static EventList ToEventList(this IEnumerable<EventData> items)
-            => items is null || items.IsEmpty() ? EventList.Empty : new EventList(items);
-
-        /// <summary>
-        /// Returns an empty <see cref="EventList"/> if the provided instance is <see langword="null"/>.
-        /// </summary>
-        /// <param name="items"></param>
-        /// <returns>A <see cref="EventList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-        public static EventList OrEmpty(this EventList items)
-            => items ?? EventList.Empty;
+        ArgumentNullException.ThrowIfNull(declaringTypeData);
+        return CreateInternal(declaringTypeData);
     }
+
+    public static EventList Create(Type declaringType)
+    {
+        ArgumentNullException.ThrowIfNull(declaringType);
+        TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
+        return CreateInternal(declaringTypeData);
+    }
+
+    private static EventList CreateInternal(TypeData declaringType) => declaringType.EnumerateEvents().ToEventList(declaringType);
+
+    TypeData IEventListBuilder.DeclaringType => _declaringType;
+
+    IEventListBuilder IEventListBuilder.Add(EventData eventData)
+    {
+        Add(eventData);
+        return this;
+    }
+
+    EventList IEventListBuilder.Build()
+        => _builderResult ??= new EventList(Build(), ((IEventListBuilder)this).DeclaringType, isIntegrityValidationEnabled: false);
+}
+
+internal static class EventListBuilderExtensions
+{
+    public static EventList ToEventList(this IEnumerable<EventData> items, TypeData? declaringType)
+        => items is null || items.IsEmpty() ? EventList.Empty : new EventList(items, declaringType);
+
+    /// <summary>
+    /// Returns an empty <see cref="EventList"/> if the provided instance is <see langword="null"/>.
+    /// </summary>
+    /// <param name="items"></param>
+    /// <returns>A <see cref="EventList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
+    public static EventList OrEmpty(this EventList items)
+        => items ?? EventList.Empty;
 }

@@ -1,107 +1,98 @@
-﻿namespace BionicCode.Utilities.Net.Reflection
+﻿namespace BionicCode.Utilities.Net.Reflection;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+internal interface IConstructorListBuilder
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+    TypeData DeclaringType { get; }
+    IConstructorListBuilder Add(ConstructorData constructorData);
+    ConstructorList Build();
+}
 
-    internal interface IConstructorListBuilder
+internal class ConstructorListBuilder : SymbolDataListBuilder<ConstructorData>, IConstructorListBuilder
+{
+    private ConstructorList? _builderResult;
+    private readonly TypeData _declaringType;
+
+    private ConstructorListBuilder(TypeData declaringType) : base(declaringType.Handle) => _declaringType = declaringType;
+
+    public static IConstructorListBuilder New(TypeData declaringType)
     {
-        IConstructorListBuilder Add(ConstructorData constructorData);
-        ConstructorList Build();
+        ArgumentNullException.ThrowIfNull(declaringType);
+
+        var builder = new ConstructorListBuilder(declaringType);
+        return builder;
     }
 
-    internal class ConstructorListBuilder : SymbolDataListBuilder<ConstructorData>, IConstructorListBuilder
+    internal static ConstructorList Create(IEnumerable<ConstructorInfo>? items)
     {
-        private ConstructorList? _builderResult;
-
-        private ConstructorListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        var constructorInfoList = items?.ToList();
+        if (constructorInfoList is null || constructorInfoList.IsEmpty())
         {
+            return ConstructorList.Empty;
         }
 
-        public static IConstructorListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        var constructors = new List<ConstructorData>(constructorInfoList.Count);
+        TypeData? declaringType = null;
+        foreach (ConstructorInfo constructorInfo in constructorInfoList)
         {
-            var builder = new ConstructorListBuilder(declaringTypeHandle);
-            return builder;
-        }
+            ConstructorData constructorData = GetOrCreateCacheEntry(constructorInfo);
 
-        internal static ConstructorList Create(IEnumerable<ConstructorInfo>? items)
-        {
-            List<ConstructorInfo>? constructorInfoList = items?.ToList();
-            if (constructorInfoList is null || constructorInfoList.IsEmpty())
+            declaringType ??= constructorData.DeclaringTypeData;
+
+            if (!ReferenceEquals(constructorData.DeclaringTypeData, declaringType))
             {
-                return ConstructorList.Empty;
+                throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(ConstructorInfo)}' items must belong to the same declaring type.");
             }
 
-            List<ConstructorData> constructors = new List<ConstructorData>(constructorInfoList.Count);
-            RuntimeTypeHandle declaringTypeHandle = default;
-            foreach (ConstructorInfo constructorInfo in constructorInfoList)
-            {
-                ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
-
-                if (declaringTypeHandle.Equals(default))
-                {
-                    declaringTypeHandle = constructorData.DeclaringTypeHandle;
-                }
-
-                if (!constructorData.DeclaringTypeHandle.Equals(declaringTypeHandle))
-                {
-                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(ConstructorInfo)}' items must belong to the same declaring type.");
-                }
-
-                constructors.Add(constructorData);
-            }
-
-            return constructors.ToConstructorList();
+            constructors.Add(constructorData);
         }
 
-        internal static ConstructorList Create(TypeData declaringTypeData)
-        {
-            ArgumentNullException.ThrowIfNull(declaringTypeData);
-            return CreateInternal(declaringTypeData.Type);
-        }
-
-        internal static ConstructorList Create(Type declaringType)
-        {
-            ArgumentNullException.ThrowIfNull(declaringType);
-            return CreateInternal(declaringType);
-        }
-
-        private static ConstructorList CreateInternal(Type declaringType)
-        {
-            ConstructorInfo[] constructorInfoList = declaringType.GetConstructors(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-            if (constructorInfoList.IsEmpty())
-            {
-                return ConstructorList.Empty;
-            }
-
-            IEnumerable<ConstructorData> constructors = constructorInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
-
-            return constructors.ToConstructorList();
-        }
-
-        IConstructorListBuilder IConstructorListBuilder.Add(ConstructorData constructorData)
-        {
-            Add(constructorData);
-            return this;
-        }
-
-        ConstructorList IConstructorListBuilder.Build()
-            => _builderResult ??= new ConstructorList(Build(), isIntegrityValidationEnabled: false);
+        return constructors.ToConstructorList(declaringType);
     }
 
-    internal static class ConstructorListBuilderExtensions
+    internal static ConstructorList Create(TypeData declaringTypeData)
     {
+        ArgumentNullException.ThrowIfNull(declaringTypeData);
 
-        internal static ConstructorList ToConstructorList(this IEnumerable<ConstructorData> items)
-            => items is null || items.IsEmpty() ? ConstructorList.Empty : new ConstructorList(items);
-
-        /// <summary>
-        /// Returns an empty <see cref="ConstructorList"/> if the provided instance is <see langword="null"/>.
-        /// </summary>
-        /// <param name="items"></param>
-        /// <returns>A <see cref="ConstructorList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-        public static ConstructorList OrEmpty(this ConstructorList items)
-            => items ?? ConstructorList.Empty;
+        return CreateInternal(declaringTypeData);
     }
+
+    internal static ConstructorList Create(Type declaringType)
+    {
+        ArgumentNullException.ThrowIfNull(declaringType);
+
+        TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
+        return CreateInternal(declaringTypeData);
+    }
+
+    private static ConstructorList CreateInternal(TypeData declaringType) => declaringType.EnumerateConstructors().ToConstructorList(declaringType);
+
+    TypeData IConstructorListBuilder.DeclaringType => _declaringType;
+
+    IConstructorListBuilder IConstructorListBuilder.Add(ConstructorData constructorData)
+    {
+        Add(constructorData);
+        return this;
+    }
+
+    ConstructorList IConstructorListBuilder.Build()
+        => _builderResult ??= new ConstructorList(Build(), ((IConstructorListBuilder)this).DeclaringType, isIntegrityValidationEnabled: false);
+}
+
+internal static class ConstructorListBuilderExtensions
+{
+    internal static ConstructorList ToConstructorList(this IEnumerable<ConstructorData> items, TypeData? declaringType)
+        => items is null || items.IsEmpty() ? ConstructorList.Empty : new ConstructorList(items, declaringType);
+
+    /// <summary>
+    /// Returns an empty <see cref="ConstructorList"/> if the provided instance is <see langword="null"/>.
+    /// </summary>
+    /// <param name="items"></param>
+    /// <returns>A <see cref="ConstructorList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
+    public static ConstructorList OrEmpty(this ConstructorList items)
+        => items ?? ConstructorList.Empty;
 }

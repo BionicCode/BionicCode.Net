@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
+using System.Collections.Immutable;
 using System.Reflection;
 
 internal abstract class ParameterizedMemberData : MemberData
@@ -80,4 +81,6 @@ internal abstract class ParameterizedMemberData : MemberData
     internal bool IsMethod => _isMethod ??= MethodBase is MethodInfo;
 
     internal bool IsSpecialName => _isSpecialName ??= MethodBase.IsSpecialName;
+
+
 }

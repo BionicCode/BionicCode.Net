@@ -108,7 +108,7 @@ internal class TypeData : SymbolInfoData
 
     internal Type Type { get; }
 
-    internal ITypeDataView View => _typeDataView ??= new TypeDataView(GetPublicCacheKey());
+    internal new ITypeDataView View => _typeDataView ??= new TypeDataView(GetPublicCacheKey());
 
     /// <summary>
     /// Returns the underlying <see cref="Type"/> represented by this handle.
@@ -518,8 +518,8 @@ internal class TypeData : SymbolInfoData
         {
             case Type memberType when memberType == typeof(PropertyData):
                 readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((PropertyInfo)memberInfo);
-                IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(Handle);
-                IPropertyListBuilder explicitPropertyListBuilder = PropertyListBuilder.New(Handle);
+                IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(this);
+                IPropertyListBuilder explicitPropertyListBuilder = PropertyListBuilder.New(this);
                 addMemberToTypeDataMemberList = memberData =>
                 {
                     var propertyData = (PropertyData)memberData;
@@ -542,7 +542,7 @@ internal class TypeData : SymbolInfoData
                 break;
             case Type memberType when memberType == typeof(MethodData):
                 readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((MethodInfo)memberInfo);
-                IMethodListBuilder methodListBuilder = MethodListBuilder.New(Handle);
+                IMethodListBuilder methodListBuilder = MethodListBuilder.New(this);
                 IMethodListBuilder explicitMethodListBuilder = MethodListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = methodData =>
                 {
@@ -565,14 +565,14 @@ internal class TypeData : SymbolInfoData
                 break;
             case Type memberType when memberType == typeof(FieldData):
                 readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((FieldInfo)memberInfo);
-                IFieldListBuilder fieldListBuilder = FieldListBuilder.New(Handle);
+                IFieldListBuilder fieldListBuilder = FieldListBuilder.New(this);
                 addMemberToTypeDataMemberList = fieldData => fieldListBuilder.Add((FieldData)fieldData);
                 fieldInitializer = () => _fields = fieldListBuilder.Build();
                 memberKind = SymbolKind.MemberField;
                 break;
             case Type memberType when memberType == typeof(EventData):
                 readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((EventInfo)memberInfo);
-                IEventListBuilder eventListBuilder = EventListBuilder.New(Handle);
+                IEventListBuilder eventListBuilder = EventListBuilder.New(this);
                 IEventListBuilder explicitEventListBuilder = EventListBuilder.New(Handle);
                 addMemberToTypeDataMemberList = eventData =>
                 {

@@ -490,7 +490,7 @@ public class ArgumentExceptionAdvanced : ArgumentException
             }
             else
             {
-                TypeData iConvertibleTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(IConvertible));
+                ITypeDataView iConvertibleTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(IConvertible));
                 const string iConvertibleToStringMethodName = nameof(IConvertible.ToString);
                 MethodData? iConvertibleToStringMethodData = iConvertibleTypeData.Methods.TryGetMethodsByName(iConvertibleToStringMethodName, out MethodList methods) && methods.HasItems
                     ? methods[0]
@@ -579,7 +579,7 @@ public class ArgumentExceptionAdvanced : ArgumentException
     /// <param name="paramName">The name of the parameter representing the type to validate. This value is typically provided automatically
     /// and should not be set explicitly in most cases.</param>
     /// <param name="message">An optional exception message.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not assignable to <paramref name="target"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown if <typeparamref name="TValue"/> is not assignable to <typeparamref name="TTarget"/>.</exception>
     public static void ThrowIfNotAssignableTo<TValue, TTarget>(string? message = null)
     {
         Type targetType = typeof(TTarget);
@@ -600,8 +600,8 @@ public class ArgumentExceptionAdvanced : ArgumentException
     /// and should not be set explicitly in most cases.</param>
     /// <typeparam name="TTarget"> The target type to check assignability against. Cannot be null.</typeparam>
     /// <param name="message">An optional exception message.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not assignable to <paramref name="target"/>.</exception>
-    public static void ThrowIfNotAssignableTo<TTarget>([NotNull] object value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not assignable to <typeparamref name="TTarget"/>.</exception>
+    public static void ThrowIfNotAssignableTo<TTarget>([NotNull] object? value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
     {
         ArgumentNullException.ThrowIfNull(value, paramName);
         Type targetType = typeof(TTarget);

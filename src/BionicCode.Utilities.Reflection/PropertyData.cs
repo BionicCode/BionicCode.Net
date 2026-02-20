@@ -846,14 +846,14 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         : CanWrite && PropertySetMethodParameters.Count > 1;
 
     /// <summary>
-    /// Gets the parameters of the property getter method (including indexer parameters only).
+    /// Gets the parameters of the property getter method. For non-indexer properties, this will be empty.
     /// </summary>
-    internal ParameterList PropertyGetMethodParameters => _getMethodParameters ??= ParameterListBuilder.CreateForPropertyGet(this);
+    internal ParameterList PropertyGetMethodParameters => _getMethodParameters ??= PropertyGetMethodData.Parameters;
 
     /// <summary>
     /// Gets the parameters of the property setter method (indexer parameters plus the implicit <c>value</c> parameter).
     /// </summary>
-    internal ParameterList PropertySetMethodParameters => _setMethodParameters ??= ParameterListBuilder.CreateForPropertySet(this);
+    internal ParameterList PropertySetMethodParameters => _setMethodParameters ??= PropertySetMethodData.Parameters;
 
     internal override AccessModifier AccessModifier
     {
