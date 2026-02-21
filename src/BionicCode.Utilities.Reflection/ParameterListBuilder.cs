@@ -51,7 +51,12 @@ internal class ParameterListBuilder : SymbolDataListBuilder<ParameterData>, IPar
             parameters.Add(parameterData);
         }
 
-        return parameters.ToParameterList(member!);
+        if (member is null)
+        {
+            throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: Unable to determine the declaring member of the provided '{nameof(ParameterInfo)}' items.");
+        }
+
+        return parameters.ToParameterList(member);
     }
 
     private static ParameterList CreateInternal(PropertyData propertyData, PropertyParameterSource propertyParameterSource)

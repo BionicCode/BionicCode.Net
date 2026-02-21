@@ -51,6 +51,11 @@ internal class EventListBuilder : SymbolDataListBuilder<EventData>, IEventListBu
             events.Add(eventData);
         }
 
+        if (declaringType is null)
+        {
+            throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: Unable to determine the declaring type of the provided '{nameof(EventInfo)}' items.");
+        }
+
         return events.ToEventList(declaringType);
     }
 
@@ -83,7 +88,7 @@ internal class EventListBuilder : SymbolDataListBuilder<EventData>, IEventListBu
 
 internal static class EventListBuilderExtensions
 {
-    public static EventList ToEventList(this IEnumerable<EventData> items, TypeData? declaringType)
+    public static EventList ToEventList(this IEnumerable<EventData> items, TypeData declaringType)
         => items is null || items.IsEmpty() ? EventList.Empty : new EventList(items, declaringType);
 
     /// <summary>

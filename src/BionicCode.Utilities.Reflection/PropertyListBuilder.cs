@@ -1,106 +1,102 @@
-﻿namespace BionicCode.Utilities.Net.Reflection
+﻿namespace BionicCode.Utilities.Net.Reflection;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+internal interface IPropertyListBuilder
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+    TypeData DeclaringType { get; }
+    IPropertyListBuilder Add(PropertyData propertyData);
+    PropertyList Build();
+}
 
-    internal interface IPropertyListBuilder
+internal class PropertyListBuilder : SymbolDataListBuilder<PropertyData>, IPropertyListBuilder
+{
+    private PropertyList? _builderResult;
+    private readonly TypeData _declaringType;
+
+    private PropertyListBuilder(TypeData declaringType)
+        : base(declaringType.Handle) => _declaringType = declaringType;
+
+    public static IPropertyListBuilder New(TypeData declaringType)
     {
-        IPropertyListBuilder Add(PropertyData propertyData);
-        PropertyList Build();
+        ArgumentNullException.ThrowIfNull(declaringType);
+
+        var builder = new PropertyListBuilder(declaringType);
+        return builder;
     }
 
-    internal class PropertyListBuilder : SymbolDataListBuilder<PropertyData>, IPropertyListBuilder
+    public static PropertyList Create(IEnumerable<PropertyInfo>? items)
     {
-        private PropertyList? _builderResult;
-
-        private PropertyListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        var propertyInfoList = items?.ToList();
+        if (propertyInfoList is null || propertyInfoList.IsEmpty())
         {
+            return PropertyList.Empty;
         }
 
-        public static IPropertyListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        var properties = new List<PropertyData>(propertyInfoList.Count);
+        TypeData? declaringTypeData = default;
+        foreach (PropertyInfo propertyInfo in propertyInfoList)
         {
-            var builder = new PropertyListBuilder(declaringTypeHandle);
-            return builder;
-        }
+            PropertyData propertyData = GetOrCreateCacheEntry(propertyInfo);
 
-        public static PropertyList Create(IEnumerable<PropertyInfo>? items)
-        {
-            List<PropertyInfo>? propertyInfoList = items?.ToList();
-            if (propertyInfoList is null || propertyInfoList.IsEmpty())
+            declaringTypeData ??= propertyData.DeclaringTypeData;
+
+            if (!ReferenceEquals(propertyData.DeclaringTypeData, declaringTypeData))
             {
-                return PropertyList.Empty;
+                throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(PropertyInfo)}' items must belong to the same declaring type.");
             }
 
-            List<PropertyData> properties = new List<PropertyData>(propertyInfoList.Count);
-            RuntimeTypeHandle declaringTypeHandle = default;
-            foreach (PropertyInfo propertyInfo in propertyInfoList)
-            {
-                PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateEntryInternal(propertyInfo);
-
-                if (declaringTypeHandle.Equals(default))
-                {
-                    declaringTypeHandle = propertyData.DeclaringTypeHandle;
-                }
-
-                if (!propertyData.DeclaringTypeHandle.Equals(declaringTypeHandle))
-                {
-                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(PropertyInfo)}' items must belong to the same declaring type.");
-                }
-
-                properties.Add(propertyData);
-            }
-
-            return properties.ToPropertyList();
+            properties.Add(propertyData);
         }
 
-        public static PropertyList Create(TypeData declaringTypeData)
+        if (declaringTypeData is null)
         {
-            ArgumentNullException.ThrowIfNull(declaringTypeData);
-            return CreateInternal(declaringTypeData.Type);
+            throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: Unable to determine the declaring type of the provided '{nameof(PropertyInfo)}' items.");
         }
 
-        public static PropertyList Create(Type declaringType)
-        {
-            ArgumentNullException.ThrowIfNull(declaringType);
-            return CreateInternal(declaringType);
-        }
-
-        public static PropertyList CreateInternal(Type declaringType)
-        {
-            PropertyInfo[] propertyInfoList = declaringType.GetProperties(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-            if (propertyInfoList.IsEmpty())
-            {
-                return PropertyList.Empty;
-            }
-
-            IEnumerable<PropertyData> properties = propertyInfoList.Select(SymbolReflectionInfoCache.GetOrCreateEntryInternal);
-
-            return properties.ToPropertyList();
-        }
-
-        IPropertyListBuilder IPropertyListBuilder.Add(PropertyData propertyData)
-        {
-            Add(propertyData);
-            return this;
-        }
-
-        PropertyList IPropertyListBuilder.Build()
-            => _builderResult ??= new PropertyList(Build(), isIntegrityValidationEnabled: false);
+        return properties.ToPropertyList(declaringTypeData);
     }
 
-    internal static class PropertyListBuilderExtensions
+    public static PropertyList Create(TypeData declaringTypeData)
     {
-        public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items)
-            => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items);
-
-        /// <summary>
-        /// Returns an empty <see cref="PropertyList"/> if the provided instance is <see langword="null"/>.
-        /// </summary>
-        /// <param name="items"></param>
-        /// <returns>A <see cref="PropertyList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-        public static PropertyList OrEmpty(this PropertyList items)
-            => items ?? PropertyList.Empty;
+        ArgumentNullException.ThrowIfNull(declaringTypeData);
+        return CreateInternal(declaringTypeData);
     }
+
+    public static PropertyList Create(Type declaringType)
+    {
+        ArgumentNullException.ThrowIfNull(declaringType);
+        TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
+        return CreateInternal(declaringTypeData);
+    }
+
+    private static PropertyList CreateInternal(TypeData declaringTypeData) => declaringTypeData.EnumerateProperties().ToPropertyList(declaringTypeData);
+
+    TypeData IPropertyListBuilder.DeclaringType => _declaringType;
+
+    IPropertyListBuilder IPropertyListBuilder.Add(PropertyData propertyData)
+    {
+        Add(propertyData);
+        return this;
+    }
+
+    PropertyList IPropertyListBuilder.Build()
+        => _builderResult ??= new PropertyList(Build(), ((IPropertyListBuilder)this).DeclaringType, isIntegrityValidationEnabled: false);
+}
+
+internal static class PropertyListBuilderExtensions
+{
+    public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items, TypeData declaringTypeData)
+        => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items, declaringTypeData);
+
+    /// <summary>
+    /// Returns an empty <see cref="PropertyList"/> if the provided instance is <see langword="null"/>.
+    /// </summary>
+    /// <param name="items"></param>
+    /// <returns>A <see cref="PropertyList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
+    public static PropertyList OrEmpty(this PropertyList items)
+        => items ?? PropertyList.Empty;
 }

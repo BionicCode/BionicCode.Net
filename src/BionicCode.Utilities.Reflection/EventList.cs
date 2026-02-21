@@ -63,7 +63,7 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
     {
         _declaringType = default!;
         Events = ImmutableList<EventData>.Empty;
-        _eventNameIndex = new Dictionary<string, EventData>(0, StringComparer.Ordinal);
+        _eventNameIndex = [];
         _hashCode = ComputeHashCode();
     }
 
@@ -71,6 +71,12 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(eventName);
         return _eventNameIndex.TryGetValue(eventName, out eventData);
+    }
+
+    public bool ContainsEventWithName(string eventName)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(eventName);
+        return _eventNameIndex.ContainsKey(eventName);
     }
 
     public int Count => Events.Count;
@@ -117,7 +123,7 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
 
         for (int index = 0; index < Count; index++)
         {
-            if (!Events[index].Equals(other.Events[index]))
+            if (!ReferenceEquals(Events[index], other.Events[index]))
             {
                 return false;
             }
@@ -187,7 +193,7 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
 
 public sealed class EventListView : IReadOnlyList<IEventDataView>, IEquatable<IEventListView>, IEventListView
 {
-    public static EventListView Empty { get; } = new EventListView();
+    public static IEventListView Empty { get; } = new EventListView();
     private readonly int _hashCode; // precomputed
     private readonly ITypeDataView _declaringType;
     private readonly Dictionary<string, IEventDataView> _eventNameIndex;
@@ -243,7 +249,7 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, IEquatable<IE
     {
         _declaringType = default!;
         Events = ImmutableList<IEventDataView>.Empty;
-        _eventNameIndex = new Dictionary<string, IEventDataView>(0, StringComparer.Ordinal);
+        _eventNameIndex = [];
         _hashCode = ComputeHashCode();
     }
 
@@ -251,6 +257,12 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, IEquatable<IE
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(eventName);
         return _eventNameIndex.TryGetValue(eventName, out eventData);
+    }
+
+    public bool ContainsEventWithName(string eventName)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(eventName);
+        return _eventNameIndex.ContainsKey(eventName);
     }
 
     public int Count => Events.Count;
@@ -268,7 +280,7 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, IEquatable<IE
 
             return HasItems
                 ? Events[index]
-                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(EventList), ReflectionConstants.IndexerGetMethodName));
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(EventListView), ReflectionConstants.IndexerGetMethodName));
         }
     }
 

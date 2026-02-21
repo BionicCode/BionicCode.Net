@@ -11,11 +11,14 @@ internal abstract class MemberData : SymbolInfoData
     private string? _namespace;
     private BindingFlags? _bindingFlagsVisibilityMask;
     private TypeData? _implementingTypeData;
+    private IMemberDataView? _view;
 
     protected MemberData(string memberName, SymbolKind symbolKind)
         : base(memberName, symbolKind)
     {
     }
+
+    internal new IMemberDataView View => _view ??= new MemberDataView(GetPublicCacheKey());
 
     protected abstract MemberInfo MemberInfo { get; }
 

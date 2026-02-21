@@ -15,6 +15,10 @@ internal class TypeListBuilder : SymbolDataListBuilder<TypeData>, ITypeListBuild
 {
     private TypeList? _builderResult;
 
+    private TypeListBuilder() : base(declaringTypeHandle: default)
+    {
+    }
+
     public static ITypeListBuilder New()
     {
         var builder = new TypeListBuilder();
@@ -187,14 +191,15 @@ internal class TypeListBuilder : SymbolDataListBuilder<TypeData>, ITypeListBuild
         return this;
     }
 
-    TypeList ITypeListBuilder.Build()
-        => _builderResult ??= new TypeList(Build());
+    TypeList ITypeListBuilder.Build() => _builderResult ??= new TypeList(Build());
 }
 
 internal static class TypeListBuilderExtensions
 {
     internal static TypeList ToTypeList(this IEnumerable<TypeData> items)
         => items is null || items.IsEmpty() ? TypeList.Empty : new TypeList(items);
+    internal static ITypeListView ToTypeListView(this IEnumerable<ITypeDataView> items)
+        => items is null || items.IsEmpty() ? TypeListView.Empty : new TypeListView(items);
 
     /// <summary>
     /// Returns an empty <see cref="TypeList"/> if the provided instance is <see langword="null"/>.

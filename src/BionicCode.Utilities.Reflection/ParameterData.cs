@@ -58,8 +58,7 @@ internal sealed class ParameterData : SymbolInfoData
         ParameterInfo = _descriptor.ParameterInfo;
     }
 
-    internal new IParameterDataView View => _parameterDataView
-        ??= new ParameterDataView(GetPublicCacheKey());
+    internal new IParameterDataView View => _parameterDataView ??= new ParameterDataView(GetPublicCacheKey());
 
     internal RuntimeTypeHandle DeclaringTypeHandle => _declaringTypeHandle ??= ParameterInfo.Member.DeclaringType?.TypeHandle ?? throw new NotSupportedException($"The underlying '{typeof(ParameterInfo).FullName}' belongs to a member that does not return a declaring type.");
 

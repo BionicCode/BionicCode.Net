@@ -24,7 +24,7 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
     {
         _declaringMember = null;
         Parameters = ImmutableList<ParameterData>.Empty;
-        _parameterNameIndex = new Dictionary<string, ParameterData>(0, StringComparer.Ordinal);
+        _parameterNameIndex = [];
 
         _hashCode = ComputeHashCode();
     }
@@ -98,6 +98,12 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
         return _parameterNameIndex.TryGetValue(parameterName, out parameterData);
     }
 
+    public bool ContainsTypeWithName(string typeName)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(typeName);
+        return _parameterNameIndex.ContainsKey(typeName);
+    }
+
     public int Count => Parameters.Count;
     public bool IsEmpty => Parameters.IsEmpty;
     public bool HasItems => !IsEmpty;
@@ -118,11 +124,9 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
         }
     }
 
-    public IEnumerator<ParameterData> GetEnumerator()
-        => ((IEnumerable<ParameterData>)Parameters).GetEnumerator();
+    public IEnumerator<ParameterData> GetEnumerator() => ((IEnumerable<ParameterData>)Parameters).GetEnumerator();
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => Parameters.GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Parameters.GetEnumerator();
 
     public bool Equals(ParameterList? other)
     {
@@ -143,7 +147,7 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
 
         for (int index = 0; index < Count; index++)
         {
-            if (!Parameters[index].Equals(other.Parameters[index]))
+            if (!ReferenceEquals(Parameters[index], other.Parameters[index]))
             {
                 return false;
             }
@@ -164,7 +168,7 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
             return false;
         }
 
-        if (!DeclaringMemberData.Handle.Equals(other.DeclaringMemberDataView.Handle))
+        if (!ReferenceEquals(DeclaringMemberData.View, other.DeclaringMember))
         {
             return false;
         }
@@ -225,7 +229,7 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEqua
     {
         _declaringMemberView = null;
         Parameters = ImmutableList<IParameterDataView>.Empty;
-        _parameterNameIndex = new Dictionary<string, IParameterDataView>(0, StringComparer.Ordinal);
+        _parameterNameIndex = [];
 
         _hashCode = ComputeHashCode();
     }
@@ -297,11 +301,17 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEqua
         return _parameterNameIndex.TryGetValue(parameterName, out parameterData);
     }
 
+    public bool ContainsParameterWithName(string parameterName)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(parameterName);
+        return _parameterNameIndex.ContainsKey(parameterName);
+    }
+
     public int Count => Parameters.Count;
     public bool IsEmpty => Parameters.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<IParameterDataView> Parameters { get; }
-    public IParameterizedMemberDataView DeclaringMemberDataView => _declaringMemberView ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringMemberDataView)));
+    public IParameterizedMemberDataView DeclaringMember => _declaringMemberView ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringMember)));
 
     public IParameterDataView this[int index]
     {
@@ -312,7 +322,7 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEqua
 
             return HasItems
                 ? Parameters[index]
-                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(ParameterList), ReflectionConstants.IndexerGetMethodName));
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(ParameterListView), ReflectionConstants.IndexerGetMethodName));
         }
     }
 
@@ -334,14 +344,14 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEqua
             return false;
         }
 
-        if (!DeclaringMemberDataView.Handle.Equals(other.DeclaringMemberDataView.Handle))
+        if (!ReferenceEquals(DeclaringMember, other.DeclaringMember))
         {
             return false;
         }
 
         for (int index = 0; index < Count; index++)
         {
-            if (!Parameters[index].Equals(other.Parameters[index]))
+            if (!ReferenceEquals(Parameters[index], other.Parameters[index]))
             {
                 return false;
             }
@@ -362,7 +372,7 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEqua
             return false;
         }
 
-        if (!DeclaringMemberDataView.Handle.Equals(other.DeclaringMemberData.Handle))
+        if (!ReferenceEquals(DeclaringMember, other.DeclaringMemberData.View))
         {
             return false;
         }
@@ -390,7 +400,7 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEqua
         {
             var hashCode = new HashCode();
             hashCode.Add(Count);
-            hashCode.Add(DeclaringMemberDataView.Handle);
+            hashCode.Add(DeclaringMember.Handle);
             for (int index = 0; index < Parameters.Count; index++)
             {
                 hashCode.Add(Parameters[index]);

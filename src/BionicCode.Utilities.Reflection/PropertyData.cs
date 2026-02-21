@@ -63,6 +63,8 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         PropertyInfo = _descriptor.PropertyInfo;
     }
 
+    internal new IPropertyDataView View => _propertyDataView ??= new PropertyDataView(GetPublicCacheKey());
+
     protected override MemberInfo MemberInfo => PropertyInfo;
 
     /// <summary>
@@ -837,9 +839,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         _setAccessorAccessModifier = setMethodModifier;
         _getAccessorAccessModifier = getMethodModifier;
     }
-
-    internal new IPropertyDataView View => _propertyDataView
-        ??= new PropertyDataView(GetPublicCacheKey());
 
     internal bool IsIndexer => CanRead
         ? PropertyGetMethodParameters.HasItems

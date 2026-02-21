@@ -23,8 +23,7 @@ internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDat
         FormattingIndentation = DefaultIndentation;
     }
 
-    internal ISymbolInfoDataView View => _symbolInfoDataView
-        ??= new SymbolInfoDataView(GetPublicCacheKey());
+    public ISymbolInfoDataView View => _symbolInfoDataView ??= new SymbolInfoDataView(GetPublicCacheKey());
 
     internal abstract bool IsDefined<TAttribute>(bool inherit = false) where TAttribute : Attribute;
     internal abstract bool IsDefined(Type attributeType, bool inherit = false);

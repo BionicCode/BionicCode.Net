@@ -47,8 +47,7 @@ internal sealed class ConstructorData : ParameterizedMemberData
         IsExplicitInterfaceImplementation = false;
     }
 
-    internal new IConstructorDataView View => _constructorDataView
-        ??= new ConstructorDataView(GetPublicCacheKey());
+    internal new IConstructorDataView View => _constructorDataView ??= new ConstructorDataView(GetPublicCacheKey());
 
     internal ConstructorInfo ConstructorInfo { get; }
 

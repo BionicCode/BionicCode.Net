@@ -49,11 +49,9 @@ internal sealed class EventData : MemberData
         EventInfo = _descriptor.EventInfo;
     }
 
-    internal IEventDataView View => _eventDataView
-        ??= new EventDataView(GetPublicCacheKey());
+    internal new IEventDataView View => _eventDataView ??= new EventDataView(GetPublicCacheKey());
 
-    protected override MemberInfo MemberInfo
-      => EventInfo;
+    protected override MemberInfo MemberInfo => EventInfo;
 
     internal object? RaiseEvent(object? target, params object?[]? arguments)
     {

@@ -51,8 +51,7 @@ internal sealed class FieldData : MemberData, IFieldDataInvoker
         IsExplicitInterfaceImplementation = false; // Fields cannot be explicit interface implementations
         ImplementingTypeHandle = DeclaringTypeHandle;
     }
-    internal new IFieldDataView View => _fieldDataView
-        ??= new FieldDataView(GetPublicCacheKey());
+    internal new IFieldDataView View => _fieldDataView ??= new FieldDataView(GetPublicCacheKey());
 
     internal FieldInfo FieldInfo { get; }
 

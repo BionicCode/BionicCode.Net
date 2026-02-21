@@ -2,14 +2,12 @@
 
 using System.Collections.Immutable;
 
-public interface IParameterListView : IEquatable<IParameterListView>
+public interface IParameterListView : IReadOnlyList<IParameterDataView>, IEquatable<IParameterListView>
 {
-    IParameterDataView this[int index] { get; }
-    int Count { get; }
-    IParameterizedMemberDataView DeclaringMemberDataView { get; }
+    IParameterizedMemberDataView DeclaringMember { get; }
     bool HasItems { get; }
     bool IsEmpty { get; }
     ImmutableList<IParameterDataView> Parameters { get; }
-    IEnumerator<IParameterDataView> GetEnumerator();
     bool TryGetParameterByName(string parameterName, out IParameterDataView? parameterData);
+    bool ContainsParameterWithName(string parameterName);
 }

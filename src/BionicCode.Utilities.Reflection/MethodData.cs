@@ -90,8 +90,7 @@ internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataI
         _methodSignatureEqualityComparer = new MethodSignatureEqualityComparer();
     }
 
-    internal new IMethodDataView View => _methodDataView
-        ??= new MethodDataView(GetPublicCacheKey());
+    internal new IMethodDataView View => _methodDataView ??= new MethodDataView(GetPublicCacheKey());
 
     internal MethodInfo MethodInfo { get; }
 

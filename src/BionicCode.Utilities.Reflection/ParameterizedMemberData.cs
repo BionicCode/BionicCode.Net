@@ -1,7 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
-using System.Collections.Immutable;
 using System.Reflection;
 
 internal abstract class ParameterizedMemberData : MemberData
@@ -19,10 +18,13 @@ internal abstract class ParameterizedMemberData : MemberData
     private bool? _isConstructor;
     private bool? _isMethod;
     private bool? _isSpecialName;
+    private IParameterizedMemberDataView? _view;
 
     protected ParameterizedMemberData(string symbolName, SymbolKind symbolKind)
         : base(symbolName, symbolKind)
         => ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolKind, [SymbolKind.MemberMethod, SymbolKind.MemberConstructor], nameof(symbolKind));
+
+    internal new IParameterizedMemberDataView View => _view ??= new ParameterizedMemberDataView(GetPublicCacheKey());
 
     protected override MemberInfo MemberInfo => MethodBase;
     internal abstract ParameterList Parameters { get; }
@@ -81,6 +83,4 @@ internal abstract class ParameterizedMemberData : MemberData
     internal bool IsMethod => _isMethod ??= MethodBase is MethodInfo;
 
     internal bool IsSpecialName => _isSpecialName ??= MethodBase.IsSpecialName;
-
-
 }

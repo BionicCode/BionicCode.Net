@@ -1,106 +1,102 @@
-﻿namespace BionicCode.Utilities.Net.Reflection
+﻿namespace BionicCode.Utilities.Net.Reflection;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+internal interface IFieldListBuilder
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+    TypeData DeclaringType { get; }
+    IFieldListBuilder Add(FieldData fieldData);
+    FieldList Build();
+}
 
-    internal interface IFieldListBuilder
+internal class FieldListBuilder : SymbolDataListBuilder<FieldData>, IFieldListBuilder
+{
+    private FieldList? _builderResult;
+    private readonly TypeData _declaringType;
+
+    public TypeData DeclaringType { get; }
+
+    private FieldListBuilder(TypeData declaringType) : base(declaringType.Handle) => _declaringType = declaringType;
+
+    public static IFieldListBuilder New(TypeData declaringType)
     {
-        IFieldListBuilder Add(FieldData fieldData);
-        FieldList Build();
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        var builder = new FieldListBuilder(declaringType);
+        return builder;
     }
 
-    internal class FieldListBuilder : SymbolDataListBuilder<FieldData>, IFieldListBuilder
+    internal static FieldList Create(IEnumerable<FieldInfo>? items)
     {
-        private FieldList? _builderResult;
-
-        private FieldListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        var fieldInfoList = items?.ToList();
+        if (fieldInfoList is null || fieldInfoList.IsEmpty())
         {
+            return FieldList.Empty;
         }
 
-        public static IFieldListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        var fields = new List<FieldData>(fieldInfoList.Count);
+        TypeData? declaringTypeData = default;
+        foreach (FieldInfo fieldInfo in fieldInfoList)
         {
-            var builder = new FieldListBuilder(declaringTypeHandle);
-            return builder;
-        }
+            FieldData fieldData = GetOrCreateCacheEntry(fieldInfo);
 
-        internal static FieldList Create(IEnumerable<FieldInfo>? items)
-        {
-            List<FieldInfo>? fieldInfoList = items?.ToList();
-            if (fieldInfoList is null || fieldInfoList.IsEmpty())
+            declaringTypeData ??= fieldData.DeclaringTypeData;
+
+            if (!ReferenceEquals(fieldData.DeclaringTypeData, declaringTypeData))
             {
-                return FieldList.Empty;
+                throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(FieldInfo)}' items must belong to the same declaring type.");
             }
 
-            List<FieldData> fields = new List<FieldData>(fieldInfoList.Count);
-            RuntimeTypeHandle declaringTypeHandle = default;
-            foreach (FieldInfo fieldInfo in fieldInfoList)
-            {
-                FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
-
-                if (declaringTypeHandle.Equals(default))
-                {
-                    declaringTypeHandle = fieldData.DeclaringTypeHandle;
-                }
-
-                if (!fieldData.DeclaringTypeHandle.Equals(declaringTypeHandle))
-                {
-                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(FieldInfo)}' items must belong to the same declaring type.");
-                }
-
-                fields.Add(fieldData);
-            }
-
-            return fields.ToFieldList();
+            fields.Add(fieldData);
         }
 
-        internal static FieldList Create(TypeData declaringTypeData)
+        if (declaringTypeData is null)
         {
-            ArgumentNullException.ThrowIfNull(declaringTypeData);
-            return CreateInternal(declaringTypeData.Type);
+            throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: Unable to determine the declaring type of the provided '{nameof(FieldInfo)}' items.");
         }
 
-        internal static FieldList Create(Type declaringType)
-        {
-            ArgumentNullException.ThrowIfNull(declaringType);
-            return CreateInternal(declaringType);
-        }
-
-        private static FieldList CreateInternal(Type declaringType)
-        {
-            FieldInfo[] fieldInfoList = declaringType.GetFields(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-            if (fieldInfoList.IsEmpty())
-            {
-                return FieldList.Empty;
-            }
-
-            IEnumerable<FieldData> fields = fieldInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
-
-            return fields.ToFieldList();
-        }
-
-        IFieldListBuilder IFieldListBuilder.Add(FieldData fieldData)
-        {
-            Add(fieldData);
-            return this;
-        }
-
-        FieldList IFieldListBuilder.Build()
-            => _builderResult ??= new FieldList(Build(), isIntegrityValidationEnabled: false);
+        return fields.ToFieldList(declaringTypeData);
     }
 
-    internal static class FieldListBuilderExtensions
+    internal static FieldList Create(TypeData declaringTypeData)
     {
-        internal static FieldList ToFieldList(this IEnumerable<FieldData> items)
-            => items is null || items.IsEmpty() ? FieldList.Empty : new FieldList(items);
-
-        /// <summary>
-        /// Returns an empty <see cref="FieldList"/> if the provided instance is <see langword="null"/>.
-        /// </summary>
-        /// <param name="items"></param>
-        /// <returns>A <see cref="FieldList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-        public static FieldList OrEmpty(this FieldList items)
-            => items ?? FieldList.Empty;
+        ArgumentNullException.ThrowIfNull(declaringTypeData);
+        return CreateInternal(declaringTypeData);
     }
+
+    internal static FieldList Create(Type declaringType)
+    {
+        ArgumentNullException.ThrowIfNull(declaringType);
+
+        TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
+        return CreateInternal(declaringTypeData);
+    }
+
+    private static FieldList CreateInternal(TypeData declaringTypeData) => declaringTypeData.EnumerateFields().ToFieldList(declaringTypeData);
+
+    IFieldListBuilder IFieldListBuilder.Add(FieldData fieldData)
+    {
+        Add(fieldData);
+        return this;
+    }
+
+    FieldList IFieldListBuilder.Build()
+        => _builderResult ??= new FieldList(Build(), ((IFieldListBuilder)this).DeclaringType, isIntegrityValidationEnabled: false);
+}
+
+internal static class FieldListBuilderExtensions
+{
+    internal static FieldList ToFieldList(this IEnumerable<FieldData> items, TypeData declaringTypeData)
+        => items is null || items.IsEmpty() ? FieldList.Empty : new FieldList(items, declaringTypeData);
+
+    /// <summary>
+    /// Returns an empty <see cref="FieldList"/> if the provided instance is <see langword="null"/>.
+    /// </summary>
+    /// <param name="items"></param>
+    /// <returns>A <see cref="FieldList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
+    public static FieldList OrEmpty(this FieldList items)
+        => items ?? FieldList.Empty;
 }
