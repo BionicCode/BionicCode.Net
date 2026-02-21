@@ -396,7 +396,7 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     public ITypeDataView? PropertyTypeData { get; }
     public AccessModifier AccessModifier { get; }
     public BindingFlags BindingFlagsVisibilityMask { get; }
-    public ITypeDataView? DeclaringTypData { get; }
+    public ITypeDataView? DeclaringType { get; }
     public RuntimeTypeHandle DeclaringTypeHandle { get; }
     public RuntimeTypeHandle ImplementingTypeHandle { get; }
     public ITypeDataView? ImplementingTypData { get; }

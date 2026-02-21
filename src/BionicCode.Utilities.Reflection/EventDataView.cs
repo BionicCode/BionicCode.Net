@@ -55,7 +55,7 @@ public class EventDataView : SymbolReflectionInfoCache.SymbolDataViewBase, IEven
     public ITypeDataView EventHandlerTypeData { get; }
     public IMethodDataView EventInvokerMethodData { get; }
     public IMethodDataView RemoveMethodData { get; }
-    public ITypeDataView DeclaringTypData { get; }
+    public ITypeDataView DeclaringType { get; }
     public ITypeDataView ImplementingTypData { get; }
 
     public void AddEventHandler(object eventSource, Delegate handler) => throw new NotImplementedException();

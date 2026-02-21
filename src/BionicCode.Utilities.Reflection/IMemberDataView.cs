@@ -8,7 +8,7 @@ public interface IMemberDataView : ISymbolInfoDataView
 {
     AccessModifier AccessModifier { get; }
     BindingFlags BindingFlagsVisibilityMask { get; }
-    ITypeDataView DeclaringTypData { get; }
+    ITypeDataView DeclaringType { get; }
     RuntimeTypeHandle DeclaringTypeHandle { get; }
     RuntimeTypeHandle ImplementingTypeHandle { get; }
     ITypeDataView ImplementingTypData { get; }

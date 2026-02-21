@@ -206,12 +206,15 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
         => left?.Equals(right) ?? (right is null);
     public static bool operator !=(ParameterList? left, ParameterList? right)
         => !(left == right);
-    public static bool operator ==(ParameterList left, IParameterListView? right) => left?.Equals(right) ?? (right is null);
-    public static bool operator !=(ParameterList left, IParameterListView? right) => !(left == right);
+    public static bool operator ==(ParameterList? left, IParameterListView? right) => left?.Equals(right) ?? (right is null);
+    public static bool operator !=(ParameterList? left, IParameterListView? right) => !(left == right);
+
+    public static bool operator ==(IParameterListView? left, ParameterList? right) => right == left;
+    public static bool operator !=(IParameterListView? left, ParameterList? right) => !(left == right);
 }
 #endregion ParameterList
 
-internal sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEquatable<IParameterListView>, IParameterListView
+public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEquatable<IParameterListView>, IParameterListView
 {
     public static IParameterListView Empty { get; } = new ParameterListView();
     private readonly int _hashCode; // precomputed
@@ -347,7 +350,7 @@ internal sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEq
         return true;
     }
 
-    public bool Equals(ParameterList? other)
+    internal bool Equals(ParameterList? other)
     {
         if (other is null)
         {
@@ -397,8 +400,6 @@ internal sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEq
         }
     }
 
-    public static bool operator ==(ParameterListView? left, ParameterList? right) => left?.Equals(right) ?? (right is null);
-    public static bool operator !=(ParameterListView? left, ParameterList? right) => !(left == right);
     public static bool operator ==(IParameterListView? left, ParameterListView? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(IParameterListView? left, ParameterListView? right) => !(left == right);
     public static bool operator ==(ParameterListView? left, IParameterListView? right) => left?.Equals(right) ?? (right is null);

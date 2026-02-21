@@ -2,7 +2,7 @@
 
 using System.Collections.Immutable;
 
-public interface IParameterListView
+public interface IParameterListView : IEquatable<IParameterListView>
 {
     IParameterDataView this[int index] { get; }
     int Count { get; }
@@ -10,9 +10,6 @@ public interface IParameterListView
     bool HasItems { get; }
     bool IsEmpty { get; }
     ImmutableList<IParameterDataView> Parameters { get; }
-    bool Equals(object? obj);
-    bool Equals(IParameterListView? other);
     IEnumerator<IParameterDataView> GetEnumerator();
-    int GetHashCode();
     bool TryGetParameterByName(string parameterName, out IParameterDataView? parameterData);
 }
