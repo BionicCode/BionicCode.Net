@@ -1,14 +1,18 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 
-internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatable<ConstructorList>
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, ICollection, IEmptyCollectionProvider<ConstructorList>, IEquatable<ConstructorList>
 {
     public static ConstructorList Empty { get; } = new ConstructorList();
     private readonly int _hashCode; // precomputed
     private readonly TypeData _declaringTypeData;
+    private IConstructorListView? _view;
 
     public ConstructorList(ConstructorData[] items, TypeData? declaringType) : this((IEnumerable<ConstructorData>)items, declaringType)
     {
@@ -63,7 +67,14 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
     public int Count => Constructors.Count;
     public bool IsEmpty => Constructors.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<ConstructorData> Constructors { get; }
+    public IConstructorListView View => _view ??= Constructors.ToConstructorListView(DeclaringTypeData);
     public TypeData DeclaringTypeData => _declaringTypeData ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeData)));
 
     public ConstructorData this[int index]
@@ -79,11 +90,9 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
         }
     }
 
-    public IEnumerator<ConstructorData> GetEnumerator()
-        => ((IEnumerable<ConstructorData>)Constructors).GetEnumerator();
+    public IEnumerator<ConstructorData> GetEnumerator() => ((IEnumerable<ConstructorData>)Constructors).GetEnumerator();
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => Constructors.GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Constructors.GetEnumerator();
 
     public bool Equals(ConstructorList? other)
     {
@@ -161,6 +170,8 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
         }
     }
 
+    public void CopyTo(Array array, int index) => Constructors.CopyTo((ConstructorData[])array, index);
+
     public static bool operator ==(ConstructorList? left, ConstructorList? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(ConstructorList? left, ConstructorList? right) => !(left == right);
 
@@ -171,7 +182,8 @@ internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatab
     public static bool operator !=(ConstructorList? left, IConstructorListView? right) => !(left == right);
 }
 
-public sealed class ConstructorListView : IReadOnlyList<IConstructorDataView>, IEquatable<IConstructorListView>, IConstructorListView
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+public sealed class ConstructorListView : IReadOnlyList<IConstructorDataView>, ICollection, IEmptyCollectionProvider<IConstructorListView>, IEquatable<IConstructorListView>, IConstructorListView
 {
     public static IConstructorListView Empty { get; } = new ConstructorListView();
     private readonly int _hashCode; // precomputed
@@ -227,6 +239,12 @@ public sealed class ConstructorListView : IReadOnlyList<IConstructorDataView>, I
     public int Count => Constructors.Count;
     public bool IsEmpty => Constructors.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<IConstructorDataView> Constructors { get; }
     public ITypeDataView DeclaringType => _declaringType ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringType)));
 
@@ -243,11 +261,9 @@ public sealed class ConstructorListView : IReadOnlyList<IConstructorDataView>, I
         }
     }
 
-    public IEnumerator<IConstructorDataView> GetEnumerator()
-        => ((IEnumerable<IConstructorDataView>)Constructors).GetEnumerator();
+    public IEnumerator<IConstructorDataView> GetEnumerator() => ((IEnumerable<IConstructorDataView>)Constructors).GetEnumerator();
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => Constructors.GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Constructors.GetEnumerator();
 
     public bool Equals(IConstructorListView? other)
     {
@@ -324,6 +340,8 @@ public sealed class ConstructorListView : IReadOnlyList<IConstructorDataView>, I
             return hashCode.ToHashCode();
         }
     }
+
+    public void CopyTo(Array array, int index) => Constructors.CopyTo((IConstructorDataView[])array, index);
 
     public static bool operator ==(ConstructorListView? left, IConstructorListView? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(ConstructorListView? left, IConstructorListView? right) => !(left == right);

@@ -89,14 +89,32 @@ internal class FieldListBuilder : SymbolDataListBuilder<FieldData>, IFieldListBu
 
 internal static class FieldListBuilderExtensions
 {
-    internal static FieldList ToFieldList(this IEnumerable<FieldData> items, TypeData declaringTypeData)
-        => items is null || items.IsEmpty() ? FieldList.Empty : new FieldList(items, declaringTypeData);
+    internal static FieldList ToFieldList(this IEnumerable<FieldData> items, TypeData declaringTypeData) => items is null || items.IsEmpty() 
+        ? FieldList.Empty 
+        : new FieldList(items, declaringTypeData);
+
+    internal static IFieldListView ToFieldListView(this IEnumerable<FieldData> items, TypeData declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? FieldListView.Empty
+            : new FieldListView(items.Select(item => item.View), declaringType.View);
+    }
+
+    public static IFieldListView ToFieldListView(this IEnumerable<IFieldDataView> items, ITypeDataView declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? FieldListView.Empty
+            : new FieldListView(items.Select(item => item), declaringType);
+    }
 
     /// <summary>
     /// Returns an empty <see cref="FieldList"/> if the provided instance is <see langword="null"/>.
     /// </summary>
     /// <param name="items"></param>
     /// <returns>A <see cref="FieldList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    public static FieldList OrEmpty(this FieldList items)
-        => items ?? FieldList.Empty;
+    public static FieldList OrEmpty(this FieldList items) => items ?? FieldList.Empty;
 }

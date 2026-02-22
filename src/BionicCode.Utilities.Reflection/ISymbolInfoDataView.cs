@@ -1,6 +1,8 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 
 public interface ISymbolInfoDataView
@@ -8,7 +10,7 @@ public interface ISymbolInfoDataView
     SymbolReflectionInfoCacheKey CacheKey { get; }
     string AssemblyName { get; }
     string Namespace { get; }
-    IList<CustomAttributeData> AttributeData { get; }
+    IImmutableList<CustomAttributeData> AttributeData { get; }
     string DisplayName { get; }
     int FormattingIndentation { get; set; }
     string FullyQualifiedDisplayName { get; }

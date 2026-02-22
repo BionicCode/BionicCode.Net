@@ -1,19 +1,23 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 
 /// <summary>
 /// Represents a read-only list of <see cref="PropertyData"/> items that belong to the same declaring type.
 /// </summary>
-internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<PropertyList>
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+internal sealed class PropertyList : IReadOnlyList<PropertyData>, ICollection, IEmptyCollectionProvider<PropertyList>, IEquatable<PropertyList>
 {
     public static PropertyList Empty { get; } = new PropertyList();
     private readonly int _hashCode; // precomputed
     private readonly TypeData? _declaringTypeData;
     private readonly Dictionary<string, PropertyData> _propertyNameIndex;
+    private IPropertyListView? _view;
 
     public PropertyList(PropertyData[] items, TypeData? declaringType) : this((IEnumerable<PropertyData>)items, declaringType)
     {
@@ -75,10 +79,23 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
         return _propertyNameIndex.TryGetValue(propertyName, out propertyData);
     }
 
+    public bool ContainsPropertyWithName(string propertyName)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(propertyName);
+        return _propertyNameIndex.ContainsKey(propertyName);
+    }
+
     public int Count => Properties.Count;
     public bool IsEmpty => Properties.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<PropertyData> Properties { get; }
+    public IPropertyListView View => _view ??= Properties.ToPropertyListView(DeclaringTypeData);
     public TypeData DeclaringTypeData => _declaringTypeData ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(PropertyList), nameof(DeclaringTypeData)));
 
     public PropertyData this[int index]
@@ -174,6 +191,8 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
         }
     }
 
+    public void CopyTo(Array array, int index) => Properties.CopyTo((PropertyData[])array, index);
+
     public static bool operator ==(PropertyList? left, PropertyList? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(PropertyList? left, PropertyList? right) => !(left == right);
     public static bool operator ==(PropertyList? left, IPropertyListView? right) => left?.Equals(right) ?? (right is null);
@@ -185,7 +204,9 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<Pro
 /// <summary>
 /// Represents a read-only list of <see cref="PropertyData"/> items that belong to the same declaring type.
 /// </summary>
-public sealed class PropertyListView : IReadOnlyList<IPropertyDataView>, IEquatable<IPropertyListView>, IPropertyListView
+
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+public sealed class PropertyListView : IReadOnlyList<IPropertyDataView>, ICollection, IEmptyCollectionProvider<IPropertyListView>, IEquatable<IPropertyListView>, IPropertyListView
 {
     public static IPropertyListView Empty { get; } = new PropertyListView();
     private readonly int _hashCode; // precomputed
@@ -259,6 +280,12 @@ public sealed class PropertyListView : IReadOnlyList<IPropertyDataView>, IEquata
     public int Count => Properties.Count;
     public bool IsEmpty => Properties.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<IPropertyDataView> Properties { get; }
     public ITypeDataView DeclaringType => _declaringType ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(IPropertyListView), nameof(DeclaringType)));
 
@@ -354,6 +381,8 @@ public sealed class PropertyListView : IReadOnlyList<IPropertyDataView>, IEquata
             return hashCode.ToHashCode();
         }
     }
+
+    public void CopyTo(Array array, int index) => Properties.CopyTo((IPropertyDataView[])array, index);
 
     public static bool operator ==(PropertyListView? left, IPropertyListView? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(PropertyListView? left, IPropertyListView? right) => !(left == right);

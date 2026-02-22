@@ -1,16 +1,20 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 
-internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList>
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+internal sealed class FieldList : IReadOnlyList<FieldData>, ICollection, IEmptyCollectionProvider<FieldList>, IEquatable<FieldList>
 {
     public static FieldList Empty { get; } = new FieldList();
     private readonly int _hashCode; // precomputed
     private readonly Dictionary<string, FieldData> _fieldNameIndex;
     private readonly TypeData? _declaringTypeData;
+    private IFieldListView? _view;
 
     public FieldList(FieldData[] items, TypeData? declaringType) : this((IEnumerable<FieldData>)items, declaringType)
     {
@@ -81,7 +85,14 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
     public int Count => Fields.Count;
     public bool IsEmpty => Fields.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<FieldData> Fields { get; }
+    public IFieldListView View => _view ??= Fields.ToFieldListView(DeclaringTypeData);
     public TypeData DeclaringTypeData => _declaringTypeData ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(FieldList), nameof(DeclaringTypeData)));
 
     public FieldData this[int index]
@@ -179,6 +190,8 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
         }
     }
 
+    public void CopyTo(Array array, int index) => Fields.CopyTo((FieldData[])array, index);
+
     public static bool operator ==(FieldList? left, FieldList? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(FieldList? left, FieldList? right) => !(left == right);
     public static bool operator ==(FieldList? left, IFieldListView? right) => left?.Equals(right) ?? (right is null);
@@ -187,7 +200,8 @@ internal sealed class FieldList : IReadOnlyList<FieldData>, IEquatable<FieldList
     public static bool operator !=(IFieldListView? left, FieldList? right) => !(right == left);
 }
 
-public sealed class FieldListView : IReadOnlyList<IFieldDataView>, IEquatable<IFieldListView>, IFieldListView
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+public sealed class FieldListView : IReadOnlyList<IFieldDataView>, ICollection, IEmptyCollectionProvider<IFieldListView>, IEquatable<IFieldListView>, IFieldListView
 {
     public static IFieldListView Empty { get; } = new FieldListView();
     private readonly int _hashCode; // precomputed
@@ -263,6 +277,12 @@ public sealed class FieldListView : IReadOnlyList<IFieldDataView>, IEquatable<IF
     public int Count => Fields.Count;
     public bool IsEmpty => Fields.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<IFieldDataView> Fields { get; }
     public ITypeDataView DeclaringType => _declaringType ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(FieldList), nameof(DeclaringType)));
 
@@ -360,6 +380,8 @@ public sealed class FieldListView : IReadOnlyList<IFieldDataView>, IEquatable<IF
             return hashCode.ToHashCode();
         }
     }
+
+    public void CopyTo(Array array, int index) => Fields.CopyTo((IFieldDataView[])array, index);
 
     public static bool operator ==(FieldListView? left, IFieldListView? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(FieldListView? left, IFieldListView? right) => !(left == right);

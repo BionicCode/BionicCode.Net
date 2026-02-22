@@ -1,9 +1,11 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
+using System.Collections;
 using System.Collections.Immutable;
 
-public interface IParameterListView : IReadOnlyList<IParameterDataView>, IEquatable<IParameterListView>
+public interface IParameterListView : ICollection, IReadOnlyList<IParameterDataView>, IEquatable<IParameterListView>
 {
+    new int Count { get; }
     IParameterizedMemberDataView DeclaringMember { get; }
     bool HasItems { get; }
     bool IsEmpty { get; }

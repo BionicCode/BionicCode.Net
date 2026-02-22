@@ -1,8 +1,10 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 #region ParameterList
@@ -13,12 +15,14 @@ using System.Reflection;
 /// <remarks>The <see cref="ParameterData"/> items must belong to the same member of the same declaring type.
 /// This collection is not intended for a loose collection of unrelated parameters.<br/>
 /// Instead the collection is a strict representation of member parameters.</remarks>
-internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<ParameterList>
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+internal sealed class ParameterList : IReadOnlyList<ParameterData>, ICollection, IEmptyCollectionProvider<ParameterList>, IEquatable<ParameterList>
 {
     public static ParameterList Empty { get; } = new ParameterList();
     private readonly int _hashCode; // precomputed
     private readonly ParameterizedMemberData? _declaringMember;
     private readonly Dictionary<string, ParameterData> _parameterNameIndex;
+    private IParameterListView? _view;
 
     private ParameterList()
     {
@@ -107,7 +111,14 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
     public int Count => Parameters.Count;
     public bool IsEmpty => Parameters.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<ParameterData> Parameters { get; }
+    public IParameterListView View => _view ??= Parameters.ToParameterListView(DeclaringMemberData);
 
     public ParameterizedMemberData DeclaringMemberData => _declaringMember ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringMemberData)));
 
@@ -206,10 +217,10 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
         }
     }
 
-    public static bool operator ==(ParameterList? left, ParameterList? right)
-        => left?.Equals(right) ?? (right is null);
-    public static bool operator !=(ParameterList? left, ParameterList? right)
-        => !(left == right);
+    public void CopyTo(Array array, int index) => Parameters.CopyTo((ParameterData[])array, index);
+
+    public static bool operator ==(ParameterList? left, ParameterList? right) => left?.Equals(right) ?? (right is null);
+    public static bool operator !=(ParameterList? left, ParameterList? right) => !(left == right);
     public static bool operator ==(ParameterList? left, IParameterListView? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(ParameterList? left, IParameterListView? right) => !(left == right);
 
@@ -218,7 +229,8 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<P
 }
 #endregion ParameterList
 
-public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEquatable<IParameterListView>, IParameterListView
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, ICollection, IEmptyCollectionProvider<IParameterListView>, IEquatable<IParameterListView>, IParameterListView
 {
     public static IParameterListView Empty { get; } = new ParameterListView();
     private readonly int _hashCode; // precomputed
@@ -310,6 +322,12 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEqua
     public int Count => Parameters.Count;
     public bool IsEmpty => Parameters.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<IParameterDataView> Parameters { get; }
     public IParameterizedMemberDataView DeclaringMember => _declaringMemberView ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringMember)));
 
@@ -409,6 +427,8 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IEqua
             return hashCode.ToHashCode();
         }
     }
+
+    public void CopyTo(Array array, int index) => Parameters.CopyTo((IParameterDataView[])array, index);
 
     public static bool operator ==(IParameterListView? left, ParameterListView? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(IParameterListView? left, ParameterListView? right) => !(left == right);

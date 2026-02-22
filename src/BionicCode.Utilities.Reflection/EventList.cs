@@ -1,16 +1,20 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 
-internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList>
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+internal sealed class EventList : IReadOnlyList<EventData>, ICollection, IEmptyCollectionProvider<EventList>, IEquatable<EventList>
 {
     public static EventList Empty { get; } = new EventList();
     private readonly int _hashCode; // precomputed
     private readonly TypeData _declaringType;
     private readonly Dictionary<string, EventData> _eventNameIndex;
+    private IEventListView? _view;
 
     public EventList(EventData[] items, TypeData? declaringType) : this((IEnumerable<EventData>)items, declaringType)
     {
@@ -82,7 +86,14 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
     public int Count => Events.Count;
     public bool IsEmpty => Events.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<EventData> Events { get; }
+    public IEventListView View => _view ??= Events.ToEventListView(DeclaringTypeData);
     public TypeData DeclaringTypeData => _declaringType ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(EventList), nameof(DeclaringTypeData)));
 
     public EventData this[int index]
@@ -181,6 +192,8 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
         }
     }
 
+    public void CopyTo(Array array, int index) => Events.CopyTo((EventData[])array, index);
+
     public static bool operator ==(EventList? left, EventList? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(EventList? left, EventList? right) => !(left == right);
 
@@ -191,7 +204,8 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
     public static bool operator !=(IEventListView? left, EventList? right) => !(left == right);
 }
 
-public sealed class EventListView : IReadOnlyList<IEventDataView>, IEquatable<IEventListView>, IEventListView
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+public sealed class EventListView : IReadOnlyList<IEventDataView>, ICollection, IEmptyCollectionProvider<IEventListView>, IEquatable<IEventListView>, IEventListView
 {
     public static IEventListView Empty { get; } = new EventListView();
     private readonly int _hashCode; // precomputed
@@ -268,6 +282,12 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, IEquatable<IE
     public int Count => Events.Count;
     public bool IsEmpty => Events.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<IEventDataView> Events { get; }
     public ITypeDataView DeclaringType => _declaringType ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(EventListView), nameof(DeclaringType)));
 
@@ -284,11 +304,9 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, IEquatable<IE
         }
     }
 
-    public IEnumerator<IEventDataView> GetEnumerator()
-        => ((IEnumerable<IEventDataView>)Events).GetEnumerator();
+    public IEnumerator<IEventDataView> GetEnumerator() => ((IEnumerable<IEventDataView>)Events).GetEnumerator();
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => Events.GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Events.GetEnumerator();
 
     public bool Equals(IEventListView? other)
     {
@@ -366,6 +384,8 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, IEquatable<IE
             return hashCode.ToHashCode();
         }
     }
+
+    public void CopyTo(Array array, int index) => Events.CopyTo((IEventDataView[])array, index);
 
     public static bool operator ==(EventListView? left, IEventListView? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(EventListView? left, IEventListView? right) => !(left == right);

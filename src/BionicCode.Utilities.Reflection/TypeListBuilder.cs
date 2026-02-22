@@ -196,16 +196,22 @@ internal class TypeListBuilder : SymbolDataListBuilder<TypeData>, ITypeListBuild
 
 internal static class TypeListBuilderExtensions
 {
-    internal static TypeList ToTypeList(this IEnumerable<TypeData> items)
-        => items is null || items.IsEmpty() ? TypeList.Empty : new TypeList(items);
-    internal static ITypeListView ToTypeListView(this IEnumerable<ITypeDataView> items)
-        => items is null || items.IsEmpty() ? TypeListView.Empty : new TypeListView(items);
+    internal static TypeList ToTypeList(this IEnumerable<TypeData> items) => items is null || items.IsEmpty() 
+        ? TypeList.Empty 
+        : new TypeList(items);
+
+    public static ITypeListView ToTypeListView(this IEnumerable<ITypeDataView> items) => items is null || items.IsEmpty() 
+        ? TypeListView.Empty 
+        : new TypeListView(items);
+
+    internal static ITypeListView ToTypeListView(this IEnumerable<TypeData> items) => items is null || items.IsEmpty() 
+        ? TypeListView.Empty 
+        : new TypeListView(items);
 
     /// <summary>
     /// Returns an empty <see cref="TypeList"/> if the provided instance is <see langword="null"/>.
     /// </summary>
     /// <param name="items"></param>
     /// <returns>A <see cref="TypeList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    public static TypeList OrEmpty(this TypeList items)
-        => items ?? TypeList.Empty;
+    public static TypeList OrEmpty(this TypeList items) => items ?? TypeList.Empty;
 }

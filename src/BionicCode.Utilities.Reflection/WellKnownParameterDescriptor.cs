@@ -20,23 +20,7 @@ internal readonly struct WellKnownParameterDescriptor : IEquatable<WellKnownPara
     {
         ArgumentNullException.ThrowIfNull(parameterInfo);
 
-        MemberInfo member = parameterInfo.Member;
-
-        // If the 'ParameterInfo.Member' property returns a 'PropertyInfo' then the current parameter 'parameterInfo'
-        // was obtained via PropertyInfo.GetIndexParameters method call. As a result, the parameter's association to the property's accessors is ambiguous.
-        // We need to normalize it to remove association ambiguity by explicitly associating it with a property's accessor method.
-        // We basically replace the current 'GetIndexerParameters()' based 'propertyInfo' argument with a 'PropertyInfo' from an accessor method.
-        if (member is PropertyInfo)
-        {
-            ParameterData? disambiguatedPropertyData = SymbolReflectionInfoCache.ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(parameterInfo);
-
-            ParameterInfo = disambiguatedPropertyData.ParameterInfo();
-        }
-        else
-        {
-            ParameterInfo = parameterInfo;
-        }
-
+        ParameterInfo = parameterInfo;
         ParameterName = ParameterInfo.Name ?? string.Empty;
     }
 
@@ -52,11 +36,8 @@ internal readonly struct WellKnownParameterDescriptor : IEquatable<WellKnownPara
 
     public override int GetHashCode() => HashCode.Combine(ParameterInfo, IsAnonymous, ParameterName);
 
-    public static bool operator ==(WellKnownParameterDescriptor left, WellKnownParameterDescriptor right)
-        => left.Equals(right);
-    public static bool operator !=(WellKnownParameterDescriptor left, WellKnownParameterDescriptor right)
-        => !left.Equals(right);
+    public static bool operator ==(WellKnownParameterDescriptor left, WellKnownParameterDescriptor right) => left.Equals(right);
+    public static bool operator !=(WellKnownParameterDescriptor left, WellKnownParameterDescriptor right) => !left.Equals(right);
 
-    public override bool Equals(object? obj)
-        => obj is WellKnownParameterDescriptor other && Equals(other);
+    public override bool Equals(object? obj) => obj is WellKnownParameterDescriptor other && Equals(other);
 }

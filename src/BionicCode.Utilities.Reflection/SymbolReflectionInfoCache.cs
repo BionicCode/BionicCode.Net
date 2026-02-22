@@ -2262,16 +2262,6 @@ internal static class SymbolReflectionInfoCache
     private readonly struct SymbolReflectionInfoCacheKeyInternal : IEquatable<SymbolReflectionInfoCacheKeyInternal>
     {
         /// <summary>
-        /// Represents an unknown or unspecified parameter count.
-        /// </summary>
-        /// <remarks>Use this constant to indicate that the number of parameters is not known or cannot be
-        /// determined. This value is typically used in APIs where the parameter count is optional or
-        /// variable.</remarks>
-        public const int UnknownParameterCountOrPosition = -1;
-
-        // TODO::Throw exceptions based on SymbolKind and  IsAnonymousKey when properties are accessed that are not valid for the specific SymbolKind.
-
-        /// <summary>
         /// Gets the name of the symbol represented by this instance.
         /// </summary>
         /// <value>The name of the symbol, such as the method name, property name, event name, field name, or type name.</value>

@@ -85,8 +85,27 @@ internal class ConstructorListBuilder : SymbolDataListBuilder<ConstructorData>, 
 
 internal static class ConstructorListBuilderExtensions
 {
-    internal static ConstructorList ToConstructorList(this IEnumerable<ConstructorData> items, TypeData? declaringType)
-        => items is null || items.IsEmpty() ? ConstructorList.Empty : new ConstructorList(items, declaringType);
+    internal static ConstructorList ToConstructorList(this IEnumerable<ConstructorData> items, TypeData? declaringType) => items is null || items.IsEmpty()
+        ? ConstructorList.Empty
+        : new ConstructorList(items, declaringType);
+
+    internal static IConstructorListView ToConstructorListView(this IEnumerable<ConstructorData> items, TypeData declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? ConstructorListView.Empty
+            : new ConstructorListView(items.Select(item => item.View), declaringType.View);
+    }
+
+    public static IConstructorListView ToConstructorListView(this IEnumerable<IConstructorDataView> items, ITypeDataView declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? ConstructorListView.Empty
+            : new ConstructorListView(items.Select(item => item), declaringType);
+    }
 
     /// <summary>
     /// Returns an empty <see cref="ConstructorList"/> if the provided instance is <see langword="null"/>.

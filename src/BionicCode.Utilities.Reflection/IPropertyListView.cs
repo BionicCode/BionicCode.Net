@@ -1,9 +1,11 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
+using System.Collections;
 using System.Collections.Immutable;
 
-public interface IPropertyListView : IReadOnlyList<IPropertyDataView>, IEquatable<IPropertyListView>
+public interface IPropertyListView : ICollection, IReadOnlyList<IPropertyDataView>, IEquatable<IPropertyListView>
 {
+    new int Count { get; }
     ITypeDataView DeclaringType { get; }
     bool HasItems { get; }
     bool IsEmpty { get; }

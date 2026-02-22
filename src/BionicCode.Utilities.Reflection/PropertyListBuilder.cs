@@ -89,8 +89,27 @@ internal class PropertyListBuilder : SymbolDataListBuilder<PropertyData>, IPrope
 
 internal static class PropertyListBuilderExtensions
 {
-    public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items, TypeData declaringTypeData)
-        => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items, declaringTypeData);
+    public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items, TypeData declaringTypeData) => items is null || items.IsEmpty() 
+        ? PropertyList.Empty 
+        : new PropertyList(items, declaringTypeData);
+
+    internal static IPropertyListView ToPropertyListView(this IEnumerable<PropertyData> items, TypeData declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? PropertyListView.Empty
+            : new PropertyListView(items.Select(item => item.View), declaringType.View);
+    }
+
+    public static IPropertyListView ToPropertyListView(this IEnumerable<IPropertyDataView> items, ITypeDataView declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? PropertyListView.Empty
+            : new PropertyListView(items.Select(item => item), declaringType);
+    }
 
     /// <summary>
     /// Returns an empty <see cref="PropertyList"/> if the provided instance is <see langword="null"/>.

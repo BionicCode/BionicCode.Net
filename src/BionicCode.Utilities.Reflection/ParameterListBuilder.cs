@@ -128,13 +128,36 @@ internal class ParameterListBuilder : SymbolDataListBuilder<ParameterData>, IPar
 internal static class ParameterListBuilderExtensions
 {
     internal static ParameterList ToParameterList(this IEnumerable<ParameterData>? items, ParameterizedMemberData parameterizedMember)
-        => items is null || items.IsEmpty() ? ParameterList.Empty : new ParameterList(items, parameterizedMember);
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(parameterizedMember);
+
+        return items is null || items.IsEmpty()
+        ? ParameterList.Empty
+        : new ParameterList(items, parameterizedMember);
+    }
+
+    internal static IParameterListView ToParameterListView(this IEnumerable<ParameterData> items, ParameterizedMemberData declaringMember)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringMember);
+
+        return items is null || items.IsEmpty()
+            ? ParameterListView.Empty
+            : new ParameterListView(items.Select(item => item.View), declaringMember.View);
+    }
+
+    public static IParameterListView ToParameterListView(this IEnumerable<IParameterDataView> items, IParameterizedMemberDataView declaringMember)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringMember);
+
+        return items is null || items.IsEmpty()
+            ? ParameterListView.Empty
+            : new ParameterListView(items.Select(item => item), declaringMember);
+    }
 
     /// <summary>
     /// Returns an empty <see cref="ParameterList"/> if the provided instance is <see langword="null"/>.
     /// </summary>
     /// <param name="items"></param>
     /// <returns>A <see cref="ParameterList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    internal static ParameterList OrEmpty(this ParameterList items)
-        => items ?? ParameterList.Empty;
+    internal static ParameterList OrEmpty(this ParameterList items) => items ?? ParameterList.Empty;
 }

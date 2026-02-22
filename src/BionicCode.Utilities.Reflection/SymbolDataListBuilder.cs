@@ -3,9 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using static BionicCode.Utilities.Net.Reflection.SymbolReflectionInfoCache;
 
-internal abstract class SymbolDataListBuilder<TSymbolInfoData> : SymbolInfoDataCacheProvider
+internal abstract class SymbolDataListBuilder<TSymbolInfoData> : SymbolReflectionInfoCache.SymbolInfoDataCacheProvider
     where TSymbolInfoData : SymbolInfoData
 {
     private readonly List<TSymbolInfoData> _symbols;

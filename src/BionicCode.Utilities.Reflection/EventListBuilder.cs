@@ -88,14 +88,31 @@ internal class EventListBuilder : SymbolDataListBuilder<EventData>, IEventListBu
 
 internal static class EventListBuilderExtensions
 {
-    public static EventList ToEventList(this IEnumerable<EventData> items, TypeData declaringType)
-        => items is null || items.IsEmpty() ? EventList.Empty : new EventList(items, declaringType);
+    internal static EventList ToEventList(this IEnumerable<EventData> items, TypeData declaringType) => items is null || items.IsEmpty() 
+        ? EventList.Empty 
+        : new EventList(items, declaringType);
+
+    internal static IEventListView ToEventListView(this IEnumerable<EventData> items, TypeData declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+        return items is null || items.IsEmpty()
+            ? EventListView.Empty
+            : new EventListView(items.Select(item => item.View), declaringType.View);
+    }
+
+    public static IEventListView ToEventListView(this IEnumerable<IEventDataView> items, ITypeDataView declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? EventListView.Empty
+            : new EventListView(items.Select(item => item), declaringType);
+    }
 
     /// <summary>
     /// Returns an empty <see cref="EventList"/> if the provided instance is <see langword="null"/>.
     /// </summary>
     /// <param name="items"></param>
     /// <returns>A <see cref="EventList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    public static EventList OrEmpty(this EventList items)
-        => items ?? EventList.Empty;
+    public static EventList OrEmpty(this EventList items) => items ?? EventList.Empty;
 }

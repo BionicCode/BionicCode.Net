@@ -4,8 +4,8 @@ using System;
 
 internal readonly struct MethodParameterInfo : IEquatable<MethodParameterInfo>
 {
-    public WellKnownParameterDescriptor ParameterDescriptor { get; }
-    public ParameterMemberDescriptor DeclaringMemberDescriptor { get; }
+    public AnonymousParameterDescriptor ParameterDescriptor { get; }
+    public AnonymousMethodDescriptor DeclaringMethodDescriptor { get; }
 
     /// <summary>
     /// Gets a value indicating whether ambiguity is expected for the associated parameter or member descriptor.
@@ -15,7 +15,7 @@ internal readonly struct MethodParameterInfo : IEquatable<MethodParameterInfo>
     /// disambiguation logic may be required when resolving parameters or members.</remarks>
     public bool IsAmbiguityExpected => (!ParameterDescriptor.HasParameterName
         && !ParameterDescriptor.HasParameterPosition)
-        || !DeclaringMemberDescriptor.HasMemberHandle;
+        || !DeclaringMethodDescriptor.h.HasMemberHandle;
 
     ///// <summary>
     ///// Gets a value indicating whether the type parameter is declared by a generic method definition.
@@ -37,12 +37,12 @@ internal readonly struct MethodParameterInfo : IEquatable<MethodParameterInfo>
             ? methodData.ReturnTypeData.Handle
             : default;
 
-        ParameterDescriptor = new CacheKeyWellKnownParameterDescriptor(
+        ParameterDescriptor = new AnonymousParameterDescriptor(
             parameterData.Name,
             parameterData.Position,
             parameterData.ParameterKind,
             parameterData.ParameterTypeHandle);
-        DeclaringMemberDescriptor = new ParameterMemberDescriptor(
+        DeclaringMethodDescriptor = new ParameterMemberDescriptor(
             parameterData.DeclaringTypeHandle,
             parameterData.MemberData.Handle,
             parameterData.MemberData.Name,
@@ -71,14 +71,14 @@ internal readonly struct MethodParameterInfo : IEquatable<MethodParameterInfo>
         WellKnownParameterDescriptor parameterDescriptor = parameterInfoDataCacheKey.ParameterDescriptor;
         ParameterMemberDescriptor declaringMemberDescriptor = parameterInfoDataCacheKey.ParameterMemberDescriptor;
         ParameterDescriptor = parameterDescriptor;
-        DeclaringMemberDescriptor = declaringMemberDescriptor;
+        DeclaringMethodDescriptor = declaringMemberDescriptor;
     }
 
     public override bool Equals(object? obj) => obj is MethodParameterInfo info && Equals(info);
     public bool Equals(MethodParameterInfo other) => ParameterDescriptor == other.ParameterDescriptor
-        && DeclaringMemberDescriptor == other.DeclaringMemberDescriptor;
+        && DeclaringMethodDescriptor == other.DeclaringMethodDescriptor;
 
-    public override int GetHashCode() => HashCode.Combine(ParameterDescriptor, DeclaringMemberDescriptor);
+    public override int GetHashCode() => HashCode.Combine(ParameterDescriptor, DeclaringMethodDescriptor);
 
     public static bool operator ==(MethodParameterInfo left, MethodParameterInfo right) => left.Equals(right);
     public static bool operator !=(MethodParameterInfo left, MethodParameterInfo right) => !(left == right);

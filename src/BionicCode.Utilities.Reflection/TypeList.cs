@@ -1,14 +1,18 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 
-internal sealed class TypeList : IReadOnlyList<TypeData>, IEquatable<TypeList>
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+internal sealed class TypeList : IReadOnlyList<TypeData>, ICollection, IEmptyCollectionProvider<TypeList>, IEquatable<TypeList>
 {
     public static TypeList Empty { get; } = new TypeList();
     private readonly int _hashCode; // precomputed
     private readonly ILookup<string, TypeData> _typeNameIndex;
+    private ITypeListView? _view;
 
     public TypeList(TypeData[] items) : this((IEnumerable<TypeData>)items)
     {
@@ -30,8 +34,7 @@ internal sealed class TypeList : IReadOnlyList<TypeData>, IEquatable<TypeList>
     public bool TryGetTypesByName(string typeName, out TypeList typeList)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(typeName);
-        typeList = _typeNameIndex[typeName]
-            .ToTypeList();
+        typeList = _typeNameIndex[typeName].ToTypeList();
         return typeList.HasItems;
     }
 
@@ -44,7 +47,14 @@ internal sealed class TypeList : IReadOnlyList<TypeData>, IEquatable<TypeList>
     public int Count => Types.Count;
     public bool IsEmpty => Types.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<TypeData> Types { get; }
+    public ITypeListView View => _view ??= Types.ToTypeListView();
 
     public TypeData this[int index]
     {
@@ -83,6 +93,11 @@ internal sealed class TypeList : IReadOnlyList<TypeData>, IEquatable<TypeList>
             }
         }
 
+        // Since the 'View' is generated internally from the Types collection of the TypeList
+        // and at this point all items are reference equal,
+        // then the 'View' instances are also reference equal.
+        // No need to compare them separately.
+
         return true;
     }
 
@@ -105,11 +120,14 @@ internal sealed class TypeList : IReadOnlyList<TypeData>, IEquatable<TypeList>
         }
     }
 
+    public void CopyTo(Array array, int index) => Types.CopyTo((TypeData[])array, index);
+
     public static bool operator ==(TypeList? left, TypeList? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(TypeList? left, TypeList? right) => !(left == right);
 }
 
-public sealed class TypeListView : IReadOnlyList<ITypeDataView>, IEquatable<ITypeListView>, ITypeListView
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+public sealed class TypeListView : IReadOnlyList<ITypeDataView>, ICollection, IEmptyCollectionProvider<ITypeListView>, IEquatable<ITypeListView>, ITypeListView
 {
     public static ITypeListView Empty { get; } = new TypeListView();
     private readonly int _hashCode; // precomputed
@@ -126,6 +144,13 @@ public sealed class TypeListView : IReadOnlyList<ITypeDataView>, IEquatable<ITyp
         _hashCode = ComputeHashCode();
     }
 
+    internal TypeListView(IEnumerable<TypeData> items)
+    {
+        Types = items.Select(item => item.View)?.ToImmutableList() ?? ImmutableList<ITypeDataView>.Empty;
+        _typeNameIndex = Types.ToLookup(type => type.Name, StringComparer.Ordinal);
+        _hashCode = ComputeHashCode();
+    }
+
     private TypeListView()
     {
         Types = ImmutableList<ITypeDataView>.Empty;
@@ -135,8 +160,7 @@ public sealed class TypeListView : IReadOnlyList<ITypeDataView>, IEquatable<ITyp
     public bool TryGetTypesByName(string typeName, out ITypeListView typeList)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(typeName);
-        typeList = _typeNameIndex[typeName]
-            .ToTypeListView();
+        typeList = _typeNameIndex[typeName].ToTypeListView();
         return typeList.HasItems;
     }
 
@@ -149,6 +173,12 @@ public sealed class TypeListView : IReadOnlyList<ITypeDataView>, IEquatable<ITyp
     public int Count => Types.Count;
     public bool IsEmpty => Types.IsEmpty;
     public bool HasItems => !IsEmpty;
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
     public ImmutableList<ITypeDataView> Types { get; }
 
     public ITypeDataView this[int index]
@@ -209,6 +239,8 @@ public sealed class TypeListView : IReadOnlyList<ITypeDataView>, IEquatable<ITyp
             return hashCode.ToHashCode();
         }
     }
+
+    public void CopyTo(Array array, int index) => Types.CopyTo((ITypeDataView[])array, index);
 
     public static bool operator ==(TypeListView? left, ITypeListView? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(TypeListView? left, ITypeListView? right) => !(left == right);

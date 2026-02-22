@@ -1,33 +1,38 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 
-internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodList>
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmptyCollectionProvider<MethodList>, IEquatable<MethodList>
 {
     public static MethodList Empty { get; } = new MethodList();
     private readonly int _hashCode; // precomputed
     private readonly ILookup<string, MethodData> _methodNameIndex;
-    private readonly SymbolReflectionInfoCacheKeyInternal _declaringTypeCacheKey;
+    private readonly TypeData? _declaringTypeData;
+    private IMethodListView? _view;
 
-    public MethodList(MethodData[] items) : this((IEnumerable<MethodData>)items)
+    public MethodList(MethodData[] items, TypeData? declaringType) : this((IEnumerable<MethodData>)items, declaringType)
     {
     }
 
-    public MethodList(IEnumerable<MethodData> items)
+    public MethodList(IEnumerable<MethodData> items, TypeData? declaringType)
     {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+        _declaringTypeData = declaringType;
+
         Methods = items?.ToImmutableList() ?? ImmutableList<MethodData>.Empty;
         _methodNameIndex = Methods.ToLookup(method => method.Name, StringComparer.Ordinal); // allow duplicate method names (overloads)
 
         if (HasItems)
         {
-            _declaringTypeCacheKey = Methods.First().DeclaringTypeData.CacheKey;
-
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Methods,
-                methodData => methodData.DeclaringTypeData.CacheKey != DeclaringTypeCacheKey,
+                methodData => !ReferenceEquals(methodData.DeclaringTypeData, _declaringTypeData),
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All methods must belong to the same declaring type.");
 
@@ -36,22 +41,21 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
         _hashCode = ComputeHashCode();
     }
 
-    internal MethodList(IEnumerable<MethodData> items, bool isIntegrityValidationEnabled)
+    internal MethodList(IEnumerable<MethodData> items, TypeData? declaringType, bool isIntegrityValidationEnabled)
     {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+        _declaringTypeData = declaringType;
+
         Methods = items?.ToImmutableList() ?? ImmutableList<MethodData>.Empty;
 
         // allow duplicate method names (overloads)
         _methodNameIndex = Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
 
-        _declaringTypeCacheKey = HasItems
-            ? Methods.First().DeclaringTypeData.CacheKey
-            : default;
-
         if (isIntegrityValidationEnabled && HasItems)
         {
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Methods,
-                methodData => methodData.DeclaringTypeData.CacheKey != DeclaringTypeCacheKey,
+                methodData => !ReferenceEquals(methodData.DeclaringTypeData, _declaringTypeData),
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All methods must belong to the same declaring type.");
 
@@ -64,35 +68,36 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
     {
         Methods = ImmutableList<MethodData>.Empty;
         _methodNameIndex = Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
+        _declaringTypeData = default;
+        _hashCode = ComputeHashCode();
     }
 
     public bool TryGetMethodsByName(string methodName, out MethodList methodList)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(methodName);
-        methodList = _methodNameIndex[methodName]
-            .ToMethodList();
+        methodList = _methodNameIndex[methodName].ToMethodList(DeclaringTypeData);
 
         return methodList.HasItems;
+    }
+
+    public bool ContainsMethodWithName(string methodName)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(methodName);
+        return _methodNameIndex.Contains(methodName);
     }
 
     public int Count => Methods.Count;
     public bool IsEmpty => Methods.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<MethodData> Methods { get; }
-    public SymbolReflectionInfoCacheKeyInternal DeclaringTypeCacheKey => HasItems
-        ? _declaringTypeCacheKey
-        : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeCacheKey)));
+    public IMethodListView View => _view ??= Methods.ToMethodListView(DeclaringTypeData);
+    public TypeData DeclaringTypeData => _declaringTypeData ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeData)));
 
-    public TypeData DeclaringTypeData
-    {
-        get
-        {
-            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringTypeCacheKey;
-            return HasItems
-                ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
-                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeData)));
-        }
-    }
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
 
     public MethodData this[int index]
     {
@@ -129,7 +134,7 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
                 throw new InvalidOperationException("Method index is not initialized.");
             }
 
-            var methods = _methodNameIndex[methodName].ToMethodList();
+            var methods = _methodNameIndex[methodName].ToMethodList(DeclaringTypeData);
             if (methods.IsEmpty)
             {
                 throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
@@ -151,7 +156,7 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
                     // Parameter is valid if it matches position in method signature, parameter type and modifier.
                     foreach (MethodParameterInfo parameterInfo in methodParameters)
                     {
-                        if (parameterIndex == parameterInfo.Position)
+                        if (parameterIndex == parameterInfo.ParameterDescriptor.Position)
                         {
                             if (!parameter.ParameterTypeData.Handle.Equals(parameterInfo.ParameterTypeHandle)
                                 || !parameter.ParameterKind.Equals(parameterInfo.Kind))
@@ -229,6 +234,8 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodL
             return hashCode.ToHashCode();
         }
     }
+
+    public void CopyTo(Array array, int index) => Methods.CopyTo((MethodData[])array, index);
 
     public static bool operator ==(MethodList? left, MethodList? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(MethodList? left, MethodList? right) => !(left == right);
