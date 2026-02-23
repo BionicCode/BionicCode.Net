@@ -66,7 +66,7 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
                 && methodParameterInfo.DeclaringMethodDescriptor.HasMemberTypeHandle
                 && methodParameterInfo.DeclaringMethodDescriptor.HasParameterizedMemberKind
                 && methodParameterInfo.ParameterDescriptor.HasParameterTypeHandle
-                && methodParameterInfo.ParameterDescriptor.HasParameterKind))
+                && methodParameterInfo.ParameterDescriptor.HasParameterModifier))
             {
                 throw new AmbiguousMatchException("MethodParameterInfo is marked to expect ambiguity but does not have all required descriptor properties set to resolve it.");
             }
@@ -101,7 +101,7 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
                 return false;
             }
 
-            if (parameterData.ParameterKind != methodParameterInfo.ParameterDescriptor.ParameterKind)
+            if (parameterData.ParameterModifier != methodParameterInfo.ParameterDescriptor.ParameterModifier)
             {
                 return false;
             }
@@ -156,7 +156,7 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
                 && methodParameterInfo.DeclaringMethodDescriptor.HasMemberTypeHandle
                 && methodParameterInfo.DeclaringMethodDescriptor.HasParameterizedMemberKind
                 && methodParameterInfo.ParameterDescriptor.HasParameterTypeHandle
-                && methodParameterInfo.ParameterDescriptor.HasParameterKind))
+                && methodParameterInfo.ParameterDescriptor.HasParameterModifier))
             {
                 throw new AmbiguousMatchException("MethodParameterInfo is marked to expect ambiguity but does not have all required descriptor properties set to resolve it.");
             }
@@ -191,7 +191,7 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
                 return false;
             }
 
-            if (parameterData.ParameterKind != methodParameterInfo.ParameterDescriptor.ParameterKind)
+            if (parameterData.ParameterModifier != methodParameterInfo.ParameterDescriptor.ParameterModifier)
             {
                 return false;
             }

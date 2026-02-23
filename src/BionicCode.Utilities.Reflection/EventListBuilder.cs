@@ -88,9 +88,14 @@ internal class EventListBuilder : SymbolDataListBuilder<EventData>, IEventListBu
 
 internal static class EventListBuilderExtensions
 {
-    internal static EventList ToEventList(this IEnumerable<EventData> items, TypeData declaringType) => items is null || items.IsEmpty() 
-        ? EventList.Empty 
-        : new EventList(items, declaringType);
+    internal static EventList ToEventList(this IEnumerable<EventData> items, TypeData declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? EventList.Empty
+            : new EventList(items, declaringType);
+    }
 
     internal static IEventListView ToEventListView(this IEnumerable<EventData> items, TypeData declaringType)
     {

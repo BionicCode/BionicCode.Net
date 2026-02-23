@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-using static BionicCode.Utilities.Net.HelperExtensionsCommon;
 
 /// <summary>
 /// A collection of extension methods for various default types
@@ -915,7 +914,7 @@ public static partial class HelperExtensionsCommon
     {
         ArgumentNullException.ThrowIfNull(predicate, nameof(predicate));
 
-        return TryFindLast(source, predicate, out TItem result)
+        return TryFindLast(source, predicate, out TItem? result)
             ? result
             : default;
     }
@@ -947,13 +946,13 @@ public static partial class HelperExtensionsCommon
         ArgumentNullException.ThrowIfNull(predicate, nameof(predicate));
 
         return source.IsEmpty()
-          ? throw new InvalidOperationException(ExceptionMessages.InvalidOperationExceptionMessage_CollectionEmpty())
-          : TryFindLast(source, predicate, out TItem result)
-           ? result
+          ? throw new InvalidOperationException(ExceptionMessages.InvalidOperationExceptionMessage_CollectionEmpty)
+          : TryFindLast(source, predicate, out TItem? result)
+           ? result!
            : throw new InvalidOperationException(ExceptionMessages.GetInvalidOperationExceptionMessage_ItemNotFound(nameof(predicate)));
     }
 
-    private static bool TryFindLast<TItem>(IEnumerable<TItem> source, Func<TItem, bool> predicate, out TItem result)
+    private static bool TryFindLast<TItem>(IEnumerable<TItem> source, Func<TItem, bool> predicate, out TItem? result)
     {
         ArgumentNullException.ThrowIfNull(source, nameof(source));
         ArgumentNullException.ThrowIfNull(predicate, nameof(predicate));
@@ -1128,47 +1127,71 @@ public static partial class HelperExtensionsCommon
         string result = stringBuilder.ToString();
         return result;
     }
-    
+
     /// <summary>
-    /// Returns the specified collection if it is not <see langword="null"/>; otherwise, creates and returns a new instance of the
-    /// collection type.
+    /// Returns the specified value if it is not <see langword="null"/>; otherwise, creates and returns a new instance of the
+    /// value by invoking its parameterless constructor.
     /// </summary>
-    /// <remarks>Use this method to ensure that a collection is always available, which helps prevent <see cref="NullReferenceException"/> when working with collections.</remarks>
-    /// <typeparam name="TCollection">The type of collection to return. Must be a reference type that implements <see cref="ICollection"/> and has a parameterless
-    /// constructor.</typeparam>
-    /// <param name="source">The collection to return if it is not <see langword="null"/>; otherwise, a new instance of the specified collection type.</param>
-    /// <returns>The original collection if it is not <see langword="null"/>; otherwise, a new instance of the specified collection type.</returns>
-    public static TCollection OrNew<TCollection>(this TCollection? source) where TCollection : class, ICollection, new() => source ?? new TCollection();
+    /// <remarks>Use this method to ensure that an instance is always available, which helps prevent <see cref="NullReferenceException"/> when working with parameters or return values.</remarks>
+    /// <typeparam name="T">The type of instance to validate. Must be a reference or value type that has a parameterless constructor.</typeparam>
+    /// <param name="value">The value to return if it is not <see langword="null"/>; otherwise, a new instance of the specified type.</param>
+    /// <returns>The original value if it is not <see langword="null"/>; otherwise, a new instance of the specified type.</returns>
+    public static T OrNew<T>(this T? value) where T : class, new() => value ?? new T();
 
     /// <summary>
     /// Returns the specified collection if it is not <see langword="null"/>; otherwise, returns an empty collection of the same type.
     /// </summary>
     /// <remarks>This method simplifies null checks by ensuring that a collection is never null, which can
     /// help prevent <see cref="NullReferenceException"/> in client code.</remarks>
-    /// <typeparam name="TCollection">The type of the collection, which must implement both <see cref="IEmptyCollectionProvider{TCollection}"/> and <see cref="ICollection"/>.</typeparam>
-    /// <param name="source">The collection to return if it is not <see langword="null"/>; otherwise, an empty collection of the same type.</param>
+    /// <typeparam name="TCollection">The type of the collection, which must implement both <see cref="IEmptyCollectionProvider{TCollection}"/> and <see cref="IEnumerable"/>.</typeparam>
+    /// <param name="source">The collection to return if it is not <see langword="null"/>.</param>
     /// <returns>The original collection if it is not <see langword="null"/>; otherwise, an empty collection of type <typeparamref name="TCollection"/>.</returns>
-    public static TCollection OrEmpty<TCollection>(this TCollection? source) where TCollection : IEmptyCollectionProvider<TCollection>, ICollection => source ?? TCollection.Empty;
+    public static TCollection OrEmpty<TCollection>(this TCollection? source) where TCollection : IEmptyCollectionProvider<TCollection> => source ?? TCollection.Empty;
 
     /// <summary>
     /// Returns the specified collection if it is not <see langword="null"/>; otherwise, returns an empty collection of the same type by invoking the provided factory <paramref name="emptyCollectionFactory"/>.
     /// </summary>
-    /// <remarks>This method simplifies null checks by ensuring that a collection is never null, which can
+    /// <remarks>This method simplifies <see langword="null"/> checks by ensuring that a collection is never <see langword="null"/>, which can
     /// help prevent <see cref="NullReferenceException"/> in client code.</remarks>
-    /// <typeparam name="TCollection">The type of the collection, which must implement both <see cref="IEmptyCollectionProvider{TCollection}"/> and <see cref="ICollection"/>.</typeparam>
-    /// <param name="source">The collection to return if it is not <see langword="null"/>; otherwise, an empty collection of the same type.</param>
+    /// <typeparam name="TCollection">The type of the collection, which must implement <see cref="IEnumerable"/>.</typeparam>
+    /// <param name="source">The collection to return if it is not <see langword="null"/>.</param>
     /// <param name="emptyCollectionFactory">A factory function to create an empty collection if the source is <see langword="null"/>.</param>
     /// <returns>The original collection if it is not <see langword="null"/>; otherwise, an empty collection of type <typeparamref name="TCollection"/> as the result of invoking the <paramref name="emptyCollectionFactory"/>.</returns>
-    public static TCollection OrEmpty<TCollection>(this TCollection? source, Func<TCollection> emptyCollectionFactory) where TCollection : IEmptyCollectionProvider<TCollection>, ICollection
+    public static TCollection OrEmpty<TCollection>(this TCollection? source, Func<TCollection> emptyCollectionFactory) where TCollection : IEnumerable
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(emptyCollectionFactory);
 
         return source ?? emptyCollectionFactory.Invoke();
     }
-}
-    public enum AddRangeMode
-{
-    ThrowOnDuplicateKey,
-    SkipDuplicateKey,
+
+    /// <summary>
+    /// Returns the specified array if it is not <see langword="null"/>; otherwise, returns an empty array of the same type.
+    /// </summary>
+    /// <remarks>This method simplifies <see langword="null"/> checks by ensuring that an array is never <see langword="null"/>, which can
+    /// help prevent <see cref="NullReferenceException"/> in client code.</remarks>
+    /// <typeparam name="TItem">The type of the array items.</typeparam>
+    /// <param name="source">The array to return if it is not <see langword="null"/>.</param>
+    /// <returns>The original array if it is not <see langword="null"/>; otherwise, an empty array of type <typeparamref name="TItem"/>.</returns>
+    public static TItem[] OrEmpty<TItem>(this TItem[]? source) => source ?? Array.Empty<TItem>();
+
+    /// <summary>
+    /// Returns the specified <see cref="IEnumerable{TItem}"/> if it is not <see langword="null"/>; otherwise, returns an empty <see cref="IEnumerable{TItem}"/>.
+    /// </summary>
+    /// <remarks>This method simplifies <see langword="null"/> checks by ensuring that a <see cref="IEnumerable{TItem}"/> is never <see langword="null"/>, which can
+    /// help prevent <see cref="NullReferenceException"/> in client code.</remarks>
+    /// <typeparam name="TItem">The type of the <see cref="IEnumerable{TItem}"/> items..</typeparam>
+    /// <param name="source">The <see cref="IEnumerable{TItem}"/> to return if it is not <see langword="null"/>.</param>
+    /// <returns>The original <see cref="IEnumerable{TItem}"/> if it is not <see langword="null"/>; otherwise, an empty <see cref="IEnumerable{TItem}"/>.</returns>
+    public static IEnumerable<TItem> OrEmpty<TItem>(this IEnumerable<TItem>? source) => source ?? Enumerable.Empty<TItem>();
+
+    /// <summary>
+    /// Returns the specified <see cref="List{TItem}"/> if it is not <see langword="null"/>; otherwise, returns an empty <see cref="List{TItem}"/>.
+    /// </summary>
+    /// <remarks>This method simplifies <see langword="null"/> checks by ensuring that a <see cref="List{TItem}"/> is never <see langword="null"/>, which can
+    /// help prevent <see cref="NullReferenceException"/> in client code.</remarks>
+    /// <typeparam name="TItem">The type of the <see cref="List{TItem}"/> items..</typeparam>
+    /// <param name="source">The <see cref="List{TItem}"/> to return if it is not <see langword="null"/>.</param>
+    /// <returns>The original <see cref="List{TItem}"/> if it is not <see langword="null"/>; otherwise, an empty <see cref="List{TItem}"/>.</returns>
+    public static List<TItem> OrEmpty<TItem>(this List<TItem>? source) => source ?? [];
 }
 

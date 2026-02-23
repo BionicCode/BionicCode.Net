@@ -85,9 +85,14 @@ internal class ConstructorListBuilder : SymbolDataListBuilder<ConstructorData>, 
 
 internal static class ConstructorListBuilderExtensions
 {
-    internal static ConstructorList ToConstructorList(this IEnumerable<ConstructorData> items, TypeData? declaringType) => items is null || items.IsEmpty()
-        ? ConstructorList.Empty
-        : new ConstructorList(items, declaringType);
+    internal static ConstructorList ToConstructorList(this IEnumerable<ConstructorData> items, TypeData? declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? ConstructorList.Empty
+            : new ConstructorList(items, declaringType);
+    }
 
     internal static IConstructorListView ToConstructorListView(this IEnumerable<ConstructorData> items, TypeData declaringType)
     {

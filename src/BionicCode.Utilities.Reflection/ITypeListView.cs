@@ -6,8 +6,6 @@ using System.Collections.Immutable;
 public interface ITypeListView : ICollection, IReadOnlyList<ITypeDataView>, IEquatable<ITypeListView>
 {
     new int Count { get; }
-    bool HasItems { get; }
-    bool IsEmpty { get; }
     ImmutableList<ITypeDataView> Types { get; }
 
     bool ContainsTypeWithName(string typeName);

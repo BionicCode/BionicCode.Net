@@ -11,12 +11,14 @@ using System.Linq;
 /// <remarks>The <see cref="MethodParameterInfo"/> items must belong to the same member of the same declaring type.
 /// This collection is not intended for a loose collection of unrelated parameters.<br/>
 /// Instead the collection is a strict representation of member parameters.</remarks>
-internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInfo>, IEquatable<MethodParameterInfoList>
+internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInfo>, IEmptyCollectionProvider<MethodParameterInfoList>, IEquatable<MethodParameterInfoList>
 {
     public static MethodParameterInfoList Empty { get; } = new MethodParameterInfoList();
     private readonly int _hashCode; // precomputed
-    private readonly SymbolReflectionInfoCacheKeyInternal _declaringTypeCacheKey;
     private readonly Dictionary<string, MethodParameterInfo> _parameterNameIndex;
+    private static readonly EqualityComparer<MethodParameterInfo> s_parameterEqualityComparer = EqualityComparer<MethodParameterInfo>.Create(
+        (x, y) => x.ParameterDescriptor.ParameterPosition == y.ParameterDescriptor.ParameterPosition
+            || x.ParameterDescriptor.ParameterName.Equals(y.ParameterDescriptor.ParameterName, StringComparison.Ordinal));
 
     public MethodParameterInfoList(MethodParameterInfo[] items) : this((IEnumerable<MethodParameterInfo>)items)
     {
@@ -28,23 +30,20 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
 
     public MethodParameterInfoList(IEnumerable<MethodParameterInfo> items)
     {
-        Parameters = items.OrderBy(parameter => parameter.Position).ToImmutableList();
-        _parameterNameIndex = Parameters.ToDictionary(parameter => parameter.MethodName, StringComparer.Ordinal);
+        Parameters = items?
+            .OrderBy(parameter => parameter.ParameterDescriptor.ParameterPosition)
+            .ToImmutableList()
+            ?? ImmutableList<MethodParameterInfo>.Empty;
+        _parameterNameIndex = Parameters.ToDictionary(parameter => parameter.ParameterDescriptor.ParameterName, StringComparer.Ordinal);
         ArgumentNullExceptionAdvanced.ThrowIfNull(Parameters, nameof(items));
 
         if (HasItems)
         {
-            MethodParameterInfo methodParameterInfo = Parameters.FirstOrDefault();
-            RuntimeTypeHandle declaringMemberTypeHandle = methodParameterInfo.DeclaringTypeHandle;
-            Type declaringType = Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle)
-                ?? throw new ArgumentException($"The argument '{nameof(items)}' contains an invalid item at position '0'. Reason: Could not resolve type from handle 'ParameterTypeHandle'.");
-            _declaringTypeCacheKey = declaringType.ToTypeData().CacheKey;
-            ArgumentExceptionAdvanced.ThrowIfAny(
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
                 Parameters,
-                parameterData => !parameterData.DeclaringTypeHandle.Equals(declaringMemberTypeHandle),
+                s_parameterEqualityComparer,
                 nameof(items),
-                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
-
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(MethodParameterInfo.ParameterDescriptor)}.{nameof(AnonymousParameterDescriptor.ParameterPosition)}' parameter position or '{nameof(MethodParameterInfo.ParameterDescriptor)}.{nameof(AnonymousParameterDescriptor.ParameterName)}' parameter name.");
         }
 
         _hashCode = ComputeHashCode();
@@ -52,22 +51,20 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
 
     internal MethodParameterInfoList(IEnumerable<MethodParameterInfo> items, bool isIntegrityValidationEnabled)
     {
-        Parameters = items.OrderBy(parameter => parameter.Position).ToImmutableList();
-        _parameterNameIndex = Parameters.ToDictionary(parameter => parameter.MethodName, StringComparer.Ordinal);
+        Parameters = items?
+            .OrderBy(parameter => parameter.ParameterDescriptor.ParameterPosition)
+            .ToImmutableList()
+            ?? ImmutableList<MethodParameterInfo>.Empty;
+        _parameterNameIndex = Parameters.ToDictionary(parameter => parameter.ParameterDescriptor.ParameterName, StringComparer.Ordinal);
         ArgumentNullExceptionAdvanced.ThrowIfNull(Parameters, nameof(items));
 
         if (HasItems)
         {
-            MethodParameterInfo methodParameterInfo = Parameters.FirstOrDefault();
-            RuntimeTypeHandle declaringMemberTypeHandle = methodParameterInfo.DeclaringTypeHandle;
-            Type declaringType = Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle)
-                ?? throw new ArgumentException($"The argument '{nameof(items)}' contains an invalid item at position '0'. Reason: Could not resolve type from handle 'ParameterTypeHandle'.");
-            _declaringTypeCacheKey = declaringType.ToTypeData().CacheKey;
-            ArgumentExceptionAdvanced.ThrowIfAny(
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
                 Parameters,
-                parameterData => !parameterData.DeclaringTypeHandle.Equals(declaringMemberTypeHandle),
+                s_parameterEqualityComparer,
                 nameof(items),
-                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(MethodParameterInfo.ParameterDescriptor)}.{nameof(AnonymousParameterDescriptor.ParameterPosition)}' parameter position or '{nameof(MethodParameterInfo.ParameterDescriptor)}.{nameof(AnonymousParameterDescriptor.ParameterName)}' parameter name.");
 
         }
 
@@ -86,28 +83,16 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
         return _parameterNameIndex.TryGetValue(parameterName, out parameterData);
     }
 
+    public bool ContainsParameterWithName(string parameterName)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(parameterName);
+        return _parameterNameIndex.ContainsKey(parameterName);
+    }
+
     public int Count => Parameters.Count;
     public bool IsEmpty => Parameters.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<MethodParameterInfo> Parameters { get; }
-    public SymbolReflectionInfoCacheKeyInternal DeclaringTypeCacheKey
-        => HasItems
-            ? _declaringTypeCacheKey
-            : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeCacheKey)));
-
-    public TypeData DeclaringTypeData
-    {
-        get
-        {
-            if (IsEmpty)
-            {
-                throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringTypeData)));
-            }
-
-            SymbolReflectionInfoCacheKeyInternal cacheKey = DeclaringTypeCacheKey;
-            return SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey);
-        }
-    }
 
     public MethodParameterInfo this[int index]
     {
@@ -122,11 +107,9 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
         }
     }
 
-    public IEnumerator<MethodParameterInfo> GetEnumerator()
-        => ((IEnumerable<MethodParameterInfo>)Parameters).GetEnumerator();
+    public IEnumerator<MethodParameterInfo> GetEnumerator() => ((IEnumerable<MethodParameterInfo>)Parameters).GetEnumerator();
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => Parameters.GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Parameters.GetEnumerator();
 
     public bool Equals(MethodParameterInfoList? other)
     {
@@ -136,11 +119,6 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
         }
 
         if (Count != other.Count)
-        {
-            return false;
-        }
-
-        if (!DeclaringTypeCacheKey.Equals(other.DeclaringTypeCacheKey))
         {
             return false;
         }
@@ -156,8 +134,7 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
         return true;
     }
 
-    public override bool Equals(object? obj)
-        => obj is MethodParameterInfoList other && Equals(other);
+    public override bool Equals(object? obj) => obj is MethodParameterInfoList other && Equals(other);
 
     public override int GetHashCode() => _hashCode;
 
@@ -167,7 +144,6 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
         {
             var hashCode = new HashCode();
             hashCode.Add(Count);
-            hashCode.Add(DeclaringTypeCacheKey);
             for (int index = 0; index < Parameters.Count; index++)
             {
                 hashCode.Add(Parameters[index]);
@@ -177,8 +153,6 @@ internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInf
         }
     }
 
-    public static bool operator ==(MethodParameterInfoList? left, MethodParameterInfoList? right)
-        => left?.Equals(right) ?? (right is null);
-    public static bool operator !=(MethodParameterInfoList? left, MethodParameterInfoList? right)
-        => !(left == right);
+    public static bool operator ==(MethodParameterInfoList? left, MethodParameterInfoList? right) => left?.Equals(right) ?? (right is null);
+    public static bool operator !=(MethodParameterInfoList? left, MethodParameterInfoList? right) => !(left == right);
 }

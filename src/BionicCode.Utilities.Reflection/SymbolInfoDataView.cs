@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 using BionicCode.Utilities.Net.Reflection.Exceptions;
 
@@ -576,7 +577,7 @@ internal class SymbolInfoDataView : SymbolReflectionInfoCache.SymbolDataViewBase
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
     /// <value>The list of <see cref="CustomAttributeData"/>.</value>
-    public IList<CustomAttributeData> AttributeData => GetSymbolInfoDataOrThrow().AttributeData;
+    public ImmutableList<CustomAttributeData> AttributeData => GetSymbolInfoDataOrThrow().AttributeData;
     /// <summary>
     /// Attempts to retrieve the list of <see cref="CustomAttributeData"/>.
     /// </summary>

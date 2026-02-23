@@ -1,6 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -31,7 +31,7 @@ internal abstract class SymbolInfoData : SymbolReflectionInfoCache.SymbolInfoDat
     internal string Name { get; }
     internal SymbolKind SymbolKind { get; }
     internal abstract string Namespace { get; }
-    internal abstract IList<CustomAttributeData> AttributeData { get; }
+    internal abstract ImmutableList<CustomAttributeData> AttributeData { get; }
     private ILookup<string, CustomAttributeData>? _attributeDataLookup;
     internal ILookup<string, CustomAttributeData> AttributeDataLookup => _attributeDataLookup ??= AttributeData.ToLookup(attribute => attribute.AttributeType.FullName ?? string.Empty);
     internal abstract SymbolAttributes SymbolAttributes { get; }

@@ -1908,7 +1908,7 @@ internal static class SymbolReflectionInfoCache
         parameterDataCandidate = null;
         exception = null;
 
-        bool isParameterAmbiguityExpected = !(parameterDescriptor.HasParameterKind && (parameterDescriptor.HasParameterTypeHandle || parameterDescriptor.HasParameterName));
+        bool isParameterAmbiguityExpected = !(parameterDescriptor.HasParameterModifier && (parameterDescriptor.HasParameterTypeHandle || parameterDescriptor.HasParameterName));
         bool isCandidateAmbiguous;
 
         // Filter ordered from fastest to slowest path to optimize lookup performance.
@@ -1954,8 +1954,8 @@ internal static class SymbolReflectionInfoCache
         foreach (ParameterData parameterCandidate in parameterCandidates)
         {
             // Parameter modifier does not match
-            if (parameterDescriptor.HasParameterKind
-                && parameterCandidate.ParameterKind != parameterDescriptor.ParameterKind)
+            if (parameterDescriptor.HasParameterModifier
+                && parameterCandidate.ParameterModifier != parameterDescriptor.ParameterModifier)
             {
                 continue;
             }
@@ -1981,7 +1981,7 @@ internal static class SymbolReflectionInfoCache
     {
         if (isCandidateAmbiguous)
         {
-            throw new AmbiguousMatchException("Multiple symbols were found that match the provided constraints. To eliminate ambiguity, please provide both member name for the method, constructor or indexer property that defines the parameter and the ParameterKind when creating the cache key. For parameters you can also provide a RuntimeMethodHandle from the member that defines the parameter.");
+            throw new AmbiguousMatchException("Multiple symbols were found that match the provided constraints. To eliminate ambiguity, please provide both member name for the method, constructor or indexer property that defines the parameter and the ParameterModifier when creating the cache key. For parameters you can also provide a RuntimeMethodHandle from the member that defines the parameter.");
         }
     }
 

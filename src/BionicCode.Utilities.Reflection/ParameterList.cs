@@ -23,6 +23,8 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, ICollection,
     private readonly ParameterizedMemberData? _declaringMember;
     private readonly Dictionary<string, ParameterData> _parameterNameIndex;
     private IParameterListView? _view;
+    private static readonly EqualityComparer<ParameterData> s_parameterEqualityComparer = EqualityComparer<ParameterData>.Create(
+        (x, y) => x!.Position == y!.Position || x.Name.Equals(y.Name, StringComparison.Ordinal));
 
     private ParameterList()
     {
@@ -54,6 +56,11 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, ICollection,
 
         if (HasItems)
         {
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
+                Parameters,
+                s_parameterEqualityComparer,
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(ParameterData.Position)}' parameter position or '{nameof(ParameterData.Name)}' parameter name.");
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Parameters,
                 parameterData => ReferenceEquals(parameterData.MemberData, _declaringMember),
@@ -81,6 +88,11 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, ICollection,
 
         if (isIntegrityValidationEnabled && HasItems)
         {
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
+                Parameters,
+                s_parameterEqualityComparer,
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(ParameterData.Position)}' parameter position or '{nameof(ParameterData.Name)}' parameter name.");
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Parameters,
                 parameterData => ReferenceEquals(parameterData.MemberData, _declaringMember),
@@ -91,10 +103,9 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, ICollection,
         _hashCode = ComputeHashCode();
     }
 
-    public ImmutableArray<ParameterInfo> AsParameterInfoArray()
-        => Parameters
-            .Select(parameterData => parameterData.ParameterInfo)
-            .ToImmutableArray();
+    public ImmutableArray<ParameterInfo> AsParameterInfoArray() => Parameters
+        .Select(parameterData => parameterData.ParameterInfo)
+        .ToImmutableArray();
 
     public bool TryGetParameterByName(string parameterName, out ParameterData? parameterData)
     {
@@ -236,6 +247,8 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IColl
     private readonly int _hashCode; // precomputed
     private readonly IParameterizedMemberDataView? _declaringMemberView;
     private readonly Dictionary<string, IParameterDataView> _parameterNameIndex;
+    private static readonly EqualityComparer<IParameterDataView> s_parameterEqualityComparer = EqualityComparer<IParameterDataView>.Create(
+        (x, y) => x!.Position == y!.Position || x.Name.Equals(y.Name, StringComparison.Ordinal));
 
     private ParameterListView()
     {
@@ -259,18 +272,23 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IColl
 
         _declaringMemberView = declaringMember;
 
-        Parameters = items?.OrderBy(parameter => parameter.Position).ToImmutableList()
+        Parameters = items?
+            .OrderBy(parameter => parameter.Position)
+            .ToImmutableList()
             ?? ImmutableList<IParameterDataView>.Empty;
         _parameterNameIndex = Parameters.ToDictionary(parameter => parameter.Name, StringComparer.Ordinal);
 
         if (HasItems)
         {
-            RuntimeMethodHandle declaringMemberHandle = _declaringMemberView.Handle;
-            RuntimeTypeHandle declaringTypeHandle = _declaringMemberView.DeclaringTypeHandle;
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
+                Parameters,
+                s_parameterEqualityComparer,
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(IParameterDataView.Position)}' parameter position or '{nameof(IParameterDataView.Name)}' parameter name.");
 
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Parameters,
-                parameterData => parameterData.MemberData.Handle != declaringMemberHandle || !parameterData.MemberData.DeclaringTypeHandle.Equals(declaringTypeHandle),
+                parameterData => !ReferenceEquals(parameterData.MemberData, declaringMember),
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(IParameterDataView)}.{nameof(IParameterDataView.MemberData)}' declaring member handle. All parameters must belong to the same member of the same declaring type.");
         }
@@ -287,19 +305,23 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IColl
 
         _declaringMemberView = declaringMember;
 
-        Parameters = items?.OrderBy(parameter => parameter.Position)
+        Parameters = items?
+            .OrderBy(parameter => parameter.Position)
             .ToImmutableList()
             ?? ImmutableList<IParameterDataView>.Empty;
         _parameterNameIndex = Parameters.ToDictionary(parameter => parameter.Name, StringComparer.Ordinal);
 
         if (isIntegrityValidationEnabled && HasItems)
         {
-            RuntimeMethodHandle declaringMemberHandle = _declaringMemberView.Handle;
-            RuntimeTypeHandle declaringTypeHandle = _declaringMemberView.DeclaringTypeHandle;
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
+                Parameters,
+                s_parameterEqualityComparer,
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(IParameterDataView.Position)}' parameter position or '{nameof(IParameterDataView.Name)}' parameter name.");
 
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Parameters,
-                parameterData => parameterData.MemberData.Handle != declaringMemberHandle || !parameterData.MemberData.DeclaringTypeHandle.Equals(declaringTypeHandle),
+                parameterData => !ReferenceEquals(parameterData.MemberData, declaringMember),
                 nameof(items),
                 $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(IParameterDataView)}.{nameof(IParameterDataView.MemberData)}' declaring member handle. All parameters must belong to the same member of the same declaring type.");
         }

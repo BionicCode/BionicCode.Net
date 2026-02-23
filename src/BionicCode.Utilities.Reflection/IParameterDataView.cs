@@ -27,7 +27,7 @@ public interface IParameterDataView : ISymbolInfoDataView
     bool IsRefReadOnly { get; }
     bool IsSetterValueParameter { get; }
     IParameterizedMemberDataView MemberData { get; }
-    ParameterKind ParameterKind { get; }
+    ParameterModifier ParameterModifier { get; }
     ITypeDataView ParameterTypeData { get; }
     RuntimeTypeHandle ParameterTypeHandle { get; }
     int Position { get; }

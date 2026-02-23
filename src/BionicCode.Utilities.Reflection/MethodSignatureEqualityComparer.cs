@@ -112,7 +112,7 @@ public class MethodSignatureEqualityComparer : IEqualityComparer<MethodInfo>, IE
             ParameterData xParameterData = xParameters[i];
             ParameterData yParameterData = yParameters[i];
             if (!ReferenceEquals(xParameterData.ParameterTypeData, yParameterData.ParameterTypeData)
-                || xParameterData.ParameterKind != yParameterData.ParameterKind
+                || xParameterData.ParameterModifier != yParameterData.ParameterModifier
                 || !xParameterData.Name.Equals(yParameterData.Name, StringComparison.Ordinal))
             {
                 return false;
@@ -139,7 +139,7 @@ public class MethodSignatureEqualityComparer : IEqualityComparer<MethodInfo>, IE
                 hashCode.Add(param.ParameterTypeData);
                 hashCode.Add(param.Position);
                 hashCode.Add(param.Name);
-                hashCode.Add(param.ParameterKind);
+                hashCode.Add(param.ParameterModifier);
             }
 
             return hashCode.ToHashCode();

@@ -8,8 +8,6 @@ public interface IEventListView : ICollection, IReadOnlyList<IEventDataView>, IE
     new int Count { get; }
     ITypeDataView DeclaringType { get; }
     ImmutableList<IEventDataView> Events { get; }
-    bool HasItems { get; }
-    bool IsEmpty { get; }
     bool TryGetEventByName(string eventName, out IEventDataView? eventData);
     bool ContainsEventWithName(string eventName);
 }

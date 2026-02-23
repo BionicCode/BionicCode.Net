@@ -8,6 +8,4 @@ public interface IConstructorListView : ICollection, IReadOnlyList<IConstructorD
     new int Count { get; }
     ImmutableList<IConstructorDataView> Constructors { get; }
     ITypeDataView DeclaringType { get; }
-    bool HasItems { get; }
-    bool IsEmpty { get; }
 }

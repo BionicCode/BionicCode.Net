@@ -32,7 +32,7 @@ internal sealed class ParameterData : SymbolInfoData
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
     private object? _defaultValue;
-    private ParameterKind? _parameterKind;
+    private ParameterModifier? _parameterKind;
     private bool? _isGenericTypeParameter;
     private bool? _isGenericMethodParameter;
     private bool? _isIndexerPropertyParameter;
@@ -117,15 +117,15 @@ internal sealed class ParameterData : SymbolInfoData
     /// <summary>
     /// The modifier that indicates how the parameter is passed (e.g., by value, by reference, as an input parameter, or as an output parameter).
     /// </summary>
-    internal ParameterKind ParameterKind => _parameterKind ??= IsIn
-        ? ParameterKind.In
+    internal ParameterModifier ParameterModifier => _parameterKind ??= IsIn
+        ? ParameterModifier.In
         : IsOut
-            ? ParameterKind.Out
+            ? ParameterModifier.Out
             : IsRefReadOnly
-                ? ParameterKind.RefReadOnly
+                ? ParameterModifier.RefReadOnly
                 : IsRef
-                    ? ParameterKind.Ref
-                    : ParameterKind.Undefined;
+                    ? ParameterModifier.Ref
+                    : ParameterModifier.Undefined;
 
     /// <summary>
     /// Gets the default value for the parameter, if one is defined.

@@ -393,13 +393,13 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     }
     public IParameterListView PropertyGetMethodParameters { get; }
     public IParameterListView PropertySetMethodParameters { get; }
-    public ITypeDataView? PropertyTypeData { get; }
+    public ITypeDataView PropertyTypeData { get; }
     public AccessModifier AccessModifier { get; }
     public BindingFlags BindingFlagsVisibilityMask { get; }
-    public ITypeDataView? DeclaringType { get; }
+    public ITypeDataView DeclaringType { get; }
     public RuntimeTypeHandle DeclaringTypeHandle { get; }
     public RuntimeTypeHandle ImplementingTypeHandle { get; }
-    public ITypeDataView? ImplementingTypData { get; }
+    public ITypeDataView ImplementingTypData { get; }
     public bool IsAssembly { get; }
     public bool IsExplicitInterfaceImplementation { get; }
     public bool IsFamily { get; }

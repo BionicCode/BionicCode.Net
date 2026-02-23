@@ -6,6 +6,7 @@ using System.CodeDom;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -61,7 +62,7 @@ internal class TypeData : SymbolInfoData
     private FieldList? _fields;
     private EventList? _events;
     private ConstructorList? _constructors;
-    private IList<CustomAttributeData>? _attributeData;
+    private ImmutableList<CustomAttributeData>? _attributeData;
     private string? _assemblyName;
     private MethodData? _delegateInvokeMethodData;
     private SymbolComponentInfo? _symbolComponentInfo;
@@ -543,7 +544,7 @@ internal class TypeData : SymbolInfoData
             case Type memberType when memberType == typeof(MethodData):
                 readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((MethodInfo)memberInfo);
                 IMethodListBuilder methodListBuilder = MethodListBuilder.New(this);
-                IMethodListBuilder explicitMethodListBuilder = MethodListBuilder.New(Handle);
+                IMethodListBuilder explicitMethodListBuilder = MethodListBuilder.New(this);
                 addMemberToTypeDataMemberList = methodData =>
                 {
                     if (methodData.IsExplicitInterfaceImplementation)
@@ -573,7 +574,7 @@ internal class TypeData : SymbolInfoData
             case Type memberType when memberType == typeof(EventData):
                 readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((EventInfo)memberInfo);
                 IEventListBuilder eventListBuilder = EventListBuilder.New(this);
-                IEventListBuilder explicitEventListBuilder = EventListBuilder.New(Handle);
+                IEventListBuilder explicitEventListBuilder = EventListBuilder.New(this);
                 addMemberToTypeDataMemberList = eventData =>
                 {
                     if (eventData.IsExplicitInterfaceImplementation)
@@ -595,7 +596,7 @@ internal class TypeData : SymbolInfoData
                 break;
             case Type memberType when memberType == typeof(ConstructorData):
                 readReflectionCache = (memberInfo) => GetOrCreateCacheEntry((ConstructorInfo)memberInfo);
-                IConstructorListBuilder constructorListBuilder = ConstructorListBuilder.New(Handle);
+                IConstructorListBuilder constructorListBuilder = ConstructorListBuilder.New(this);
                 addMemberToTypeDataMemberList = constructorData => constructorListBuilder.Add((ConstructorData)constructorData);
                 fieldInitializer = () => _constructors = constructorListBuilder.Build();
                 memberKind = SymbolKind.MemberConstructor;
@@ -699,7 +700,7 @@ internal class TypeData : SymbolInfoData
     internal bool CanDeclareExtensionMethod => (bool)(bool?)(_canDeclareExtensionMethod ??= TypeData.CanDeclareExtensionMethods(this));
 
     /// <inheritdoc/>
-    internal override IList<CustomAttributeData> AttributeData => _attributeData ??= Type.GetCustomAttributesData();
+    internal override ImmutableList<CustomAttributeData> AttributeData => _attributeData ??= Type.GetCustomAttributesData().ToImmutableList();
 
     internal AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
         ? (_accessModifier = TypeData.GetAccessModifier(this))

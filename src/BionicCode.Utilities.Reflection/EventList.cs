@@ -15,6 +15,8 @@ internal sealed class EventList : IReadOnlyList<EventData>, ICollection, IEmptyC
     private readonly TypeData _declaringType;
     private readonly Dictionary<string, EventData> _eventNameIndex;
     private IEventListView? _view;
+    private static readonly EqualityComparer<EventData> s_eventEqualityComparer = EqualityComparer<EventData>.Create(
+        (x, y) => x!.Name.Equals(y!.Name, StringComparison.Ordinal));
 
     public EventList(EventData[] items, TypeData? declaringType) : this((IEnumerable<EventData>)items, declaringType)
     {
@@ -30,6 +32,11 @@ internal sealed class EventList : IReadOnlyList<EventData>, ICollection, IEmptyC
 
         if (HasItems)
         {
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
+                Events,
+                s_eventEqualityComparer,
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(EventData.Name)}' event name.");
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Events,
                 eventData => !ReferenceEquals(eventData.DeclaringTypeData, _declaringType),
@@ -52,6 +59,11 @@ internal sealed class EventList : IReadOnlyList<EventData>, ICollection, IEmptyC
 
         if (isIntegrityValidationEnabled && HasItems)
         {
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
+                Events,
+                s_eventEqualityComparer,
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(EventData.Name)}' event name.");
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Events,
                 eventData => !ReferenceEquals(eventData.DeclaringTypeData, _declaringType),
@@ -211,6 +223,8 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, ICollection, 
     private readonly int _hashCode; // precomputed
     private readonly ITypeDataView _declaringType;
     private readonly Dictionary<string, IEventDataView> _eventNameIndex;
+    private static readonly EqualityComparer<IEventDataView> s_eventEqualityComparer = EqualityComparer<IEventDataView>.Create(
+        (x, y) => x!.Name.Equals(y!.Name, StringComparison.Ordinal));
 
     public EventListView(IEventDataView[] items, ITypeDataView? declaringType) : this((IEnumerable<IEventDataView>)items, declaringType)
     {
@@ -226,6 +240,11 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, ICollection, 
 
         if (HasItems)
         {
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
+                Events,
+                s_eventEqualityComparer,
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(IEventDataView.Name)}' event name.");
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Events,
                 eventData => !ReferenceEquals(eventData.DeclaringType, _declaringType),
@@ -248,6 +267,11 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, ICollection, 
 
         if (isIntegrityValidationEnabled && HasItems)
         {
+            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
+                Events,
+                s_eventEqualityComparer,
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(IEventDataView.Name)}' event name.");
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Events,
                 eventData => !ReferenceEquals(eventData.DeclaringType, _declaringType),

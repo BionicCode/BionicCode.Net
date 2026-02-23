@@ -23,35 +23,32 @@ internal readonly struct AnonymousParameterDescriptor : IEquatable<AnonymousPara
     /// <summary>
     /// Constructs a descriptor that provides the specified parameter information for an anonymous parameter.
     /// </summary>
-    /// <param name="declaringMethodDescriptor">The <see cref="AnonymousMethodDescriptor"/> representing the anonymous method that declares the parameter.</param>
     /// <param name="parameterTypeHandle">Conditionally optional. The runtime type handle representing the type of the anonymous parameter.<para/>
-    /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterKind"/> AND <paramref name="parameterPosition"/>.</param>
+    /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterModifier"/> AND <paramref name="parameterPosition"/>.</param>
     /// <param name="parameterName">Conditionally optional. The name of the anonymous parameter.<para/>
-    /// Must be provided if all of the following arguments are missing: <paramref name="parameterTypeHandle"/> AND <paramref name="parameterKind"/> AND <paramref name="parameterPosition"/>.</param>
+    /// Must be provided if all of the following arguments are missing: <paramref name="parameterTypeHandle"/> AND <paramref name="parameterModifier"/> AND <paramref name="parameterPosition"/>.</param>
     /// <param name="parameterPosition">Conditionally optional.The index of the parameter.<para/>
-    /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterTypeHandle"/> AND <paramref name="parameterKind"/>.</param>
-    /// <param name="parameterKind">Conditionally optional. The modifier of the parameter.<para/>
+    /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterTypeHandle"/> AND <paramref name="parameterModifier"/>.</param>
+    /// <param name="parameterModifier">Conditionally optional. The modifier of the parameter.<para/>
     /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterTypeHandle"/> AND <paramref name="parameterPosition"/>.</param>
     public AnonymousParameterDescriptor(
-        AnonymousMethodDescriptor declaringMethodDescriptor,
         string? parameterName = null,
         int parameterPosition = UnknownParameterCountOrPosition,
-        ParameterKind parameterKind = ParameterKind.Undefined,
+        ParameterModifier parameterModifier = ParameterModifier.Undefined,
         RuntimeTypeHandle? parameterTypeHandle = null)
     {
-        ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterKind>(parameterKind);
+        ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterModifier>(parameterModifier);
         if (parameterTypeHandle.Equals(default)
             && string.IsNullOrWhiteSpace(parameterName)
-            && parameterKind == ParameterKind.Undefined
+            && parameterModifier == ParameterModifier.Undefined
             && parameterPosition == UnknownParameterCountOrPosition)
         {
-            throw new ArgumentException($"At least one of the following arguments must be provided to avoid ambiguity when using the created key for lookups: '{nameof(parameterTypeHandle)}', '{nameof(parameterName)}', '{nameof(parameterKind)}', '{nameof(parameterPosition)}'.");
+            throw new ArgumentException($"At least one of the following arguments must be provided to avoid ambiguity when using the created key for lookups: '{nameof(parameterTypeHandle)}', '{nameof(parameterName)}', '{nameof(parameterModifier)}', '{nameof(parameterPosition)}'.");
         }
 
-        DeclaringMethodDescriptor = declaringMethodDescriptor;
         ParameterName = parameterName ?? string.Empty;
         ParameterPosition = parameterPosition;
-        ParameterKind = parameterKind;
+        ParameterModifier = parameterModifier;
         ParameterTypeHandle = parameterTypeHandle ?? default;
         IsAnonymous = true;
     }
@@ -60,31 +57,28 @@ internal readonly struct AnonymousParameterDescriptor : IEquatable<AnonymousPara
 
     public bool HasParameterPosition => ParameterPosition > UnknownParameterCountOrPosition;
 
-    public bool HasParameterKind => ParameterKind != ParameterKind.Undefined;
+    public bool HasParameterModifier => ParameterModifier != ParameterModifier.Undefined;
 
     public bool HasParameterTypeHandle => !ParameterTypeHandle.Equals(default);
 
     public bool IsAnonymous { get; }
 
-    public AnonymousMethodDescriptor DeclaringMethodDescriptor { get; }
     public string ParameterName { get; }
     public int ParameterPosition { get; }
-    public ParameterKind ParameterKind { get; }
+    public ParameterModifier ParameterModifier { get; }
     public RuntimeTypeHandle ParameterTypeHandle { get; }
 
     public bool Equals(AnonymousParameterDescriptor other) => ParameterName.Equals(other.ParameterName, StringComparison.Ordinal)
         && ParameterPosition == other.ParameterPosition
-        && ParameterKind == other.ParameterKind
+        && ParameterModifier == other.ParameterModifier
         && ParameterTypeHandle.Equals(other.ParameterTypeHandle)
-        && DeclaringMethodDescriptor.Equals(other.DeclaringMethodDescriptor)
         && IsAnonymous == other.IsAnonymous;
 
     public override int GetHashCode() => HashCode.Combine(
         ParameterName,
         ParameterPosition,
-        ParameterKind,
+        ParameterModifier,
         ParameterTypeHandle,
-        DeclaringMethodDescriptor,
         IsAnonymous);
 
     public static bool operator ==(AnonymousParameterDescriptor left, AnonymousParameterDescriptor right) => left.Equals(right);

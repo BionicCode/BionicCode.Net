@@ -3,7 +3,7 @@
 /// <summary>
 /// Specifies the modifier of a parameter.
 /// </summary>
-public enum ParameterKind
+public enum ParameterModifier
 {
     Undefined = 0,
     Normal,

@@ -89,9 +89,14 @@ internal class FieldListBuilder : SymbolDataListBuilder<FieldData>, IFieldListBu
 
 internal static class FieldListBuilderExtensions
 {
-    internal static FieldList ToFieldList(this IEnumerable<FieldData> items, TypeData declaringTypeData) => items is null || items.IsEmpty() 
-        ? FieldList.Empty 
-        : new FieldList(items, declaringTypeData);
+    internal static FieldList ToFieldList(this IEnumerable<FieldData> items, TypeData declaringTypeData)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringTypeData);
+
+        return items is null || items.IsEmpty()
+            ? FieldList.Empty
+            : new FieldList(items, declaringTypeData);
+    }
 
     internal static IFieldListView ToFieldListView(this IEnumerable<FieldData> items, TypeData declaringType)
     {

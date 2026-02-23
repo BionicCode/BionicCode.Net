@@ -7,6 +7,7 @@ using System.Reflection;
 
 internal interface IMethodListBuilder
 {
+    TypeData DeclaringType { get; }
     IMethodListBuilder Add(MethodData propertyData);
     MethodList Build();
 }
@@ -14,14 +15,14 @@ internal interface IMethodListBuilder
 internal class MethodListBuilder : SymbolDataListBuilder<MethodData>, IMethodListBuilder
 {
     private MethodList? _builderResult;
+    private readonly TypeData _declaringType;
 
-    private MethodListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
-    {
-    }
+    private MethodListBuilder(TypeData declaringType) : base(declaringType.Handle) => _declaringType = declaringType;
 
-    public static IMethodListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+    public static IMethodListBuilder New(TypeData declaringType)
     {
-        var builder = new MethodListBuilder(declaringTypeHandle);
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+        var builder = new MethodListBuilder(declaringType);
         return builder;
     }
     internal static MethodList Create(IEnumerable<MethodInfo>? items)
@@ -33,17 +34,14 @@ internal class MethodListBuilder : SymbolDataListBuilder<MethodData>, IMethodLis
         }
 
         var methods = new List<MethodData>(methodInfoList.Count);
-        RuntimeTypeHandle declaringTypeHandle = default;
+        TypeData? declaringTypeData = default;
         foreach (MethodInfo methodInfo in methodInfoList)
         {
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
+            MethodData methodData = GetOrCreateCacheEntry(methodInfo);
 
-            if (declaringTypeHandle.Equals(default))
-            {
-                declaringTypeHandle = methodData.DeclaringTypeHandle;
-            }
+            declaringTypeData ??= methodData.DeclaringTypeData;
 
-            if (!methodData.DeclaringTypeHandle.Equals(declaringTypeHandle))
+            if (!ReferenceEquals(methodData.DeclaringTypeData, declaringTypeData))
             {
                 throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(MethodInfo)}' items must belong to the same declaring type.");
             }
@@ -51,33 +49,32 @@ internal class MethodListBuilder : SymbolDataListBuilder<MethodData>, IMethodLis
             methods.Add(methodData);
         }
 
-        return methods.ToMethodList();
+        if (declaringTypeData is null)
+        {
+            throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: Unable to determine the declaring type of the provided '{nameof(MethodInfo)}' items.");
+        }
+
+        return methods.ToMethodList(declaringTypeData);
     }
 
     internal static MethodList Create(TypeData declaringTypeData)
     {
         ArgumentNullException.ThrowIfNull(declaringTypeData);
-        return CreateInternal(declaringTypeData.Type);
+        return CreateInternal(declaringTypeData);
     }
 
     internal static MethodList Create(Type declaringType)
     {
         ArgumentNullException.ThrowIfNull(declaringType);
-        return CreateInternal(declaringType);
+        TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
+        return CreateInternal(declaringTypeData);
     }
 
-    private static MethodList CreateInternal(Type declaringType)
-    {
-        MethodInfo[] methodInfoList = declaringType.GetMethods(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-        if (methodInfoList.IsEmpty())
-        {
-            return MethodList.Empty;
-        }
+    private static MethodList CreateInternal(TypeData declaringTypeData) => declaringTypeData.EnumerateMethods().ToMethodList(declaringTypeData);
 
-        IEnumerable<MethodData> methods = methodInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
+    TypeData IMethodListBuilder.DeclaringType => _declaringType;
 
-        return methods.ToMethodList();
-    }
+    public TypeData DeclaringType { get; }
 
     IMethodListBuilder IMethodListBuilder.Add(MethodData methodData)
     {
@@ -86,14 +83,19 @@ internal class MethodListBuilder : SymbolDataListBuilder<MethodData>, IMethodLis
     }
 
     MethodList IMethodListBuilder.Build()
-        => _builderResult ??= new MethodList(Build(), isIntegrityValidationEnabled: false);
+        => _builderResult ??= new MethodList(Build(), ((IMethodListBuilder)this).DeclaringType, isIntegrityValidationEnabled: false);
 }
 
 internal static class MethodListBuilderExtensions
 {
-    public static MethodList ToMethodList(this IEnumerable<MethodData> items, TypeData declaringType) => items is null || items.IsEmpty()
-        ? MethodList.Empty 
-        : new MethodList(items, declaringType);
+    public static MethodList ToMethodList(this IEnumerable<MethodData> items, TypeData declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+
+        return items is null || items.IsEmpty()
+            ? MethodList.Empty
+            : new MethodList(items, declaringType);
+    }
 
     internal static IMethodListView ToMethodListView(this IEnumerable<MethodData> items, TypeData declaringType)
     {
@@ -118,6 +120,5 @@ internal static class MethodListBuilderExtensions
     /// </summary>
     /// <param name="items"></param>
     /// <returns>A <see cref="MethodList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    public static MethodList OrEmpty(this MethodList items)
-        => items ?? MethodList.Empty;
+    public static MethodList OrEmpty(this MethodList items) => items ?? MethodList.Empty;
 }

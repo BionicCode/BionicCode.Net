@@ -208,7 +208,6 @@ internal sealed class PropertyList : IReadOnlyList<PropertyData>, ICollection, I
 [DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
 public sealed class PropertyListView : IReadOnlyList<IPropertyDataView>, ICollection, IEmptyCollectionProvider<IPropertyListView>, IEquatable<IPropertyListView>, IPropertyListView
 {
-    public static IPropertyListView Empty { get; } = new PropertyListView();
     private readonly int _hashCode; // precomputed
     private readonly ITypeDataView? _declaringType;
     private readonly Dictionary<string, IPropertyDataView> _propertyNameIndex;
@@ -265,10 +264,10 @@ public sealed class PropertyListView : IReadOnlyList<IPropertyDataView>, ICollec
         _hashCode = ComputeHashCode();
     }
 
-    public bool TryGetPropertyByName(string propertyName, out IPropertyDataView? property)
+    public bool TryGetPropertyByName(string propertyName, out IPropertyDataView? propertyData)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(propertyName);
-        return _propertyNameIndex.TryGetValue(propertyName, out property);
+        return _propertyNameIndex.TryGetValue(propertyName, out propertyData);
     }
 
     public bool ContainsPropertyWithName(string propertyName)
@@ -276,6 +275,8 @@ public sealed class PropertyListView : IReadOnlyList<IPropertyDataView>, ICollec
         ArgumentNullException.ThrowIfNullOrWhiteSpace(propertyName);
         return _propertyNameIndex.ContainsKey(propertyName);
     }
+
+    public static IPropertyListView Empty { get; } = new PropertyListView();
 
     public int Count => Properties.Count;
     public bool IsEmpty => Properties.IsEmpty;

@@ -14,12 +14,12 @@ public readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectio
     private readonly RuntimeTypeHandle _propertyTypeHandle;
     private readonly RuntimeMethodHandle _eventAddMethodHandle;
     private readonly RuntimeMethodHandle _eventRemoveMethodHandle;
-    private readonly ParameterKind _parameterModifier;
+    private readonly ParameterModifier _parameterModifier;
     private readonly int _parameterPosition;
     private readonly RuntimeTypeHandle _parameterTypeHandle;
     private readonly RuntimeMethodHandle _parameterDeclaringMethodHandle;
 
-    private SymbolReflectionInfoCacheKey(RuntimeTypeHandle declaringTypeHandle, RuntimeMethodHandle methodHandle, RuntimeTypeHandle typeHandle, RuntimeFieldHandle fieldHandle, RuntimeMethodHandle propertySetMethodHandle, RuntimeMethodHandle propertyGetMethodHandle, RuntimeTypeHandle propertyTypeHandle, RuntimeMethodHandle eventAddMethodHandle, RuntimeMethodHandle eventRemoveMethodHandle, ParameterKind parameterModifier, int parameterPosition, RuntimeTypeHandle parameterTypeHandle, RuntimeMethodHandle parameterDeclaringMethodHandle, string symbolName, SymbolKind symbolKind, bool isAnonymousKey) : this()
+    private SymbolReflectionInfoCacheKey(RuntimeTypeHandle declaringTypeHandle, RuntimeMethodHandle methodHandle, RuntimeTypeHandle typeHandle, RuntimeFieldHandle fieldHandle, RuntimeMethodHandle propertySetMethodHandle, RuntimeMethodHandle propertyGetMethodHandle, RuntimeTypeHandle propertyTypeHandle, RuntimeMethodHandle eventAddMethodHandle, RuntimeMethodHandle eventRemoveMethodHandle, ParameterModifier parameterModifier, int parameterPosition, RuntimeTypeHandle parameterTypeHandle, RuntimeMethodHandle parameterDeclaringMethodHandle, string symbolName, SymbolKind symbolKind, bool isAnonymousKey) : this()
     {
         _declaringTypeHandle = declaringTypeHandle;
         _methodHandle = methodHandle;
@@ -191,7 +191,7 @@ public readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectio
             default,
             default,
             default,
-            parameterData.ParameterKind,
+            parameterData.ParameterModifier,
             parameterData.Position,
             parameterData.ParameterTypeHandle,
             parameterData.MemberData.Handle,
@@ -235,7 +235,7 @@ public readonly struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectio
     public readonly RuntimeMethodHandle EventRemoveMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.MemberEvent], _eventRemoveMethodHandle);
     public readonly bool IsMethodOrConstructor => SymbolKind is SymbolKind.MemberConstructor or SymbolKind.MemberMethod;
     public readonly bool IsParameter => SymbolKind is SymbolKind.Parameter;
-    public readonly ParameterKind ParameterModifier => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterModifier);
+    public readonly ParameterModifier ParameterModifier => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterModifier);
     public readonly RuntimeTypeHandle ParameterTypeHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterTypeHandle);
     public readonly int ParameterPosition => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterPosition);
     public readonly RuntimeMethodHandle ParameterDeclaringMethodHandle => ThrowIfPropertyContextIsInvalidOrReturn([SymbolKind.Parameter], _parameterDeclaringMethodHandle);

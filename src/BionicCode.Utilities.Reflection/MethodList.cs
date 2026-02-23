@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 [DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
 internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmptyCollectionProvider<MethodList>, IEquatable<MethodList>
@@ -125,61 +126,90 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
     /// <exception cref="InvalidOperationException">Thrown if the method index has not been initialized.</exception>
     /// <exception cref="KeyNotFoundException">Thrown if no method with the specified name exists, or if no method with the specified name matches the
     /// provided parameter signature.</exception>
-    public MethodData this[string methodName, params MethodParameterInfo[] methodParameters]
+    public MethodData this[string? methodName, MethodParameterInfoList? methodParameters]
     {
         get
         {
+            if (IsEmpty)
+            {
+                throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), ReflectionConstants.IndexerGetMethodName));
+            }
+
+            if (string.IsNullOrWhiteSpace(methodName) && methodParameters is null)
+            {
+                throw new ArgumentNullException(nameof(methodName), $"Provide at least one valid argument. Argument '{nameof(methodName)}' cannot be null or empty and '{nameof(methodParameters)}' cannot be null.");
+            }
+
             if (_methodNameIndex == null)
             {
                 throw new InvalidOperationException("Method index is not initialized.");
             }
 
-            var methods = _methodNameIndex[methodName].ToMethodList(DeclaringTypeData);
-            if (methods.IsEmpty)
+            methodParameters = methodParameters.OrEmpty();
+            ImmutableList<MethodData> methods = Methods;
+            if (!string.IsNullOrWhiteSpace(methodName))
             {
-                throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
+                methods = _methodNameIndex[methodName].ToImmutableList();
+                if (methods.IsEmpty)
+                {
+                    throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
+                }
+
+                if (methods.Count == 1 && methodParameters.Count == 0)
+                {
+                    return methods[0];
+                }
+
+                if (methods.Count > 1 && methodParameters.Count == 0)
+                {
+                    throw new AmbiguousMatchException($"Ambiguous match found for method '{methodName}'. Try to provide the parameter types via the '{nameof(methodParameters)}' argument to disambiguate.");
+                }
             }
 
+            var results = new List<MethodData>(methods.Count);
             foreach (MethodData method in methods)
             {
                 ParameterList parameters = method.Parameters;
-                bool isMethodInvalidCandidate = false;
-                int parameterIndex = 0;
-                foreach (ParameterData parameter in parameters)
+                if (parameters.Count != methodParameters.Count)
                 {
-                    if (parameters.Count != methodParameters.Length)
-                    {
-                        isMethodInvalidCandidate = true;
-                        break;
-                    }
+                    continue;
+                }
+
+                for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
+                {
+                    ParameterData parameter = parameters[parameterIndex];
+                    MethodParameterInfo parameterInfo = methodParameters[parameterIndex];
+                    AnonymousParameterDescriptor parameterDescriptor = parameterInfo.ParameterDescriptor;
 
                     // Parameter is valid if it matches position in method signature, parameter type and modifier.
-                    foreach (MethodParameterInfo parameterInfo in methodParameters)
+                    // Since parameter collections are always ordered by parameter position in ascending order, we don't have to check the order explicitly (only count - see above).
+                    if (parameterDescriptor.HasParameterTypeHandle
+                        && !parameter.ParameterTypeData.Handle.Equals(parameterDescriptor.ParameterTypeHandle))
                     {
-                        if (parameterIndex == parameterInfo.ParameterDescriptor.Position)
-                        {
-                            if (!parameter.ParameterTypeData.Handle.Equals(parameterInfo.ParameterTypeHandle)
-                                || !parameter.ParameterKind.Equals(parameterInfo.Kind))
-                            {
-                                isMethodInvalidCandidate = true;
-                                break;
-                            }
-                        }
+                        break;
                     }
 
-                    if (isMethodInvalidCandidate)
+                    if (parameterDescriptor.HasParameterModifier
+                        && !parameter.ParameterModifier.Equals(parameterDescriptor.ParameterModifier))
                     {
                         break;
                     }
                 }
 
-                if (!isMethodInvalidCandidate)
-                {
-                    return method;
-                }
+                results.Add(method);
             }
 
-            throw new KeyNotFoundException($"Invalid arguments. A method named '{methodName}' could be found but its signature does not match the provided parameter list of the '{nameof(methodParameters)}' argument. Ensure '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.ParameterTypeHandle)}' is referencing the correct type and the parameter is in the correct position expressed by collection index and the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.Kind)}' describes the correct parameter modifier.");
+            if (results.Count > 1)
+            {
+                throw new AmbiguousMatchException($"Ambiguous match found based on the provided information. Try to provide the parameter names and the parameter types via the '{nameof(methodName)}' and '{nameof(methodParameters)}' arguments to disambiguate.");
+            }
+
+            if (results.IsEmpty())
+            {
+                throw new KeyNotFoundException($"Invalid arguments. No method could be found based on the provided information. Either the method doe not exist or the provided information is insufficient.");
+            }
+
+            return results[0];
         }
     }
 
@@ -199,14 +229,14 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
             return false;
         }
 
-        if (DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
+        if (!ReferenceEquals(DeclaringTypeData, other.DeclaringTypeData))
         {
             return false;
         }
 
         for (int index = 0; index < Count; index++)
         {
-            if (!Methods[index].Equals(other.Methods[index]))
+            if (!ReferenceEquals(Methods[index], other.Methods[index]))
             {
                 return false;
             }
@@ -225,7 +255,7 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
         {
             var hashCode = new HashCode();
             hashCode.Add(Count);
-            hashCode.Add(DeclaringTypeCacheKey);
+            hashCode.Add(DeclaringTypeData);
             for (int index = 0; index < Methods.Count; index++)
             {
                 hashCode.Add(Methods[index]);
@@ -239,4 +269,270 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
 
     public static bool operator ==(MethodList? left, MethodList? right) => left?.Equals(right) ?? (right is null);
     public static bool operator !=(MethodList? left, MethodList? right) => !(left == right);
+}
+
+[DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
+internal sealed class MethodListView : IReadOnlyList<IMethodDataView>, ICollection, IEmptyCollectionProvider<IMethodListView>, IEquatable<IMethodListView>, IMethodListView
+{
+    public static IMethodListView Empty { get; } = new MethodListView();
+    private readonly int _hashCode; // precomputed
+    private readonly ILookup<string, IMethodDataView> _methodNameIndex;
+    private readonly ITypeDataView? _declaringType;
+    private IMethodListView? _view;
+
+    public MethodListView(IMethodDataView[] items, ITypeDataView? declaringType) : this((IEnumerable<IMethodDataView>)items, declaringType)
+    {
+    }
+
+    public MethodListView(IEnumerable<IMethodDataView> items, ITypeDataView? declaringType)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+        _declaringType = declaringType;
+
+        Methods = items?.ToImmutableList() ?? ImmutableList<IMethodDataView>.Empty;
+        _methodNameIndex = Methods.ToLookup(method => method.Name, StringComparer.Ordinal); // allow duplicate method names (overloads)
+
+        if (HasItems)
+        {
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                Methods,
+                methodData => !ReferenceEquals(methodData.DeclaringType, _declaringType),
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(IMethodDataView)}.{nameof(IMethodDataView.DeclaringType)}' declaring type handle. All methods must belong to the same declaring type.");
+
+        }
+
+        _hashCode = ComputeHashCode();
+    }
+
+    internal MethodListView(IEnumerable<IMethodDataView> items, ITypeDataView? declaringType, bool isIntegrityValidationEnabled)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
+        _declaringType = declaringType;
+
+        Methods = items?.ToImmutableList() ?? ImmutableList<IMethodDataView>.Empty;
+
+        // allow duplicate method names (overloads)
+        _methodNameIndex = Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
+
+        if (isIntegrityValidationEnabled && HasItems)
+        {
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                Methods,
+                methodData => !ReferenceEquals(methodData.DeclaringType, _declaringType),
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(IMethodDataView)}.{nameof(IMethodDataView.DeclaringType)}' declaring type handle. All methods must belong to the same declaring type.");
+
+        }
+
+        _hashCode = ComputeHashCode();
+    }
+
+    private MethodListView()
+    {
+        Methods = ImmutableList<IMethodDataView>.Empty;
+        _methodNameIndex = Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
+        _declaringType = default;
+        _hashCode = ComputeHashCode();
+    }
+
+    public bool TryGetMethodsByName(string methodName, out IMethodListView methodList)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(methodName);
+        methodList = _methodNameIndex[methodName].ToMethodListView(DeclaringType);
+
+        return methodList.HasItems;
+    }
+
+    public bool ContainsMethodWithName(string methodName)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(methodName);
+        return _methodNameIndex.Contains(methodName);
+    }
+
+    public int Count => Methods.Count;
+    public bool IsEmpty => Methods.IsEmpty;
+    public bool HasItems => !IsEmpty;
+    public ImmutableList<IMethodDataView> Methods { get; }
+    public IMethodListView View => _view ??= Methods.ToMethodListView(DeclaringType);
+    public ITypeDataView DeclaringType => _declaringType ?? throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(DeclaringType)));
+
+    // Immutable collections are inherently thread-safe for read operations,
+    // so we can consider this collection as synchronized for enumeration and access.
+    public bool IsSynchronized { get; } = true;
+
+    object ICollection.SyncRoot => this;
+
+    public IMethodDataView this[int index]
+    {
+        get
+        {
+            ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Methods.Count, nameof(index));
+
+            return HasItems
+                ? Methods[index]
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(IMethodListView), ReflectionConstants.IndexerGetMethodName));
+        }
+    }
+
+    /// <summary>
+    /// Gets the method data for the method with the specified name and parameter signature.
+    /// </summary>
+    /// <remarks>Use this indexer to retrieve method metadata when you know both the method name and
+    /// the exact parameter signature. Parameter matching considers type, position, and modifier (such as ref or
+    /// out).</remarks>
+    /// <param name="methodName">The name of the method to retrieve. This value is case-sensitive.</param>
+    /// <param name="methodParameters">An array of parameter information objects that describe the expected parameter types, positions, and
+    /// modifiers for the method signature.</param>
+    /// <returns>The method data that matches the specified name and parameter signature.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the method index has not been initialized.</exception>
+    /// <exception cref="KeyNotFoundException">Thrown if no method with the specified name exists, or if no method with the specified name matches the
+    /// provided parameter signature.</exception>
+    public IMethodDataView this[string? methodName, MethodParameterInfoList? methodParameters]
+    {
+        get
+        {
+            if (IsEmpty)
+            {
+                throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), ReflectionConstants.IndexerGetMethodName));
+            }
+
+            if (string.IsNullOrWhiteSpace(methodName) && methodParameters is null)
+            {
+                throw new ArgumentNullException(nameof(methodName), $"Provide at least one valid argument. Argument '{nameof(methodName)}' cannot be null or empty and '{nameof(methodParameters)}' cannot be null.");
+            }
+
+            if (_methodNameIndex == null)
+            {
+                throw new InvalidOperationException("Method index is not initialized.");
+            }
+
+            methodParameters = methodParameters.OrEmpty();
+            ImmutableList<IMethodDataView> methods = Methods;
+            if (!string.IsNullOrWhiteSpace(methodName))
+            {
+                methods = _methodNameIndex[methodName].ToImmutableList();
+                if (methods.IsEmpty)
+                {
+                    throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
+                }
+
+                if (methods.Count == 1 && methodParameters.Count == 0)
+                {
+                    return methods[0];
+                }
+
+                if (methods.Count > 1 && methodParameters.Count == 0)
+                {
+                    throw new AmbiguousMatchException($"Ambiguous match found for method '{methodName}'. Try to provide the parameter types via the '{nameof(methodParameters)}' argument to disambiguate.");
+                }
+            }
+
+            var results = new List<IMethodDataView>(methods.Count);
+            foreach (IMethodDataView method in methods)
+            {
+                IParameterListView parameters = method.Parameters;
+                if (parameters.Count != methodParameters.Count)
+                {
+                    continue;
+                }
+
+                for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
+                {
+                    IParameterDataView parameter = parameters[parameterIndex];
+                    MethodParameterInfo parameterInfo = methodParameters[parameterIndex];
+                    AnonymousParameterDescriptor parameterDescriptor = parameterInfo.ParameterDescriptor;
+
+                    // Parameter is valid if it matches position in method signature, parameter type and modifier.
+                    // Since parameter collections are always ordered by parameter position in ascending order, we don't have to check the order explicitly (only count - see above).
+                    if (parameterDescriptor.HasParameterTypeHandle
+                        && !parameter.ParameterTypeData.Handle.Equals(parameterDescriptor.ParameterTypeHandle))
+                    {
+                        break;
+                    }
+
+                    if (parameterDescriptor.HasParameterModifier
+                        && !parameter.ParameterModifier.Equals(parameterDescriptor.ParameterModifier))
+                    {
+                        break;
+                    }
+                }
+
+                results.Add(method);
+            }
+
+            if (results.Count > 1)
+            {
+                throw new AmbiguousMatchException($"Ambiguous match found based on the provided information. Try to provide the parameter names and the parameter types via the '{nameof(methodName)}' and '{nameof(methodParameters)}' arguments to disambiguate.");
+            }
+
+            if (results.IsEmpty())
+            {
+                throw new KeyNotFoundException($"Invalid arguments. No method could be found based on the provided information. Either the method doe not exist or the provided information is insufficient.");
+            }
+
+            return results[0];
+        }
+    }
+
+    public IEnumerator<IMethodDataView> GetEnumerator() => ((IEnumerable<IMethodDataView>)Methods).GetEnumerator();
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Methods.GetEnumerator();
+
+    public bool Equals(IMethodListView? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (Count != other.Count)
+        {
+            return false;
+        }
+
+        if (!ReferenceEquals(DeclaringType, other.DeclaringType))
+        {
+            return false;
+        }
+
+        for (int index = 0; index < Count; index++)
+        {
+            if (!ReferenceEquals(Methods[index], other.Methods[index]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public override bool Equals(object? obj) => obj is IMethodListView other && Equals(other);
+
+    public override int GetHashCode() => _hashCode;
+
+    private int ComputeHashCode()
+    {
+        unchecked
+        {
+            var hashCode = new HashCode();
+            hashCode.Add(Count);
+            hashCode.Add(DeclaringType);
+            for (int index = 0; index < Methods.Count; index++)
+            {
+                hashCode.Add(Methods[index]);
+            }
+
+            return hashCode.ToHashCode();
+        }
+    }
+
+    public void CopyTo(Array array, int index) => Methods.CopyTo((IMethodDataView[])array, index);
+
+    public static bool operator ==(MethodListView? left, IMethodListView? right) => left?.Equals(right) ?? (right is null);
+    public static bool operator !=(MethodListView? left, IMethodListView? right) => !(left == right);
+
+    public static bool operator ==(IMethodListView? left, MethodListView? right) => left?.Equals(right) ?? (right is null);
+    public static bool operator !=(IMethodListView? left, MethodListView? right) => !(left == right);
 }
