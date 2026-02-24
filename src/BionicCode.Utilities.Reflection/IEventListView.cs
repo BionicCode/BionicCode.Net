@@ -6,6 +6,8 @@ using System.Collections.Immutable;
 public interface IEventListView : ICollection, IReadOnlyList<IEventDataView>, IEquatable<IEventListView>
 {
     new int Count { get; }
+    bool IsEmpty { get; }
+    bool HasItems { get; }
     ITypeDataView DeclaringType { get; }
     ImmutableList<IEventDataView> Events { get; }
     bool TryGetEventByName(string eventName, out IEventDataView? eventData);

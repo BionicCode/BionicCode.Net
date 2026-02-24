@@ -293,26 +293,34 @@ public sealed class ConstructorListView : IReadOnlyList<IConstructorDataView>, I
         return true;
     }
 
-    internal bool Equals(ConstructorList? other)
+    internal static bool Equals(IConstructorListView? constructorDataViews, ConstructorList? constructorList)
     {
-        if (other is null)
+        // Return FALSE if exactly one of the constructor lists is NULL, otherwise compare the constructor lists for equality.
+        if (constructorDataViews is null ^ constructorList is null)
         {
             return false;
         }
 
-        if (Count != other.Count)
+        // If the constructor list view is NULL, the constructor list must also be NULL at this point, so return TRUE.
+        // If both constructor lists are NULL, consider them equal.
+        if (constructorDataViews is null)
+        {
+            return true;
+        }
+
+        if (constructorDataViews.Count != constructorList!.Count)
         {
             return false;
         }
 
-        if (!ReferenceEquals(DeclaringType, other.DeclaringTypeData.View))
+        if (!ReferenceEquals(constructorDataViews.DeclaringType, constructorList.DeclaringTypeData.View))
         {
             return false;
         }
 
-        for (int index = 0; index < Count; index++)
+        for (int index = 0; index < constructorDataViews.Count; index++)
         {
-            if (!Constructors[index].Equals(other.Constructors[index].View))
+            if (!ReferenceEquals(constructorDataViews[index], constructorList.Constructors[index].View))
             {
                 return false;
             }

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 
 [DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
 internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmptyCollectionProvider<MethodList>, IEquatable<MethodList>
@@ -81,6 +80,94 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
         return methodList.HasItems;
     }
 
+    /// <summary>
+    /// Gets the method data for the method with the specified name and parameter signature.
+    /// </summary>
+    /// <param name="methodName">The name of the method to retrieve. This value is case-sensitive.</param>
+    /// <param name="genericMethodParameters">Optional. A <see cref="TypeList"/> of generic method parameter types that describe the expected generic parameters for the method. Should be <see langword="null"/> or empty if the method is not generic. If the method is a generic method, consider providing the expected generic parameters to disambiguate the method.</param>
+    /// <param name="methodParameters">Optional. A <see cref="ParameterDescriptorList"/> of parameter information objects that describe the expected parameter types, positions, and modifiers for the method signature. Should be <see langword="null"/> or empty if method is parameterless. If the method has parameters, consider providing the expected parameters to disambiguate the method.</param>
+    /// <param name="methodData">When this method returns, contains the method data that matches the specified name and parameter signature, if found; otherwise, null.</param>
+    /// <returns>A <see cref="MemberLookupState"/> value indicating the result of the method lookup.</returns>
+    public MemberLookupState TryGetMethod(string? methodName, TypeList? genericMethodParameters, ParameterDescriptorList? methodParameters, out MethodData? methodData)
+    {
+        methodData = null;
+
+        if (IsEmpty)
+        {
+            return MemberLookupState.SourceEmpty;
+        }
+
+        if (string.IsNullOrWhiteSpace(methodName) && methodParameters is null && genericMethodParameters is null)
+        {
+            return MemberLookupState.Ambiguous;
+        }
+
+        if (_methodNameIndex == null)
+        {
+            throw new InvalidOperationException("Internal method index is not initialized.");
+        }
+
+        ImmutableList<MethodData> methods = Methods;
+        if (!string.IsNullOrWhiteSpace(methodName))
+        {
+            methods = _methodNameIndex[methodName].ToImmutableList();
+            if ((methodParameters is null || methodParameters.IsEmpty)
+                && (genericMethodParameters is null || genericMethodParameters.IsEmpty))
+            {
+                if (methods.Count == 1)
+                {
+                    methodData = methods[0];
+                    return MemberLookupState.Found;
+                }
+
+                if (methods.IsEmpty)
+                {
+                    return MemberLookupState.NotFound;
+                }
+
+                if (methods.Count > 1)
+                {
+                    return MemberLookupState.Ambiguous;
+                }
+            }
+        }
+
+        var results = new List<MethodData>(methods.Count);
+        foreach (MethodData method in methods)
+        {
+            bool isTargetMethodGeneric = genericMethodParameters is not null
+                && genericMethodParameters.HasItems;
+            if (isTargetMethodGeneric)
+            {
+                if (!method.IsGenericMethod)
+                {
+                    continue;
+                }
+
+                if (!method.GenericMethodParameters.Equals(genericMethodParameters))
+                {
+                    continue;
+                }
+            }
+
+            if (methodParameters is null
+                || ParameterListEqualityComparer.Equals(methodParameters, method.Parameters) is EqualityComparisonResult.False)
+            {
+                continue;
+            }
+
+            results.Add(method);
+        }
+
+        methodData = results.FirstOrDefault();
+        return results.Count switch
+        {
+            0 => MemberLookupState.NotFound,
+            1 => MemberLookupState.Found,
+            _ => MemberLookupState.Ambiguous
+        };
+    }
+
     public bool ContainsMethodWithName(string methodName)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(methodName);
@@ -111,240 +198,6 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
                 ? Methods[index]
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), ReflectionConstants.IndexerGetMethodName));
         }
-    }
-
-    /// <summary>
-    /// Gets the method data for the method with the specified name and parameter signature.
-    /// </summary>
-    /// <remarks>Use this indexer to retrieve method metadata when you know both the method name and
-    /// the exact parameter signature. Parameter matching considers type, position, and modifier (such as ref or
-    /// out).</remarks>
-    /// <param name="methodName">The name of the method to retrieve. This value is case-sensitive.</param>
-    /// <param name="methodParameters">An array of parameter information objects that describe the expected parameter types, positions, and
-    /// modifiers for the method signature.</param>
-    /// <returns>The method data that matches the specified name and parameter signature.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the method index has not been initialized.</exception>
-    /// <exception cref="KeyNotFoundException">Thrown if no method with the specified name exists, or if no method with the specified name matches the
-    /// provided parameter signature.</exception>
-    public MethodData TryGetMethod(string? methodName, ParameterDescriptorList? methodParameters, TypeList? genericMethodParameters)
-    {
-        if (IsEmpty)
-        {
-            throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), ReflectionConstants.IndexerGetMethodName));
-        }
-
-        if (string.IsNullOrWhiteSpace(methodName) && methodParameters is null && genericMethodParameters is null)
-        {
-            throw new ArgumentNullException(nameof(methodName), $"Provide at least one valid argument. Argument '{nameof(methodName)}' cannot be null or empty and both '{nameof(methodParameters)}' and '{nameof(genericMethodParameters)}' cannot be null.");
-        }
-
-        if (_methodNameIndex == null)
-        {
-            throw new InvalidOperationException("Method index is not initialized.");
-        }
-
-        ImmutableList<MethodData> methods = Methods;
-        if (!string.IsNullOrWhiteSpace(methodName))
-        {
-            methods = _methodNameIndex[methodName].ToImmutableList();
-            if (methods.IsEmpty)
-            {
-                throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
-            }
-
-            if (methods.Count == 1 && methodParameters is not null && methodParameters.Count == 0)
-            {
-                return methods[0];
-            }
-
-            if (methods.Count > 1 && methodParameters is null && genericMethodParameters is null)
-            {
-                throw new AmbiguousMatchException($"Ambiguous match found for method '{methodName}'. Try to provide the parameter types via the '{nameof(methodParameters)}' argument to disambiguate.");
-            }
-        }
-
-        // Super fast path for the case when ALL parameter descriptors have an explicitly specified parameter position, which allows us to significantly improve speed by using the parameter position information to directly access the corresponding parameter in the method signature for comparison without having to iterate through all parameters of the method signature to find the corresponding parameter for comparison.
-        if (methodParameters is not null
-            && methodParameters.IsSortedByParameterPosition)
-        {
-            return FindMethodsByParametersFromSortedParameterSet(methods, methodParameters, genericMethodParameters) switch
-            {
-                var sortedResults when sortedResults.Count > 1 => throw new AmbiguousMatchException($"Ambiguous match found based on the provided information. Try to provide the parameter names and the parameter types via the '{nameof(methodName)}' and '{nameof(methodParameters)}' arguments to disambiguate."),
-                var sortedResults when sortedResults.IsEmpty() => throw new KeyNotFoundException($"Invalid arguments. No method could be found based on the provided information. Either the method doe not exist or the provided information is insufficient."),
-                var sortedResults => sortedResults[0]
-            };
-        }
-        else // Slow path for the case when parameter position information is missing for at least one parameter descriptor, which requires us to iterate through all parameters of the method signature to find the corresponding parameter for comparison.
-        {
-            return FindMethodsByParametersFromUnsortedParameterSet(methods, methodParameters, genericMethodParameters) switch
-            {
-                var sortedResults when sortedResults.Count > 1 => throw new AmbiguousMatchException($"Ambiguous match found based on the provided information. Try to provide the parameter names and the parameter types via the '{nameof(methodName)}' and '{nameof(methodParameters)}' arguments to disambiguate."),
-                var sortedResults when sortedResults.IsEmpty() => throw new KeyNotFoundException($"Invalid arguments. No method could be found based on the provided information. Either the method doe not exist or the provided information is insufficient."),
-                var sortedResults => sortedResults[0]
-            };
-        }
-    }
-
-    private static List<MethodData> FindMethodsByParametersFromSortedParameterSet(ImmutableList<MethodData> methods, ParameterDescriptorList? methodParameters, TypeList? genericMethodParameters)
-    {
-        bool isParameterSetProvided = methodParameters is not null;
-        var results = new List<MethodData>(methods.Count);
-        foreach (MethodData method in methods)
-        {
-            bool isTargetMethodGeneric = genericMethodParameters is not null
-                && genericMethodParameters.HasItems;
-            if (isTargetMethodGeneric)
-            {
-                if (!method.IsGenericMethod)
-                {
-                    continue;
-                }
-
-                if (!method.GenericMethodParameters.Equals(genericMethodParameters))
-                {
-                    continue;
-                }
-            }
-
-            if (!isParameterSetProvided)
-            {
-                results.Add(method);
-                continue;
-            }
-
-            ParameterList parameters = method.Parameters;
-            if (methodParameters!.IsEmpty() && parameters.HasItems)
-            {
-                continue;
-            }
-
-            if (methodParameters!.DeclaringMethodParameterCount != ParameterDescriptor.UnknownParameterCountOrPosition
-                && parameters.Count != methodParameters.DeclaringMethodParameterCount)
-            {
-                continue;
-            }
-
-            // 'methodParameters' could be an incomplete parameter descriptor list that only specifies a subset of the parameters
-            // of the method signature (e.g. only the first two parameters of a method with 4 parameters).
-            // In this case, we only compare the specified subset of parameters and ignore the rest for matching purposes.
-            for (int parameterIndex = 0; parameterIndex < methodParameters!.Count; parameterIndex++)
-            {
-                ParameterDescriptor parameterDescriptor = methodParameters[parameterIndex];
-
-                if (parameterDescriptor.HasParameterPosition
-                    && parameterDescriptor.ParameterPosition > parameters.Count)
-                {
-                    break;
-                }
-
-                // Because ALL parameter descriptors have an explicitly specified parameter position (in this case 'methodParameters.IsSortedByParameterPosition' is true),
-                // we use it to retrieve the corresponding parameter from the method signature for comparison to significantly improve speed.
-                ParameterData parameter = parameters[parameterDescriptor.ParameterPosition];
-
-                /* 
-                 * Parameter is valid if it matches position in method signature, parameter type and modifier.
-                 * Since parameter is ordered by parameter position in ascending order, we don't have to check the order explicitly (only count - see above).
-                 */
-
-                if (parameterDescriptor.HasParameterName
-                    && !parameter.Name.Equals(parameterDescriptor.ParameterName, StringComparison.Ordinal))
-                {
-                    isMethodCandidate = false;
-                    break;
-                }
-
-                if (parameterDescriptor.HasParameterTypeHandle
-                    && !parameter.ParameterTypeData.Handle.Equals(parameterDescriptor.ParameterTypeHandle))
-                {
-                    break;
-                }
-
-                if (parameterDescriptor.HasParameterModifier
-                    && !parameter.ParameterModifier.Equals(parameterDescriptor.ParameterModifier))
-                {
-                    break;
-                }
-            }
-
-            if (isMethodCandidate)
-            {
-                results.Add(method);
-            }
-        }
-
-        return results;
-    }
-
-    private static List<MethodData> FindMethodsByParametersFromUnsortedParameterSet(ImmutableList<MethodData> methods, ParameterDescriptorList? methodParameters, TypeList? genericMethodParameters)
-    {
-        // TODO:: Implement unsorted search
-
-        var results = new List<MethodData>(methods.Count);
-        foreach (MethodData method in methods)
-        {
-            ParameterList parameters = method.Parameters;
-
-            if (methodParameters.DeclaringMethodParameterCount != ParameterDescriptor.UnknownParameterCountOrPosition
-                && parameters.Count != methodParameters.DeclaringMethodParameterCount)
-            {
-                continue;
-            }
-
-            bool isMethodCandidate = true;
-
-            // 'methodParameters' could be an incomplete parameter descriptor list that only specifies a subset of the parameters
-            // of the method signature (e.g. only the first two parameters of a method with 4 parameters).
-            // In this case, we only compare the specified subset of parameters and ignore the rest for matching purposes.
-            for (int parameterIndex = 0; parameterIndex < methodParameters.Count; parameterIndex++)
-            {
-                ParameterDescriptor parameterDescriptor = methodParameters[parameterIndex];
-
-                if (parameterDescriptor.HasParameterPosition
-                    && parameterDescriptor.ParameterPosition > parameters.Count)
-                {
-                    break;
-                }
-
-                // If ALL parameter descriptors have an explicitly specified parameter position (in this case 'methodParameters.IsSortedByParameterPosition' is true),
-                // we use it to retrieve the corresponding parameter from the method signature for comparison to improve speed.
-                // Otherwise, we must iterate through all parameters of the method signature to find the corresponding parameter for comparison, which is slower.
-                ParameterData parameter = parameters[parameterDescriptor.ParameterPosition];
-
-                // TODO:: Split algorithm into two separate algorithms:
-                // - one for the case when ALL parameter descriptors have an explicitly specified parameter position
-                // - and one for the case when parameter position information is missing for at least one parameter descriptor
-                // to improve readability and maintainability.
-
-                // Parameter is valid if it matches position in method signature, parameter type and modifier.
-                // Since parameter is ordered by parameter position in ascending order, we don't have to check the order explicitly (only count - see above).
-
-                if (parameterDescriptor.HasParameterName
-                    && !parameter.Name.Equals(parameterDescriptor.ParameterName, StringComparison.Ordinal))
-                {
-                    isMethodCandidate = false;
-                    break;
-                }
-
-                if (parameterDescriptor.HasParameterTypeHandle
-                    && !parameter.ParameterTypeData.Handle.Equals(parameterDescriptor.ParameterTypeHandle))
-                {
-                    break;
-                }
-
-                if (parameterDescriptor.HasParameterModifier
-                    && !parameter.ParameterModifier.Equals(parameterDescriptor.ParameterModifier))
-                {
-                    break;
-                }
-            }
-
-            if (isMethodCandidate)
-            {
-                results.Add(method);
-            }
-        }
-
-        return results;
     }
 
     public IEnumerator<MethodData> GetEnumerator() => ((IEnumerable<MethodData>)Methods).GetEnumerator();
@@ -478,6 +331,94 @@ public sealed class MethodListView : IReadOnlyList<IMethodDataView>, ICollection
         return methodList.HasItems;
     }
 
+    /// <summary>
+    /// Gets the method data for the method with the specified name and parameter signature.
+    /// </summary>
+    /// <param name="methodName">The name of the method to retrieve. This value is case-sensitive.</param>
+    /// <param name="genericMethodParameters">Optional. A <see cref="TypeList"/> of generic method parameter types that describe the expected generic parameters for the method. Should be <see langword="null"/> or empty if the method is not generic. If the method is a generic method, consider providing the expected generic parameters to disambiguate the method.</param>
+    /// <param name="methodParameters">Optional. A <see cref="ParameterDescriptorList"/> of parameter information objects that describe the expected parameter types, positions, and modifiers for the method signature. Should be <see langword="null"/> or empty if method is parameterless. If the method has parameters, consider providing the expected parameters to disambiguate the method.</param>
+    /// <param name="methodDataView">When this method returns, contains the method data that matches the specified name and parameter signature, if found; otherwise, null.</param>
+    /// <returns>A <see cref="MemberLookupState"/> value indicating the result of the method lookup.</returns>
+    public MemberLookupState TryGetMethod(string? methodName, ITypeListView? genericMethodParameters, ParameterDescriptorList? methodParameters, out IMethodDataView? methodDataView)
+    {
+        methodDataView = null;
+
+        if (IsEmpty)
+        {
+            return MemberLookupState.SourceEmpty;
+        }
+
+        if (string.IsNullOrWhiteSpace(methodName) && methodParameters is null && genericMethodParameters is null)
+        {
+            return MemberLookupState.Ambiguous;
+        }
+
+        if (_methodNameIndex == null)
+        {
+            throw new InvalidOperationException("Internal method index is not initialized.");
+        }
+
+        ImmutableList<IMethodDataView> methods = Methods;
+        if (!string.IsNullOrWhiteSpace(methodName))
+        {
+            methods = _methodNameIndex[methodName].ToImmutableList();
+            if ((methodParameters is null || methodParameters.IsEmpty)
+                && (genericMethodParameters is null || genericMethodParameters.IsEmpty))
+            {
+                if (methods.Count == 1)
+                {
+                    methodDataView = methods[0];
+                    return MemberLookupState.Found;
+                }
+
+                if (methods.IsEmpty)
+                {
+                    return MemberLookupState.NotFound;
+                }
+
+                if (methods.Count > 1)
+                {
+                    return MemberLookupState.Ambiguous;
+                }
+            }
+        }
+
+        var results = new List<IMethodDataView>(methods.Count);
+        foreach (IMethodDataView method in methods)
+        {
+            bool isTargetMethodGeneric = genericMethodParameters is not null
+                && genericMethodParameters.HasItems;
+            if (isTargetMethodGeneric)
+            {
+                if (!method.IsGenericMethod)
+                {
+                    continue;
+                }
+
+                if (!method.GenericMethodParameters.Equals(genericMethodParameters))
+                {
+                    continue;
+                }
+            }
+
+            if (methodParameters is null
+                || ParameterListEqualityComparer.Equals(methodParameters, method.Parameters) is EqualityComparisonResult.False)
+            {
+                continue;
+            }
+
+            results.Add(method);
+        }
+
+        methodDataView = results.FirstOrDefault();
+        return results.Count switch
+        {
+            0 => MemberLookupState.NotFound,
+            1 => MemberLookupState.Found,
+            _ => MemberLookupState.Ambiguous
+        };
+    }
+
     public bool ContainsMethodWithName(string methodName)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(methodName);
@@ -507,106 +448,6 @@ public sealed class MethodListView : IReadOnlyList<IMethodDataView>, ICollection
             return HasItems
                 ? Methods[index]
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(IMethodListView), ReflectionConstants.IndexerGetMethodName));
-        }
-    }
-
-    /// <summary>
-    /// Gets the method data for the method with the specified name and parameter signature.
-    /// </summary>
-    /// <remarks>Use this indexer to retrieve method metadata when you know both the method name and
-    /// the exact parameter signature. Parameter matching considers type, position, and modifier (such as ref or
-    /// out).</remarks>
-    /// <param name="methodName">The name of the method to retrieve. This value is case-sensitive.</param>
-    /// <param name="methodParameters">An array of parameter information objects that describe the expected parameter types, positions, and
-    /// modifiers for the method signature.</param>
-    /// <returns>The method data that matches the specified name and parameter signature.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the method index has not been initialized.</exception>
-    /// <exception cref="KeyNotFoundException">Thrown if no method with the specified name exists, or if no method with the specified name matches the
-    /// provided parameter signature.</exception>
-    public IMethodDataView this[string? methodName, ParameterDescriptorList? methodParameters]
-    {
-        get
-        {
-            if (IsEmpty)
-            {
-                throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), ReflectionConstants.IndexerGetMethodName));
-            }
-
-            if (string.IsNullOrWhiteSpace(methodName) && methodParameters is null)
-            {
-                throw new ArgumentNullException(nameof(methodName), $"Provide at least one valid argument. Argument '{nameof(methodName)}' cannot be null or empty and '{nameof(methodParameters)}' cannot be null.");
-            }
-
-            if (_methodNameIndex == null)
-            {
-                throw new InvalidOperationException("Method index is not initialized.");
-            }
-
-            methodParameters = methodParameters.OrEmpty();
-            ImmutableList<IMethodDataView> methods = Methods;
-            if (!string.IsNullOrWhiteSpace(methodName))
-            {
-                methods = _methodNameIndex[methodName].ToImmutableList();
-                if (methods.IsEmpty)
-                {
-                    throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
-                }
-
-                if (methods.Count == 1 && methodParameters.Count == 0)
-                {
-                    return methods[0];
-                }
-
-                if (methods.Count > 1 && methodParameters.Count == 0)
-                {
-                    throw new AmbiguousMatchException($"Ambiguous match found for method '{methodName}'. Try to provide the parameter types via the '{nameof(methodParameters)}' argument to disambiguate.");
-                }
-            }
-
-            var results = new List<IMethodDataView>(methods.Count);
-            foreach (IMethodDataView method in methods)
-            {
-                IParameterListView parameters = method.Parameters;
-                if (parameters.Count != methodParameters.Count)
-                {
-                    continue;
-                }
-
-                for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
-                {
-                    IParameterDataView parameter = parameters[parameterIndex];
-                    ParameterDescriptor parameterInfo = methodParameters[parameterIndex];
-                    ParameterDescriptor parameterDescriptor = parameterInfo.ParameterDescriptor;
-
-                    // Parameter is valid if it matches position in method signature, parameter type and modifier.
-                    // Since parameter collections are always ordered by parameter position in ascending order, we don't have to check the order explicitly (only count - see above).
-                    if (parameterDescriptor.HasParameterTypeHandle
-                        && !parameter.ParameterTypeData.Handle.Equals(parameterDescriptor.ParameterTypeHandle))
-                    {
-                        break;
-                    }
-
-                    if (parameterDescriptor.HasParameterModifier
-                        && !parameter.ParameterModifier.Equals(parameterDescriptor.ParameterModifier))
-                    {
-                        break;
-                    }
-                }
-
-                results.Add(method);
-            }
-
-            if (results.Count > 1)
-            {
-                throw new AmbiguousMatchException($"Ambiguous match found based on the provided information. Try to provide the parameter names and the parameter types via the '{nameof(methodName)}' and '{nameof(methodParameters)}' arguments to disambiguate.");
-            }
-
-            if (results.IsEmpty())
-            {
-                throw new KeyNotFoundException($"Invalid arguments. No method could be found based on the provided information. Either the method doe not exist or the provided information is insufficient.");
-            }
-
-            return results[0];
         }
     }
 

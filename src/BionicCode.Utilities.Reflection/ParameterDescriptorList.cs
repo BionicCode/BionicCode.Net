@@ -10,17 +10,18 @@ using System.Linq;
 /// </summary>
 /// <remarks>It is expected that all <see cref="ParameterDescriptor"/> items in the list:
 /// <list type="bullet">
-/// <item>have unique parameter positions or unique parameter names to avoid ambiguity when used for lookups. Duplicate positions or names are not allowed and will result in an exception.</item>
+/// <item>have unique parameter positions or unique parameter names to avoid ambiguity when used for lookups.</item>
+/// <item>don't have duplicate positions or names.</item>
+/// <item>don't have a position value that exceeds the total number of parameters in the collection.</item>
 /// <item>belong to the same member of the same declaring type.</item>
-/// <item>have the same declaring method parameter count.</item>
-/// <item>the total count of <see cref="ParameterDescriptor"/> items does not exceed the declaring method parameter count.</item>
-/// <item>the parameter list is complete or incomplete. When incomplete then the parameter position and the declaring method's parameter count must be specified; otherwise lookup operations may be ambiguous and may or m ay not silently fail.</item>
+/// <item>represent the complete formal parameter list of the method or constructor.</item>
 /// </list>
 /// <para/>Ambiguity is defined as the lack of sufficient information that leads to multiple method candidates during the lookup. 
 /// <para/>To avoid ambiguity and to significantly improve the accuracy and performance of lookups, it is highly recommended to construct the <see cref="ParameterDescriptor"/> instances using all available information.
 /// <para/>See the <see cref="ParameterDescriptor"/> documentation for more information on how to construct the descriptors and the expected values for their properties to ensure maximum accuracy and performance when used for lookups.
-/// <para/>If <see cref="ParameterDescriptor.ParameterPosition"/> is provided then the collection is sorted by parameter position in ascending order.
-/// <para/>To ensure the integrity of the collection, the constructor validates the provided items for duplicates and consistency of declaring method parameter count when applicable. If any validation fails, an appropriate exception is thrown to indicate the specific issue with the input collection.
+/// <para/>The collection is sorted by parameter position in ascending order.
+/// <para/>To ensure the integrity of the collection, the constructor validates the provided items for duplicates and consistency of declaring method parameter count when applicable. 
+/// <br/>If any validation fails, an appropriate exception is thrown to indicate the specific issue with the input collection.
 /// <para/>This collection is not intended for a loose collection of unrelated parameters.
 /// <br/>Instead the collection is a strict representation of a method's formal parameter list.
 /// <para/>The collection is immutable and thread-safe.</remarks>
@@ -32,7 +33,6 @@ public sealed class ParameterDescriptorList : IReadOnlyList<ParameterDescriptor>
     private static readonly EqualityComparer<ParameterDescriptor> s_parameterEqualityComparer = EqualityComparer<ParameterDescriptor>.Create(
         (x, y) => x.ParameterPosition == y.ParameterPosition
             || x.ParameterName.Equals(y.ParameterName, StringComparison.Ordinal));
-    private bool? _isSortedByParameterPosition;
 
     public ParameterDescriptorList(ParameterDescriptor[] items) : this((IEnumerable<ParameterDescriptor>)items)
     {
@@ -53,57 +53,27 @@ public sealed class ParameterDescriptorList : IReadOnlyList<ParameterDescriptor>
 
         if (HasItems)
         {
-            DeclaringMethodParameterCount = ValidateParameters(nameof(items));
+            ValidateParametersOrThrow(nameof(items));
         }
 
         _hashCode = ComputeHashCode();
     }
 
-    private int ValidateParameters(string argumentName)
+    private void ValidateParametersOrThrow(string argumentName)
     {
-        ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
-            Parameters,
-            s_parameterEqualityComparer,
-            argumentName,
-            $"At least one item in the argument sequence '{argumentName}' has a duplicate value for the '{nameof(ParameterDescriptor)}.{nameof(ParameterDescriptor.ParameterPosition)}' parameter position or '{nameof(ParameterDescriptor)}.{nameof(ParameterDescriptor.ParameterName)}' parameter name.");
-
-        int declaringMemberParameterCount = ParameterDescriptor.UnknownParameterCountOrPosition;
-        for (int index = 0; index < Parameters.Count; index++)
+        var parameterSet = new HashSet<ParameterDescriptor>(s_parameterEqualityComparer);
+        foreach (ParameterDescriptor parameterDescriptor in Parameters)
         {
-            ParameterDescriptor parameter = Parameters[index];
-            if (parameter.HasDeclaringMethodParameterCount)
+            if (!parameterSet.Add(parameterDescriptor))
             {
-                if (declaringMemberParameterCount == ParameterDescriptor.UnknownParameterCountOrPosition)
-                {
-                    declaringMemberParameterCount = parameter.DeclaringMethodParameterCount;
-                }
-                else if (parameter.DeclaringMethodParameterCount != declaringMemberParameterCount)
-                {
-                    ArgumentExceptionAdvanced.ThrowIfFalse(
-                        false,
-                        argumentName,
-                        $"All items in the argument sequence '{argumentName}' must have the same value for the '{nameof(ParameterDescriptor)}.{nameof(ParameterDescriptor.DeclaringMethodParameterCount)}' property to avoid ambiguity.");
-                }
+                throw new ArgumentException($"At least one item in the argument sequence '{argumentName}' has a duplicate value for the '{nameof(ParameterDescriptor)}.{nameof(ParameterDescriptor.ParameterPosition)}' parameter position or '{nameof(ParameterDescriptor)}.{nameof(ParameterDescriptor.ParameterName)}' parameter name.", argumentName);
             }
-            else if (index > 0 && declaringMemberParameterCount != -1) // At least one previous item has a defined declaring method parameter count, but the current item does not have it defined, which leads to ambiguity and is therefore not allowed.
+
+            if (parameterDescriptor.ParameterPosition > Parameters.Count)
             {
-                throw new ArgumentException(
-                    $"All items in the argument sequence '{argumentName}' must have the exact same value for the '{nameof(ParameterDescriptor)}.{nameof(ParameterDescriptor.DeclaringMethodParameterCount)}' property to avoid ambiguity. The value must be either greater than zero or undefined (less than zero) and the same for all items.",
-                    argumentName);
+                throw new ArgumentException($"At least one item in the argument sequence '{argumentName}' has an invalid value for the '{nameof(ParameterDescriptor)}.{nameof(ParameterDescriptor.ParameterPosition)}' parameter position that exceeds the total count of parameters in the formal parameter list (expressed by the collection's item count).", argumentName);
             }
         }
-
-        if (declaringMemberParameterCount != ParameterDescriptor.UnknownParameterCountOrPosition)
-        {
-            // Allow incomplete parameter lists,
-            // but ensure that the total count of parameters does not exceed the declaring member parameter count when specified.
-            ArgumentExceptionAdvanced.ThrowIfTrue(
-                Parameters.Count > declaringMemberParameterCount,
-                argumentName,
-                $"All items in the argument sequence '{argumentName}' must have a valid parameter position specified to avoid ambiguity.");
-        }
-
-        return declaringMemberParameterCount;
     }
 
     internal ParameterDescriptorList(IEnumerable<ParameterDescriptor> items, bool isIntegrityValidationEnabled)
@@ -117,11 +87,7 @@ public sealed class ParameterDescriptorList : IReadOnlyList<ParameterDescriptor>
 
         if (HasItems)
         {
-            ArgumentExceptionAdvanced.ThrowIfContainsDuplicate(
-                Parameters,
-                s_parameterEqualityComparer,
-                nameof(items),
-                $"At least one item in the argument sequence '{nameof(items)}' has a duplicate value for the '{nameof(ParameterDescriptor)}.{nameof(ParameterDescriptor.ParameterPosition)}' parameter position or '{nameof(ParameterDescriptor)}.{nameof(ParameterDescriptor.ParameterName)}' parameter name.");
+            ValidateParametersOrThrow(nameof(items));
 
         }
 
@@ -146,11 +112,7 @@ public sealed class ParameterDescriptorList : IReadOnlyList<ParameterDescriptor>
         return _parameterNameIndex.ContainsKey(parameterName);
     }
 
-    public bool IsSortedByParameterPosition => _isSortedByParameterPosition
-        ??= Parameters.All(parameter => parameter.HasParameterPosition);
-
     public int Count => Parameters.Count;
-    public int DeclaringMethodParameterCount { get; }
     public bool IsEmpty => Parameters.IsEmpty;
     public bool HasItems => !IsEmpty;
     public ImmutableList<ParameterDescriptor> Parameters { get; }
@@ -179,8 +141,7 @@ public sealed class ParameterDescriptorList : IReadOnlyList<ParameterDescriptor>
             return false;
         }
 
-        if (Count != other.Count
-            || DeclaringMethodParameterCount != other.DeclaringMethodParameterCount)
+        if (Count != other.Count)
         {
             return false;
         }
@@ -206,7 +167,6 @@ public sealed class ParameterDescriptorList : IReadOnlyList<ParameterDescriptor>
         {
             var hashCode = new HashCode();
             hashCode.Add(Count);
-            hashCode.Add(DeclaringMethodParameterCount);
             for (int index = 0; index < Parameters.Count; index++)
             {
                 hashCode.Add(Parameters[index]);

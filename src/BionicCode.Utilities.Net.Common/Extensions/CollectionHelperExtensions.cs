@@ -30,8 +30,7 @@ public static partial class HelperExtensionsCommon
     /// <param name="source"></param>
     /// <returns><see langword="true"/> if <paramref name="source"/> is empty. Otherwise <see langword="false"/></returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static bool IsEmpty<TItem>(this IEnumerable<TItem> source)
-      => !source.Any();
+    public static bool IsEmpty<TItem>(this IEnumerable<TItem> source) => !source.Any();
 
     /// <summary>
     /// Determines whether a sequence is empty.
@@ -1193,5 +1192,30 @@ public static partial class HelperExtensionsCommon
     /// <param name="source">The <see cref="List{TItem}"/> to return if it is not <see langword="null"/>.</param>
     /// <returns>The original <see cref="List{TItem}"/> if it is not <see langword="null"/>; otherwise, an empty <see cref="List{TItem}"/>.</returns>
     public static List<TItem> OrEmpty<TItem>(this List<TItem>? source) => source ?? [];
+
+    /// <summary>
+    /// Determines whether the specified collection contains duplicate elements.
+    /// </summary>
+    /// <typeparam name="TItem">The type of the elements in the collection.</typeparam>
+    /// <param name="items">The collection to check for duplicates.</param>
+    /// <param name="equalityComparer">The equality comparer to use for comparing elements.</param>
+    /// <returns><see langword="true"/> if the collection contains duplicate elements; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="items"/> is <see langword="null"/>.</exception>
+    public static bool HasDuplicates<TItem>(this IEnumerable<TItem> items, IEqualityComparer<TItem>? equalityComparer = null)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+        equalityComparer ??= EqualityComparer<TItem>.Default;
+
+        var set = new HashSet<TItem>(equalityComparer);
+        foreach (TItem item in items)
+        {
+            if (!set.Add(item))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 

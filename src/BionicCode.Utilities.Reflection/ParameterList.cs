@@ -197,7 +197,7 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, ICollection,
 
         for (int index = 0; index < Count; index++)
         {
-            if (!Parameters[index].View.Equals(other.Parameters[index]))
+            if (!ReferenceEquals(Parameters[index].View, other.Parameters[index]))
             {
                 return false;
             }
@@ -206,11 +206,9 @@ internal sealed class ParameterList : IReadOnlyList<ParameterData>, ICollection,
         return true;
     }
 
-    public override bool Equals(object? obj)
-        => obj is ParameterList other && Equals(other);
+    public override bool Equals(object? obj) => obj is ParameterList other && Equals(other);
 
-    public override int GetHashCode()
-        => _hashCode;
+    public override int GetHashCode() => _hashCode;
 
     private int ComputeHashCode()
     {
@@ -366,11 +364,9 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IColl
         }
     }
 
-    public IEnumerator<IParameterDataView> GetEnumerator()
-        => ((IEnumerable<IParameterDataView>)Parameters).GetEnumerator();
+    public IEnumerator<IParameterDataView> GetEnumerator() => ((IEnumerable<IParameterDataView>)Parameters).GetEnumerator();
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => Parameters.GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Parameters.GetEnumerator();
 
     public bool Equals(IParameterListView? other)
     {
@@ -400,26 +396,34 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IColl
         return true;
     }
 
-    internal bool Equals(ParameterList? other)
+    internal static bool Equals(IParameterListView? parameterListView, ParameterList? parameterList)
     {
-        if (other is null)
+        // Return FALSE if exactly one of the parameter lists is NULL, otherwise compare the parameter lists for equality.
+        if (parameterList is null ^ parameterListView is null)
         {
             return false;
         }
 
-        if (Count != other.Count)
+        // If the parameter list view is NULL, the parameter list must also be NULL at this point, so return TRUE.
+        // If both parameter lists are NULL, consider them equal.
+        if (parameterListView is null)
+        {
+            return true;
+        }
+
+        if (parameterListView.Count != parameterList!.Count)
         {
             return false;
         }
 
-        if (!ReferenceEquals(DeclaringMember, other.DeclaringMemberData.View))
+        if (!ReferenceEquals(parameterListView.DeclaringMember, parameterList.DeclaringMemberData.View))
         {
             return false;
         }
 
-        for (int index = 0; index < Count; index++)
+        for (int index = 0; index < parameterListView.Count; index++)
         {
-            if (!Parameters[index].Equals(other.Parameters[index].View))
+            if (!ReferenceEquals(parameterListView.Parameters[index], parameterList.Parameters[index].View))
             {
                 return false;
             }
@@ -428,11 +432,9 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IColl
         return true;
     }
 
-    public override bool Equals(object? obj)
-        => obj is IParameterListView other && Equals(other);
+    public override bool Equals(object? obj) => obj is IParameterListView other && Equals(other);
 
-    public override int GetHashCode()
-        => _hashCode;
+    public override int GetHashCode() => _hashCode;
 
     private int ComputeHashCode()
     {

@@ -360,26 +360,34 @@ public sealed class EventListView : IReadOnlyList<IEventDataView>, ICollection, 
         return true;
     }
 
-    internal bool Equals(EventList? other)
+    internal static bool Equals(IEventListView? eventDataViews, EventList? eventList)
     {
-        if (other is null)
+        // Return FALSE if exactly one of the event lists is NULL, otherwise compare the event lists for equality.
+        if (eventList is null ^ eventDataViews is null)
         {
             return false;
         }
 
-        if (Count != other.Count)
+        // If the event list view is NULL, the event list must also be NULL at this point, so return TRUE.
+        // If both event lists are NULL, consider them equal.
+        if (eventDataViews is null)
+        {
+            return true;
+        }
+
+        if (eventDataViews.Count != eventList!.Count)
         {
             return false;
         }
 
-        if (!ReferenceEquals(DeclaringType, other.DeclaringTypeData.View))
+        if (!ReferenceEquals(eventDataViews.DeclaringType, eventList.DeclaringTypeData.View))
         {
             return false;
         }
 
-        for (int index = 0; index < Count; index++)
+        for (int index = 0; index < eventDataViews.Count; index++)
         {
-            if (!Events[index].Equals(other.Events[index].View))
+            if (!ReferenceEquals(eventDataViews[index], eventList.Events[index].View))
             {
                 return false;
             }

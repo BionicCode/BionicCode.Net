@@ -704,15 +704,11 @@ public class ArgumentExceptionAdvanced : ArgumentException
         ArgumentNullException.ThrowIfNull(items);
         equalityComparer ??= EqualityComparer<TItem>.Default;
 
-        var set = new HashSet<TItem>(equalityComparer);
-        foreach (TItem item in items)
+        if (items.HasDuplicates(equalityComparer))
         {
-            if (!set.Add(item))
-            {
-                throw new ArgumentException(
-                    message ?? "The sequence contains duplicate items.",
-                    paramName);
-            }
+            throw new ArgumentException(
+                message ?? "The sequence contains duplicate items.",
+                paramName);
         }
     }
 }

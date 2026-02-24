@@ -221,6 +221,37 @@ public sealed class TypeListView : IReadOnlyList<ITypeDataView>, ICollection, IE
         return true;
     }
 
+    internal static bool Equals(ITypeListView? typeDataViews, TypeList? typeList)
+    {
+        // Return FALSE if exactly one of the type lists is NULL, otherwise compare the type lists for equality.
+        if (typeDataViews is null ^ typeList is null)
+        {
+            return false;
+        }
+
+        // If the type data view is NULL, the type list must also be NULL at this point, so return TRUE.
+        // If both type lists are NULL, consider them equal.
+        if (typeDataViews is null)
+        {
+            return true;
+        }
+
+        if (typeDataViews.Count != typeList!.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < typeDataViews.Count; index++)
+        {
+            if (!ReferenceEquals(typeDataViews.Types[index], typeList!.Types[index]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public override bool Equals(object? obj) => obj is ITypeListView other && Equals(other);
 
     public override int GetHashCode() => _hashCode;

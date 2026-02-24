@@ -2,9 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
-internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>, IEqualityComparer<ParameterDescriptorList>
+internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>, IEqualityComparer<ParameterDescriptorList>, IEqualityComparer<IParameterListView>
 {
     public bool Equals(ParameterList? x, ParameterList? y) => x?.Equals(y) ?? (y is null);
     public int GetHashCode(ParameterList parameterList)
@@ -20,173 +19,310 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
         return methodParameterInfoList.GetHashCode();
     }
 
-    public static bool Equals(ParameterList? parameterList, ParameterDescriptorList? parameterDescriptorList)
+    public bool Equals(IParameterListView? x, IParameterListView? y) => x?.Equals(y) ?? (y is null);
+    public int GetHashCode(IParameterListView parameterListView)
     {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(parameterListView);
+        return parameterListView.GetHashCode();
+    }
+
+    /// <summary>
+    /// Equality comparison of a <see cref="ParameterDescriptorList"/> and a <see cref="ParameterList"/> based on the information that <see cref="ParameterDescriptor"/> items provide.
+    /// </summary>
+    /// <remarks>This is a weak equality comparison of a <see cref="ParameterDescriptorList"/> and a <see cref="ParameterList"/> based on the information that <see cref="ParameterDescriptor"/> items provide.
+    /// <br/>This means, if a <see cref="ParameterDescriptor"/> item does not provide the optional parameter information, then equality comparison will not test these missing information, which can lead to false matches.
+    /// For example, if the <see cref="ParameterDescriptor"/> does not provide the parameter name, the comparison will not consider the parameter name, potentially resulting in a match with a parameter that has a different name.</remarks>
+    /// <param name="parameterDescriptorList">The parameter descriptor list to compare holding potentially weak information if some optional information is missing.</param>
+    /// <param name="parameterList">The strict parameter list to compare.</param>
+    /// <returns>An <see cref="EqualityComparisonResult"/> indicating the result of the comparison.</returns>
+    public static EqualityComparisonResult Equals(ParameterList? parameterList, ParameterDescriptorList? parameterDescriptorList)
+    {
+        // Return FALSE if exactly one of the parameter lists is NULL, otherwise compare the parameter lists for equality.
         if (parameterList is null ^ parameterDescriptorList is null)
         {
-            return false;
+            return EqualityComparisonResult.False;
         }
 
-        if (parameterList!.Count != parameterDescriptorList!.Count)
+        // If the parameter list is NULL, the parameter descriptor list must also be NULL at this point, so return TRUE.
+        if (parameterList is null)
         {
-            return false;
+            return EqualityComparisonResult.True;
         }
 
+        if (parameterList.Count != parameterDescriptorList!.Count)
+        {
+            return EqualityComparisonResult.False;
+        }
+
+        bool isAmbiguityExpected = false;
         for (int index = 0; index < parameterList.Count; index++)
         {
             ParameterData parameterData = parameterList.Parameters[index];
             ParameterDescriptor methodParameterDescriptor = parameterDescriptorList.Parameters[index];
+            isAmbiguityExpected |= methodParameterDescriptor.IsAmbiguityExpected;
+
+            if (parameterData.Position != methodParameterDescriptor.ParameterPosition)
+            {
+                return EqualityComparisonResult.False;
+            }
+
+            if (!parameterData.ParameterTypeHandle.Equals(methodParameterDescriptor.ParameterTypeHandle))
+            {
+                return EqualityComparisonResult.False;
+            }
 
             if (methodParameterDescriptor.HasParameterName
                 && !parameterData.Name.Equals(methodParameterDescriptor.ParameterName, StringComparison.Ordinal))
             {
-                return false;
+                return EqualityComparisonResult.False;
             }
 
-            if (methodParameterDescriptor.HasParameterPosition
-                && parameterData.Position != methodParameterDescriptor.ParameterPosition)
+            if (methodParameterDescriptor.HasParameterizedSymbolKind
+                && parameterData.MemberData.ParameterizedSymbolKind != methodParameterDescriptor.ParameterizedSymbolKind)
             {
-                return false;
+                return EqualityComparisonResult.False;
             }
 
-            if (!methodParameterDescriptor.IsAmbiguityExpected)
+            if (methodParameterDescriptor.HasParameterModifier
+                && parameterData.ParameterModifier != methodParameterDescriptor.ParameterModifier)
             {
-                continue;
-            }
-
-            if (!(
-                && methodParameterDescriptor.HasParameterTypeHandle
-                && methodParameterDescriptor.HasParameterModifier))
-            {
-                throw new AmbiguousMatchException("MethodParameterInfo is marked to expect ambiguity but does not have all required descriptor properties set to resolve it.");
-            }
-
-            if (!parameterData.MemberData.DeclaringTypeHandle.Equals(methodParameterDescriptor.DeclaringMethodDescriptor.DeclaringTypeHandle))
-            {
-                return false;
-            }
-
-            if (!parameterData.MemberData.Name.Equals(methodParameterDescriptor.DeclaringMethodDescriptor.DeclaringMemberName, StringComparison.Ordinal))
-            {
-                return false;
-            }
-
-            if (parameterData.MemberData.Parameters.Count != methodParameterDescriptor.DeclaringMethodDescriptor.MemberParameterCount)
-            {
-                return false;
-            }
-
-            if (parameterData.MemberData is MethodData methodData && !methodData.ReturnTypeData.Handle.Equals(methodParameterDescriptor.DeclaringMethodDescriptor.MemberTypeHandle))
-            {
-                return false;
-            }
-
-            if (parameterData.MemberData.ParameterizedSymbolKind != methodParameterDescriptor.DeclaringMethodDescriptor.ParameterizedMemberKind)
-            {
-                return false;
-            }
-
-            if (!parameterData.ParameterTypeHandle.Equals(methodParameterDescriptor.ParameterDescriptor.ParameterTypeHandle))
-            {
-                return false;
-            }
-
-            if (parameterData.ParameterModifier != methodParameterDescriptor.ParameterDescriptor.ParameterModifier)
-            {
-                return false;
+                return EqualityComparisonResult.False;
             }
         }
 
-        return true;
+        return isAmbiguityExpected
+            ? EqualityComparisonResult.TrueButAmbiguous
+            : EqualityComparisonResult.True;
     }
 
-    public static bool Equals(ParameterDescriptorList? methodParameterInfoList, ParameterList? parameterList)
+    /// <summary>
+    /// Equality comparison of a <see cref="ParameterDescriptorList"/> and a <see cref="ParameterList"/> based on the information that <see cref="ParameterDescriptor"/> items provide.
+    /// </summary>
+    /// <remarks>This is a weak equality comparison of a <see cref="ParameterDescriptorList"/> and a <see cref="ParameterList"/> based on the information that <see cref="ParameterDescriptor"/> items provide.
+    /// <br/>This means, if a <see cref="ParameterDescriptor"/> item does not provide the optional parameter information, then equality comparison will not test these missing information, which can lead to false matches.
+    /// For example, if the <see cref="ParameterDescriptor"/> does not provide the parameter name, the comparison will not consider the parameter name, potentially resulting in a match with a parameter that has a different name.</remarks>
+    /// <param name="parameterDescriptorList">The parameter descriptor list to compare holding potentially weak information if some optional information is missing.</param>
+    /// <param name="parameterList">The strict parameter list to compare.</param>
+    /// <returns>An <see cref="EqualityComparisonResult"/> indicating the result of the comparison.</returns>
+    public static EqualityComparisonResult Equals(ParameterDescriptorList? parameterDescriptorList, ParameterList? parameterList)
     {
-        if (methodParameterInfoList is null ^ parameterList is null)
+        // Return FALSE if exactly one of the parameter lists is NULL, otherwise compare the parameter lists for equality.
+        if (parameterList is null ^ parameterDescriptorList is null)
         {
-            return false;
+            return EqualityComparisonResult.False;
         }
 
-        if (parameterList!.Count != methodParameterInfoList!.Count)
+        // If the parameter descriptor list is NULL, the parameter list must also be NULL at this point, so return TRUE.
+        if (parameterDescriptorList is null)
         {
-            return false;
+            return EqualityComparisonResult.True;
         }
 
+        if (parameterList!.Count != parameterDescriptorList!.Count)
+        {
+            return EqualityComparisonResult.False;
+        }
+
+        bool isAmbiguityExpected = false;
         for (int index = 0; index < parameterList.Count; index++)
         {
             ParameterData parameterData = parameterList.Parameters[index];
-            ParameterDescriptor methodParameterInfo = methodParameterInfoList.Parameters[index];
+            ParameterDescriptor methodParameterDescriptor = parameterDescriptorList.Parameters[index];
+            isAmbiguityExpected |= methodParameterDescriptor.IsAmbiguityExpected;
 
-            if (methodParameterInfo.DeclaringMethodDescriptor.HasMemberHandle
-                && parameterData.MemberData.Handle != methodParameterInfo.DeclaringMethodDescriptor.MemberHandle)
+            if (parameterData.Position != methodParameterDescriptor.ParameterPosition)
             {
-                return false;
+                return EqualityComparisonResult.False;
             }
 
-            if (methodParameterInfo.ParameterDescriptor.HasParameterName
-                && !parameterData.Name.Equals(methodParameterInfo.ParameterDescriptor.ParameterName, StringComparison.Ordinal))
+            if (!parameterData.ParameterTypeHandle.Equals(methodParameterDescriptor.ParameterTypeHandle))
             {
-                return false;
+                return EqualityComparisonResult.False;
             }
 
-            if (methodParameterInfo.ParameterDescriptor.HasParameterPosition
-                && parameterData.Position != methodParameterInfo.ParameterDescriptor.ParameterPosition)
+            if (methodParameterDescriptor.HasParameterName
+                && !parameterData.Name.Equals(methodParameterDescriptor.ParameterName, StringComparison.Ordinal))
             {
-                return false;
+                return EqualityComparisonResult.False;
             }
 
-            if (!methodParameterInfo.IsAmbiguityExpected)
+            if (methodParameterDescriptor.HasParameterizedSymbolKind
+                && parameterData.MemberData.ParameterizedSymbolKind != methodParameterDescriptor.ParameterizedSymbolKind)
             {
-                continue;
+                return EqualityComparisonResult.False;
             }
 
-            if (!(methodParameterInfo.DeclaringMethodDescriptor.HasDeclaringTypeHandle
-                && methodParameterInfo.DeclaringMethodDescriptor.HasDeclaringMemberName
-                && methodParameterInfo.DeclaringMethodDescriptor.HasMemberParameterCount
-                && methodParameterInfo.DeclaringMethodDescriptor.HasMemberTypeHandle
-                && methodParameterInfo.DeclaringMethodDescriptor.HasParameterizedMemberKind
-                && methodParameterInfo.ParameterDescriptor.HasParameterTypeHandle
-                && methodParameterInfo.ParameterDescriptor.HasParameterModifier))
+            if (methodParameterDescriptor.HasParameterModifier
+                && parameterData.ParameterModifier != methodParameterDescriptor.ParameterModifier)
             {
-                throw new AmbiguousMatchException("MethodParameterInfo is marked to expect ambiguity but does not have all required descriptor properties set to resolve it.");
-            }
-
-            if (!parameterData.MemberData.DeclaringTypeHandle.Equals(methodParameterInfo.DeclaringMethodDescriptor.DeclaringTypeHandle))
-            {
-                return false;
-            }
-
-            if (!parameterData.MemberData.Name.Equals(methodParameterInfo.DeclaringMethodDescriptor.DeclaringMemberName, StringComparison.Ordinal))
-            {
-                return false;
-            }
-
-            if (parameterData.MemberData.Parameters.Count != methodParameterInfo.DeclaringMethodDescriptor.MemberParameterCount)
-            {
-                return false;
-            }
-
-            if (parameterData.MemberData is MethodData methodData && !methodData.ReturnTypeData.Handle.Equals(methodParameterInfo.DeclaringMethodDescriptor.MemberTypeHandle))
-            {
-                return false;
-            }
-
-            if (parameterData.MemberData.ParameterizedSymbolKind != methodParameterInfo.DeclaringMethodDescriptor.ParameterizedMemberKind)
-            {
-                return false;
-            }
-
-            if (!parameterData.ParameterTypeHandle.Equals(methodParameterInfo.ParameterDescriptor.ParameterTypeHandle))
-            {
-                return false;
-            }
-
-            if (parameterData.ParameterModifier != methodParameterInfo.ParameterDescriptor.ParameterModifier)
-            {
-                return false;
+                return EqualityComparisonResult.False;
             }
         }
 
-        return true;
+        return isAmbiguityExpected
+            ? EqualityComparisonResult.TrueButAmbiguous
+            : EqualityComparisonResult.True;
+    }
+
+    public static bool Equals(ParameterList? parameterList, IParameterListView? parameterListView)
+    {
+        // Return FALSE if exactly one of the parameter lists is NULL, otherwise compare the parameter lists for equality.
+        if (parameterList is null ^ parameterListView is null)
+        {
+            return false;
+        }
+
+        // If the parameter list is NULL, the parameter list view must also be NULL at this point, so return TRUE.
+        // Otherwise, compare the parameter list with the parameter list view for equality.
+        return parameterList?.Equals(parameterListView) ?? true;
+    }
+
+    public static bool Equals(IParameterListView? parameterListView, ParameterList? parameterList)
+    {
+        // Return FALSE if exactly one of the parameter lists is NULL, otherwise compare the parameter lists for equality.
+        if (parameterList is null ^ parameterListView is null)
+        {
+            return false;
+        }
+
+        return IParameterListView.Equals(parameterListView, parameterList);
+    }
+
+    /// <summary>
+    /// Equality comparison of a <see cref="ParameterDescriptorList"/> and a <see cref="IParameterListView"/> based on the information that <see cref="ParameterDescriptor"/> items provide.
+    /// </summary>
+    /// <remarks>This is a weak equality comparison of a <see cref="ParameterDescriptorList"/> and a <see cref="IParameterListView"/> based on the information that <see cref="ParameterDescriptor"/> items provide.
+    /// <br/>This means, if a <see cref="ParameterDescriptor"/> item does not provide the optional parameter information, then equality comparison will not test these missing information, which can lead to false matches.
+    /// For example, if the <see cref="ParameterDescriptor"/> does not provide the parameter name, the comparison will not consider the parameter name, potentially resulting in a match with a parameter that has a different name.</remarks>
+    /// <param name="parameterDescriptorList">The parameter descriptor list to compare holding potentially weak information if some optional information is missing.</param>
+    /// <param name="parameterListView">The strict parameter list to compare.</param>
+    /// <returns>An <see cref="EqualityComparisonResult"/> indicating the result of the comparison.</returns>
+    public static EqualityComparisonResult Equals(ParameterDescriptorList? parameterDescriptorList, IParameterListView? parameterListView)
+    {
+        // Return FALSE if exactly one of the parameter lists is NULL, otherwise compare the parameter lists for equality.
+        if (parameterListView is null ^ parameterDescriptorList is null)
+        {
+            return EqualityComparisonResult.False;
+        }
+
+        // If the parameter descriptor list is NULL, the parameter list view must also be NULL at this point, so return TRUE.
+        if (parameterDescriptorList is null)
+        {
+            return EqualityComparisonResult.True;
+        }
+
+        if (parameterListView!.Count != parameterDescriptorList.Count)
+        {
+            return EqualityComparisonResult.False;
+        }
+
+        bool isAmbiguityExpected = false;
+        for (int index = 0; index < parameterListView.Count; index++)
+        {
+            IParameterDataView parameterDataView = parameterListView.Parameters[index];
+            ParameterDescriptor methodParameterDescriptor = parameterDescriptorList.Parameters[index];
+            isAmbiguityExpected |= methodParameterDescriptor.IsAmbiguityExpected;
+
+            if (parameterDataView.Position != methodParameterDescriptor.ParameterPosition)
+            {
+                return EqualityComparisonResult.False;
+            }
+
+            if (!parameterDataView.ParameterTypeHandle.Equals(methodParameterDescriptor.ParameterTypeHandle))
+            {
+                return EqualityComparisonResult.False;
+            }
+
+            if (methodParameterDescriptor.HasParameterName
+                && !parameterDataView.Name.Equals(methodParameterDescriptor.ParameterName, StringComparison.Ordinal))
+            {
+                return EqualityComparisonResult.False;
+            }
+
+            if (methodParameterDescriptor.HasParameterizedSymbolKind
+                && parameterDataView.MemberData.ParameterizedSymbolKind != methodParameterDescriptor.ParameterizedSymbolKind)
+            {
+                return EqualityComparisonResult.False;
+            }
+
+            if (methodParameterDescriptor.HasParameterModifier
+                && parameterDataView.ParameterModifier != methodParameterDescriptor.ParameterModifier)
+            {
+                return EqualityComparisonResult.False;
+            }
+        }
+
+        return isAmbiguityExpected
+            ? EqualityComparisonResult.TrueButAmbiguous
+            : EqualityComparisonResult.True;
+    }
+
+    /// <summary>
+    /// Equality comparison of a <see cref="ParameterDescriptorList"/> and a <see cref="IParameterListView"/> based on the information that <see cref="ParameterDescriptor"/> items provide.
+    /// </summary>
+    /// <remarks>This is a weak equality comparison of a <see cref="ParameterDescriptorList"/> and a <see cref="IParameterListView"/> based on the information that <see cref="ParameterDescriptor"/> items provide.
+    /// <br/>This means, if a <see cref="ParameterDescriptor"/> item does not provide the optional parameter information, then equality comparison will not test these missing information, which can lead to false matches.
+    /// For example, if the <see cref="ParameterDescriptor"/> does not provide the parameter name, the comparison will not consider the parameter name, potentially resulting in a match with a parameter that has a different name.</remarks>
+    /// <param name="parameterDescriptorList">The parameter descriptor list to compare holding potentially weak information if some optional information is missing.</param>
+    /// <param name="parameterListView">The strict parameter list to compare.</param>
+    /// <returns>An <see cref="EqualityComparisonResult"/> indicating the result of the comparison.</returns>
+    public static EqualityComparisonResult Equals(IParameterListView? parameterListView, ParameterDescriptorList? parameterDescriptorList)
+    {
+        // Return FALSE if exactly one of the parameter lists is NULL, otherwise compare the parameter lists for equality.
+        if (parameterListView is null ^ parameterDescriptorList is null)
+        {
+            return EqualityComparisonResult.False;
+        }
+
+        if (parameterDescriptorList is null)
+        {
+            // If the parameter descriptor list is NULL, the parameter list view must also be NULL at this point, so return TRUE.
+            return EqualityComparisonResult.True;
+        }
+
+        if (parameterListView!.Count != parameterDescriptorList.Count)
+        {
+            return EqualityComparisonResult.False;
+        }
+
+        bool isAmbiguityExpected = false;
+        for (int index = 0; index < parameterListView.Count; index++)
+        {
+            IParameterDataView parameterDataView = parameterListView.Parameters[index];
+            ParameterDescriptor methodParameterDescriptor = parameterDescriptorList.Parameters[index];
+            isAmbiguityExpected |= methodParameterDescriptor.IsAmbiguityExpected;
+
+            if (parameterDataView.Position != methodParameterDescriptor.ParameterPosition)
+            {
+                return EqualityComparisonResult.False;
+            }
+
+            if (!parameterDataView.ParameterTypeHandle.Equals(methodParameterDescriptor.ParameterTypeHandle))
+            {
+                return EqualityComparisonResult.False;
+            }
+
+            if (methodParameterDescriptor.HasParameterName
+                && !parameterDataView.Name.Equals(methodParameterDescriptor.ParameterName, StringComparison.Ordinal))
+            {
+                return EqualityComparisonResult.False;
+            }
+
+            if (methodParameterDescriptor.HasParameterizedSymbolKind
+                && parameterDataView.MemberData.ParameterizedSymbolKind != methodParameterDescriptor.ParameterizedSymbolKind)
+            {
+                return EqualityComparisonResult.False;
+            }
+
+            if (methodParameterDescriptor.HasParameterModifier
+                && parameterDataView.ParameterModifier != methodParameterDescriptor.ParameterModifier)
+            {
+                return EqualityComparisonResult.False;
+            }
+        }
+
+        return isAmbiguityExpected
+            ? EqualityComparisonResult.TrueButAmbiguous
+            : EqualityComparisonResult.True;
     }
 }

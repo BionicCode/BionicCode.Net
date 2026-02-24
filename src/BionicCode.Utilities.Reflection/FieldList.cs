@@ -332,27 +332,35 @@ public sealed class FieldListView : IReadOnlyList<IFieldDataView>, ICollection, 
         return true;
     }
 
-    internal bool Equals(FieldList? other)
+    internal static bool Equals(IFieldListView? fieldListView, FieldList? fieldList)
     {
-        if (other is null)
+        // Return FALSE if exactly one of the field lists is NULL, otherwise compare the field lists for equality.
+        if (fieldList is null ^ fieldListView is null)
         {
             return false;
         }
 
-        if (Count != other.Count)
+        // If the field list view is NULL, the field list must also be NULL at this point, so return TRUE.
+        // If both field lists are NULL, consider them equal.
+        if (fieldListView is null)
+        {
+            return true;
+        }
+
+        if (fieldListView.Count != fieldList!.Count)
         {
             return false;
         }
 
-        if (!ReferenceEquals(DeclaringType, other.DeclaringTypeData.View))
+        if (!ReferenceEquals(fieldListView.DeclaringType, fieldList.DeclaringTypeData.View))
         {
             return false;
         }
 
         bool isEqual = false;
-        for (int index = 0; index < Count && !isEqual; index++)
+        for (int index = 0; index < fieldListView.Count && !isEqual; index++)
         {
-            if (!ReferenceEquals(Fields[index], other.Fields[index].View))
+            if (!ReferenceEquals(fieldListView.Fields[index], fieldList.Fields[index].View))
             {
                 return false;
             }

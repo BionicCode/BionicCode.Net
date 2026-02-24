@@ -335,26 +335,34 @@ public sealed class PropertyListView : IReadOnlyList<IPropertyDataView>, ICollec
         return true;
     }
 
-    internal bool Equals(PropertyList? other)
+    internal static bool Equals(IPropertyListView? propertyListView, PropertyList? propertyList)
     {
-        if (other is null)
+        // If one of the two is NULL and the other is not, they are not equal. If both are NULL, they are considered equal.
+        if (propertyListView is null ^ propertyList is null)
         {
             return false;
         }
 
-        if (Count != other.Count)
+        // If property list view is NULL, then at this point the property list must also be NULL.
+        // If both are NULL, they are considered equal.
+        if (propertyListView is null)
+        {
+            return true;
+        }
+
+        if (propertyListView.Count != propertyList!.Count)
         {
             return false;
         }
 
-        if (!ReferenceEquals(DeclaringType, other.DeclaringTypeData.View))
+        if (!ReferenceEquals(propertyListView.DeclaringType, propertyList.DeclaringTypeData.View))
         {
             return false;
         }
 
-        for (int index = 0; index < Count; index++)
+        for (int index = 0; index < propertyListView.Count; index++)
         {
-            if (!ReferenceEquals(Properties[index], other.Properties[index].View))
+            if (!ReferenceEquals(propertyListView.Properties[index], propertyList.Properties[index].View))
             {
                 return false;
             }
