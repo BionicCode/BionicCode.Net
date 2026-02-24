@@ -27,10 +27,10 @@ internal readonly struct AnonymousSymbolDescriptorContainer : IEquatable<Anonymo
     /// <value>The kind of symbol, such as type, method, property, event, field, constructor, or parameter.</value>
     public readonly SymbolKind SymbolKind { get; }
 
-    private readonly AnonymousParameterDescriptor _parameterDescriptor;
-    public AnonymousParameterDescriptor ParameterDescriptor => SymbolKind is SymbolKind.Parameter
+    private readonly ParameterDescriptor _parameterDescriptor;
+    public ParameterDescriptor ParameterDescriptor => SymbolKind is SymbolKind.Parameter
         ? _parameterDescriptor
-        : ThrowInvalidPropertyContextException<AnonymousParameterDescriptor>([SymbolKind.Parameter]);
+        : ThrowInvalidPropertyContextException<ParameterDescriptor>([SymbolKind.Parameter]);
 
     private readonly AnonymousPropertyDescriptor _propertyDescriptor;
     public AnonymousPropertyDescriptor PropertyDescriptor => SymbolKind is SymbolKind.MemberProperty
@@ -67,7 +67,7 @@ internal readonly struct AnonymousSymbolDescriptorContainer : IEquatable<Anonymo
     private AnonymousSymbolDescriptorContainer(
         string name,
         SymbolKind symbolKind,
-        AnonymousParameterDescriptor parameterDescriptor,
+        ParameterDescriptor parameterDescriptor,
         AnonymousMethodDescriptor methodDescriptor,
         AnonymousConstructorDescriptor constructorDescriptor,
         AnonymousPropertyDescriptor propertyDescriptor,
@@ -196,7 +196,7 @@ internal readonly struct AnonymousSymbolDescriptorContainer : IEquatable<Anonymo
             default);
     }
 
-    public static AnonymousSymbolDescriptorContainer CreateForParameter(AnonymousParameterDescriptor parameterDescriptor)
+    public static AnonymousSymbolDescriptorContainer CreateForParameter(ParameterDescriptor parameterDescriptor)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterDescriptor);
 

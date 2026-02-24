@@ -84,7 +84,7 @@
             MethodHandle = methodHandle;
             PropertyName = propertyName;
             PropertyAccessorKind = accessorKind;
-            MethodParameterInfoList = MethodParameterInfoList.Empty;
+            MethodParameterInfoList = ParameterDescriptorList.Empty;
             IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
             IsAnonymous = false;
         }
@@ -116,7 +116,7 @@
         public PropertyAccessorDescriptor(
             RuntimeMethodHandle methodHandle,
             bool isExplicitInterfaceImplementation,
-            MethodParameterInfoList? indexerParameters,
+            ParameterDescriptorList? indexerParameters,
             string? propertyName,
             PropertyAccessors accessorKind)
         {
@@ -172,7 +172,7 @@
         public bool IsIndexerPropertyAccessor { get; }
         public bool IsPropertyAccessor { get; }
         public PropertyAccessors PropertyAccessorKind { get; }
-        public MethodParameterInfoList MethodParameterInfoList { get; }
+        public ParameterDescriptorList MethodParameterInfoList { get; }
         public ParameterList IndexerParameters { get; }
         public bool IsExplicitInterfaceImplementation { get; }
         public bool IsAnonymous { get; }

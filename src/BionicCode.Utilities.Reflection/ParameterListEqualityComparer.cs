@@ -4,30 +4,30 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>, IEqualityComparer<MethodParameterInfoList>
+internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>, IEqualityComparer<ParameterDescriptorList>
 {
     public bool Equals(ParameterList? x, ParameterList? y) => x?.Equals(y) ?? (y is null);
     public int GetHashCode(ParameterList parameterList)
     {
-        ArgumentNullExceptionAdvanced.ThrowIfNull(parameterList;
+        ArgumentNullExceptionAdvanced.ThrowIfNull(parameterList);
         return parameterList.GetHashCode();
     }
 
-    public bool Equals(MethodParameterInfoList? x, MethodParameterInfoList? y) => x?.Equals(y) ?? (y is null);
-    public int GetHashCode(MethodParameterInfoList methodParameterInfoList)
+    public bool Equals(ParameterDescriptorList? x, ParameterDescriptorList? y) => x?.Equals(y) ?? (y is null);
+    public int GetHashCode(ParameterDescriptorList methodParameterInfoList)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(methodParameterInfoList);
         return methodParameterInfoList.GetHashCode();
     }
 
-    public static bool Equals(ParameterList? parameterList, MethodParameterInfoList? methodParameterInfoList)
+    public static bool Equals(ParameterList? parameterList, ParameterDescriptorList? parameterDescriptorList)
     {
-        if (parameterList is null ^ methodParameterInfoList is null)
+        if (parameterList is null ^ parameterDescriptorList is null)
         {
             return false;
         }
 
-        if (parameterList!.Count != methodParameterInfoList!.Count)
+        if (parameterList!.Count != parameterDescriptorList!.Count)
         {
             return false;
         }
@@ -35,73 +35,63 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
         for (int index = 0; index < parameterList.Count; index++)
         {
             ParameterData parameterData = parameterList.Parameters[index];
-            MethodParameterInfo methodParameterInfo = methodParameterInfoList.Parameters[index];
+            ParameterDescriptor methodParameterDescriptor = parameterDescriptorList.Parameters[index];
 
-            if (methodParameterInfo.DeclaringMethodDescriptor.HasMemberHandle
-                && parameterData.MemberData.Handle != methodParameterInfo.DeclaringMethodDescriptor.MemberHandle)
+            if (methodParameterDescriptor.HasParameterName
+                && !parameterData.Name.Equals(methodParameterDescriptor.ParameterName, StringComparison.Ordinal))
             {
                 return false;
             }
 
-            if (methodParameterInfo.ParameterDescriptor.HasParameterName
-                && !parameterData.Name.Equals(methodParameterInfo.ParameterDescriptor.ParameterName, StringComparison.Ordinal))
+            if (methodParameterDescriptor.HasParameterPosition
+                && parameterData.Position != methodParameterDescriptor.ParameterPosition)
             {
                 return false;
             }
 
-            if (methodParameterInfo.ParameterDescriptor.HasParameterPosition
-                && parameterData.Position != methodParameterInfo.ParameterDescriptor.ParameterPosition)
-            {
-                return false;
-            }
-
-            if (!methodParameterInfo.IsAmbiguityExpected)
+            if (!methodParameterDescriptor.IsAmbiguityExpected)
             {
                 continue;
             }
 
-            if (!(methodParameterInfo.DeclaringMethodDescriptor.HasDeclaringTypeHandle
-                && methodParameterInfo.DeclaringMethodDescriptor.HasDeclaringMemberName
-                && methodParameterInfo.DeclaringMethodDescriptor.HasMemberParameterCount
-                && methodParameterInfo.DeclaringMethodDescriptor.HasMemberTypeHandle
-                && methodParameterInfo.DeclaringMethodDescriptor.HasParameterizedMemberKind
-                && methodParameterInfo.ParameterDescriptor.HasParameterTypeHandle
-                && methodParameterInfo.ParameterDescriptor.HasParameterModifier))
+            if (!(
+                && methodParameterDescriptor.HasParameterTypeHandle
+                && methodParameterDescriptor.HasParameterModifier))
             {
                 throw new AmbiguousMatchException("MethodParameterInfo is marked to expect ambiguity but does not have all required descriptor properties set to resolve it.");
             }
 
-            if (!parameterData.MemberData.DeclaringTypeHandle.Equals(methodParameterInfo.DeclaringMethodDescriptor.DeclaringTypeHandle))
+            if (!parameterData.MemberData.DeclaringTypeHandle.Equals(methodParameterDescriptor.DeclaringMethodDescriptor.DeclaringTypeHandle))
             {
                 return false;
             }
 
-            if (!parameterData.MemberData.Name.Equals(methodParameterInfo.DeclaringMethodDescriptor.DeclaringMemberName, StringComparison.Ordinal))
+            if (!parameterData.MemberData.Name.Equals(methodParameterDescriptor.DeclaringMethodDescriptor.DeclaringMemberName, StringComparison.Ordinal))
             {
                 return false;
             }
 
-            if (parameterData.MemberData.Parameters.Count != methodParameterInfo.DeclaringMethodDescriptor.MemberParameterCount)
+            if (parameterData.MemberData.Parameters.Count != methodParameterDescriptor.DeclaringMethodDescriptor.MemberParameterCount)
             {
                 return false;
             }
 
-            if (parameterData.MemberData is MethodData methodData && !methodData.ReturnTypeData.Handle.Equals(methodParameterInfo.DeclaringMethodDescriptor.MemberTypeHandle))
+            if (parameterData.MemberData is MethodData methodData && !methodData.ReturnTypeData.Handle.Equals(methodParameterDescriptor.DeclaringMethodDescriptor.MemberTypeHandle))
             {
                 return false;
             }
 
-            if (parameterData.MemberData.ParameterizedSymbolKind != methodParameterInfo.DeclaringMethodDescriptor.ParameterizedMemberKind)
+            if (parameterData.MemberData.ParameterizedSymbolKind != methodParameterDescriptor.DeclaringMethodDescriptor.ParameterizedMemberKind)
             {
                 return false;
             }
 
-            if (!parameterData.ParameterTypeHandle.Equals(methodParameterInfo.ParameterDescriptor.ParameterTypeHandle))
+            if (!parameterData.ParameterTypeHandle.Equals(methodParameterDescriptor.ParameterDescriptor.ParameterTypeHandle))
             {
                 return false;
             }
 
-            if (parameterData.ParameterModifier != methodParameterInfo.ParameterDescriptor.ParameterModifier)
+            if (parameterData.ParameterModifier != methodParameterDescriptor.ParameterDescriptor.ParameterModifier)
             {
                 return false;
             }
@@ -110,7 +100,7 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
         return true;
     }
 
-    public static bool Equals(MethodParameterInfoList? methodParameterInfoList, ParameterList? parameterList)
+    public static bool Equals(ParameterDescriptorList? methodParameterInfoList, ParameterList? parameterList)
     {
         if (methodParameterInfoList is null ^ parameterList is null)
         {
@@ -125,7 +115,7 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
         for (int index = 0; index < parameterList.Count; index++)
         {
             ParameterData parameterData = parameterList.Parameters[index];
-            MethodParameterInfo methodParameterInfo = methodParameterInfoList.Parameters[index];
+            ParameterDescriptor methodParameterInfo = methodParameterInfoList.Parameters[index];
 
             if (methodParameterInfo.DeclaringMethodDescriptor.HasMemberHandle
                 && parameterData.MemberData.Handle != methodParameterInfo.DeclaringMethodDescriptor.MemberHandle)

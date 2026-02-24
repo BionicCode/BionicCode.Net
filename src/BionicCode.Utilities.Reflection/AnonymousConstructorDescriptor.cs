@@ -19,7 +19,7 @@ internal readonly struct AnonymousConstructorDescriptor : IEquatable<AnonymousCo
     /// <para/>For best accuracy and performance always use the <see cref="WellKnownConstructorDescriptor"/>, which requires the caller to have direct access to the <see cref="MethodInfo"/> or <see cref="ConstructorInfo"/> representation of the method or constructor.
     /// </remarks>
     /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the anonymous constructor.</param>
-    /// <param name="constructorParameters">The list of parameters for the anonymous method. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters.</param>
+    /// <param name="constructorParameters">The list of parameters for the anonymous method. Can be <see cref="ParameterDescriptorList.Empty"/> or <see langword="null"/> to indicate no parameters.</param>
     /// <returns>A new instance of <see cref="AnonymousConstructorDescriptor"/> representing the specified anonymous method.</returns>
     /// <exception cref="ArgumentNullException">Thrown when
     /// <list type="bullet">
@@ -29,7 +29,7 @@ internal readonly struct AnonymousConstructorDescriptor : IEquatable<AnonymousCo
     /// </exception>
     public AnonymousConstructorDescriptor(
         RuntimeTypeHandle declaringTypeHandle,
-        MethodParameterInfoList? constructorParameters)
+        ParameterDescriptorList? constructorParameters)
     {
         ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
         var declaringType = Type.GetTypeFromHandle(declaringTypeHandle);
@@ -44,7 +44,7 @@ internal readonly struct AnonymousConstructorDescriptor : IEquatable<AnonymousCo
     }
 
     public RuntimeTypeHandle DeclaringTypeHandle { get; }
-    public MethodParameterInfoList ConstructorParameterList { get; }
+    public ParameterDescriptorList ConstructorParameterList { get; }
     public bool IsAnonymous { get; }
 
     public bool Equals(AnonymousConstructorDescriptor other)

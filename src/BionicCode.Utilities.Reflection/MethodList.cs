@@ -126,7 +126,7 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
     /// <exception cref="InvalidOperationException">Thrown if the method index has not been initialized.</exception>
     /// <exception cref="KeyNotFoundException">Thrown if no method with the specified name exists, or if no method with the specified name matches the
     /// provided parameter signature.</exception>
-    public MethodData this[string? methodName, MethodParameterInfoList? methodParameters]
+    public MethodData this[string? methodName, ParameterDescriptorList? methodParameters]
     {
         get
         {
@@ -170,19 +170,52 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
             foreach (MethodData method in methods)
             {
                 ParameterList parameters = method.Parameters;
-                if (parameters.Count != methodParameters.Count)
+
+                if (methodParameters.DeclaringMethodParameterCount != ParameterDescriptor.UnknownParameterCountOrPosition
+                    && parameters.Count != methodParameters.DeclaringMethodParameterCount)
                 {
                     continue;
                 }
 
-                for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
+                // 'methodParameters' could be an incomplete parameter descriptor list that only specifies a subset of the parameters
+                // of the method signature (e.g. only the first two parameters of a method with 4 parameters).
+                // In this case, we only compare the specified subset of parameters and ignore the rest for matching purposes.
+                for (int parameterIndex = 0; parameterIndex < methodParameters.Count; parameterIndex++)
                 {
-                    ParameterData parameter = parameters[parameterIndex];
-                    MethodParameterInfo parameterInfo = methodParameters[parameterIndex];
-                    AnonymousParameterDescriptor parameterDescriptor = parameterInfo.ParameterDescriptor;
+                    ParameterDescriptor parameterDescriptor = methodParameters[parameterIndex];
+
+                    if (parameterDescriptor.HasParameterPosition
+                        && parameterDescriptor.ParameterPosition > parameters.Count)
+                    {
+                        break;
+                    }
+
+                    // If ALL parameter descriptors have an explicitly specified parameter position (in this case 'methodParameters.IsSortedByParameterPosition' is true),
+                    // we use it to retrieve the corresponding parameter from the method signature for comparison to improve speed.
+                    // Otherwise, we must iterate through all parameters of the method signature to find the corresponding parameter for comparison, which is slower.
+                    ParameterData parameter = methodParameters.IsSortedByParameterPosition
+                        ? parameters[parameterDescriptor.ParameterPosition]
+                        : parameters[parameterIndex];
 
                     // Parameter is valid if it matches position in method signature, parameter type and modifier.
                     // Since parameter collections are always ordered by parameter position in ascending order, we don't have to check the order explicitly (only count - see above).
+
+                    // TODO:: Split algorithm into two separate algorithms:
+                    // - one for the case when ALL parameter descriptors have an explicitly specified parameter position
+                    // - and one for the case when parameter position information is missing for at least one parameter descriptor
+                    // to improve readability and maintainability.
+
+                    // When the source is unsorted we still must anticipate the possibility of parameter position information being
+                    // randomly provided in the descriptor to find the corresponding parameter for comparison.
+                    // If the position information is provided but does not match the current parameter index, we skip this parameter
+                    // and continue searching for the corresponding parameter in the method signature.
+                    if (!methodParameters.IsSortedByParameterPosition
+                        && parameterDescriptor.HasParameterPosition
+                        && parameterDescriptor.ParameterPosition != parameterIndex)
+                    {
+                        continue;
+                    }
+
                     if (parameterDescriptor.HasParameterTypeHandle
                         && !parameter.ParameterTypeData.Handle.Equals(parameterDescriptor.ParameterTypeHandle))
                     {
@@ -272,7 +305,7 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
 }
 
 [DebuggerDisplay($"Count = {{{nameof(Count)}}}")]
-internal sealed class MethodListView : IReadOnlyList<IMethodDataView>, ICollection, IEmptyCollectionProvider<IMethodListView>, IEquatable<IMethodListView>, IMethodListView
+public sealed class MethodListView : IReadOnlyList<IMethodDataView>, ICollection, IEmptyCollectionProvider<IMethodListView>, IEquatable<IMethodListView>, IMethodListView
 {
     public static IMethodListView Empty { get; } = new MethodListView();
     private readonly int _hashCode; // precomputed
@@ -389,7 +422,7 @@ internal sealed class MethodListView : IReadOnlyList<IMethodDataView>, ICollecti
     /// <exception cref="InvalidOperationException">Thrown if the method index has not been initialized.</exception>
     /// <exception cref="KeyNotFoundException">Thrown if no method with the specified name exists, or if no method with the specified name matches the
     /// provided parameter signature.</exception>
-    public IMethodDataView this[string? methodName, MethodParameterInfoList? methodParameters]
+    public IMethodDataView this[string? methodName, ParameterDescriptorList? methodParameters]
     {
         get
         {
@@ -441,8 +474,8 @@ internal sealed class MethodListView : IReadOnlyList<IMethodDataView>, ICollecti
                 for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
                 {
                     IParameterDataView parameter = parameters[parameterIndex];
-                    MethodParameterInfo parameterInfo = methodParameters[parameterIndex];
-                    AnonymousParameterDescriptor parameterDescriptor = parameterInfo.ParameterDescriptor;
+                    ParameterDescriptor parameterInfo = methodParameters[parameterIndex];
+                    ParameterDescriptor parameterDescriptor = parameterInfo.ParameterDescriptor;
 
                     // Parameter is valid if it matches position in method signature, parameter type and modifier.
                     // Since parameter collections are always ordered by parameter position in ascending order, we don't have to check the order explicitly (only count - see above).

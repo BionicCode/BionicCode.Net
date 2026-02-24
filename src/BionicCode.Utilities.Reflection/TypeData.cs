@@ -189,7 +189,7 @@ internal class TypeData : SymbolInfoData
         return false;
     }
 
-    internal bool TryGetIndexerPropertyByParameterList(MethodParameterInfoList indexerParameters, PropertyAccessors indexerPropertyAccessor, out PropertyData? propertyData)
+    internal bool TryGetIndexerPropertyByParameterList(ParameterDescriptorList indexerParameters, PropertyAccessors indexerPropertyAccessor, out PropertyData? propertyData)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(indexerParameters);
         ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessors>(indexerPropertyAccessor);
@@ -215,7 +215,7 @@ internal class TypeData : SymbolInfoData
         return false;
     }
 
-    internal bool TryGetExplicitInterfaceIndexerPropertyByParameterList(MethodParameterInfoList indexerParameters, PropertyAccessors indexerPropertyAccessor, out PropertyData? propertyData)
+    internal bool TryGetExplicitInterfaceIndexerPropertyByParameterList(ParameterDescriptorList indexerParameters, PropertyAccessors indexerPropertyAccessor, out PropertyData? propertyData)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(indexerParameters);
         ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessors>(indexerPropertyAccessor);
@@ -306,12 +306,12 @@ internal class TypeData : SymbolInfoData
         return TryGetMethodInternal(methodName, isExplicitImplementation: true, genericMethodParameters, parameters, equalityComparer, out methodData);
     }
 
-    internal bool TryGetMethod(string methodName, TypeList genericMethodParameters, MethodParameterInfoList parameters, out MethodData? methodData)
+    internal bool TryGetMethod(string methodName, TypeList genericMethodParameters, ParameterDescriptorList parameters, out MethodData? methodData)
     {
         parameters = parameters.OrEmpty();
         genericMethodParameters = genericMethodParameters.OrEmpty();
 
-        static bool equalityComparer(ParameterList foundMethodParameters, MethodParameterInfoList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
+        static bool equalityComparer(ParameterList foundMethodParameters, ParameterDescriptorList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
         {
             return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
                 && ParameterListEqualityComparer.Equals(foundMethodParameters, requestedMethodParameters)
@@ -321,12 +321,12 @@ internal class TypeData : SymbolInfoData
         return TryGetMethodInternal(methodName, isExplicitImplementation: false, genericMethodParameters, parameters, equalityComparer, out methodData);
     }
 
-    internal bool TryGetExplicitInterfaceMethod(string methodName, TypeList genericMethodParameters, MethodParameterInfoList parameters, out MethodData? methodData)
+    internal bool TryGetExplicitInterfaceMethod(string methodName, TypeList genericMethodParameters, ParameterDescriptorList parameters, out MethodData? methodData)
     {
         parameters = parameters.OrEmpty();
         genericMethodParameters = genericMethodParameters.OrEmpty();
 
-        static bool equalityComparer(ParameterList foundMethodParameters, MethodParameterInfoList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
+        static bool equalityComparer(ParameterList foundMethodParameters, ParameterDescriptorList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
         {
             return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
                 && ParameterListEqualityComparer.Equals(foundMethodParameters, requestedMethodParameters)
@@ -448,7 +448,7 @@ internal class TypeData : SymbolInfoData
         return false;
     }
 
-    internal bool TryGetConstructorByParameterList(MethodParameterInfoList parameters, out ConstructorData? constructorData)
+    internal bool TryGetConstructorByParameterList(ParameterDescriptorList parameters, out ConstructorData? constructorData)
     {
         parameters = parameters.OrEmpty();
 

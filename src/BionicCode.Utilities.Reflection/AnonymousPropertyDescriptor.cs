@@ -31,8 +31,8 @@
         /// then the <paramref name="implementingTypeHandle"/> can be <see langword="null"/> since it will be ignored.</param>
         /// <param name="propertyName">The name of the anonymous property. Cannot be null, empty, or consist only of white-space characters.</param>
         /// <param name="declaredPropertyAccessors">Specifies the accessor that the property declares. Can't be <see cref="PropertyAccessors.None"/> or <see cref="PropertyAccessors.None"/>.</param>
-        /// <param name="indexerGetterParameters">The list of parameters for the anonymous indexer getter. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters in case of a normal property. For normal properties, this parameter is ignored.</param>
-        /// <param name="indexerSetterParameters">The list of parameters for the anonymous indexer setter. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters in case of a normal property. For normal properties, this parameter is ignored.</param>
+        /// <param name="indexerGetterParameters">The list of parameters for the anonymous indexer getter. Can be <see cref="ParameterDescriptorList.Empty"/> or <see langword="null"/> to indicate no parameters in case of a normal property. For normal properties, this parameter is ignored.</param>
+        /// <param name="indexerSetterParameters">The list of parameters for the anonymous indexer setter. Can be <see cref="ParameterDescriptorList.Empty"/> or <see langword="null"/> to indicate no parameters in case of a normal property. For normal properties, this parameter is ignored.</param>
         /// <param name="isExplicitInterfaceImplementation"><see langword="true"/> if the property is an explicit interface implementation; otherwise, <see langword="false"/>. If set to <see langword="true"/>, the <paramref name="declaringTypeHandle"/> must represent an interface type.
         /// </param>
         /// <returns>A new instance of <see cref="AnonymousPropertyDescriptor"/> representing the specified anonymous property.</returns>
@@ -57,8 +57,8 @@
             RuntimeTypeHandle declaringTypeHandle,
             string propertyName,
             PropertyAccessors declaredPropertyAccessors,
-            MethodParameterInfoList? indexerGetterParameters,
-            MethodParameterInfoList? indexerSetterParameters,
+            ParameterDescriptorList? indexerGetterParameters,
+            ParameterDescriptorList? indexerSetterParameters,
             bool isExplicitInterfaceImplementation,
             RuntimeTypeHandle? implementingTypeHandle)
         {
@@ -121,8 +121,8 @@
         public RuntimeTypeHandle DeclaringInterfaceTypeHandle { get; }
         public string PropertyName { get; }
         public PropertyAccessors DeclaredAccessors { get; }
-        public MethodParameterInfoList IndexerGetterMethodParameterInfoList { get; }
-        public MethodParameterInfoList IndexerSetterMethodParameterInfoList { get; }
+        public ParameterDescriptorList IndexerGetterMethodParameterInfoList { get; }
+        public ParameterDescriptorList IndexerSetterMethodParameterInfoList { get; }
         public bool IsExplicitInterfaceImplementation { get; init; }
         public bool IsIndexerProperty { get; }
         public bool IsAnonymous { get; }

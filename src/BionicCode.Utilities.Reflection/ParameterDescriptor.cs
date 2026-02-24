@@ -6,11 +6,11 @@ using System.Reflection;
 /// <summary>
 /// A descriptor that provides the specified parameter information for an anonymous parameter symbol.
 /// </summary>
-/// <remarks>The <see cref="AnonymousParameterDescriptor"/> is used to provide information for anonymous parameter symbols, which is when the caller does not have the direct <see cref="ParameterInfo"/> representation.
+/// <remarks>The <see cref="ParameterDescriptor"/> is used to provide information for anonymous parameter symbols, which is when the caller does not have the direct <see cref="ParameterInfo"/> representation.
 /// <para/>When the caller has the direct <see cref="ParameterInfo"/> representation and the method is well-known, use the <see cref="WellKnownParameterDescriptor"/> instead.
 /// <para/>Important: well-known descriptors are preferred over anonymous descriptors when the <see cref="ParameterInfo"/> is available to ensure maximum accuracy and performance.
 /// </remarks>
-internal readonly struct AnonymousParameterDescriptor : IEquatable<AnonymousParameterDescriptor>
+public readonly struct ParameterDescriptor : IEquatable<ParameterDescriptor>
 {
     /// <summary>
     /// Represents an unknown or unspecified parameter count.
@@ -31,24 +31,37 @@ internal readonly struct AnonymousParameterDescriptor : IEquatable<AnonymousPara
     /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterTypeHandle"/> AND <paramref name="parameterModifier"/>.</param>
     /// <param name="parameterModifier">Conditionally optional. The modifier of the parameter.<para/>
     /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterTypeHandle"/> AND <paramref name="parameterPosition"/>.</param>
-    public AnonymousParameterDescriptor(
+    public ParameterDescriptor(
         string? parameterName = null,
-        int parameterPosition = UnknownParameterCountOrPosition,
-        ParameterModifier parameterModifier = ParameterModifier.Undefined,
+        int? parameterPosition = UnknownParameterCountOrPosition,
+        int? declaringMethodParameterCount = UnknownParameterCountOrPosition,
+        ParameterModifier? parameterModifier = ParameterModifier.Undefined,
         RuntimeTypeHandle? parameterTypeHandle = null)
     {
+        parameterModifier ??= ParameterModifier.Undefined;
         ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterModifier>(parameterModifier);
+
+        parameterPosition ??= UnknownParameterCountOrPosition;
+        declaringMethodParameterCount ??= UnknownParameterCountOrPosition;
+        ArgumentExceptionAdvanced.ThrowIfTrue(declaringMethodParameterCount == 0, nameof(declaringMethodParameterCount), $"The argument '{nameof(declaringMethodParameterCount)}' must be greater than zero or '{nameof(ParameterDescriptor)}.{UnknownParameterCountOrPosition}' or null when specified.");
+        if (declaringMethodParameterCount > UnknownParameterCountOrPosition)
+        {
+            ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(parameterPosition.Value, declaringMethodParameterCount.Value, nameof(parameterPosition), $"The argument '{nameof(parameterPosition)}' must be less than the argument '{nameof(declaringMethodParameterCount)}' when both are specified.");
+        }
+
         if (parameterTypeHandle.Equals(default)
             && string.IsNullOrWhiteSpace(parameterName)
             && parameterModifier == ParameterModifier.Undefined
-            && parameterPosition == UnknownParameterCountOrPosition)
+            && parameterPosition == UnknownParameterCountOrPosition
+            && declaringMethodParameterCount == UnknownParameterCountOrPosition)
         {
-            throw new ArgumentException($"At least one of the following arguments must be provided to avoid ambiguity when using the created key for lookups: '{nameof(parameterTypeHandle)}', '{nameof(parameterName)}', '{nameof(parameterModifier)}', '{nameof(parameterPosition)}'.");
+            throw new ArgumentException($"At least one of the following arguments must be provided to avoid ambiguity when using the created key for lookups: '{nameof(parameterTypeHandle)}', '{nameof(parameterName)}', '{nameof(parameterModifier)}', '{nameof(parameterPosition)}' or '{nameof(declaringMethodParameterCount)}'.");
         }
 
         ParameterName = parameterName ?? string.Empty;
-        ParameterPosition = parameterPosition;
-        ParameterModifier = parameterModifier;
+        ParameterPosition = parameterPosition.Value;
+        DeclaringMethodParameterCount = declaringMethodParameterCount.Value;
+        ParameterModifier = parameterModifier.Value;
         ParameterTypeHandle = parameterTypeHandle ?? default;
         IsAnonymous = true;
     }
@@ -56,6 +69,7 @@ internal readonly struct AnonymousParameterDescriptor : IEquatable<AnonymousPara
     public bool HasParameterName => !string.IsNullOrWhiteSpace(ParameterName);
 
     public bool HasParameterPosition => ParameterPosition > UnknownParameterCountOrPosition;
+    public bool HasDeclaringMethodParameterCount => DeclaringMethodParameterCount > 0;
 
     public bool HasParameterModifier => ParameterModifier != ParameterModifier.Undefined;
 
@@ -65,24 +79,28 @@ internal readonly struct AnonymousParameterDescriptor : IEquatable<AnonymousPara
 
     public string ParameterName { get; }
     public int ParameterPosition { get; }
+    public int DeclaringMethodParameterCount { get; }
     public ParameterModifier ParameterModifier { get; }
     public RuntimeTypeHandle ParameterTypeHandle { get; }
+    public bool IsAmbiguityExpected => !HasParameterName && !HasParameterPosition;
 
-    public bool Equals(AnonymousParameterDescriptor other) => ParameterName.Equals(other.ParameterName, StringComparison.Ordinal)
+    public bool Equals(ParameterDescriptor other) => ParameterName.Equals(other.ParameterName, StringComparison.Ordinal)
         && ParameterPosition == other.ParameterPosition
         && ParameterModifier == other.ParameterModifier
         && ParameterTypeHandle.Equals(other.ParameterTypeHandle)
-        && IsAnonymous == other.IsAnonymous;
+        && IsAnonymous == other.IsAnonymous
+        && DeclaringMethodParameterCount == other.DeclaringMethodParameterCount;
 
     public override int GetHashCode() => HashCode.Combine(
         ParameterName,
         ParameterPosition,
         ParameterModifier,
         ParameterTypeHandle,
-        IsAnonymous);
+        IsAnonymous,
+        DeclaringMethodParameterCount);
 
-    public static bool operator ==(AnonymousParameterDescriptor left, AnonymousParameterDescriptor right) => left.Equals(right);
-    public static bool operator !=(AnonymousParameterDescriptor left, AnonymousParameterDescriptor right) => !left.Equals(right);
+    public static bool operator ==(ParameterDescriptor left, ParameterDescriptor right) => left.Equals(right);
+    public static bool operator !=(ParameterDescriptor left, ParameterDescriptor right) => !left.Equals(right);
 
-    public override bool Equals(object? obj) => obj is AnonymousParameterDescriptor other && Equals(other);
+    public override bool Equals(object? obj) => obj is ParameterDescriptor other && Equals(other);
 }

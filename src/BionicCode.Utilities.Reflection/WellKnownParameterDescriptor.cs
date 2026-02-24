@@ -7,7 +7,7 @@ using System.Reflection;
 /// A descriptor that provides the specified parameter information for a well-known parameter symbol.
 /// </summary>
 /// <remarks>The <see cref="WellKnownParameterDescriptor"/> is used to provide information for well-known parameter symbols, which is when the caller has the direct <see cref="ParameterInfo"/> representation.
-/// <para/>When the caller does not have the direct <see cref="ParameterInfo"/> representation and the parameter is anonymous, use the <see cref="AnonymousParameterDescriptor"/> instead.
+/// <para/>When the caller does not have the direct <see cref="ParameterInfo"/> representation and the parameter is anonymous, use the <see cref="ParameterDescriptor"/> instead.
 /// <para/>Important: well-known descriptors are preferred over anonymous descriptors when the <see cref="ParameterInfo"/> is available to ensure maximum accuracy and performance.
 /// </remarks>
 internal readonly struct WellKnownParameterDescriptor : IEquatable<WellKnownParameterDescriptor>

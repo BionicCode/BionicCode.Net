@@ -3,10 +3,10 @@
 using System.Collections;
 using System.Collections.Immutable;
 
-internal interface IMethodListView : ICollection, IReadOnlyList<IMethodDataView>, IEquatable<IMethodListView>
+public interface IMethodListView : ICollection, IReadOnlyList<IMethodDataView>, IEquatable<IMethodListView>
 {
     new int Count { get; }
-    IMethodDataView this[string? methodName, MethodParameterInfoList? methodParameters] { get; }
+    IMethodDataView this[string? methodName, ParameterDescriptorList? methodParameters] { get; }
     ITypeDataView DeclaringType { get; }
     bool HasItems { get; }
     bool IsEmpty { get; }
