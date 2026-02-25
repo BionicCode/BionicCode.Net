@@ -60,20 +60,20 @@ internal class PropertyListBuilder : SymbolDataListBuilder<PropertyData>, IPrope
         return properties.ToPropertyList(declaringTypeData);
     }
 
-    public static PropertyList Create(TypeData declaringTypeData)
+    public static PropertyList Create(TypeData declaringTypeData, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringTypeData);
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    public static PropertyList Create(Type declaringType)
+    public static PropertyList Create(Type declaringType, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringType);
         TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    private static PropertyList CreateInternal(TypeData declaringTypeData) => declaringTypeData.EnumerateProperties().ToPropertyList(declaringTypeData);
+    private static PropertyList CreateInternal(TypeData declaringTypeData, MemberEnumerationRule enumerationRule) => declaringTypeData.EnumerateProperties(enumerationRule).ToPropertyList(declaringTypeData);
 
     TypeData IPropertyListBuilder.DeclaringType => _declaringType;
 
@@ -89,8 +89,8 @@ internal class PropertyListBuilder : SymbolDataListBuilder<PropertyData>, IPrope
 
 internal static class PropertyListBuilderExtensions
 {
-    public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items, TypeData declaringTypeData) => items is null || items.IsEmpty() 
-        ? PropertyList.Empty 
+    public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items, TypeData declaringTypeData) => items is null || items.IsEmpty()
+        ? PropertyList.Empty
         : new PropertyList(items, declaringTypeData);
 
     internal static IPropertyListView ToPropertyListView(this IEnumerable<PropertyData> items, TypeData declaringType)
@@ -110,12 +110,4 @@ internal static class PropertyListBuilderExtensions
             ? PropertyListView.Empty
             : new PropertyListView(items.Select(item => item), declaringType);
     }
-
-    /// <summary>
-    /// Returns an empty <see cref="PropertyList"/> if the provided instance is <see langword="null"/>.
-    /// </summary>
-    /// <param name="items"></param>
-    /// <returns>A <see cref="PropertyList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    public static PropertyList OrEmpty(this PropertyList items)
-        => items ?? PropertyList.Empty;
 }

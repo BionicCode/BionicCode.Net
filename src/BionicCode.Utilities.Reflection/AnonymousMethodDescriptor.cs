@@ -93,7 +93,7 @@ internal readonly struct AnonymousMethodDescriptor : IEquatable<AnonymousMethodD
         ImplementingTypeHandle = declaringTypeHandle;
         MethodName = methodName;
         MethodParameterList = methodParameters!.OrEmpty();
-        GenericMethodParameters = genericMethodParameters.OrEmpty();
+        GenericMethodParameters = (ITypeListView?)genericMethodParameters.OrEmpty();
         IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
         IsAnonymous = true;
     }
@@ -102,7 +102,7 @@ internal readonly struct AnonymousMethodDescriptor : IEquatable<AnonymousMethodD
     public RuntimeTypeHandle DeclaringInterfaceTypeHandle { get; }
     public string MethodName { get; }
     public ParameterDescriptorList MethodParameterList { get; }
-    public TypeList GenericMethodParameters { get; }
+    public ITypeListView GenericMethodParameters { get; }
     public bool IsExplicitInterfaceImplementation { get; }
     public bool IsAnonymous { get; }
 

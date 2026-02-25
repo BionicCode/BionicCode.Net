@@ -59,20 +59,20 @@ internal class EventListBuilder : SymbolDataListBuilder<EventData>, IEventListBu
         return events.ToEventList(declaringType);
     }
 
-    public static EventList Create(TypeData declaringTypeData)
+    public static EventList Create(TypeData declaringTypeData, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringTypeData);
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    public static EventList Create(Type declaringType)
+    public static EventList Create(Type declaringType, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringType);
         TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    private static EventList CreateInternal(TypeData declaringType) => declaringType.EnumerateEvents().ToEventList(declaringType);
+    private static EventList CreateInternal(TypeData declaringType, MemberEnumerationRule enumerationRule) => declaringType.EnumerateEvents(enumerationRule).ToEventList(declaringType);
 
     TypeData IEventListBuilder.DeclaringType => _declaringType;
 
@@ -113,11 +113,4 @@ internal static class EventListBuilderExtensions
             ? EventListView.Empty
             : new EventListView(items.Select(item => item), declaringType);
     }
-
-    /// <summary>
-    /// Returns an empty <see cref="EventList"/> if the provided instance is <see langword="null"/>.
-    /// </summary>
-    /// <param name="items"></param>
-    /// <returns>A <see cref="EventList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    public static EventList OrEmpty(this EventList items) => items ?? EventList.Empty;
 }

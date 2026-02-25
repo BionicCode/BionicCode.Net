@@ -205,7 +205,7 @@ internal class TypeData : SymbolInfoData
         foreach (PropertyData property in Properties)
         {
             ParameterList indexerAccessorParameters = indexerAccessorParametersReader.Invoke(property);
-            if (ParameterListEqualityComparer.Equals(indexerAccessorParameters, indexerParameters))
+            if (ParameterListEqualityComparer.Equals(indexerAccessorParameters, indexerParameters) is EqualityComparisonResult.True or EqualityComparisonResult.TrueButAmbiguous)
             {
                 propertyData = property;
                 return true;
@@ -231,7 +231,7 @@ internal class TypeData : SymbolInfoData
         foreach (PropertyData property in ExplicitInterfaceProperties)
         {
             ParameterList indexerAccessorParameters = indexerAccessorParametersReader.Invoke(property);
-            if (ParameterListEqualityComparer.Equals(indexerAccessorParameters, indexerParameters))
+            if (ParameterListEqualityComparer.Equals(indexerAccessorParameters, indexerParameters) is EqualityComparisonResult.True or EqualityComparisonResult.TrueButAmbiguous)
             {
                 propertyData = property;
                 return true;
@@ -253,10 +253,10 @@ internal class TypeData : SymbolInfoData
     /// inheritance hierarchy.</param>
     /// <returns>An enumerable collection of <see cref="PropertyData"/> objects representing the properties of the current type that match
     /// the specified binding flags.</returns>
-    internal IEnumerable<PropertyData> EnumerateProperties(BindingFlags bindingFlags = ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
+    internal IEnumerable<PropertyData> EnumerateProperties(MemberEnumerationRule enumerationRule)
     {
         // Return already cached properties if available
-        foreach (PropertyData propertyData in EnumerateMemberKindCache<PropertyData>(bindingFlags))
+        foreach (PropertyData propertyData in EnumerateMemberKindCache<PropertyData>(enumerationRule))
         {
             yield return propertyData;
         }
@@ -276,85 +276,29 @@ internal class TypeData : SymbolInfoData
         return Methods.TryGetMethodsByName(methodName, out methods);
     }
 
-    internal bool TryGetMethod(string methodName, TypeList genericMethodParameters, ParameterList parameters, out MethodData? methodData)
+    internal bool TryGetMethod(string methodName, TypeList? genericMethodParameters, ParameterList? parameters, out MethodData? methodData) => Methods.TryGetMethod(methodName, genericMethodParameters, parameters, out methodData) switch
     {
-        parameters = parameters.OrEmpty();
-        genericMethodParameters = genericMethodParameters.OrEmpty();
+        MemberLookupState.Found => true,
+        _ => false
+    };
 
-        static bool equalityComparer(ParameterList foundMethodParameters, ParameterList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
-        {
-            return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
-                && foundMethodParameters.Equals(requestedMethodParameters)
-                && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
-        }
-
-        return TryGetMethodInternal(methodName, isExplicitImplementation: false, genericMethodParameters, parameters, equalityComparer, out methodData);
-    }
-
-    internal bool TryGetExplicitInterfaceMethod(string methodName, TypeList genericMethodParameters, ParameterList parameters, out MethodData? methodData)
+    internal bool TryGetExplicitInterfaceMethod(string methodName, TypeList? genericMethodParameters, ParameterList? parameters, out MethodData? methodData) => ExplicitInterfaceMethods.TryGetMethod(methodName, genericMethodParameters, parameters, out methodData) switch
     {
-        parameters = parameters.OrEmpty();
-        genericMethodParameters = genericMethodParameters.OrEmpty();
+        MemberLookupState.Found => true,
+        _ => false
+    };
 
-        static bool equalityComparer(ParameterList foundMethodParameters, ParameterList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
-        {
-            return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
-                && foundMethodParameters.Equals(requestedMethodParameters)
-                && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
-        }
-
-        return TryGetMethodInternal(methodName, isExplicitImplementation: true, genericMethodParameters, parameters, equalityComparer, out methodData);
-    }
-
-    internal bool TryGetMethod(string methodName, TypeList genericMethodParameters, ParameterDescriptorList parameters, out MethodData? methodData)
+    internal bool TryGetMethod(string methodName, TypeList? genericMethodParameters, ParameterDescriptorList? parameters, out MethodData? methodData) => Methods.TryGetMethod(methodName, genericMethodParameters, parameters, out methodData) switch
     {
-        parameters = parameters.OrEmpty();
-        genericMethodParameters = genericMethodParameters.OrEmpty();
+        MemberLookupState.Found => true,
+        _ => false
+    };
 
-        static bool equalityComparer(ParameterList foundMethodParameters, ParameterDescriptorList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
-        {
-            return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
-                && ParameterListEqualityComparer.Equals(foundMethodParameters, requestedMethodParameters)
-                && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
-        }
-
-        return TryGetMethodInternal(methodName, isExplicitImplementation: false, genericMethodParameters, parameters, equalityComparer, out methodData);
-    }
-
-    internal bool TryGetExplicitInterfaceMethod(string methodName, TypeList genericMethodParameters, ParameterDescriptorList parameters, out MethodData? methodData)
+    internal bool TryGetExplicitInterfaceMethod(string methodName, TypeList? genericMethodParameters, ParameterDescriptorList? parameters, out MethodData? methodData) => ExplicitInterfaceMethods.TryGetMethod(methodName, genericMethodParameters, parameters, out methodData) switch
     {
-        parameters = parameters.OrEmpty();
-        genericMethodParameters = genericMethodParameters.OrEmpty();
-
-        static bool equalityComparer(ParameterList foundMethodParameters, ParameterDescriptorList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
-        {
-            return foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
-                && ParameterListEqualityComparer.Equals(foundMethodParameters, requestedMethodParameters)
-                && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
-        }
-
-        return TryGetMethodInternal(methodName, isExplicitImplementation: true, genericMethodParameters, parameters, equalityComparer, out methodData);
-    }
-
-    private bool TryGetMethodInternal<TParameterList>(string requestedMethodName, bool isExplicitImplementation, TypeList requestedGenericMethodParameters, TParameterList requestedMethodParameters, MethodEqualityComparer<TParameterList> equalityComparer, out MethodData? requestedMethodData)
-        where TParameterList : notnull, IEnumerable
-    {
-        requestedMethodData = null;
-        MethodList source = isExplicitImplementation ? ExplicitInterfaceMethods : Methods;
-        foreach (MethodData method in source)
-        {
-            ParameterList methodParameters = method.Parameters;
-            TypeList methodGenericMethodParameters = method.GenericMethodParameters;
-
-            if (equalityComparer(methodParameters, requestedMethodParameters, methodGenericMethodParameters, requestedGenericMethodParameters, method.Name, requestedMethodName))
-            {
-                requestedMethodData = method;
-                return true;
-            }
-        }
-
-        return false;
-    }
+        MemberLookupState.Found => true,
+        _ => false
+    };
 
     /// <summary>
     /// Returns an enumerable collection of method metadata for the current type, using the specified binding flags
@@ -368,10 +312,10 @@ internal class TypeData : SymbolInfoData
     /// The default value includes all instance and static methods declared on the type and its base types.</param>
     /// <returns>An enumerable collection of MethodData objects representing the methods defined on the current type and its
     /// base types, as specified by the binding flags.</returns>
-    internal IEnumerable<MethodData> EnumerateMethods(BindingFlags bindingFlags = ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
+    internal IEnumerable<MethodData> EnumerateMethods(MemberEnumerationRule enumerationRule)
     {
         // Return already cached methods if available
-        foreach (MethodData methodData in EnumerateMemberKindCache<MethodData>(bindingFlags))
+        foreach (MethodData methodData in EnumerateMemberKindCache<MethodData>(enumerationRule))
         {
             yield return methodData;
         }
@@ -392,10 +336,10 @@ internal class TypeData : SymbolInfoData
         return Fields.TryGetFieldByName(fieldName, out fieldData);
     }
 
-    internal IEnumerable<FieldData> EnumerateFields(BindingFlags bindingFlags = ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
+    internal IEnumerable<FieldData> EnumerateFields(MemberEnumerationRule enumerationRule)
     {
         // Return already cached fields if available
-        foreach (FieldData fieldData in EnumerateMemberKindCache<FieldData>(bindingFlags))
+        foreach (FieldData fieldData in EnumerateMemberKindCache<FieldData>(enumerationRule))
         {
             yield return fieldData;
         }
@@ -421,9 +365,9 @@ internal class TypeData : SymbolInfoData
         return ExplicitInterfaceEvents.TryGetEventByName(eventName, out eventData);
     }
 
-    internal IEnumerable<EventData> EnumerateEvents(BindingFlags bindingFlags = ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
+    internal IEnumerable<EventData> EnumerateEvents(MemberEnumerationRule enumerationRule)
     {
-        foreach (EventData eventData in EnumerateMemberKindCache<EventData>(bindingFlags))
+        foreach (EventData eventData in EnumerateMemberKindCache<EventData>(enumerationRule))
         {
             yield return eventData;
         }
@@ -457,7 +401,8 @@ internal class TypeData : SymbolInfoData
         {
             ParameterList constructorParameters = constructorData!.Parameters;
 
-            if (ParameterListEqualityComparer.Equals(parameters, constructorParameters))
+            if (ParameterListEqualityComparer.Equals(parameters, constructorParameters)
+                is EqualityComparisonResult.True or EqualityComparisonResult.TrueButAmbiguous)
             {
                 constructorData = constructor;
                 return true;
@@ -467,16 +412,16 @@ internal class TypeData : SymbolInfoData
         return false;
     }
 
-    internal IEnumerable<ConstructorData> EnumerateConstructors(BindingFlags bindingFlags = ReflectionHelperExtensions.AllMembersFullHierarchyFlags)
+    internal IEnumerable<ConstructorData> EnumerateConstructors(MemberEnumerationRule enumerationRule)
     {
         // Return already cached constructors if available
-        foreach (ConstructorData constructorData in EnumerateMemberKindCache<ConstructorData>(bindingFlags))
+        foreach (ConstructorData constructorData in EnumerateMemberKindCache<ConstructorData>(enumerationRule))
         {
             yield return constructorData;
         }
     }
 
-    private IEnumerable<TMemberData> EnumerateMemberKindCache<TMemberData>(BindingFlags bindingFlags) where TMemberData : MemberData
+    private IEnumerable<TMemberData> EnumerateMemberKindCache<TMemberData>(MemberEnumerationRule enumerationRule) where TMemberData : MemberData
     {
         SymbolKind memberKind = typeof(TMemberData) switch
         {
@@ -490,26 +435,44 @@ internal class TypeData : SymbolInfoData
 
         IEnumerable<MemberData> cachedMembers = memberKind switch
         {
-            // Accessing member list properties ensure cache is built up
+            // Accessing member list properties instead of fields to ensure cache is built up
 
-            SymbolKind.MemberMethod => Methods.Concat(ExplicitInterfaceMethods),
-            SymbolKind.MemberProperty => Properties.Concat(ExplicitInterfaceProperties),
+            SymbolKind.MemberMethod => enumerationRule.Strictness is InterfaceImplementationScope.ImplicitInterfaceImplementationsOnly
+                ? Methods
+                : enumerationRule.Strictness is InterfaceImplementationScope.ExplicitInterfaceImplementationsOnly
+                    ? ExplicitInterfaceMethods
+                    : enumerationRule.Strictness is InterfaceImplementationScope.AllImplementations
+                        ? Methods.Concat(ExplicitInterfaceMethods)
+                        : throw new NotImplementedException($"The value '{enumerationRule}' is not supported by the current implementation."),
+            SymbolKind.MemberProperty => enumerationRule.Strictness is InterfaceImplementationScope.ImplicitInterfaceImplementationsOnly
+                ? Properties
+                : enumerationRule.Strictness is InterfaceImplementationScope.ExplicitInterfaceImplementationsOnly
+                    ? ExplicitInterfaceProperties
+                    : enumerationRule.Strictness is InterfaceImplementationScope.AllImplementations
+                        ? Properties.Concat(ExplicitInterfaceProperties)
+                        : throw new NotImplementedException($"The value '{enumerationRule}' is not supported by the current implementation."),
             SymbolKind.MemberField => Fields,
-            SymbolKind.MemberEvent => Events.Concat(ExplicitInterfaceEvents),
+            SymbolKind.MemberEvent => enumerationRule.Strictness is InterfaceImplementationScope.ImplicitInterfaceImplementationsOnly
+                ? Events
+                : enumerationRule.Strictness is InterfaceImplementationScope.ExplicitInterfaceImplementationsOnly
+                    ? ExplicitInterfaceEvents
+                    : enumerationRule.Strictness is InterfaceImplementationScope.AllImplementations
+                        ? Events.Concat(ExplicitInterfaceEvents)
+                        : throw new NotImplementedException($"The value '{enumerationRule}' is not supported by the current implementation."),
             SymbolKind.MemberConstructor => Constructors,
             _ => throw new NotSupportedException($"The member kind '{typeof(SymbolKind).FullName}.{memberKind}' is not supported."),
         };
 
         foreach (MemberData memberData in cachedMembers)
         {
-            if (IsValidMember(memberData!, bindingFlags))
+            if (IsValidMember(memberData!, enumerationRule.BindingFlags))
             {
                 yield return (TMemberData)memberData;
             }
         }
     }
 
-    private void BuildAndEnumerateMemberKindCache<TMemberData>(MemberInfo[] members, BindingFlags bindingFlags) where TMemberData : MemberData
+    private void BuildMemberKindCache<TMemberData>(MemberInfo[] members, BindingFlags bindingFlags) where TMemberData : MemberData
     {
         Func<MemberInfo, MemberData> readReflectionCache;
         Action<MemberData> addMemberToTypeDataMemberList;
@@ -890,8 +853,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_properties is null)
             {
-                PropertyInfo[] visibleProperties = Type.GetProperties(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                BuildAndEnumerateMemberKindCache<PropertyData>(visibleProperties, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                PropertyInfo[] visibleProperties = Type.GetProperties(ReflectionConstants.AllMembersFullHierarchyFlags);
+                BuildMemberKindCache<PropertyData>(visibleProperties, ReflectionConstants.AllMembersFullHierarchyFlags);
             }
 
             return _properties!;
@@ -904,8 +867,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_explicitInterfaceProperties is null)
             {
-                PropertyInfo[] visibleProperties = Type.GetProperties(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                BuildAndEnumerateMemberKindCache<PropertyData>(visibleProperties, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                PropertyInfo[] visibleProperties = Type.GetProperties(ReflectionConstants.AllMembersFullHierarchyFlags);
+                BuildMemberKindCache<PropertyData>(visibleProperties, ReflectionConstants.AllMembersFullHierarchyFlags);
             }
 
             return _explicitInterfaceProperties!;
@@ -930,8 +893,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_methods is null)
             {
-                MethodInfo[] visibleMethods = Type.GetMethods(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                BuildAndEnumerateMemberKindCache<MethodData>(visibleMethods, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                MethodInfo[] visibleMethods = Type.GetMethods(ReflectionConstants.AllMembersFullHierarchyFlags);
+                BuildMemberKindCache<MethodData>(visibleMethods, ReflectionConstants.AllMembersFullHierarchyFlags);
             }
 
             return _methods!;
@@ -943,8 +906,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_explicitInterfaceMethods is null)
             {
-                MethodInfo[] visibleMethods = Type.GetMethods(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                BuildAndEnumerateMemberKindCache<MethodData>(visibleMethods, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                MethodInfo[] visibleMethods = Type.GetMethods(ReflectionConstants.AllMembersFullHierarchyFlags);
+                BuildMemberKindCache<MethodData>(visibleMethods, ReflectionConstants.AllMembersFullHierarchyFlags);
             }
 
             return _explicitInterfaceMethods!;
@@ -968,8 +931,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_fields is null)
             {
-                FieldInfo[] visibleFields = Type.GetFields(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                BuildAndEnumerateMemberKindCache<FieldData>(visibleFields, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                FieldInfo[] visibleFields = Type.GetFields(ReflectionConstants.AllMembersFullHierarchyFlags);
+                BuildMemberKindCache<FieldData>(visibleFields, ReflectionConstants.AllMembersFullHierarchyFlags);
             }
 
             return _fields!;
@@ -994,8 +957,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_events is null)
             {
-                EventInfo[] visibleEvents = Type.GetEvents(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                BuildAndEnumerateMemberKindCache<EventData>(visibleEvents, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                EventInfo[] visibleEvents = Type.GetEvents(ReflectionConstants.AllMembersFullHierarchyFlags);
+                BuildMemberKindCache<EventData>(visibleEvents, ReflectionConstants.AllMembersFullHierarchyFlags);
             }
 
             return _events!;
@@ -1007,8 +970,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_explicitInterfaceEvents is null)
             {
-                EventInfo[] visibleEvents = Type.GetEvents(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                BuildAndEnumerateMemberKindCache<EventData>(visibleEvents, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                EventInfo[] visibleEvents = Type.GetEvents(ReflectionConstants.AllMembersFullHierarchyFlags);
+                BuildMemberKindCache<EventData>(visibleEvents, ReflectionConstants.AllMembersFullHierarchyFlags);
             }
 
             return _explicitInterfaceEvents!;
@@ -1032,8 +995,8 @@ internal class TypeData : SymbolInfoData
         {
             if (_constructors is null)
             {
-                ConstructorInfo[] visibleConstructors = Type.GetConstructors(ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
-                BuildAndEnumerateMemberKindCache<ConstructorData>(visibleConstructors, ReflectionHelperExtensions.AllMembersFullHierarchyFlags);
+                ConstructorInfo[] visibleConstructors = Type.GetConstructors(ReflectionConstants.AllMembersFullHierarchyFlags);
+                BuildMemberKindCache<ConstructorData>(visibleConstructors, ReflectionConstants.AllMembersFullHierarchyFlags);
             }
 
             return _constructors!;

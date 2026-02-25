@@ -61,21 +61,21 @@ internal class FieldListBuilder : SymbolDataListBuilder<FieldData>, IFieldListBu
         return fields.ToFieldList(declaringTypeData);
     }
 
-    internal static FieldList Create(TypeData declaringTypeData)
+    internal static FieldList Create(TypeData declaringTypeData, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringTypeData);
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    internal static FieldList Create(Type declaringType)
+    internal static FieldList Create(Type declaringType, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringType);
 
         TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    private static FieldList CreateInternal(TypeData declaringTypeData) => declaringTypeData.EnumerateFields().ToFieldList(declaringTypeData);
+    private static FieldList CreateInternal(TypeData declaringTypeData, MemberEnumerationRule enumerationRule) => declaringTypeData.EnumerateFields(enumerationRule).ToFieldList(declaringTypeData);
 
     IFieldListBuilder IFieldListBuilder.Add(FieldData fieldData)
     {
@@ -115,11 +115,4 @@ internal static class FieldListBuilderExtensions
             ? FieldListView.Empty
             : new FieldListView(items.Select(item => item), declaringType);
     }
-
-    /// <summary>
-    /// Returns an empty <see cref="FieldList"/> if the provided instance is <see langword="null"/>.
-    /// </summary>
-    /// <param name="items"></param>
-    /// <returns>A <see cref="FieldList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    public static FieldList OrEmpty(this FieldList items) => items ?? FieldList.Empty;
 }

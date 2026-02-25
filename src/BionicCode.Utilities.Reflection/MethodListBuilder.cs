@@ -19,7 +19,7 @@ internal class MethodListBuilder : SymbolDataListBuilder<MethodData>, IMethodLis
 
     private MethodListBuilder(TypeData declaringType) : base(declaringType.Handle) => _declaringType = declaringType;
 
-    public static IMethodListBuilder New(TypeData declaringType)
+    public static IMethodListBuilder New(TypeData declaringType, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType);
         var builder = new MethodListBuilder(declaringType);
@@ -57,20 +57,20 @@ internal class MethodListBuilder : SymbolDataListBuilder<MethodData>, IMethodLis
         return methods.ToMethodList(declaringTypeData);
     }
 
-    internal static MethodList Create(TypeData declaringTypeData)
+    internal static MethodList Create(TypeData declaringTypeData, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringTypeData);
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    internal static MethodList Create(Type declaringType)
+    internal static MethodList Create(Type declaringType, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringType);
         TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    private static MethodList CreateInternal(TypeData declaringTypeData) => declaringTypeData.EnumerateMethods().ToMethodList(declaringTypeData);
+    private static MethodList CreateInternal(TypeData declaringTypeData, MemberEnumerationRule enumerationRule) => declaringTypeData.EnumerateMethods(enumerationRule).ToMethodList(declaringTypeData);
 
     TypeData IMethodListBuilder.DeclaringType => _declaringType;
 
@@ -114,11 +114,4 @@ internal static class MethodListBuilderExtensions
             ? MethodListView.Empty
             : new MethodListView(items.Select(item => item), declaringType);
     }
-
-    /// <summary>
-    /// Returns an empty <see cref="MethodList"/> if the provided instance is <see langword="null"/>.
-    /// </summary>
-    /// <param name="items"></param>
-    /// <returns>A <see cref="MethodList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    public static MethodList OrEmpty(this MethodList items) => items ?? MethodList.Empty;
 }

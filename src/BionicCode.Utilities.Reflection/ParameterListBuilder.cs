@@ -153,11 +153,4 @@ internal static class ParameterListBuilderExtensions
             ? ParameterListView.Empty
             : new ParameterListView(items.Select(item => item), declaringMember);
     }
-
-    /// <summary>
-    /// Returns an empty <see cref="ParameterList"/> if the provided instance is <see langword="null"/>.
-    /// </summary>
-    /// <param name="items"></param>
-    /// <returns>A <see cref="ParameterList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    internal static ParameterList OrEmpty(this ParameterList items) => items ?? ParameterList.Empty;
 }

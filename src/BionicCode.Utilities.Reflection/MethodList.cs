@@ -151,12 +151,96 @@ internal sealed class MethodList : IReadOnlyList<MethodData>, ICollection, IEmpt
             }
 
             if (methodParameters is null
-                || ParameterListEqualityComparer.Equals(methodParameters, method.Parameters) is EqualityComparisonResult.False)
+                || ParameterListEqualityComparer.Equals(methodParameters, method.Parameters) is EqualityComparisonResult.True or EqualityComparisonResult.TrueButAmbiguous)
             {
-                continue;
+                results.Add(method);
             }
+        }
 
-            results.Add(method);
+        methodData = results.FirstOrDefault();
+        return results.Count switch
+        {
+            0 => MemberLookupState.NotFound,
+            1 => MemberLookupState.Found,
+            _ => MemberLookupState.Ambiguous
+        };
+    }
+
+    /// <summary>
+    /// Gets the method data for the method with the specified name and parameter signature.
+    /// </summary>
+    /// <param name="methodName">The name of the method to retrieve. This value is case-sensitive.</param>
+    /// <param name="genericMethodParameters">Optional. A <see cref="TypeList"/> of generic method parameter types that describe the expected generic parameters for the method. Should be <see langword="null"/> or empty if the method is not generic. If the method is a generic method, consider providing the expected generic parameters to disambiguate the method.</param>
+    /// <param name="methodParameters">Optional. A <see cref="ParameterDescriptorList"/> of parameter information objects that describe the expected parameter types, positions, and modifiers for the method signature. Should be <see langword="null"/> or empty if method is parameterless. If the method has parameters, consider providing the expected parameters to disambiguate the method.</param>
+    /// <param name="methodData">When this method returns, contains the method data that matches the specified name and parameter signature, if found; otherwise, null.</param>
+    /// <returns>A <see cref="MemberLookupState"/> value indicating the result of the method lookup.</returns>
+    public MemberLookupState TryGetMethod(string? methodName, TypeList? genericMethodParameters, ParameterList? methodParameters, out MethodData? methodData)
+    {
+        methodData = null;
+
+        if (IsEmpty)
+        {
+            return MemberLookupState.SourceEmpty;
+        }
+
+        if (string.IsNullOrWhiteSpace(methodName) && methodParameters is null && genericMethodParameters is null)
+        {
+            return MemberLookupState.Ambiguous;
+        }
+
+        if (_methodNameIndex == null)
+        {
+            throw new InvalidOperationException("Internal method index is not initialized.");
+        }
+
+        ImmutableList<MethodData> methods = Methods;
+        if (!string.IsNullOrWhiteSpace(methodName))
+        {
+            methods = _methodNameIndex[methodName].ToImmutableList();
+            if ((methodParameters is null || methodParameters.IsEmpty)
+                && (genericMethodParameters is null || genericMethodParameters.IsEmpty))
+            {
+                if (methods.Count == 1)
+                {
+                    methodData = methods[0];
+                    return MemberLookupState.Found;
+                }
+
+                if (methods.IsEmpty)
+                {
+                    return MemberLookupState.NotFound;
+                }
+
+                if (methods.Count > 1)
+                {
+                    return MemberLookupState.Ambiguous;
+                }
+            }
+        }
+
+        var results = new List<MethodData>(methods.Count);
+        foreach (MethodData method in methods)
+        {
+            bool isTargetMethodGeneric = genericMethodParameters is not null
+                && genericMethodParameters.HasItems;
+            if (isTargetMethodGeneric)
+            {
+                if (!method.IsGenericMethod)
+                {
+                    continue;
+                }
+
+                if (!method.GenericMethodParameters.Equals(genericMethodParameters))
+                {
+                    continue;
+                }
+            }
+            
+            if (methodParameters is null
+                || methodParameters.Equals(method.Parameters))
+            {
+                results.Add(method);
+            }
         }
 
         methodData = results.FirstOrDefault();
@@ -402,12 +486,10 @@ public sealed class MethodListView : IReadOnlyList<IMethodDataView>, ICollection
             }
 
             if (methodParameters is null
-                || ParameterListEqualityComparer.Equals(methodParameters, method.Parameters) is EqualityComparisonResult.False)
+                || ParameterListEqualityComparer.Equals(methodParameters, method.Parameters) is EqualityComparisonResult.True or EqualityComparisonResult.TrueButAmbiguous)
             {
-                continue;
+                results.Add(method);
             }
-
-            results.Add(method);
         }
 
         methodDataView = results.FirstOrDefault();

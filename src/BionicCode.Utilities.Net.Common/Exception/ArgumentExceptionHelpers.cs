@@ -302,7 +302,7 @@ public class ArgumentExceptionAdvanced : ArgumentException
                 string exceptionMessage = message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(
                     targetEvent,
                     clientHandlerMethod,
-                    $"The parameter '{paramName}' is incompatible with the event {eventType.ToFullyQualifiedSignatureName()}. Reason: Unable to cast parameter of type '{eventDelegateParameterType.ToFullyQualifiedSignatureName()}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.ToFullyQualifiedSignatureName()}' of the event handler.");
+                    $"The parameter '{paramName}' is incompatible with the event {eventType.FullName}. Reason: Unable to cast parameter of type '{eventDelegateParameterType.ToFullyQualifiedSignatureName()}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.ToFullyQualifiedSignatureName()}' of the event handler.");
                 throw new EventHandlerMismatchException(exceptionMessage);
             }
         }
@@ -323,7 +323,7 @@ public class ArgumentExceptionAdvanced : ArgumentException
     /// message is used.</param>
     /// <exception cref="EventHandlerMismatchException">Thrown if the event handler delegate does not match the target event's signature, such as parameter count or
     /// type incompatibility.</exception>
-    internal static void ThrowIfEventHandlerNotAssignable([NotNull] Delegate clientHandler, [NotNull] EventData targetEvent, [CallerArgumentExpression(nameof(clientHandler))] string? paramName = null, string? message = null)
+    internal static void ThrowIfEventHandlerNotAssignable([NotNull] Delegate clientHandler, [NotNull] IEventDataView targetEvent, [CallerArgumentExpression(nameof(clientHandler))] string? paramName = null, string? message = null)
     {
         // TODO::Make this method public (requires EventData to be public too)
 
@@ -355,7 +355,7 @@ public class ArgumentExceptionAdvanced : ArgumentException
                 string exceptionMessage = message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(
                     targetEvent.GetEventInfo(),
                     clientHandlerMethod,
-                    $"The parameter '{paramName}' is incompatible with the event {targetEvent.FullyQualifiedSignature}. Reason: Unable to cast parameter of type '{eventDelegateParameterType.ToFullyQualifiedSignatureName()}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.ToFullyQualifiedSignatureName()}' of the event handler.");
+                    $"The parameter '{paramName}' is incompatible with the event {targetEvent.FullyQualifiedSignature}. Reason: Unable to cast parameter of type '{eventDelegateParameterType.FullName}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.ToFullyQualifiedSignatureName()}' of the event handler.");
                 throw new EventHandlerMismatchException(exceptionMessage);
             }
         }

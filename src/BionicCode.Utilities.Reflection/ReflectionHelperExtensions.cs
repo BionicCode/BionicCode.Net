@@ -19,24 +19,6 @@ public static partial class ReflectionHelperExtensions
 {
     private const string ParameterSeparator = ", ";
 
-    /// <summary>
-    /// Specifies binding flags that include all instance and static members, regardless of visibility, declared
-    /// only on the current targetType.
-    /// </summary>
-    /// <remarks>This combination of flags is typically used when reflecting over a targetType to retrieve
-    /// all of its members, including public, non-public, static, and instance members, but excluding inherited
-    /// members from base types.</remarks>
-    internal const BindingFlags AllDeclaredMembersFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
-    /// <summary>
-    /// Specifies binding flags that include all instance and static members, both public and non-public, across the
-    /// entire inheritance hierarchy except for members inherited from System.Object.
-    /// </summary>
-    /// <remarks>This constant is intended for use with reflection methods that require a
-    /// comprehensive set of binding flags to access all members of a targetType, including those declared in base
-    /// classes. It does not include the DeclaredOnly flag, so inherited members are included. Members inherited
-    /// from System.Object may still be excluded depending on the reflection API used.</remarks>
-    internal const BindingFlags AllMembersFullHierarchyFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
-
     internal static CSharpCodeProvider CodeProvider { get; } = new CSharpCodeProvider();
     internal static Type IsReadOnlyAttributeType { get; } = typeof(IsReadOnlyAttribute);
 

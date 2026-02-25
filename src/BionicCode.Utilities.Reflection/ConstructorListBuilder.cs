@@ -19,7 +19,7 @@ internal class ConstructorListBuilder : SymbolDataListBuilder<ConstructorData>, 
 
     private ConstructorListBuilder(TypeData declaringType) : base(declaringType.Handle) => _declaringType = declaringType;
 
-    public static IConstructorListBuilder New(TypeData declaringType)
+    public static IConstructorListBuilder New(TypeData declaringType, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringType);
 
@@ -54,22 +54,22 @@ internal class ConstructorListBuilder : SymbolDataListBuilder<ConstructorData>, 
         return constructors.ToConstructorList(declaringType);
     }
 
-    internal static ConstructorList Create(TypeData declaringTypeData)
+    internal static ConstructorList Create(TypeData declaringTypeData, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringTypeData);
 
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    internal static ConstructorList Create(Type declaringType)
+    internal static ConstructorList Create(Type declaringType, MemberEnumerationRule enumerationRule)
     {
         ArgumentNullException.ThrowIfNull(declaringType);
 
         TypeData declaringTypeData = GetOrCreateCacheEntry(declaringType);
-        return CreateInternal(declaringTypeData);
+        return CreateInternal(declaringTypeData, enumerationRule);
     }
 
-    private static ConstructorList CreateInternal(TypeData declaringType) => declaringType.EnumerateConstructors().ToConstructorList(declaringType);
+    private static ConstructorList CreateInternal(TypeData declaringType, MemberEnumerationRule enumerationRule) => declaringType.EnumerateConstructors(enumerationRule).ToConstructorList(declaringType);
 
     TypeData IConstructorListBuilder.DeclaringType => _declaringType;
 
@@ -111,12 +111,4 @@ internal static class ConstructorListBuilderExtensions
             ? ConstructorListView.Empty
             : new ConstructorListView(items.Select(item => item), declaringType);
     }
-
-    /// <summary>
-    /// Returns an empty <see cref="ConstructorList"/> if the provided instance is <see langword="null"/>.
-    /// </summary>
-    /// <param name="items"></param>
-    /// <returns>A <see cref="ConstructorList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
-    public static ConstructorList OrEmpty(this ConstructorList items)
-        => items ?? ConstructorList.Empty;
 }

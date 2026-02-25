@@ -1,4 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net;
+
+using System.Reflection;
+
 /// <summary>
 /// Provides a set of constant string values that are commonly used in reflection scenarios, particularly when working with properties, indexers, events, delegates, and operator methods in .NET. These constants can be used to ensure consistency and avoid hardcoding string literals throughout the codebase when performing reflection operations or generating code dynamically.
 /// </summary>
@@ -87,4 +90,22 @@ public static class ReflectionConstants
     public const string IsExternalInitFullName = "System.Runtime.CompilerServices.IsExternalInit";
     public const string DynamicAttributeFullName = "System.Runtime.CompilerServices.DynamicAttribute";
     public const string ExtensionAttributeFullName = "System.Runtime.CompilerServices.ExtensionAttribute";
+
+    /// <summary>
+    /// Specifies binding flags that include all instance and static members, regardless of visibility, declared
+    /// only on the current targetType.
+    /// </summary>
+    /// <remarks>This combination of flags is typically used when reflecting over a targetType to retrieve
+    /// all of its members, including public, non-public, static, and instance members, but excluding inherited
+    /// members from base types.</remarks>
+    public const BindingFlags AllDeclaredMembersFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+    /// <summary>
+    /// Specifies binding flags that include all instance and static members, both public and non-public, across the
+    /// entire inheritance hierarchy except for members inherited from System.Object.
+    /// </summary>
+    /// <remarks>This constant is intended for use with reflection methods that require a
+    /// comprehensive set of binding flags to access all members of a targetType, including those declared in base
+    /// classes. It does not include the DeclaredOnly flag, so inherited members are included. Members inherited
+    /// from System.Object may still be excluded depending on the reflection API used.</remarks>
+    public const BindingFlags AllMembersFullHierarchyFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 }
