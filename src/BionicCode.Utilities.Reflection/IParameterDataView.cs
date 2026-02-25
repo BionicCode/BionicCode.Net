@@ -6,11 +6,11 @@ public interface IParameterDataView : ISymbolInfoDataView
     bool IsDefined(Type attributeType, bool inherit = false);
     bool HasOptionalCustomModifier(string modifierName);
     bool HasRequiredCustomModifier(string modifierName);
-    ITypeDataView DeclaringTypeData { get; }
+    ITypeDataView DeclaringType { get; }
     RuntimeTypeHandle DeclaringTypeHandle { get; }
     object? DefaultValue { get; }
     bool IsByRef { get; }
-    bool IsDynamic { get; } 
+    bool IsDynamic { get; }
     bool IsGeneric { get; }
     bool IsGenericMethodParameter { get; }
     bool IsGenericTypeParameter { get; }
@@ -26,11 +26,11 @@ public interface IParameterDataView : ISymbolInfoDataView
     bool IsRef { get; }
     bool IsRefReadOnly { get; }
     bool IsSetterValueParameter { get; }
-    IParameterizedMemberDataView MemberData { get; }
+    IParameterizedMemberDataView Member { get; }
     ParameterModifier ParameterModifier { get; }
-    ITypeDataView ParameterTypeData { get; }
+    ITypeDataView ParameterType { get; }
     RuntimeTypeHandle ParameterTypeHandle { get; }
     int Position { get; }
-    TypeList RequiredModifiers { get; }
-    TypeList OptionalModifiers { get; }
+    ITypeListView RequiredModifiers { get; }
+    ITypeListView OptionalModifiers { get; }
 }

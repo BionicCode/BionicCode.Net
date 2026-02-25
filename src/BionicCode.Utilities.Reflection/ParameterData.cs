@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -18,7 +19,7 @@ using System.Runtime.CompilerServices;
 internal sealed class ParameterData : SymbolInfoData
 {
     private SymbolAttributes _symbolAttributes;
-    private IList<CustomAttributeData>? _attributeData;
+    private ImmutableList<CustomAttributeData>? _attributeData;
     private bool? _isRef;
     private bool? _isRefReadOnly;
     private bool? _isByRef;
@@ -191,7 +192,7 @@ internal sealed class ParameterData : SymbolInfoData
 
     internal TypeData DeclaringTypeData => _declaringTypeData ??= MemberData.DeclaringTypeData;
 
-    internal override IList<CustomAttributeData> AttributeData => _attributeData ??= [.. ParameterInfo.GetCustomAttributesData()];
+    internal override ImmutableList<CustomAttributeData> AttributeData => _attributeData ??= [.. ParameterInfo.GetCustomAttributesData()];
 
     /// <summary>
     /// Gets a value indicating whether the parameter is passed by reference (<see langword="in"/>, <see langword="out"/>, <see langword="ref"/> or <see langword="ref"/><see langword="readonly"/>).

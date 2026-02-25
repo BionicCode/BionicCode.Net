@@ -2,11 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 
 internal abstract class MemberData : SymbolInfoData
 {
-    private IList<CustomAttributeData>? _attributeData;
+    private ImmutableList<CustomAttributeData>? _attributeData;
     private TypeData? _declaringTypeData;
     private string? _namespace;
     private BindingFlags? _bindingFlagsVisibilityMask;
@@ -91,19 +92,43 @@ internal abstract class MemberData : SymbolInfoData
     internal abstract bool IsPublic { get; }
     internal abstract bool IsPrivate { get; }
     /// <summary>
-    /// Gets a value indicating whether the member has internal accessibility within its assembly.
+    /// Gets a value indicating whether the member has <see langword="internal"> accessibility within its assembly.
     /// </summary>
     internal abstract bool IsAssembly { get; }
     /// <summary>
-    /// Gets a value indicating whether the member is protected and thus accessible only within its own class or by
+    /// Gets a value indicating whether the member is <see langword="protected"> and thus accessible only within its own class or by
     /// derived class instances.
     /// </summary>
     internal abstract bool IsFamily { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the member is <see langword="protected"/> <see langword="public"/> (accessible either by derived classes or by any code within the
+    /// same assembly).
+    /// </summary>
+    /// <remarks>Use this property to determine if the member has 'protected internal' accessibility, meaning
+    /// it can be accessed from derived types regardless of assembly, as well as from any code within the same
+    /// assembly.</remarks>
     internal abstract bool IsFamilyOrAssembly { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the member is <see langword="private"/> <see langword="protected"/> (accessible only to derived classes within the same assembly).
+    /// </summary>
+    /// <remarks>Use this property to determine if the member has 'family and assembly' accessibility, meaning
+    /// it is accessible to types that derive from the declaring type, but only if those types are also in the same
+    /// assembly. This access level is more restrictive than 'protected internal' and is relevant when reflecting over
+    /// member visibility in inheritance scenarios.</remarks>
     internal abstract bool IsFamilyAndAssembly { get; }
     internal abstract AccessModifier AccessModifier { get; }
+
+    /// <summary>
+    /// Gets the binding flags that determine the visibility of members during reflection operations.
+    /// </summary>
+    /// <remarks>This property computes the visibility binding flags mask based on the current context, which
+    /// can affect how members are accessed through reflection. It is important to note that the visibility mask may
+    /// change depending on the context in which it is used.</remarks>
+    /// <value>The <see cref="BindingFlags"> that determine the visibility of members during reflection operations.</value>
     internal BindingFlags BindingFlagsVisibilityMask => _bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
 
     /// <inheritdoc/>
-    internal override IList<CustomAttributeData> AttributeData => _attributeData ??= [.. MemberInfo.GetCustomAttributesData()];
+    internal override ImmutableList<CustomAttributeData> AttributeData => _attributeData ??= [.. MemberInfo.GetCustomAttributesData()];
 }

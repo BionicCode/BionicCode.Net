@@ -1,7 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using BionicCode.Utilities.Net;
 using BionicCode.Utilities.Net.Reflection.Exceptions;
 
@@ -9,7 +8,7 @@ using BionicCode.Utilities.Net.Reflection.Exceptions;
     "Design",
     "CA1065:Do not raise exceptions in unexpected locations",
     Justification = "PropertyDataView is a live cache-backed view. After ALC unload, the underlying symbol is unavailable and the only correct behavior is to throw.")]
-internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
+internal sealed class PropertyDataView : MemberDataView, IPropertyDataView
 {
     internal PropertyDataView(SymbolReflectionInfoCacheKey cacheKey) : base(cacheKey)
     { }
@@ -160,7 +159,7 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// </remarks>
     /// <value><see langword="true"/> if the property is an indexer; otherwise, <see langword="false"/>.</value>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    public bool IsIndexer => GetPropertyDataOrThrow().IsIndexer;
+    public new bool IsIndexer => GetPropertyDataOrThrow().IsIndexer;
 
     /// <summary>
     /// Attempts to retrieve a value indicating whether the associated property is an indexer.
@@ -170,7 +169,7 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// <para/>Use the property <see cref="IsIndexer"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
     /// <param name="isIndexer">When this method returns successfully, contains a value indicating whether the property is an indexer.</param>
     /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
-    public bool TryGetIsIndexer(out bool isIndexer)
+    public new bool TryGetIsIndexer(out bool isIndexer)
     {
         if (TryGetPropertyData(out PropertyData? propertyData))
         {
@@ -270,7 +269,8 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// the <paramref name="isReadOnly"/> parameter is set to its default value and the method returns <see langword="false"/>.
     /// <para/>Use the property <see cref="IsReadOnly"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
     /// <param name="isReadOnly">When this method returns successfully, contains a value indicating whether the property is read-only.
-    /// <br/>The value is <see langword="true"/> if the property is read-only (which is when <see cref="CanRead"/> returns <see langword="true"/> and <see cref="CanWrite"/> returns <see langword="false"/>); otherwise, <see langword="false"/>.</param>
+    /// <br/>The value is <see langword="true"/> if the property is read-only (which is when <see cref="CanRead"/> returns <see langword="true"/> 
+    /// and <see cref="CanWrite"/> returns <see langword="false"/>); otherwise, <see langword="false"/>.</param>
     /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
     public bool TryGetIsReadOnly(out bool isReadOnly)
     {
@@ -330,9 +330,9 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// <para/>To avoid the exception, use <see cref="TryGetPropertyGetMethodData(out IMethodDataView?)"/> which returns a boolean indicating success or failure instead of throwing.
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    /// <exception cref="NotSupportedException">Thrown if the property does not have a get method.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the property does not have a get method.</exception>
     /// <value><see cref="IMethodDataView"/> representing the get method of the property".</value>
-    public IMethodDataView PropertyGetMethodData => GetPropertyDataOrThrow() is PropertyData propertyData && propertyData.CanRead
+    public IMethodDataView PropertyGetMethod => GetPropertyDataOrThrow() is PropertyData propertyData && propertyData.CanRead
         ? propertyData.PropertyGetMethodData.View
         : throw new InvalidOperationException($"The property '{GetPropertyDataOrThrow().FullyQualifiedSignature}' does not have a getter.");
 
@@ -341,9 +341,10 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// </summary>
     /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
     /// the <paramref name="getMethodData"/> parameter is set to its default value and the method returns <see langword="false"/>.
-    /// <para/>Use the property <see cref="PropertyGetMethodData"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <para/>Use the property <see cref="PropertyGetMethod"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
     /// <param name="getMethodData">When this method returns successfully, contains the get method of the property.
-    /// <br/>The value is <see langword="true"/> if the property is sealed.</param>
+    /// <br/>The value is <see langword="true"/> if the property is sealed.
+    /// <br/>If this method succeeds (which is when the return value is <see langword="true"/>) then <paramref name="getMethodData"/> is guaranteed to never be <see langword="null".</param>
     /// <returns>Returns <see langword="true"/> if the property has a getter and the data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
     public bool TryGetPropertyGetMethodData(out IMethodDataView? getMethodData)
     {
@@ -368,9 +369,9 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// <para/>To avoid the exception, use <see cref="TryGetPropertySetMethodData(out IMethodDataView?)"/> which returns a boolean indicating success or failure instead of throwing.
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    /// <exception cref="NotSupportedException">Thrown if the property does not have a set method.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the property does not have a set method.</exception>
     /// <value><see cref="IMethodDataView"/> representing the set method of the property.</value>
-    public IMethodDataView PropertySetMethodData => GetPropertyDataOrThrow() is PropertyData propertyData && propertyData.CanWrite
+    public IMethodDataView PropertySetMethod => GetPropertyDataOrThrow() is PropertyData propertyData && propertyData.CanWrite
         ? propertyData.PropertySetMethodData.View
         : throw new InvalidOperationException($"The property '{GetPropertyDataOrThrow().FullyQualifiedSignature}' does not have a setter.");
 
@@ -379,8 +380,9 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// </summary>
     /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
     /// the <paramref name="setMethodData"/> parameter is set to its default value and the method returns <see langword="false"/>.
-    /// <para/>Use the property <see cref="PropertySetMethodData"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <para/>Use the property <see cref="PropertySetMethod"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
     /// <param name="setMethodData">When this method returns successfully, contains the set method of the property.
+    /// <br/>If this method succeeds (which is when the return value is <see langword="true"/>) then <paramref name="setMethodData"/> is guaranteed to never be <see langword="null".</param>
     /// <returns>Returns <see langword="true"/> if the property has a setter and the data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
     public bool TryGetPropertySetMethodData(out IMethodDataView? setMethodData)
     {
@@ -405,7 +407,7 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// <para/>To avoid the exception, use <see cref="TryGetPropertyGetMethodParameters(out IParameterListView?)"/> which returns a boolean indicating success or failure instead of throwing.
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    /// <exception cref="NotSupportedException">Thrown if the property does not have a set method.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the property does not have a set method.</exception>
     /// <value><see cref="IParameterListView"/> representing the parameters of the property's get method. Will be empty for indexer getters.</value>
     public IParameterListView PropertyGetMethodParameters => GetPropertyDataOrThrow() is PropertyData propertyData && propertyData.CanRead
         ? propertyData.PropertyGetMethodParameters.View
@@ -416,8 +418,9 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// </summary>
     /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
     /// the <paramref name="getMethodParameterListView"/> parameter is set to its default value and the method returns <see langword="false"/>.
-    /// <para/>Use the property <see cref="PropertySetMethodData"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <para/>Use the property <see cref="PropertyGetMethodParameters"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
     /// <param name="getMethodParameterListView">When this method returns successfully, contains the property's get method parameters. The collection will be empty for indexer getters.
+    /// <br/>If this method succeeds (which is when the return value is <see langword="true"/>) then <paramref name="getMethodParameterListView"/> is guaranteed to never be <see langword="null".</param>
     /// <returns>Returns <see langword="true"/> if the property has a parameterized getter (indexer property) and the data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
     public bool TryGetPropertyGetMethodParameters(out IParameterListView? getMethodParameterListView)
     {
@@ -442,7 +445,7 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// <para/>To avoid the exception, use <see cref="TryGetPropertySetMethodParameters(out IParameterListView?)"/> which returns a boolean indicating success or failure instead of throwing.
     /// </remarks>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    /// <exception cref="NotSupportedException">Thrown if the property does not have a set method.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the property does not have a set method.</exception>
     /// <value><see cref="IParameterListView"/> representing the parameters of the property's set method.</value>
     public IParameterListView PropertySetMethodParameters => GetPropertyDataOrThrow() is PropertyData propertyData && propertyData.CanWrite
         ? propertyData.PropertySetMethodParameters.View
@@ -453,8 +456,9 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
     /// </summary>
     /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
     /// the <paramref name="setMethodParameterListView"/> parameter is set to its default value and the method returns <see langword="false"/>.
-    /// <para/>Use the property <see cref="PropertySetMethodData"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <para/>Use the property <see cref="PropertySetMethodParameters"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
     /// <param name="setMethodParameterListView">When this method returns successfully, contains the property's set method parameters.
+    /// <br/>If this method succeeds (which is when the return value is <see langword="true"/>) then <paramref name="setMethodParameterListView"/> is guaranteed to never be <see langword="null".</param>
     /// <returns>Returns <see langword="true"/> if the the data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
     public bool TryGetPropertySetMethodParameters(out IParameterListView? setMethodParameterListView)
     {
@@ -469,21 +473,54 @@ internal class PropertyDataView : SymbolInfoDataView, IPropertyDataView
             return false;
         }
     }
-    public ITypeDataView PropertyTypeData { get; }
-    public AccessModifier AccessModifier { get; }
-    public BindingFlags BindingFlagsVisibilityMask { get; }
-    public ITypeDataView DeclaringType { get; }
-    public RuntimeTypeHandle DeclaringTypeHandle { get; }
-    public RuntimeTypeHandle ImplementingTypeHandle { get; }
-    public ITypeDataView ImplementingTypData { get; }
-    public bool IsAssembly { get; }
-    public bool IsExplicitInterfaceImplementation { get; }
-    public bool IsFamily { get; }
-    public bool IsFamilyAndAssembly { get; }
-    public bool IsFamilyOrAssembly { get; }
-    public bool IsPrivate { get; }
-    public bool IsPublic { get; }
-    public bool IsStatic { get; }
+
+    /// <summary>
+    /// Returns <see cref="ITypeDataView"/> representing the property's type.
+    /// </summary>
+    /// <remarks>
+    /// This property throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetPropertyTypeData(out ITypeDataView?)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    /// <value><see cref="ITypeDataView"/> representing the property's type.</value>
+    public ITypeDataView PropertyType => GetPropertyDataOrThrow().PropertyTypeData.View;
+
+    /// <summary>
+    /// Attempts to retrieve the property's type data.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded, 
+    /// the <paramref name="propertyTypeDataView"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use the property <see cref="PropertyType"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="propertyTypeDataView">When this method returns successfully, contains the property's type data. 
+    /// <br/>If this method succeeds (which is when the return value is <see langword="true"/>) then <paramref name="propertyTypeDataView"/> is guaranteed to never be <see langword="null".</param>
+    /// <returns>Returns <see langword="true"/> if the the data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetPropertyTypeData(out ITypeDataView? propertyTypeDataView)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyTypeDataView = propertyData!.PropertyTypeData.View;
+            return true;
+        }
+        else
+        {
+            propertyTypeDataView = default;
+            return false;
+        }
+    }
+
+    public new ITypeDataView DeclaringType { get; }
+    public new RuntimeTypeHandle DeclaringTypeHandle { get; }
+    public new RuntimeTypeHandle ImplementingTypeHandle { get; }
+    public new ITypeDataView ImplementingType { get; }
+    public new bool IsAssembly { get; }
+    public new bool IsExplicitInterfaceImplementation { get; }
+    public new bool IsFamily { get; }
+    public new bool IsFamilyAndAssembly { get; }
+    public new bool IsFamilyOrAssembly { get; }
+    public new bool IsPrivate { get; }
+    public new bool IsPublic { get; }
+    public new bool IsStatic { get; }
 
     public object? GetIndexerValue(object? target, object?[] indexerPropertyParameters) => throw new NotImplementedException();
     public TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indexerPropertyParameters) => throw new NotImplementedException();

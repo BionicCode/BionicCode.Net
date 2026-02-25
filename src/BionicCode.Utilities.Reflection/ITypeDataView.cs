@@ -6,23 +6,23 @@ using BionicCode.Utilities.Net;
 public interface ITypeDataView : ISymbolInfoDataView
 {
     AccessModifier AccessModifier { get; }
-    ITypeDataView? BaseTypeData { get; }
+    ITypeDataView? BaseType { get; }
     bool CanDeclareExtensionMethod { get; }
     SymbolComponentInfo CompactSymbolComponentInfo { get; }
     IConstructorListView Constructors { get; }
     bool ContainsGenericParameters { get; }
-    IMethodDataView DelegateInvokeMethodData { get; }
+    IMethodDataView DelegateInvokeMethod { get; }
     IEventListView Events { get; }
     IEventListView ExplicitInterfaceEvents { get; }
     IMethodListView ExplicitInterfaceMethods { get; }
     IPropertyListView ExplicitInterfaceProperties { get; }
     IFieldListView Fields { get; }
     GenericParameterAttributes GenericParameterAttributes { get; }
-    ITypeListView GenericParameterConstraintsData { get; }
+    ITypeListView GenericParameterConstraints { get; }
     ITypeListView GenericTypeArguments { get; }
-    ITypeDataView GenericTypeDefinitionData { get; }
+    ITypeDataView GenericTypeDefinition { get; }
     RuntimeTypeHandle Handle { get; }
-    ITypeListView InterfacesData { get; }
+    ITypeListView Interfaces { get; }
     bool IsAbstract { get; }
     bool IsAwaitable { get; }
     bool IsAwaitableTask { get; }
@@ -57,27 +57,22 @@ public interface ITypeDataView : ISymbolInfoDataView
     IMethodListView Methods { get; }
     IPropertyListView Properties { get; }
 
-    IEnumerable<ConstructorData> EnumerateConstructors(BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-    IEnumerable<EventData> EnumerateEvents(BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-    IEnumerable<FieldData> EnumerateFields(BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-    IEnumerable<MethodData> EnumerateMethods(BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-    IEnumerable<PropertyData> EnumerateProperties(BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-    bool TryGetConstructorByParameterList(ParameterDescriptorList parameters, out ConstructorData? constructorData);
-    bool TryGetConstructorByParameterList(ParameterList parameters, out ConstructorData? constructorData);
-    bool TryGetEventByName(string eventName, out EventData? eventData);
-    bool TryGetExplicitInterfaceEvent(RuntimeTypeHandle declaringInterfaceTypeHandle, string eventName, out EventData? eventData);
-    bool TryGetExplicitInterfaceIndexerPropertyByParameterList(ParameterDescriptorList indexerParameters, PropertyAccessors indexerPropertyAccessor, out PropertyData? propertyData);
-    bool TryGetExplicitInterfaceIndexerPropertyByParameterList(ParameterList parameters, PropertyAccessors propertyAccessor, out PropertyData? propertyData);
-    bool TryGetExplicitInterfaceMethod(string methodName, TypeList genericMethodParameters, ParameterDescriptorList parameters, out MethodData? methodData);
-    bool TryGetExplicitInterfaceMethod(string methodName, TypeList genericMethodParameters, ParameterList parameters, out MethodData? methodData);
-    bool TryGetExplicitInterfacePropertyByName(string propertyName, out PropertyData? propertyData);
-    bool TryGetFieldByName(string fieldName, out FieldData? fieldData);
-    bool TryGetIndexerPropertyByParameterList(ParameterDescriptorList indexerParameters, PropertyAccessors indexerPropertyAccessor, out PropertyData? propertyData);
-    bool TryGetIndexerPropertyByParameterList(ParameterList parameters, PropertyAccessors propertyAccessor, out PropertyData? propertyData);
-    bool TryGetMethod(string methodName, TypeList genericMethodParameters, ParameterDescriptorList parameters, out MethodData? methodData);
-    bool TryGetMethod(string methodName, TypeList genericMethodParameters, ParameterList parameters, out MethodData? methodData);
-    bool TryGetMethodByName(string methodName, out MethodList? methods);
-    bool TryGetPropertyByName(string propertyName, out PropertyData? propertyData);
+    IEnumerable<IConstructorDataView> EnumerateConstructors(MemberEnumerationRule enumerationRule);
+    IEnumerable<IEventDataView> EnumerateEvents(MemberEnumerationRule enumerationRule);
+    IEnumerable<IFieldDataView> EnumerateFields(MemberEnumerationRule enumerationRule);
+    IEnumerable<IMethodDataView> EnumerateMethods(MemberEnumerationRule enumerationRule);
+    IEnumerable<IPropertyDataView> EnumerateProperties(MemberEnumerationRule enumerationRule);
+    bool TryGetConstructorByParameterList(ParameterDescriptorList parameters, out IConstructorDataView? constructorData);
+    bool TryGetEventByName(string eventName, out IEventDataView? eventData);
+    bool TryGetExplicitInterfaceEvent(RuntimeTypeHandle declaringInterfaceTypeHandle, string eventName, out IEventDataView? eventData);
+    bool TryGetExplicitInterfaceIndexerPropertyByParameterList(ParameterDescriptorList indexerParameters, PropertyAccessors indexerPropertyAccessor, out IPropertyDataView? propertyData);
+    bool TryGetExplicitInterfaceMethod(string methodName, ITypeListView? genericMethodParameters, ParameterDescriptorList? parameters, out IMethodDataView? methodData);
+    bool TryGetExplicitInterfacePropertyByName(string propertyName, out IPropertyDataView? propertyData);
+    bool TryGetFieldByName(string fieldName, out IFieldDataView? fieldData);
+    bool TryGetIndexerPropertyByParameterList(ParameterDescriptorList indexerParameters, PropertyAccessors indexerPropertyAccessor, out IPropertyDataView? propertyData);
+    bool TryGetMethod(string methodName, ITypeListView? genericMethodParameters, ParameterDescriptorList? parameters, out IMethodDataView? methodData);
+    bool TryGetMethodByName(string methodName, out IMethodListView? methods);
+    bool TryGetPropertyByName(string propertyName, out IPropertyDataView? propertyData);
     object? InvokeDelegate(object? target, params object?[]? arguments);
     TResult InvokeDelegate<TTarget, TResult>(TTarget target, params object?[]? arguments);
 }

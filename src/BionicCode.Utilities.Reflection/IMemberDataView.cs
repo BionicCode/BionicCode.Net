@@ -11,7 +11,7 @@ public interface IMemberDataView : ISymbolInfoDataView
     ITypeDataView DeclaringType { get; }
     RuntimeTypeHandle DeclaringTypeHandle { get; }
     RuntimeTypeHandle ImplementingTypeHandle { get; }
-    ITypeDataView ImplementingTypData { get; }
+    ITypeDataView ImplementingType { get; }
     bool IsAssembly { get; }
     bool IsExplicitInterfaceImplementation { get; }
     bool IsFamily { get; }

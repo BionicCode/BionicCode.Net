@@ -240,7 +240,7 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
             }
 
             if (methodParameterDescriptor.HasParameterizedSymbolKind
-                && parameterDataView.MemberData.ParameterizedSymbolKind != methodParameterDescriptor.ParameterizedSymbolKind)
+                && parameterDataView.Member.ParameterizedSymbolKind != methodParameterDescriptor.ParameterizedSymbolKind)
             {
                 return EqualityComparisonResult.False;
             }
@@ -309,7 +309,7 @@ internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>,
             }
 
             if (methodParameterDescriptor.HasParameterizedSymbolKind
-                && parameterDataView.MemberData.ParameterizedSymbolKind != methodParameterDescriptor.ParameterizedSymbolKind)
+                && parameterDataView.Member.ParameterizedSymbolKind != methodParameterDescriptor.ParameterizedSymbolKind)
             {
                 return EqualityComparisonResult.False;
             }

@@ -12,11 +12,11 @@ public interface IPropertyDataView : IMemberDataView, ISymbolInfoDataView
     bool IsOverride { get; }
     bool IsReadOnly { get; }
     bool IsSealed { get; }
-    IMethodDataView PropertyGetMethodData { get; }
+    IMethodDataView PropertyGetMethod { get; }
     IParameterListView PropertyGetMethodParameters { get; }
-    IMethodDataView PropertySetMethodData { get; }
+    IMethodDataView PropertySetMethod { get; }
     IParameterListView PropertySetMethodParameters { get; }
-    ITypeDataView PropertyTypeData { get; }
+    ITypeDataView PropertyType { get; }
     AccessModifier SetAccessorAccessModifier { get; }
 
     object? GetIndexerValue(object? target, object?[] indexerPropertyParameters);

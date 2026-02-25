@@ -4,13 +4,13 @@ using System;
 
 public interface IEventDataView : IMemberDataView, ISymbolInfoDataView
 {
-    IMethodDataView AddMethodData { get; }
     bool CanAdd { get; }
     bool CanRemove { get; }
-    ITypeDataView EventHandlerTypeData { get; }
-    IMethodDataView EventInvokerMethodData { get; }
+    ITypeDataView EventHandlerType { get; }
+    IMethodDataView EventInvokerMethod { get; }
     bool IsOverride { get; }
-    IMethodDataView RemoveMethodData { get; }
+    IMethodDataView AddMethod { get; }
+    IMethodDataView RemoveMethod { get; }
 
     void AddEventHandler(object eventSource, Delegate handler);
     void AddEventHandler<TEventSource>(TEventSource eventSource, Delegate handler);

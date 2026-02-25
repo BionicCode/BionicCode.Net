@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
 using System;
+using System.Collections.Immutable;
 using System.Reflection;
 
 public class EventDataView : SymbolReflectionInfoCache.SymbolDataViewBase, IEventDataView
@@ -49,14 +50,15 @@ public class EventDataView : SymbolReflectionInfoCache.SymbolDataViewBase, IEven
     public SymbolAttributes SymbolAttributes { get; }
     SymbolAttributes ISymbolInfoDataView.SymbolAttributes { get; }
     private ITypeDataView DeclaringTypeDataView { get; }
-    public SymbolReflectionInfoCacheKey CacheKey { get; }
+    public new SymbolReflectionInfoCacheKey CacheKey { get; }
     public SymbolKind SymbolKind { get; }
-    public IMethodDataView AddMethodData { get; }
-    public ITypeDataView EventHandlerTypeData { get; }
-    public IMethodDataView EventInvokerMethodData { get; }
-    public IMethodDataView RemoveMethodData { get; }
+    public IMethodDataView AddMethod { get; }
+    public ITypeDataView EventHandlerType { get; }
+    public IMethodDataView EventInvokerMethod { get; }
+    public IMethodDataView RemoveMethod { get; }
     public ITypeDataView DeclaringType { get; }
-    public ITypeDataView ImplementingTypData { get; }
+    public ITypeDataView ImplementingType { get; }
+    ImmutableList<CustomAttributeData> ISymbolInfoDataView.AttributeData { get; }
 
     public void AddEventHandler(object eventSource, Delegate handler) => throw new NotImplementedException();
     public void AddEventHandler<TEventSource>(TEventSource eventSource, Delegate handler) => throw new NotImplementedException();

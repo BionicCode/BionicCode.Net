@@ -2,7 +2,7 @@
 
 public interface IFieldDataView : IMemberDataView, ISymbolInfoDataView
 {
-    ITypeDataView FieldTypeData { get; }
+    ITypeDataView FieldType { get; }
     RuntimeFieldHandle Handle { get; }
     bool IsConst { get; }
     bool IsInitOnly { get; }

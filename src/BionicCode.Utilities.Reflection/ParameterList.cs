@@ -286,9 +286,9 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IColl
 
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Parameters,
-                parameterData => !ReferenceEquals(parameterData.MemberData, declaringMember),
+                parameterData => !ReferenceEquals(parameterData.Member, declaringMember),
                 nameof(items),
-                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(IParameterDataView)}.{nameof(IParameterDataView.MemberData)}' declaring member handle. All parameters must belong to the same member of the same declaring type.");
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(IParameterDataView)}.{nameof(IParameterDataView.Member)}' declaring member handle. All parameters must belong to the same member of the same declaring type.");
         }
 
         _hashCode = ComputeHashCode();
@@ -319,9 +319,9 @@ public sealed class ParameterListView : IReadOnlyList<IParameterDataView>, IColl
 
             ArgumentExceptionAdvanced.ThrowIfAny(
                 Parameters,
-                parameterData => !ReferenceEquals(parameterData.MemberData, declaringMember),
+                parameterData => !ReferenceEquals(parameterData.Member, declaringMember),
                 nameof(items),
-                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(IParameterDataView)}.{nameof(IParameterDataView.MemberData)}' declaring member handle. All parameters must belong to the same member of the same declaring type.");
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(IParameterDataView)}.{nameof(IParameterDataView.Member)}' declaring member handle. All parameters must belong to the same member of the same declaring type.");
         }
 
         _hashCode = ComputeHashCode();

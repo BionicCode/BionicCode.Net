@@ -666,7 +666,7 @@ public static partial class ReflectionHelperExtensions
         ArgumentNullException.ThrowIfNull(clientHandler);
         ArgumentNullException.ThrowIfNull(eventDataView);
 
-        MethodData eventDelegateInvokeMethod = eventDataView.EventHandlerTypeData.DelegateInvokeMethodData;
+        MethodData eventDelegateInvokeMethod = eventDataView.EventHandlerType.DelegateInvokeMethod;
         ParameterList eventDelegateParameters = eventDelegateInvokeMethod.Parameters;
         MethodInfo eventHandlerMethod = clientHandler.Method;
         ParameterInfo[] clientHandlerParameters = eventHandlerMethod.GetParameters();
