@@ -1,13 +1,8 @@
 ﻿namespace BionicCode.Utilities.Net.Reflection;
 
-using System.Diagnostics.CodeAnalysis;
 using BionicCode.Utilities.Net;
 using BionicCode.Utilities.Net.Reflection.Exceptions;
 
-[SuppressMessage(
-    "Design",
-    "CA1065:Do not raise exceptions in unexpected locations",
-    Justification = "PropertyDataView is a live cache-backed view. After ALC unload, the underlying symbol is unavailable and the only correct behavior is to throw.")]
 internal sealed class PropertyDataView : MemberDataView, IPropertyDataView
 {
     internal PropertyDataView(SymbolReflectionInfoCacheKey cacheKey) : base(cacheKey)
@@ -159,7 +154,7 @@ internal sealed class PropertyDataView : MemberDataView, IPropertyDataView
     /// </remarks>
     /// <value><see langword="true"/> if the property is an indexer; otherwise, <see langword="false"/>.</value>
     /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
-    public new bool IsIndexer => GetPropertyDataOrThrow().IsIndexer;
+    public bool IsIndexer => GetPropertyDataOrThrow().IsIndexer;
 
     /// <summary>
     /// Attempts to retrieve a value indicating whether the associated property is an indexer.
@@ -169,7 +164,7 @@ internal sealed class PropertyDataView : MemberDataView, IPropertyDataView
     /// <para/>Use the property <see cref="IsIndexer"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
     /// <param name="isIndexer">When this method returns successfully, contains a value indicating whether the property is an indexer.</param>
     /// <returns>Returns <see langword="true"/> if the property data is still reachable in the environment and was successfully retrieved; otherwise, <see langword="false"/>.</returns>
-    public new bool TryGetIsIndexer(out bool isIndexer)
+    public bool TryGetIsIndexer(out bool isIndexer)
     {
         if (TryGetPropertyData(out PropertyData? propertyData))
         {
@@ -509,26 +504,13 @@ internal sealed class PropertyDataView : MemberDataView, IPropertyDataView
         }
     }
 
-    public new ITypeDataView DeclaringType { get; }
-    public new RuntimeTypeHandle DeclaringTypeHandle { get; }
-    public new RuntimeTypeHandle ImplementingTypeHandle { get; }
-    public new ITypeDataView ImplementingType { get; }
-    public new bool IsAssembly { get; }
-    public new bool IsExplicitInterfaceImplementation { get; }
-    public new bool IsFamily { get; }
-    public new bool IsFamilyAndAssembly { get; }
-    public new bool IsFamilyOrAssembly { get; }
-    public new bool IsPrivate { get; }
-    public new bool IsPublic { get; }
-    public new bool IsStatic { get; }
-
-    public object? GetIndexerValue(object? target, object?[] indexerPropertyParameters) => throw new NotImplementedException();
-    public TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indexerPropertyParameters) => throw new NotImplementedException();
-    public TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object[] indexerPropertyParameters) => throw new NotImplementedException();
-    public object? GetValue(object? target) => throw new NotImplementedException();
-    public TValue GetValue<TTarget, TValue>(TTarget target) => throw new NotImplementedException();
-    public void SetIndexerValue(object? target, object? value, object?[]? indexerPropertyIndex = null) => throw new NotImplementedException();
-    public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, object[]? indexerPropertyIndex = null) where TTarget : struct => throw new NotImplementedException();
-    public void SetValue(object? target, object? value) => throw new NotImplementedException();
-    public void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class => throw new NotImplementedException();
+    public object? GetIndexerValue(object? target, object?[] indexerPropertyParameters) => GetPropertyDataOrThrow().GetIndexerValue(target, indexerPropertyParameters);
+    public TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indexerPropertyParameters) => GetPropertyDataOrThrow().GetIndexerValue<TTarget, TValue, TIndex>(target, indexerPropertyParameters);
+    public TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object[] indexerPropertyParameters) => GetPropertyDataOrThrow().GetIndexerValue<TTarget, TValue>(target, indexerPropertyParameters);
+    public object? GetValue(object? target) => GetPropertyDataOrThrow().GetValue(target);
+    public TValue GetValue<TTarget, TValue>(TTarget target) => GetPropertyDataOrThrow().GetValue<TTarget, TValue>(target);
+    public void SetIndexerValue(object? target, object? value, object?[]? indexerPropertyIndex = null) => GetPropertyDataOrThrow().SetIndexerValue(target, value, indexerPropertyIndex);
+    public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, object[]? indexerPropertyIndex = null) where TTarget : struct => GetPropertyDataOrThrow().SetStructValue(ref target, value, indexerPropertyIndex);
+    public void SetValue(object? target, object? value) => GetPropertyDataOrThrow().SetValue(target, value);
+    public void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class => GetPropertyDataOrThrow().SetValue(target, value);
 }
