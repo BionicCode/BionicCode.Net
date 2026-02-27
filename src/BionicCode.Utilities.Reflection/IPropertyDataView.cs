@@ -19,13 +19,31 @@ public interface IPropertyDataView : IMemberDataView, ISymbolInfoDataView
     ITypeDataView PropertyType { get; }
     AccessModifier SetAccessorAccessModifier { get; }
 
-    object? GetIndexerValue(object? target, object?[] indexerPropertyParameters);
+    object? GetIndexerValue(object? target, params object?[] indexerPropertyParameters);
+    bool TryGetIndexerValue(object? target, out object? propertyValue, params object?[] indexerPropertyParameters);
     TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indexerPropertyParameters);
-    TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object[] indexerPropertyParameters);
+    bool TryGetIndexerValue<TTarget, TValue, TIndex>(TTarget target, out TValue propertyValue, params TIndex[] indexerPropertyParameters);
+    TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object?[] indexerPropertyParameters);
+    bool TryGetIndexerValue<TTarget, TValue>(TTarget target, out TValue propertyValue, params object?[] indexerPropertyParameters);
+    TValue GetIndexerValue<TTarget, TValue, TIndex1, TIndex2>(TTarget target, TIndex1 index1, TIndex2 index2);
+    TValue GetIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget target, TIndex1 index1, TIndex2 index2, TIndex3 index3);
     object? GetValue(object? target);
+    bool TryGetValue(object? target, out object? propertyValue);
     TValue GetValue<TTarget, TValue>(TTarget target);
-    void SetIndexerValue(object? target, object? value, object?[]? indexerPropertyIndex = null);
-    void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, object[]? indexerPropertyIndex = null) where TTarget : struct;
+    bool TryGetValue<TTarget, TValue>(TTarget target, out TValue propertyValue);
+    void SetIndexerValue(object? target, object? value, params object?[] indexerPropertyIndex);
+    bool TrySetIndexerValue(object? target, object? value, params object?[] indexerPropertyIndex);
+    void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, params object?[] indexerPropertyIndex) where TTarget : struct;
+    bool TrySetStructValue<TTarget, TValue>(ref TTarget target, TValue value, params object?[] indexerPropertyIndex) where TTarget : struct;
     void SetValue(object? target, object? value);
+    bool TrySetValue(object? target, object? value);
     void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class;
+    bool TrySetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class;
+    void SetStructIndexerValue<TTarget, TValue>(ref TTarget target, TValue value, params object?[] indexerPropertyIndex) where TTarget : struct;
+    void Set3DIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3);
+    void Set2DIndexerValue<TTarget, TValue, TIndex1, TIndex2>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2);
+    void SetIndexerValue<TTarget, TValue, TIndex1>(TTarget target, TValue value, TIndex1 index1);
+    void SetStruct3DIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : struct;
+    void SetStruct2DIndexerValue<TTarget, TValue, TIndex1, TIndex2>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : struct;
+    void SetStructIndexerValue<TTarget, TValue, TIndex1>(ref TTarget target, TValue value, TIndex1 index1) where TTarget : struct;
 }

@@ -504,13 +504,367 @@ internal sealed class PropertyDataView : MemberDataView, IPropertyDataView
         }
     }
 
-    public object? GetIndexerValue(object? target, object?[] indexerPropertyParameters) => GetPropertyDataOrThrow().GetIndexerValue(target, indexerPropertyParameters);
+    /// <summary>
+    /// Returns the value of the indexer property for the specified target and index parameters.
+    /// </summary>
+    /// <remarks>
+    /// This method throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetIndexerValue(object?, object?[], out object?)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <param name="target">The instance that owns the indexer property.</param>
+    /// <param name="indexerPropertyParameters">The indexer arguments used to resolve the property value.</param>
+    /// <returns>The current value returned by the indexer property.</returns>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public object? GetIndexerValue(object? target, params object?[] indexerPropertyParameters) => GetPropertyDataOrThrow().GetIndexerValue(target, indexerPropertyParameters);
+
+    /// <summary>
+    /// Attempts to retrieve the value of the indexer property for the specified target and index parameters.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="propertyValue"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use <see cref="GetIndexerValue(object?, object?[])"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="target">The instance that owns the indexer property.</param>
+    /// <param name="indexerPropertyParameters">The indexer arguments used to resolve the property value.</param>
+    /// <param name="propertyValue">When this method returns successfully, contains the current value returned by the indexer property.</param>
+    /// <returns><see langword="true"/> if the property data was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetIndexerValue(object? target, out object? propertyValue, params object?[] indexerPropertyParameters)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyValue = propertyData!.GetIndexerValue(target, indexerPropertyParameters);
+            return true;
+        }
+        else
+        {
+            propertyValue = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns the value of the indexer property for the specified target and strongly typed index parameters.
+    /// </summary>
+    /// <remarks>
+    /// This method throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetIndexerValue{TTarget, TValue, TIndex}(TTarget, TIndex[], out TValue)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <typeparam name="TTarget">The type of the target instance.</typeparam>
+    /// <typeparam name="TValue">The expected return type of the property value.</typeparam>
+    /// <typeparam name="TIndex">The type of the indexer arguments.</typeparam>
+    /// <param name="target">The instance that owns the indexer property.</param>
+    /// <param name="indexerPropertyParameters">The indexer arguments used to resolve the property value.</param>
+    /// <returns>The current value returned by the indexer property.</returns>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
     public TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indexerPropertyParameters) => GetPropertyDataOrThrow().GetIndexerValue<TTarget, TValue, TIndex>(target, indexerPropertyParameters);
-    public TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object[] indexerPropertyParameters) => GetPropertyDataOrThrow().GetIndexerValue<TTarget, TValue>(target, indexerPropertyParameters);
+
+    /// <summary>
+    /// Attempts to retrieve the value of the indexer property for the specified target and strongly typed index parameters.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="propertyValue"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use <see cref="GetIndexerValue{TTarget, TValue, TIndex}(TTarget, TIndex[])"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <typeparam name="TTarget">The type of the target instance.</typeparam>
+    /// <typeparam name="TValue">The expected return type of the property value.</typeparam>
+    /// <typeparam name="TIndex">The type of the indexer arguments.</typeparam>
+    /// <param name="target">The instance that owns the indexer property.</param>
+    /// <param name="indexerPropertyParameters">The indexer arguments used to resolve the property value.</param>
+    /// <param name="propertyValue">When this method returns successfully, contains the current value returned by the indexer property.</param>
+    /// <returns><see langword="true"/> if the property data was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetIndexerValue<TTarget, TValue, TIndex>(TTarget target, out TValue propertyValue, params TIndex[] indexerPropertyParameters)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyValue = propertyData!.GetIndexerValue<TTarget, TValue, TIndex>(target, indexerPropertyParameters);
+            return true;
+        }
+        else
+        {
+            propertyValue = default!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns the value of the indexer property for the specified target and object index parameters.
+    /// </summary>
+    /// <remarks>
+    /// This method throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetIndexerValue{TTarget, TValue}(TTarget, object[], out TValue)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <typeparam name="TTarget">The type of the target instance.</typeparam>
+    /// <typeparam name="TValue">The expected return type of the property value.</typeparam>
+    /// <param name="target">The instance that owns the indexer property.</param>
+    /// <param name="indexerPropertyParameters">The indexer arguments used to resolve the property value.</param>
+    /// <returns>The current value returned by the indexer property.</returns>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object?[] indexerPropertyParameters) => GetPropertyDataOrThrow().GetIndexerValue<TTarget, TValue>(target, indexerPropertyParameters);
+
+    /// <summary>
+    /// Attempts to retrieve the value of the indexer property for the specified target and object index parameters.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="propertyValue"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use <see cref="GetIndexerValue{TTarget, TValue}(TTarget, object[])"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <typeparam name="TTarget">The type of the target instance.</typeparam>
+    /// <typeparam name="TValue">The expected return type of the property value.</typeparam>
+    /// <param name="target">The instance that owns the indexer property.</param>
+    /// <param name="indexerPropertyParameters">The indexer arguments used to resolve the property value.</param>
+    /// <param name="propertyValue">When this method returns successfully, contains the current value returned by the indexer property.</param>
+    /// <returns><see langword="true"/> if the property data was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetIndexerValue<TTarget, TValue>(TTarget target, out TValue propertyValue, params object?[] indexerPropertyParameters)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyValue = propertyData!.GetIndexerValue<TTarget, TValue>(target, indexerPropertyParameters);
+            return true;
+        }
+        else
+        {
+            propertyValue = default!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns the value of the property for the specified target.
+    /// </summary>
+    /// <remarks>
+    /// This method throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetValue(object?, out object?)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <param name="target">The instance that owns the property.</param>
+    /// <returns>The current value of the property.</returns>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
     public object? GetValue(object? target) => GetPropertyDataOrThrow().GetValue(target);
+
+    /// <summary>
+    /// Attempts to retrieve the value of the property for the specified target.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="propertyValue"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use <see cref="GetValue(object?)"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="target">The instance that owns the property.</param>
+    /// <param name="propertyValue">When this method returns successfully, contains the current value of the property.</param>
+    /// <returns><see langword="true"/> if the property data was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetValue(object? target, out object? propertyValue)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyValue = propertyData!.GetValue(target);
+            return true;
+        }
+        else
+        {
+            propertyValue = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns the value of the property for the specified target.
+    /// </summary>
+    /// <remarks>
+    /// This method throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TryGetValue{TTarget, TValue}(TTarget, out TValue)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <typeparam name="TTarget">The type of the target instance.</typeparam>
+    /// <typeparam name="TValue">The expected return type of the property value.</typeparam>
+    /// <param name="target">The instance that owns the property.</param>
+    /// <returns>The current value of the property.</returns>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
     public TValue GetValue<TTarget, TValue>(TTarget target) => GetPropertyDataOrThrow().GetValue<TTarget, TValue>(target);
-    public void SetIndexerValue(object? target, object? value, object?[]? indexerPropertyIndex = null) => GetPropertyDataOrThrow().SetIndexerValue(target, value, indexerPropertyIndex);
-    public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, object[]? indexerPropertyIndex = null) where TTarget : struct => GetPropertyDataOrThrow().SetStructValue(ref target, value, indexerPropertyIndex);
+
+    /// <summary>
+    /// Attempts to retrieve the value of the property for the specified target.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the <paramref name="propertyValue"/> parameter is set to its default value and the method returns <see langword="false"/>.
+    /// <para/>Use <see cref="GetValue{TTarget, TValue}(TTarget)"/> to get the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <typeparam name="TTarget">The type of the target instance.</typeparam>
+    /// <typeparam name="TValue">The expected return type of the property value.</typeparam>
+    /// <param name="target">The instance that owns the property.</param>
+    /// <param name="propertyValue">When this method returns successfully, contains the current value of the property.</param>
+    /// <returns><see langword="true"/> if the property data was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetValue<TTarget, TValue>(TTarget target, out TValue propertyValue)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyValue = propertyData!.GetValue<TTarget, TValue>(target);
+            return true;
+        }
+        else
+        {
+            propertyValue = default!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Sets the value of the indexer property for the specified target and index parameters.
+    /// </summary>
+    /// <remarks>
+    /// This method throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TrySetIndexerValue(object?, object?, object?[]?)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <param name="target">The instance that owns the indexer property.</param>
+    /// <param name="value">The value to assign to the indexer property.</param>
+    /// <param name="indexerPropertyIndex">The indexer arguments that identify the indexer property slot to update.</param>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public void SetIndexerValue(object? target, object? value, params object?[] indexerPropertyIndex) => GetPropertyDataOrThrow().SetIndexerValue(target, value, indexerPropertyIndex);
+
+    /// <summary>
+    /// Attempts to set the value of the indexer property for the specified target and index parameters.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the method returns <see langword="false"/>.
+    /// <para/>Use <see cref="SetIndexerValue(object?, object?, object?[])"/> to set the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="target">The instance that owns the indexer property.</param>
+    /// <param name="value">The value to assign to the indexer property.</param>
+    /// <param name="indexerPropertyIndex">The indexer arguments that identify the indexer property slot to update.</param>
+    /// <returns><see langword="true"/> if the property data was successfully retrieved and the value was set; otherwise, <see langword="false"/>.</returns>
+    public bool TrySetIndexerValue(object? target, object? value, params object?[] indexerPropertyIndex)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyData!.SetIndexerValue(target, value, indexerPropertyIndex);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Sets the value of the property on a target value type instance.
+    /// </summary>
+    /// <remarks>
+    /// This method throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TrySetStructValue{TTarget, TValue}(ref TTarget, TValue, object[]?)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <typeparam name="TTarget">The type of the target value type.</typeparam>
+    /// <typeparam name="TValue">The type of the value to assign.</typeparam>
+    /// <param name="target">The value type instance that owns the property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <param name="indexerPropertyIndex">The optional indexer arguments if the property is an indexer.</param>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
+    public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value) where TTarget : struct => GetPropertyDataOrThrow().SetStructValue(ref target, value);
+
+    /// <summary>
+    /// Attempts to set the value of the property on a target value type instance.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the method returns <see langword="false"/>.
+    /// <para/>Use <see cref="SetStructValue{TTarget, TValue}(ref TTarget, TValue, object?[]?)"/> to set the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <typeparam name="TTarget">The type of the target value type.</typeparam>
+    /// <typeparam name="TValue">The type of the value to assign.</typeparam>
+    /// <param name="target">The value type instance that owns the property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <param name="indexerPropertyIndex">The optional indexer arguments if the property is an indexer.</param>
+    /// <returns><see langword="true"/> if the property data was successfully retrieved and the value was set; otherwise, <see langword="false"/>.</returns>
+    public bool TrySetStructValue<TTarget, TValue>(ref TTarget target, TValue value) where TTarget : struct
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyData!.SetStructValue(ref target, value);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Sets the value of the property for the specified target.
+    /// </summary>
+    /// <remarks>
+    /// This method throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TrySetValue(object?, object?)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <param name="target">The instance that owns the property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
     public void SetValue(object? target, object? value) => GetPropertyDataOrThrow().SetValue(target, value);
+
+    /// <summary>
+    /// Attempts to set the value of the property for the specified target.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the method returns <see langword="false"/>.
+    /// <para/>Use <see cref="SetValue(object?, object?)"/> to set the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <param name="target">The instance that owns the property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <returns><see langword="true"/> if the property data was successfully retrieved and the value was set; otherwise, <see langword="false"/>.</returns>
+    public bool TrySetValue(object? target, object? value)
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyData!.SetValue(target, value);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Sets the value of the property for the specified target.
+    /// </summary>
+    /// <remarks>
+    /// This method throws a <see cref="ReflectionCacheEntryAlcNotAvailableException"/> if the underlying cache entry is not available,
+    /// which can happen if the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> associated with the cache entry has been unloaded.
+    /// <para/>To avoid the exception, use <see cref="TrySetValue{TTarget, TValue}(TTarget, TValue)"/> which returns a boolean indicating success or failure instead of throwing.
+    /// </remarks>
+    /// <typeparam name="TTarget">The type of the target reference type.</typeparam>
+    /// <typeparam name="TValue">The type of the value to assign.</typeparam>
+    /// <param name="target">The instance that owns the property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <exception cref="ReflectionCacheEntryAlcNotAvailableException">Thrown if the underlying cache entry is not available due to <see cref="System.Runtime.Loader.AssemblyLoadContext"/> unload.</exception>
     public void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class => GetPropertyDataOrThrow().SetValue(target, value);
+
+    /// <summary>
+    /// Attempts to set the value of the property for the specified target.
+    /// </summary>
+    /// <remarks>If the property data is not found in the cache due to the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> being unloaded,
+    /// the method returns <see langword="false"/>.
+    /// <para/>Use <see cref="SetValue{TTarget, TValue}(TTarget, TValue)"/> to set the value directly, which throws an exception if the cache entry is not available.</remarks>
+    /// <typeparam name="TTarget">The type of the target reference type.</typeparam>
+    /// <typeparam name="TValue">The type of the value to assign.</typeparam>
+    /// <param name="target">The instance that owns the property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <returns><see langword="true"/> if the property data was successfully retrieved and the value was set; otherwise, <see langword="false"/>.</returns>
+    public bool TrySetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class
+    {
+        if (TryGetPropertyData(out PropertyData? propertyData))
+        {
+            propertyData!.SetValue(target, value);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public TValue GetIndexerValue<TTarget, TValue, TIndex1, TIndex2>(TTarget target, TIndex1 index1, TIndex2 index2) => throw new NotImplementedException();
+    public TValue GetIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget target, TIndex1 index1, TIndex2 index2, TIndex3 index3) => throw new NotImplementedException();
+    public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value, params object?[] indexerPropertyIndex) where TTarget : struct => throw new NotImplementedException();
+    public bool TrySetStructValue<TTarget, TValue>(ref TTarget target, TValue value, params object?[] indexerPropertyIndex) where TTarget : struct => throw new NotImplementedException();
+    public void SetStructIndexerValue<TTarget, TValue>(ref TTarget target, TValue value, params object?[] indexerPropertyIndex) where TTarget : struct => throw new NotImplementedException();
+    public void Set3DIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) => throw new NotImplementedException();
+    public void Set2DIndexerValue<TTarget, TValue, TIndex1, TIndex2>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2) => throw new NotImplementedException();
+    public void SetIndexerValue<TTarget, TValue, TIndex1>(TTarget target, TValue value, TIndex1 index1) => throw new NotImplementedException();
+    public void SetStruct3DIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : struct => throw new NotImplementedException();
+    public void SetStruct2DIndexerValue<TTarget, TValue, TIndex1, TIndex2>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : struct => throw new NotImplementedException();
+    public void SetStructIndexerValue<TTarget, TValue, TIndex1>(ref TTarget target, TValue value, TIndex1 index1) where TTarget : struct => throw new NotImplementedException();
 }
