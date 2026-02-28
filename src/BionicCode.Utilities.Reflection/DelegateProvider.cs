@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -73,7 +72,7 @@ public delegate TValue IndexerPropertyGetter<TTarget, TValue, TIndex1, TIndex2, 
 
 internal static class DelegateProvider
 {
-    private static readonly ConcurrentDictionary<MethodDataGenericTypeVariantKey, SymbolReflectionInfoCacheKeyInternal> InvocatorKeyMap = new();
+    private static readonly ConcurrentDictionary<MethodDataGenericTypeVariantKey, SymbolReflectionInfoCacheKey> s_invocatorKeyMap = new();
 
     /// <summary>
     /// Gets an invocable MethodData instance for the specified method, generating a fast delegate-based invoker if
@@ -507,7 +506,7 @@ internal static class DelegateProvider
 
         // Try get cached constructed invocator for the specified generic method parameters.
         var invocatorKeyMapKey = new MethodDataGenericTypeVariantKey(genericMethodArguments, desiredReturnTypeHandle, targetTypeHandle, targetMethodData.BasicMethodFingerprint);
-        if (DelegateProvider.InvocatorKeyMap.TryGetValue(invocatorKeyMapKey, out SymbolReflectionInfoCacheKeyInternal symbolInfoCacheKey)
+        if (DelegateProvider.s_invocatorKeyMap.TryGetValue(invocatorKeyMapKey, out SymbolReflectionInfoCacheKeyInternal symbolInfoCacheKey)
             && SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(symbolInfoCacheKey, out MethodData? cachedMethodData))
         {
             methodData = cachedMethodData!;
@@ -524,7 +523,7 @@ internal static class DelegateProvider
     {
         MethodData methodData;
         MethodData closedGenericMethodData = targetMethodData.MakeGenericMethodData(genericMethodParameters);
-        _ = DelegateProvider.InvocatorKeyMap.TryAdd(invocatorKeyMapKey, closedGenericMethodData.CacheKey);
+        _ = DelegateProvider.s_invocatorKeyMap.TryAdd(invocatorKeyMapKey, closedGenericMethodData.View.CacheKey);
         methodData = closedGenericMethodData;
         return methodData;
     }
@@ -537,6 +536,8 @@ internal static class DelegateProvider
     /// <returns>A MethodData instance representing a fast invoker for the specified event.</returns>
     public static MethodData GetOrCreateFastEventInvoker(EventData eventData)
     {
+        ArgumentNullException.ThrowIfNull(eventData);
+
         MethodData targetMethodData = eventData.EventInvokerMethodData;
 
         return GetOrCreateFastMethodInvoker(targetMethodData!, TypeList.Empty);
@@ -676,7 +677,7 @@ internal static class DelegateProvider
                     valueType,
                     nameof(TValue),
                     fieldType,
-                    "field prpertyType"));
+                    "field propertyType"));
 
         if (fieldData.IsConst)
         {
@@ -715,6 +716,8 @@ internal static class DelegateProvider
     /// <exception cref="ArgumentException">Thrown if the specified property is an indexer or is write-only.</exception>
     public static Func<object?, object?> CreateGetter(PropertyData propertyData)
     {
+        ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
+
         if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
         {
             throw new InvalidOperationException("The 'PropertyData' has already the get invoker generated.");
@@ -724,7 +727,6 @@ internal static class DelegateProvider
             propertyData.IsIndexer,
             nameof(propertyData),
             "The provided property is an indexer. Use the appropriate indexer getter creation method instead.");
-        ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
         ArgumentExceptionAdvanced.ThrowIfFalse(
             propertyData.CanRead,
             nameof(propertyData),
@@ -976,7 +978,7 @@ internal static class DelegateProvider
                 // Use provided argument type  and cast to indexer parameter type if needed.
                 castedIndexParam = indexType != indexParameterType
                     ? Expression.Convert(indexAccess, indexParameterType)
-                    : indicesParam;
+                    : indexAccess;
             }
             catch (InvalidOperationException e)
             {
@@ -1001,8 +1003,8 @@ internal static class DelegateProvider
         try
         {
             body = returnType == propertyType
-                    ? propertyAccess
-                    : Expression.Convert(propertyAccess, returnType);
+                ? propertyAccess
+                : Expression.Convert(propertyAccess, returnType);
         }
         catch (InvalidOperationException e)
         {
@@ -1086,7 +1088,7 @@ internal static class DelegateProvider
                 // Use provided argument type  and cast to indexer parameter type if needed.
                 castedIndexParam = indexType != indexParameterType
                     ? Expression.Convert(indexAccess, indexParameterType)
-                    : indicesParam;
+                    : indexAccess;
             }
             catch (InvalidOperationException e)
             {
@@ -1954,6 +1956,8 @@ internal static class DelegateProvider
                     $"index {i}",
                     e);
             }
+
+            indexExpressions[i] = castedIndexParam;
         }
 
         Type declaringType = declaringTypeData.Type;
@@ -2264,8 +2268,8 @@ internal static class DelegateProvider
         Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam, isGetter: false);
 
         ParameterList propertySetMethodParameters = propertyData.PropertySetMethodParameters;
-        var indexExpressions = new Expression[propertySetMethodParameters.Count];
-        for (int i = 0; i < propertySetMethodParameters.Count; i++)
+        var indexExpressions = new Expression[propertySetMethodParameters.Count - 1];
+        for (int i = 0; i < propertySetMethodParameters.Count - 1; i++)
         {
             ParameterData indexParameterData = propertySetMethodParameters[i];
             Type indexParameterType = indexParameterData.ParameterTypeData.Type;
@@ -2289,6 +2293,8 @@ internal static class DelegateProvider
                     $"Index {i}",
                     e);
             }
+
+            indexExpressions[i] = castedIndexParam;
         }
 
         // Access the indexer: propertyType[index0, index1, ...]
@@ -2515,23 +2521,34 @@ internal static class DelegateProvider
         ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
         ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "returnType");
 
-        ImmutableArray<ParameterInfo> indexParameters = propertyData.PropertySetMethodParameters.AsParameterInfoArray();
-
         // Validate that indices length matches the number of index parameters when not null.
         // We do this inside the expression so the check happens at runtime.
-        var indexExpressions = new Expression[indexParameters.Length];
-        for (int i = 0; i < indexParameters.Length; i++)
+        ParameterList propertySetMethodParameters = propertyData.PropertySetMethodParameters;
+        var indexExpressions = new Expression[propertySetMethodParameters.Count - 1]; // -1 because the last parameter is the value parameter for the setter, not an index parameter.
+        for (int i = 0; i < propertySetMethodParameters.Count - 1; i++)
         {
-            ParameterInfo indexParameterInfo = indexParameters[i];
-            Type parameterType = indexParameterInfo.ParameterType;
+            ParameterData indexParameter = propertySetMethodParameters[i];
+            Type parameterType = indexParameter.ParameterTypeData.Type;
 
             // indices[i]
             BinaryExpression indexAccess = Expression.ArrayIndex(
                 indicesParam,
                 Expression.Constant(i));
 
-            // (TIndexType)indices[i]
-            UnaryExpression convertedIndex = Expression.Convert(indexAccess, parameterType);
+            UnaryExpression convertedIndex;
+            try
+            {
+                // (TIndexType)indices[i]
+                convertedIndex = Expression.Convert(indexAccess, parameterType);
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new ArgumentException(
+                    $"The provided indexer argument at position '{i}' is incompatible with the property's index parameter type. Reason: A conversion to '{indexParameter.FullyQualifiedSignature}' is not natively supported.",
+                    $"Index {i}",
+                    e);
+            }
+
             indexExpressions[i] = convertedIndex;
         }
 
@@ -2556,9 +2573,12 @@ internal static class DelegateProvider
         ParameterList indexParameters = isGetter
             ? propertyData.PropertyGetMethodParameters
             : propertyData.PropertySetMethodParameters;
+        int indexParameterCount = isGetter
+            ? indexParameters.Count
+            : indexParameters.Count - 1;
         Expression lengthMismatch = Expression.NotEqual(
                         Expression.ArrayLength(indicesParam),
-                        Expression.Constant(indexParameters.Count));
+                        Expression.Constant(indexParameterCount));
         Expression foundIndexCount = Expression.ArrayLength(indicesParam);
         MethodInfo stringConcat5 = typeof(string).GetMethod(
             nameof(string.Concat),

@@ -360,6 +360,18 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         }
         else
         {
+            if (target is null)
+            {
+                throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
+            }
+
+            Type targetType = target.GetType();
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                targetType,
+                DeclaringTypeData.Type,
+                nameof(target),
+                $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
+
             IndexerPropertyGetter<TTarget, TValue, TIndex1, TIndex2> invoker = Get2DIndexerGetterInternal<TTarget, TValue, TIndex1, TIndex2>();
             return invoker.Invoke(target, index1, index2);
         }
@@ -391,6 +403,18 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         }
         else
         {
+            if (target is null)
+            {
+                throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
+            }
+
+            Type targetType = target.GetType();
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                targetType,
+                DeclaringTypeData.Type,
+                nameof(target),
+                $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
+
             IndexerPropertyGetter<TTarget, TValue, TIndex1, TIndex2, TIndex3> invoker = Get3DIndexerGetterInternal<TTarget, TValue, TIndex1, TIndex2, TIndex3>();
             return invoker.Invoke(target, index1, index2, index3);
         }
@@ -553,8 +577,8 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
         ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
         ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
-            indexerPropertyIndex!.Length,
-            PropertySetMethodParameters.Count,
+            indexerPropertyIndex.Length,
+            PropertySetMethodParameters.Count - 1, // Subtract 1 to exclude the value parameter
             nameof(indexerPropertyIndex),
             $"Indexer property index count does not match the indexer parameter count of property '{FullyQualifiedSignature}'.");
 
@@ -623,8 +647,8 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
         ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
         ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
-            indexerPropertyIndex!.Length,
-            PropertySetMethodParameters.Count,
+            indexerPropertyIndex.Length,
+            PropertySetMethodParameters.Count - 1, // Subtract 1 to exclude the value parameter
             nameof(indexerPropertyIndex),
             $"Indexer property index count does not match the indexer parameter count of property '{FullyQualifiedSignature}'.");
 
@@ -634,7 +658,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
     private IndexerPropertyGetter<TTarget, TValue, TIndex> GetIndexerGetterInternal<TTarget, TValue, TIndex>()
     {
-        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertyGetter<TTarget, TIndex, TValue>).TypeHandle;
+        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertyGetter<TTarget, TValue, TIndex>).TypeHandle;
         Delegate invoker = _invokerTable.GetOrAdd(
             targetTypeHandle,
             _ => DelegateProvider.CreateIndexerGetter<TTarget, TValue, TIndex>(this));
@@ -644,7 +668,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
     private IndexerPropertyGetter<object?, TValue, TIndex> GetStaticIndexerGetterInternal<TValue, TIndex>()
     {
-        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertyGetter<object, TValue?, TIndex>).TypeHandle;
+        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertyGetter<object?, TValue, TIndex>).TypeHandle;
         Delegate invoker = _invokerTable.GetOrAdd(
             targetTypeHandle,
             _ => DelegateProvider.CreateStaticIndexerGetter<TValue, TIndex>(this));
