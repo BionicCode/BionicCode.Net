@@ -113,7 +113,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             : target;
 
         Func<object?, object?> propertySetInvoker = GetPropertyGetterInternal();
-        return propertySetInvoker.Invoke(target);
+        return propertySetInvoker.Invoke(invocationTarget);
     }
 
     /// <summary>
