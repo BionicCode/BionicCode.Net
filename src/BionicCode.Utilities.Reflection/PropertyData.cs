@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-internal sealed class PropertyData : MemberData, IPropertyDataInvoker
+internal sealed class PropertyData : MemberData
 {
     private string? _displayName;
     private string? _shortDisplayName;
@@ -40,10 +40,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     private bool? _isFamily;
     private bool? _isFamilyOrAssembly;
     private bool? _isFamilyAndAssembly;
-    private Func<object?, object?[], object?>? _indexerPropertyGetInvoker;
-    private Action<object?, object?[], object?>? _indexerPropertySetInvoker;
-    private Func<object?, object?>? _propertyGetInvoker;
-    private Action<object?, object?>? _propertySetInvoker;
     private readonly ConcurrentDictionary<RuntimeTypeHandle, Delegate> _invokerTable;
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
@@ -81,40 +77,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="InvalidOperationException">Thrown if the property does not have a getter or if the property is an indexer property.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the target is <see langword="null"/> for an instance property.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    internal object? GetValue(object? target)
-    {
-        if (!CanRead)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' does not have a getter.");
-        }
-
-        if (IsIndexer)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' is an indexer property. Use one of the overloads that accepts indexer parameters.");
-        }
-
-        if (!IsStatic)
-        {
-            if (target is null)
-            {
-                throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
-            }
-
-            Type targetType = target.GetType();
-            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
-                targetType,
-                DeclaringTypeData.Type,
-                nameof(target),
-                $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
-        }
-
-        object? invocationTarget = IsStatic
-            ? null
-            : target;
-
-        Func<object?, object?> propertySetInvoker = GetPropertyGetterInternal();
-        return propertySetInvoker.Invoke(invocationTarget);
-    }
+    internal object? GetValue(object? target) => GetValue<object?, object?>(target);
 
     /// <summary>
     /// Gets the value of the property represented by this instance for the specified target object and optional
@@ -172,53 +135,30 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// indexer parameters defined by the property.</remarks>
     /// <param name="target">The object instance on which to access the indexer property. Must be non-null for instance properties;
     /// ignored for static properties.</param>
-    /// <param name="indexerPropertyParameters">An array of values representing the index parameters required by the indexer property. The number and types
+    /// <param name="indices">An array of values representing the index parameters required by the indexer property. The number and types
     /// of elements must match the indexer definition. Cannot be null.</param>
     /// <returns>The value returned by the indexer property for the specified target and index parameters.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the property does not have a getter or is not an indexer property.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the target is null for an instance property, or if indexerPropertyParameters is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the number of elements in indexerPropertyParameters does not match the indexer parameter count of the property.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    internal object? GetIndexerValue(object? target, params object?[] indexerPropertyParameters)
-    {
-        if (!CanRead)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' does not have a getter.");
-        }
+    internal object? GetIndexerValue(object? target, params object?[] indices) => GetIndexerValue<object?, object?, object?>(target, indices);
 
-        if (!IsIndexer)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' is not an indexer property. Use one of the overloads without indexer parameters instead.");
-        }
-
-        ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyParameters, nameof(indexerPropertyParameters), "Indexer property index cannot be null for indexer properties.");
-        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
-            indexerPropertyParameters.Length,
-            PropertyGetMethodParameters.Count,
-            nameof(indexerPropertyParameters),
-            $"Provided number of indexer parameters does not match the indexer parameter count of property '{FullyQualifiedSignature}'. Expected: {PropertyGetMethodParameters.Count}; Found: {indexerPropertyParameters.Length}.");
-
-        if (!IsStatic)
-        {
-            if (target is null)
-            {
-                throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
-            }
-
-            Type targetType = target.GetType();
-            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
-                targetType,
-                DeclaringTypeData.Type,
-                nameof(target),
-                $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
-        }
-
-        object? invocationTarget = IsStatic
-            ? null
-            : target;
-        Func<object?, object[], object?> propertyGetInvoker = GetIndexerGetterInternal();
-        return propertyGetInvoker.Invoke(invocationTarget, indexerPropertyParameters!);
-    }
+    /// <summary>
+    /// Gets the value of the indexer property represented by this instance for the specified target object and
+    /// indexer parameter.
+    /// </summary>
+    /// <remarks>Use this method for 1D indexer properties that accept a single index parameter.</remarks>
+    /// <typeparam name="TTarget">The type of the object that declares the property.</typeparam>
+    /// <typeparam name="TValue">The type of the value returned by the property getter.</typeparam>
+    /// <param name="target">The target instance the property is invoked on.</param>
+    /// <param name="indices"></param>
+    /// <returns>The value of the indexer property of type <typeparamref name="TValue"/>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the property is not readable or if the property is not an indexer property.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when the indexer parameter is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the indexer parameter count does not match the indexer parameter count of the property.</exception>
+    /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
+    internal TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object?[] indices) => GetIndexerValue<TTarget, TValue, object?>(target, indices);
 
     /// <summary>
     /// Gets the value of the indexer property represented by this instance for the specified target object and
@@ -229,13 +169,13 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <typeparam name="TValue">The type of the value returned by the property getter.</typeparam>
     /// <typeparam name="TIndex">The type of the indexer parameter.</typeparam>
     /// <param name="target">The target instance the property is invoked on.</param>
-    /// <param name="indexerPropertyParameters"></param>
+    /// <param name="indices"></param>
     /// <returns>The value of the indexer property of type <typeparamref name="TValue"/>.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the property is not readable or if the property is not an indexer property.</exception>
     /// <exception cref="ArgumentNullException">Thrown when the indexer parameter is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the indexer parameter count does not match the indexer parameter count of the property.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    internal TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indexerPropertyParameters)
+    internal TValue GetIndexerValue<TTarget, TValue, TIndex>(TTarget target, params TIndex[] indices)
     {
         if (!CanRead)
         {
@@ -247,17 +187,17 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' is not an indexer property. Use one of the overloads without indexer parameters instead.");
         }
 
-        ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyParameters, nameof(indexerPropertyParameters), $"Indexer index parameter {nameof(indexerPropertyParameters)} cannot be null for indexer properties.");
+        ArgumentNullExceptionAdvanced.ThrowIfNull(indices, nameof(indices), $"Indexer index parameter {nameof(indices)} cannot be null for indexer properties.");
         ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
-            indexerPropertyParameters.Length,
+            indices.Length,
             PropertyGetMethodParameters.Count,
-            nameof(indexerPropertyParameters),
-            $"Provided number of indexer parameters does not match the indexer parameter count of this property '{FullyQualifiedSignature}'. Expected: {PropertyGetMethodParameters.Count} index parameters; Found: {indexerPropertyParameters.Length}.");
+            nameof(indices),
+            $"Provided number of indexer parameters does not match the indexer parameter count of this property '{FullyQualifiedSignature}'. Expected: {PropertyGetMethodParameters.Count} index parameters; Found: {indices.Length}.");
 
         if (IsStatic)
         {
             IndexerPropertyGetter<object?, TValue, TIndex> staticPropertyGetInvoker = GetStaticIndexerGetterInternal<TValue, TIndex>();
-            return staticPropertyGetInvoker.Invoke(null, indexerPropertyParameters!);
+            return staticPropertyGetInvoker.Invoke(null, indices!);
         }
         else
         {
@@ -274,64 +214,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
             IndexerPropertyGetter<TTarget, TValue, TIndex> propertyGetInvoker = GetIndexerGetterInternal<TTarget, TValue, TIndex>();
-            return propertyGetInvoker.Invoke(target, indexerPropertyParameters!);
-        }
-    }
-
-    /// <summary>
-    /// Gets the value of the indexer property represented by this instance for the specified target object and
-    /// indexer parameter.
-    /// </summary>
-    /// <remarks>Use this method for 1D indexer properties that accept a single index parameter.</remarks>
-    /// <typeparam name="TTarget">The type of the object that declares the property.</typeparam>
-    /// <typeparam name="TValue">The type of the value returned by the property getter.</typeparam>
-    /// <param name="target">The target instance the property is invoked on.</param>
-    /// <param name="indexerPropertyParameters"></param>
-    /// <returns>The value of the indexer property of type <typeparamref name="TValue"/>.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the property is not readable or if the property is not an indexer property.</exception>
-    /// <exception cref="ArgumentNullException">Thrown when the indexer parameter is null.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when the indexer parameter count does not match the indexer parameter count of the property.</exception>
-    /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    internal TValue GetIndexerValue<TTarget, TValue>(TTarget target, params object?[] indexerPropertyParameters)
-    {
-        if (!CanRead)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' does not have a getter.");
-        }
-
-        if (!IsIndexer)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' is not an indexer property. Use one of the overloads without indexer parameters instead.");
-        }
-
-        ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyParameters, nameof(indexerPropertyParameters), $"Indexer index parameter {nameof(indexerPropertyParameters)} cannot be null for indexer properties.");
-        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
-            indexerPropertyParameters.Length,
-            PropertyGetMethodParameters.Count,
-            nameof(indexerPropertyParameters),
-            $"Provided number of indexer parameters does not match the indexer parameter count of this property '{FullyQualifiedSignature}'. Expected: {PropertyGetMethodParameters.Count} index parameters; Found: {indexerPropertyParameters.Length}.");
-
-        if (IsStatic)
-        {
-            IndexerPropertyGetter<object?, TValue> staticPropertyGetInvoker = GetStaticIndexerGetterInternal<TValue>();
-            return staticPropertyGetInvoker.Invoke(null, indexerPropertyParameters!);
-        }
-        else
-        {
-            if (target is null)
-            {
-                throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
-            }
-
-            Type targetType = target.GetType();
-            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
-                targetType,
-                DeclaringTypeData.Type,
-                nameof(target),
-                $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
-
-            IndexerPropertyGetter<TTarget, TValue> propertyGetInvoker = GetIndexerGetterInternal<TTarget, TValue>();
-            return propertyGetInvoker.Invoke(target, indexerPropertyParameters!);
+            return propertyGetInvoker.Invoke(target, indices!);
         }
     }
 
@@ -433,46 +316,19 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="InvalidOperationException">Thrown if the property is read-only or is an indexer property.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the property is an instance property and the target object is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-    internal void SetValue(object? target, object? value)
-    {
-        if (DeclaringTypeData.IsValueType)
-        {
-            throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsValueTypeWrongInvokerExceptionMessage(this, nameof(SetStructValue)));
-        }
+    internal void SetValue(object? target, object? value) => SetValue<object?, object?>(target, value);
 
-        if (IsReadOnly)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' does not have a setter.");
-        }
-
-        if (IsIndexer)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' is an indexer property. Use one of the overloads that accepts indexer parameters.");
-        }
-
-        if (!IsStatic)
-        {
-            if (target is null)
-            {
-                throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
-            }
-
-            Type targetType = target.GetType();
-            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
-                targetType,
-                DeclaringTypeData.Type,
-                nameof(target),
-                $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
-        }
-
-        object? invocationTarget = IsStatic
-            ? null
-            : target;
-        Action<object?, object?> propertySetInvoker = GetSetInvokerInternal();
-        propertySetInvoker(invocationTarget, value);
-    }
-
-    internal void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class
+    /// <summary>
+    /// Sets the value of the property on the specified target object.
+    /// </summary>
+    /// <typeparam name="TTarget">The type of the target object.</typeparam>
+    /// <typeparam name="TValue">The type of the value to assign to the property.</typeparam>
+    /// <param name="target">The object whose property value will be set. For static properties, this parameter is ignored. For instance properties, this must be a non-null object assignable to the declaring type of the property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the property is read-only or is an indexer property.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if the property is an instance property and the target object is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
+    internal void SetValue<TTarget, TValue>(TTarget? target, TValue value) where TTarget : class?
     {
         if (DeclaringTypeData.IsValueType)
         {
@@ -491,7 +347,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
         if (IsStatic)
         {
-            PropertySetter<object, TValue> propertySetInvoker = GetStaticSetInvokerInternal<TValue>();
+            PropertySetter<object?, TValue> propertySetInvoker = GetStaticSetInvokerInternal<TValue>();
             propertySetInvoker(null, value);
         }
         else
@@ -508,11 +364,24 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
-            PropertySetter<TTarget, TValue> propertySetInvoker = GetSetInvokerInternal<TTarget, TValue>();
+            PropertySetter<TTarget?, TValue> propertySetInvoker = GetSetInvokerInternal<TTarget?, TValue>();
             propertySetInvoker(target, value);
         }
     }
 
+    /// <summary>
+    /// Sets the value of a specified property or field on a struct instance, ensuring that the member is writable and
+    /// the types are compatible.
+    /// </summary>
+    /// <remarks>This method is intended for use with value types only. Ensure that the target struct is
+    /// mutable and that the value being set is compatible with the member's type.</remarks>
+    /// <typeparam name="TTarget">The type of the struct whose member value is to be set. Must be a value type.</typeparam>
+    /// <typeparam name="TValue">The type of the value to assign to the struct member.</typeparam>
+    /// <param name="target">A reference to the struct instance whose member value will be set. The type must be assignable to the declaring
+    /// type of the member.</param>
+    /// <param name="value">The value to assign to the specified member of the struct.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the declaring type is a reference type, if the property is read-only, if the property is static, or if
+    /// the property is an indexer.</exception>
     internal void SetStructValue<TTarget, TValue>(ref TTarget target, TValue value) where TTarget : struct
     {
         if (!DeclaringTypeData.IsValueType)
@@ -547,64 +416,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     }
 
     /// <summary>
-    /// Sets the value of the property on the specified target object, optionally using index parameters for indexer
-    /// properties.
-    /// </summary>
-    /// <remarks>For indexer properties, the number and types of elements in indexerPropertyParameters must
-    /// match the indexer parameters defined by the property. 
-    /// <para/>
-    /// If types are known at compile time use a strictly typed overload instead to boost performance (e.g. avoid boxing).</remarks>
-    /// <param name="target">The object whose property value will be set. For static properties, this parameter is ignored. For instance
-    /// properties, this cannot be null and must be assignable to the declaring type of the property.</param>
-    /// <param name="value">The value to assign to the property.</param>
-    /// <param name="indexerPropertyIndex">An array of index values to use if the property is an indexer. The number of elements must match the number
-    /// of indexer parameters. This parameter is required for indexer properties and ignored for non-indexer
-    /// properties.</param>
-    /// <exception cref="InvalidOperationException">Thrown if the property is read-only or if the declaring type is a value type.</exception>
-    /// <exception cref="ArgumentNullException">Thrown if the target object is null for an instance property, or if indexerPropertyParameters is null for an
-    /// indexer property.</exception>
-    internal void SetIndexerValue(object? target, object? value, params object?[] indexerPropertyIndex)
-    {
-        if (IsReadOnly)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' does not have a setter.");
-        }
-
-        if (!IsIndexer)
-        {
-            throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' is not an indexer property. Use '{nameof(SetValue)}' instead.");
-        }
-
-        ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
-        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
-            indexerPropertyIndex.Length,
-            PropertySetMethodParameters.Count - 1, // Subtract 1 to exclude the value parameter
-            nameof(indexerPropertyIndex),
-            $"Indexer property index count does not match the indexer parameter count of property '{FullyQualifiedSignature}'.");
-
-        if (!IsStatic)
-        {
-            if (target is null)
-            {
-                throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
-            }
-
-            Type targetType = target.GetType();
-            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
-                targetType,
-                DeclaringTypeData.Type,
-                nameof(target),
-                $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
-        }
-
-        object? invocationTarget = IsStatic
-            ? null
-            : target;
-        Action<object?, object?[], object?> propertySetInvoker = GetIndexerSetInvokerInternal();
-        propertySetInvoker(invocationTarget, indexerPropertyIndex!, value);
-    }
-
-    /// <summary>
     /// Gets a delegate that sets the value of an indexer property on a struct type for the specified target and
     /// value types.
     /// </summary>
@@ -615,60 +426,47 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <typeparam name="TValue">The type of the value to set on the indexer property.</typeparam>
     /// <returns>A delegate that sets the value of the indexer property on the specified struct type.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the property is not an indexer property, or if the property is not declared on a struct type.</exception>
-    internal void SetStructIndexerValue<TTarget, TValue>(ref TTarget target, TValue value, params object?[] indexerPropertyIndex) where TTarget : struct
-    {
-        if (!DeclaringTypeData.IsValueType)
-        {
-            throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsReferenceTypeWrongInvokerExceptionMessage(this, nameof(SetIndexerValue)));
-        }
-
-        if (!IsIndexer)
-        {
-            throw new InvalidOperationException($"The property '{Signature}' is not an indexer property. Use {nameof(SetStructValue)} instead.");
-        }
-
-        if (IsStatic)
-        {
-            throw new InvalidOperationException($"Setting static property values on struct types is not supported by this method. Call '{nameof(SetValue)}<TTarget, TValue>(ref TTarget target, TValue value)' instead.");
-        }
-
-        if (IsReadOnly)
-        {
-            throw new InvalidOperationException($"The property '{Signature}' does not have a setter.");
-        }
-
-        ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
-        ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
-            indexerPropertyIndex.Length,
-            PropertySetMethodParameters.Count - 1, // Subtract 1 to exclude the value parameter
-            nameof(indexerPropertyIndex),
-            $"Indexer property index count does not match the indexer parameter count of property '{FullyQualifiedSignature}'.");
-
-        ValueTypeIndexerPropertySetter<TTarget, TValue> invoker = GetStructIndexerSetInvokerInternal<TTarget, TValue>();
-        invoker.Invoke(ref target, value, indexerPropertyIndex);
-    }
+    internal void SetStructIndexerValue<TTarget, TValue>(ref TTarget target, TValue value, params object?[] indices) where TTarget : struct => SetStructIndexerValue<TTarget, TValue, object?>(ref target, value, indices);
 
     /// <summary>
     /// Sets the value of the property on the specified target object, optionally using index parameters for indexer
     /// properties.
     /// </summary>
-    /// <remarks>For indexer properties, the number and types of elements in indexerPropertyParameters must
+    /// <remarks>For indexer properties, the number and types of elements in <paramref name="indices"/> must
     /// match the indexer parameters defined by the property. 
     /// <para/>
     /// If types are known at compile time use a strictly typed overload instead to boost performance (e.g. avoid boxing).</remarks>
     /// <param name="target">The object whose property value will be set. For static properties, this parameter is ignored. For instance
-    /// properties, this cannot be null and must be assignable to the declaring type of the property.</param>
+    /// properties, this cannot be <see langword="null"/> and must be assignable to the declaring type of the property.</param>
     /// <param name="value">The value to assign to the property.</param>
-    /// <param name="indexerPropertyIndex">An array of index values to use if the property is an indexer. The number of elements must match the number
+    /// <param name="indices">An array of index values to use if the property is an indexer. The number of elements must match the number
     /// of indexer parameters. This parameter is required for indexer properties and ignored for non-indexer
     /// properties.</param>
     /// <typeparam name="TIndex">The type of the indexer parameters.</typeparam>
     /// <typeparam name="TValue">The type of the value to set on the indexer property.</typeparam>
     /// <exception cref="InvalidOperationException">Thrown if the property is read-only or if the declaring type is a value type.</exception>
-    /// <exception cref="ArgumentNullException">Thrown if the target object is null for an instance property, or if indexerPropertyParameters is null for an
+    /// <exception cref="ArgumentNullException">Thrown if the target object is <see langword="null"/> for an instance property, or if <paramref name="indices"/> is <see langword="null"/> for an
     /// indexer property.</exception>
-    internal void SetIndexerValue<TTarget, TValue>(TTarget? target, TValue value, params object?[] indexerPropertyIndex) where TTarget : class => SetIndexerValue<TTarget, TValue, object>(target, value, indexerPropertyIndex);
+    internal void SetIndexerValue<TTarget, TValue>(TTarget? target, TValue value, params object?[] indices) where TTarget : class? => SetIndexerValue<TTarget?, TValue, object?>(target, value, indices);
 
+    /// <summary>
+    /// Sets the value of the property on the specified target object, optionally using index parameters for indexer
+    /// properties.
+    /// </summary>
+    /// <remarks>For indexer properties, the number and types of elements in <paramref name="indices"/> must
+    /// match the indexer parameters defined by the property. 
+    /// <para/>
+    /// If types are known at compile time use a strictly typed overload instead to boost performance (e.g. avoid boxing).</remarks>
+    /// <param name="target">The object whose property value will be set. For static properties, this parameter is ignored. For instance
+    /// properties, this cannot be <see langword="null"/> and must be assignable to the declaring type of the property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <param name="indices">An array of index values to use if the property is an indexer. The number of elements must match the number
+    /// of indexer parameters. This parameter is required for indexer properties and ignored for non-indexer
+    /// properties.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the property is read-only or if the declaring type is a value type.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if the target object is <see langword="null"/> for an instance property, or if <paramref name="indices"/> is <see langword="null"/> for an
+    /// indexer property.</exception>
+    internal void SetIndexerValue(object? target, object? value, params object?[] indices) => SetIndexerValue<object?, object?, object?>(target, value, indices);
 
     /// <summary>
     /// Gets a delegate that sets the value of an indexer property on a struct type for the specified target and
@@ -679,10 +477,10 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// types, use the appropriate alternative methods.</remarks>
     /// <typeparam name="TTarget">The struct type that declares the indexer property.</typeparam>
     /// <typeparam name="TValue">The type of the value to set on the indexer property.</typeparam>
-    /// <typeparam name="TIndex">The type of the indexer parameter(s) of the <see langword="params"/> array <paramref name="indexerPropertyIndex"/>.</typeparam>
+    /// <typeparam name="TIndex">The type of the indexer parameter(s) of the <see langword="params"/> array <paramref name="indices"/>.</typeparam>
     /// <returns>A delegate that sets the value of the indexer property on the specified struct type.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the property is not an indexer property, or if the property is not declared on a struct type.</exception>
-    internal void SetStructIndexerValue<TTarget, TValue, TIndex>(ref TTarget target, TValue value, params TIndex[] indexerPropertyIndex) where TTarget : struct
+    internal void SetStructIndexerValue<TTarget, TValue, TIndex>(ref TTarget target, TValue value, params TIndex[] indices) where TTarget : struct
     {
         if (!DeclaringTypeData.IsValueType)
         {
@@ -704,38 +502,38 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             throw new InvalidOperationException($"The property '{Signature}' does not have a setter.");
         }
 
-        ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
+        ArgumentNullExceptionAdvanced.ThrowIfNull(indices, nameof(indices), "Indexer property index cannot be null for indexer properties.");
         ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
-            indexerPropertyIndex.Length,
+            indices.Length,
             PropertySetMethodParameters.Count - 1, // Subtract 1 to exclude the value parameter
-            nameof(indexerPropertyIndex),
+            nameof(indices),
             $"Indexer property index count does not match the indexer parameter count of property '{FullyQualifiedSignature}'.");
 
         ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex> invoker = GetStructIndexerSetInvokerInternal<TTarget, TValue, TIndex>();
-        invoker.Invoke(ref target, value, indexerPropertyIndex);
+        invoker.Invoke(ref target, value, indices);
     }
 
     /// <summary>
     /// Sets the value of the property on the specified target object, optionally using index parameters for indexer
     /// properties.
     /// </summary>
-    /// <remarks>For indexer properties, the number and types of elements in indexerPropertyParameters must
+    /// <remarks>For indexer properties, the number and types of elements in <paramref name="indices"/> must
     /// match the indexer parameters defined by the property. 
     /// <para/>
     /// If types are known at compile time use a strictly typed overload instead to boost performance (e.g. avoid boxing).</remarks>
     /// <param name="target">The object whose property value will be set. For static properties, this parameter is ignored. For instance
     /// properties, this cannot be null and must be assignable to the declaring type of the property.</param>
     /// <param name="value">The value to assign to the property.</param>
-    /// <param name="indexerPropertyIndex">An array of index values to use if the property is an indexer. The number of elements must match the number
+    /// <param name="indices">An array of index values to use if the property is an indexer. The number of elements must match the number
     /// of indexer parameters. This parameter is required for indexer properties and ignored for non-indexer
     /// properties.</param>
     /// <typeparam name="TTarget">The type of the target object. Must be a reference type.</typeparam>
     /// <typeparam name="TValue">The type of the value to set on the indexer property.</typeparam>
     /// <typeparam name="TIndex">The type of the indexer parameters.</typeparam>
     /// <exception cref="InvalidOperationException">Thrown if the property is read-only or if the declaring type is a value type.</exception>
-    /// <exception cref="ArgumentNullException">Thrown if the target object is null for an instance property, or if indexerPropertyParameters is null for an
+    /// <exception cref="ArgumentNullException">Thrown if the target object is null for an instance property, or if <paramref name="indices"/> is null for an
     /// indexer property.</exception>
-    internal void SetIndexerValue<TTarget, TValue, TIndex>(TTarget? target, TValue value, params TIndex[] indexerPropertyIndex) where TTarget : class
+    internal void SetIndexerValue<TTarget, TValue, TIndex>(TTarget? target, TValue value, params TIndex[] indices) where TTarget : class?
     {
         if (DeclaringTypeData.IsValueType)
         {
@@ -752,17 +550,17 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
             throw new InvalidOperationException($"The property '{FullyQualifiedSignature}' is not an indexer property. Use '{nameof(SetValue)}' instead.");
         }
 
-        ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
+        ArgumentNullExceptionAdvanced.ThrowIfNull(indices, nameof(indices), "Indexer property index cannot be null for indexer properties.");
         ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
-            indexerPropertyIndex.Length,
+            indices.Length,
             PropertySetMethodParameters.Count - 1, // Subtract 1 to exclude the value parameter
-            nameof(indexerPropertyIndex),
+            nameof(indices),
             $"Indexer property index count does not match the indexer parameter count of property '{FullyQualifiedSignature}'.");
 
         if (IsStatic)
         {
-            IndexerPropertySetter<object, TValue, TIndex> staticPropertySetInvoker = GetStaticIndexerSetInvokerInternal<TValue, TIndex>();
-            staticPropertySetInvoker(null, value, indexerPropertyIndex!);
+            IndexerPropertySetter<object?, TValue, TIndex> staticPropertySetInvoker = GetStaticIndexerSetInvokerInternal<TValue, TIndex>();
+            staticPropertySetInvoker(null, value, indices!);
         }
         else
         {
@@ -778,8 +576,8 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
-            IndexerPropertySetter<TTarget, TValue, TIndex> staticPropertySetInvoker = GetIndexerSetInvokerInternal<TTarget, TValue, TIndex>();
-            staticPropertySetInvoker(target, value, indexerPropertyIndex!);
+            IndexerPropertySetter<TTarget?, TValue, TIndex> staticPropertySetInvoker = GetIndexerSetInvokerInternal<TTarget?, TValue, TIndex>();
+            staticPropertySetInvoker(target, value, indices!);
         }
     }
 
@@ -852,7 +650,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="InvalidOperationException">Thrown if the property is read-only or if the declaring type is a value type.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the target object is null for an instance property, or if indexerPropertyParameters is null for an
     /// indexer property.</exception>
-    internal void SetIndexerValue<TTarget, TValue, TIndex1, TIndex2>(TTarget? target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : class
+    internal void SetIndexerValue<TTarget, TValue, TIndex1, TIndex2>(TTarget? target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : class?
     {
         if (DeclaringTypeData.IsValueType)
         {
@@ -877,7 +675,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
         if (IsStatic)
         {
-            IndexerPropertySetter<object, TValue, TIndex1, TIndex2> staticPropertySetInvoker = GetStatic2DIndexerSetInvokerInternal<TValue, TIndex1, TIndex2>();
+            IndexerPropertySetter<object?, TValue, TIndex1, TIndex2> staticPropertySetInvoker = GetStatic2DIndexerSetInvokerInternal<TValue, TIndex1, TIndex2>();
             staticPropertySetInvoker(null, value, index1, index2);
         }
         else
@@ -894,7 +692,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
-            IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2> staticPropertySetInvoker = Get2DIndexerSetInvokerInternal<TTarget, TValue, TIndex1, TIndex2>();
+            IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2> staticPropertySetInvoker = Get2DIndexerSetInvokerInternal<TTarget?, TValue, TIndex1, TIndex2>();
             staticPropertySetInvoker(target, value, index1, index2);
         }
     }
@@ -967,7 +765,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     /// <exception cref="InvalidOperationException">Thrown if the property is read-only or if the declaring type is a value type.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the target object is null for an instance property, or if indexerPropertyParameters is null for an
     /// indexer property.</exception>
-    internal void SetIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget? target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : class
+    internal void SetIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget? target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : class?
     {
         if (DeclaringTypeData.IsValueType)
         {
@@ -992,7 +790,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
         if (IsStatic)
         {
-            IndexerPropertySetter<object, TValue, TIndex1, TIndex2, TIndex3> staticPropertySetInvoker = GetStatic3DIndexerSetInvokerInternal<TValue, TIndex1, TIndex2, TIndex3>();
+            IndexerPropertySetter<object?, TValue, TIndex1, TIndex2, TIndex3> staticPropertySetInvoker = GetStatic3DIndexerSetInvokerInternal<TValue, TIndex1, TIndex2, TIndex3>();
             staticPropertySetInvoker(null, value, index1, index2, index3);
         }
         else
@@ -1009,7 +807,7 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
-            IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2, TIndex3> staticPropertySetInvoker = Get3DIndexerSetInvokerInternal<TTarget, TValue, TIndex1, TIndex2, TIndex3>();
+            IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2, TIndex3> staticPropertySetInvoker = Get3DIndexerSetInvokerInternal<TTarget?, TValue, TIndex1, TIndex2, TIndex3>();
             staticPropertySetInvoker(target, value, index1, index2, index3);
         }
     }
@@ -1074,8 +872,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return (IndexerPropertyGetter<object?, TValue, TIndex1, TIndex2, TIndex3>)invoker;
     }
 
-    private Action<object?, object?[], object?> GetIndexerSetInvokerInternal() => _indexerPropertySetInvoker ??= DelegateProvider.CreateIndexerSetter(this);
-
     private ValueTypeMemberSetter<TTarget, TValue> GetStructSetInvokerInternal<TTarget, TValue>() where TTarget : struct
     {
         RuntimeTypeHandle targetTypeHandle = typeof(ValueTypeMemberSetter<TTarget, TValue>).TypeHandle;
@@ -1084,8 +880,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
         return invoker;
     }
-
-    private Func<object?, object?> GetPropertyGetterInternal() => _propertyGetInvoker ??= DelegateProvider.CreateGetter(this);
 
     private PropertyGetter<TTarget, TValue> GetPropertyGetterInternal<TTarget, TValue>()
     {
@@ -1107,56 +901,24 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return (PropertyGetter<object?, TValue>)invoker;
     }
 
-    private Func<object?, object?[], object?> GetIndexerGetterInternal() => _indexerPropertyGetInvoker ??= DelegateProvider.CreateIndexerGetter(this);
-
-    private IndexerPropertyGetter<TTarget, TValue> GetIndexerGetterInternal<TTarget, TValue>()
+    private PropertySetter<TTarget?, TValue> GetSetInvokerInternal<TTarget, TValue>() where TTarget : class?
     {
-        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertyGetter<TTarget, TValue>).TypeHandle;
+        RuntimeTypeHandle targetTypeHandle = typeof(PropertySetter<TTarget?, TValue>).TypeHandle;
         Delegate invoker = _invokerTable.GetOrAdd(
             targetTypeHandle,
-            _ => DelegateProvider.CreateIndexerGetter<TTarget, TValue>(this));
+            _ => DelegateProvider.CreateSetter<TTarget?, TValue>(this));
 
-        return (IndexerPropertyGetter<TTarget, TValue>)invoker;
+        return (PropertySetter<TTarget?, TValue>)invoker;
     }
 
-    private IndexerPropertyGetter<object?, TValue> GetStaticIndexerGetterInternal<TValue>()
+    private PropertySetter<object?, TValue> GetStaticSetInvokerInternal<TValue>()
     {
-        RuntimeTypeHandle delegateTypeHandle = typeof(IndexerPropertyGetter<object?, TValue>).TypeHandle;
-        Delegate invoker = _invokerTable.GetOrAdd(
-            delegateTypeHandle,
-            _ => DelegateProvider.CreateStaticIndexerGetter<TValue>(this));
-        return (IndexerPropertyGetter<object?, TValue>)invoker;
-    }
-
-    private Action<object?, object?> GetSetInvokerInternal() => _propertySetInvoker ??= DelegateProvider.CreateSetter(this);
-
-    private PropertySetter<TTarget, TValue> GetSetInvokerInternal<TTarget, TValue>() where TTarget : class
-    {
-        RuntimeTypeHandle targetTypeHandle = typeof(PropertySetter<TTarget, TValue>).TypeHandle;
-        Delegate invoker = _invokerTable.GetOrAdd(
-            targetTypeHandle,
-            _ => DelegateProvider.CreateSetter<TTarget, TValue>(this));
-
-        return (PropertySetter<TTarget, TValue>)invoker;
-    }
-
-    private PropertySetter<object, TValue> GetStaticSetInvokerInternal<TValue>()
-    {
-        RuntimeTypeHandle targetTypeHandle = typeof(PropertySetter<object, TValue>).TypeHandle;
+        RuntimeTypeHandle targetTypeHandle = typeof(PropertySetter<object?, TValue>).TypeHandle;
         Delegate invoker = _invokerTable.GetOrAdd(
             targetTypeHandle,
             _ => DelegateProvider.CreateStaticSetter<TValue>(this));
 
-        return (PropertySetter<object, TValue>)invoker;
-    }
-
-    private ValueTypeIndexerPropertySetter<TTarget, TValue> GetStructIndexerSetInvokerInternal<TTarget, TValue>() where TTarget : struct
-    {
-        RuntimeTypeHandle targetTypeHandle = typeof(ValueTypeIndexerPropertySetter<TTarget, TValue>).TypeHandle;
-        Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateStructIndexerSetter<TTarget, TValue>(this));
-        var invoker = (ValueTypeIndexerPropertySetter<TTarget, TValue>)cachedInvoker;
-
-        return invoker;
+        return (PropertySetter<object?, TValue>)invoker;
     }
 
     private ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex> GetStructIndexerSetInvokerInternal<TTarget, TValue, TIndex>() where TTarget : struct
@@ -1167,19 +929,19 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return invoker;
     }
 
-    private IndexerPropertySetter<TTarget, TValue, TIndex> GetIndexerSetInvokerInternal<TTarget, TValue, TIndex>() where TTarget : class
+    private IndexerPropertySetter<TTarget?, TValue, TIndex> GetIndexerSetInvokerInternal<TTarget, TValue, TIndex>() where TTarget : class?
     {
-        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<TTarget, TValue, TIndex>).TypeHandle;
-        Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateIndexerSetter<TTarget, TValue, TIndex>(this));
-        var invoker = (IndexerPropertySetter<TTarget, TValue, TIndex>)cachedInvoker;
+        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<TTarget?, TValue, TIndex>).TypeHandle;
+        Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateIndexerSetter<TTarget?, TValue, TIndex>(this));
+        var invoker = (IndexerPropertySetter<TTarget?, TValue, TIndex>)cachedInvoker;
         return invoker;
     }
 
-    private IndexerPropertySetter<object, TValue, TIndex> GetStaticIndexerSetInvokerInternal<TValue, TIndex>()
+    private IndexerPropertySetter<object?, TValue, TIndex> GetStaticIndexerSetInvokerInternal<TValue, TIndex>()
     {
-        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<object, TValue, TIndex>).TypeHandle;
+        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<object?, TValue, TIndex>).TypeHandle;
         Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateStaticIndexerSetter<TValue, TIndex>(this));
-        var invoker = (IndexerPropertySetter<object, TValue, TIndex>)cachedInvoker;
+        var invoker = (IndexerPropertySetter<object?, TValue, TIndex>)cachedInvoker;
         return invoker;
     }
 
@@ -1191,19 +953,19 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return invoker;
     }
 
-    private IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2> Get2DIndexerSetInvokerInternal<TTarget, TValue, TIndex1, TIndex2>() where TTarget : class
+    private IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2> Get2DIndexerSetInvokerInternal<TTarget, TValue, TIndex1, TIndex2>() where TTarget : class?
     {
-        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2>).TypeHandle;
-        Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.Create2DIndexerSetter<TTarget, TValue, TIndex1, TIndex2>(this));
-        var invoker = (IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2>)cachedInvoker;
+        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2>).TypeHandle;
+        Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.Create2DIndexerSetter<TTarget?, TValue, TIndex1, TIndex2>(this));
+        var invoker = (IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2>)cachedInvoker;
         return invoker;
     }
 
-    private IndexerPropertySetter<object, TValue, TIndex1, TIndex2> GetStatic2DIndexerSetInvokerInternal<TValue, TIndex1, TIndex2>()
+    private IndexerPropertySetter<object?, TValue, TIndex1, TIndex2> GetStatic2DIndexerSetInvokerInternal<TValue, TIndex1, TIndex2>()
     {
-        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<object, TValue, TIndex1, TIndex2>).TypeHandle;
+        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<object?, TValue, TIndex1, TIndex2>).TypeHandle;
         Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateStatic2DIndexerSetter<TValue, TIndex1, TIndex2>(this));
-        var invoker = (IndexerPropertySetter<object, TValue, TIndex1, TIndex2>)cachedInvoker;
+        var invoker = (IndexerPropertySetter<object?, TValue, TIndex1, TIndex2>)cachedInvoker;
         return invoker;
     }
 
@@ -1215,19 +977,19 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
         return invoker;
     }
 
-    private IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2, TIndex3> Get3DIndexerSetInvokerInternal<TTarget, TValue, TIndex1, TIndex2, TIndex3>() where TTarget : class
+    private IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2, TIndex3> Get3DIndexerSetInvokerInternal<TTarget, TValue, TIndex1, TIndex2, TIndex3>() where TTarget : class?
     {
-        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>).TypeHandle;
-        Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.Create3DIndexerSetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>(this));
-        var invoker = (IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>)cachedInvoker;
+        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2, TIndex3>).TypeHandle;
+        Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.Create3DIndexerSetter<TTarget?, TValue, TIndex1, TIndex2, TIndex3>(this));
+        var invoker = (IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2, TIndex3>)cachedInvoker;
         return invoker;
     }
 
-    private IndexerPropertySetter<object, TValue, TIndex1, TIndex2, TIndex3> GetStatic3DIndexerSetInvokerInternal<TValue, TIndex1, TIndex2, TIndex3>()
+    private IndexerPropertySetter<object?, TValue, TIndex1, TIndex2, TIndex3> GetStatic3DIndexerSetInvokerInternal<TValue, TIndex1, TIndex2, TIndex3>()
     {
-        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<object, TValue, TIndex1, TIndex2, TIndex3>).TypeHandle;
+        RuntimeTypeHandle targetTypeHandle = typeof(IndexerPropertySetter<object?, TValue, TIndex1, TIndex2, TIndex3>).TypeHandle;
         Delegate? cachedInvoker = _invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateStatic3DIndexerSetter<TValue, TIndex1, TIndex2, TIndex3>(this));
-        var invoker = (IndexerPropertySetter<object, TValue, TIndex1, TIndex2, TIndex3>)cachedInvoker;
+        var invoker = (IndexerPropertySetter<object?, TValue, TIndex1, TIndex2, TIndex3>)cachedInvoker;
         return invoker;
     }
 
@@ -1403,19 +1165,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
 
     internal override bool IsFamilyAndAssembly => _isFamilyAndAssembly ??= AccessModifier == AccessModifier.PrivateProtected;
 
-    #region IPropertyDataInvoker
-
-    bool IPropertyDataInvoker.IsInvocable => (CanRead && _propertyGetInvoker is not null)
-        || (CanWrite && _propertySetInvoker is not null)
-        || (IsIndexer && ((CanRead && _indexerPropertyGetInvoker is not null)
-        || (CanWrite && _indexerPropertySetInvoker is not null)));
-
-    bool IPropertyDataInvoker.HasGetter => _indexerPropertyGetInvoker is not null || _propertyGetInvoker is not null;
-
-    bool IPropertyDataInvoker.HasSetter => _indexerPropertySetInvoker is not null || _propertySetInvoker is not null;
-
-    bool IPropertyDataInvoker.IsIndexer => IsIndexer;
-
     /// <inheritdoc/>
     internal override bool IsExplicitInterfaceImplementation => _isExplicitInterfaceImplementation ??= IsExplicitImplementation(this);
 
@@ -1432,8 +1181,6 @@ internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     private static bool IsExplicitImplementation(PropertyData propertyData) => propertyData.CanWrite
         ? propertyData.PropertySetMethodData.IsExplicitInterfaceImplementation
         : propertyData.PropertyGetMethodData.IsExplicitInterfaceImplementation;
-
-    #endregion IPropertyDataInvoker
 
     /// <summary>
     /// Determines the set of symbol attributes for the specified property based on its metadata and accessor
