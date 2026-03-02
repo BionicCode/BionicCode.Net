@@ -53,6 +53,6 @@ public interface IPropertyDataView : IMemberDataView, ISymbolInfoDataView
     bool TrySetStruct3DIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : struct;
     void SetStruct2DIndexerValue<TTarget, TValue, TIndex1, TIndex2>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : struct;
     bool TrySetStruct2DIndexerValue<TTarget, TValue, TIndex1, TIndex2>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : struct;
-    void SetStructIndexerValue<TTarget, TValue, TIndex1>(ref TTarget target, TValue value, TIndex1 index1) where TTarget : struct;
-    bool TrySetStructIndexerValue<TTarget, TValue, TIndex1>(ref TTarget target, TValue value, TIndex1 index1) where TTarget : struct;
+    void SetStructIndexerValue<TTarget, TValue, TIndex>(ref TTarget target, TValue value, params TIndex[] indices) where TTarget : struct;
+    bool TrySetStructIndexerValue<TTarget, TValue, TIndex>(ref TTarget target, TValue value, params TIndex[] indices) where TTarget : struct;
 }

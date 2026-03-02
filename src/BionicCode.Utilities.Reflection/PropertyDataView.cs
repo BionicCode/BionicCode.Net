@@ -867,4 +867,13 @@ internal sealed class PropertyDataView : MemberDataView, IPropertyDataView
     public void SetStruct3DIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : struct => throw new NotImplementedException();
     public void SetStruct2DIndexerValue<TTarget, TValue, TIndex1, TIndex2>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : struct => throw new NotImplementedException();
     public void SetStructIndexerValue<TTarget, TValue, TIndex1>(ref TTarget target, TValue value, TIndex1 index1) where TTarget : struct => throw new NotImplementedException();
+    public bool TryGetIndexerValue<TTarget, TValue, TIndex1, TIndex2>(TTarget target, TIndex1 index1, TIndex2 index2, out TValue propertyValue) => throw new NotImplementedException();
+    public bool TryGetIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget target, TIndex1 index1, TIndex2 index2, TIndex3 index3, out TValue propertyValue) => throw new NotImplementedException();
+    public bool TrySetStructIndexerValue<TTarget, TValue>(ref TTarget target, TValue value, params object?[] indexerPropertyIndex) where TTarget : struct => throw new NotImplementedException();
+    public bool TrySet3DIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) => throw new NotImplementedException();
+    public bool TrySet2DIndexerValue<TTarget, TValue, TIndex1, TIndex2>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2) => throw new NotImplementedException();
+    public bool TrySetIndexerValue<TTarget, TValue, TIndex1>(TTarget target, TValue value, TIndex1 index1) => throw new NotImplementedException();
+    public bool TrySetStruct3DIndexerValue<TTarget, TValue, TIndex1, TIndex2, TIndex3>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : struct => throw new NotImplementedException();
+    public bool TrySetStruct2DIndexerValue<TTarget, TValue, TIndex1, TIndex2>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : struct => throw new NotImplementedException();
+    public bool TrySetStructIndexerValue<TTarget, TValue, TIndex1>(ref TTarget target, TValue value, TIndex1 index1) where TTarget : struct => throw new NotImplementedException();
 }
