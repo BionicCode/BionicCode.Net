@@ -364,7 +364,7 @@ internal sealed class PropertyData : MemberData
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
-            PropertySetter<TTarget?, TValue> propertySetInvoker = GetSetInvokerInternal<TTarget?, TValue>();
+            PropertySetter<TTarget?, TValue> propertySetInvoker = GetSetInvokerInternal<TTarget, TValue>();
             propertySetInvoker(target, value);
         }
     }
@@ -576,7 +576,7 @@ internal sealed class PropertyData : MemberData
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
-            IndexerPropertySetter<TTarget?, TValue, TIndex> staticPropertySetInvoker = GetIndexerSetInvokerInternal<TTarget?, TValue, TIndex>();
+            IndexerPropertySetter<TTarget?, TValue, TIndex> staticPropertySetInvoker = GetIndexerSetInvokerInternal<TTarget, TValue, TIndex>();
             staticPropertySetInvoker(target, value, indices!);
         }
     }
@@ -692,7 +692,7 @@ internal sealed class PropertyData : MemberData
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
-            IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2> staticPropertySetInvoker = Get2DIndexerSetInvokerInternal<TTarget?, TValue, TIndex1, TIndex2>();
+            IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2> staticPropertySetInvoker = Get2DIndexerSetInvokerInternal<TTarget, TValue, TIndex1, TIndex2>();
             staticPropertySetInvoker(target, value, index1, index2);
         }
     }
@@ -807,7 +807,7 @@ internal sealed class PropertyData : MemberData
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {DeclaringTypeData.FullyQualifiedSignature}");
 
-            IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2, TIndex3> staticPropertySetInvoker = Get3DIndexerSetInvokerInternal<TTarget?, TValue, TIndex1, TIndex2, TIndex3>();
+            IndexerPropertySetter<TTarget?, TValue, TIndex1, TIndex2, TIndex3> staticPropertySetInvoker = Get3DIndexerSetInvokerInternal<TTarget, TValue, TIndex1, TIndex2, TIndex3>();
             staticPropertySetInvoker(target, value, index1, index2, index3);
         }
     }

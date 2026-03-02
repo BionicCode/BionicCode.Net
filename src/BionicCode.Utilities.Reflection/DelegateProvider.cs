@@ -837,7 +837,7 @@ internal static class DelegateProvider
     /// indexer with at least one index parameter.</param>
     /// <returns>A delegate that gets the value of the specified indexer property for a given declaringType object and index.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the specified property already has a getter invoker generated.</exception>
-    /// <exception cref="ArgumentException">Thrown if the specified property is not a 1D indexer, or is static, or if the types specified by <typeparamref name="TTarget"/>, <typeparamref name="TIndex"/>, or <typeparamref name="TValue"/> are not compatible with the declaring type, index parameter type, or property type.</exception>
+    /// <exception cref="ArgumentException">Thrown if the specified property is not an indexer, or is static, or if the types specified by <typeparamref name="TTarget"/>, <typeparamref name="TIndex"/>, or <typeparamref name="TValue"/> are not compatible with the declaring type, index parameter type, or property type.</exception>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="propertyData"/> or its declaring type data is <see langword="null">.</exception>"
     public static IndexerPropertyGetter<TTarget, TValue, TIndex> CreateIndexerGetter<TTarget, TValue, TIndex>(PropertyData propertyData)
     {
@@ -874,6 +874,7 @@ internal static class DelegateProvider
 
         // Validate indices length
         Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam, isGetter: true);
+
         Type indexType = typeof(TIndex);
         ParameterList propertyGetMethodParameters = propertyData.PropertyGetMethodParameters;
 
@@ -950,7 +951,7 @@ internal static class DelegateProvider
     /// indexer with exactly one index parameter.</param>
     /// <returns>A delegate that gets the value of the specified static indexer property for a given declaringType object and index.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the specified property already has a getter invoker generated.</exception>
-    /// <exception cref="ArgumentException">Thrown if the specified property is not a 1D static indexer, or not static, or if the types specified by <typeparamref name="TIndex"/>, or <typeparamref name="TValue"/> are not compatible with the index parameter type, or property type.</exception>
+    /// <exception cref="ArgumentException">Thrown if the specified property is not an static indexer, or not static, or if the types specified by <typeparamref name="TIndex"/>, or <typeparamref name="TValue"/> are not compatible with the index parameter type, or property type.</exception>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="propertyData"/> or its declaring type data is <see langword="null">.</exception>"
     public static IndexerPropertyGetter<object?, TValue, TIndex> CreateStaticIndexerGetter<TValue, TIndex>(PropertyData propertyData)
     {
@@ -1803,7 +1804,7 @@ internal static class DelegateProvider
     /// <summary>
     /// Creates a delegate that sets the value of a non-static indexer property on a reference type instance.
     /// </summary>
-    /// <remarks>Use this method to generate a performant setter for non-static 1D indexer properties when
+    /// <remarks>Use this method to generate a performant setter for non-static indexer properties when
     /// reflection-based property access is required.</remarks>
     /// <typeparam name="TTarget">The reference type that declares the indexer property. Must be a class.</typeparam>
     /// <typeparam name="TValue">The type of the value to set on the indexer property.</typeparam>
@@ -1812,7 +1813,7 @@ internal static class DelegateProvider
     /// <returns>A delegate that sets the value of the specified 3D indexer property on a reference type instance using the provided
     /// indices and value type.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the specified property already has a set invoker generated.</exception>
-    /// <exception cref="ArgumentException">Thrown if the property is declared on a value type,or is read-only, static, or if the provided generic method arguments are incompatible or if the property is not a 1D indexer.</exception>"
+    /// <exception cref="ArgumentException">Thrown if the property is declared on a value type,or is read-only, static, or if the provided generic method arguments are incompatible or if the property is not a indexer.</exception>"
     public static IndexerPropertySetter<TTarget?, TValue, TIndex> CreateIndexerSetter<TTarget, TValue, TIndex>(PropertyData propertyData)
         where TTarget : class?
     {
@@ -1908,16 +1909,17 @@ internal static class DelegateProvider
 
         // Action<...> requires a void body -> wrap assignment in a void block.
         BlockExpression body = Expression.Block(assign, Expression.Empty());
+        BlockExpression guardedBody = Expression.Block(validationExpression, body);
 
         return Expression
-            .Lambda<IndexerPropertySetter<TTarget?, TValue, TIndex>>(body, targetParam, valueParam, indicesParam)
+            .Lambda<IndexerPropertySetter<TTarget?, TValue, TIndex>>(guardedBody, targetParam, valueParam, indicesParam)
             .Compile();
     }
 
     /// <summary>
     /// Creates a delegate that sets the value of a non-static indexer property on a reference type instance.
     /// </summary>
-    /// <remarks>Use this method to generate a performant setter for non-static 1D indexer properties when
+    /// <remarks>Use this method to generate a performant setter for non-static indexer properties when
     /// reflection-based property access is required.</remarks>
     /// <typeparam name="TTarget">The reference type that declares the indexer property. Must be a class.</typeparam>
     /// <typeparam name="TValue">The type of the value to set on the indexer property.</typeparam>
@@ -1926,7 +1928,7 @@ internal static class DelegateProvider
     /// <returns>A delegate that sets the value of the specified 3D indexer property on a reference type instance using the provided
     /// indices and value type.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the specified property already has a set invoker generated.</exception>
-    /// <exception cref="ArgumentException">Thrown if the property is read-only, static, or if the provided generic method arguments are incompatible or if the property is not a 1D indexer.</exception>"
+    /// <exception cref="ArgumentException">Thrown if the property is read-only, static, or if the provided generic method arguments are incompatible or if the property is not an indexer.</exception>"
     public static IndexerPropertySetter<object?, TValue, TIndex> CreateStaticIndexerSetter<TValue, TIndex>(PropertyData propertyData)
     {
         ArgumentNullException.ThrowIfNull(propertyData);
@@ -2014,9 +2016,10 @@ internal static class DelegateProvider
 
         // Action<...> requires a void body -> wrap assignment in a void block.
         BlockExpression body = Expression.Block(assign, Expression.Empty());
+        BlockExpression guardedBody = Expression.Block(validationExpression, body);
 
         return Expression
-            .Lambda<IndexerPropertySetter<object?, TValue, TIndex>>(body, targetParam, valueParam, indicesParam)
+            .Lambda<IndexerPropertySetter<object?, TValue, TIndex>>(guardedBody, targetParam, valueParam, indicesParam)
             .Compile();
     }
 
@@ -2131,9 +2134,10 @@ internal static class DelegateProvider
 
         // Action<...> requires a void body -> wrap assignment in a void block.
         BlockExpression body = Expression.Block(assign, Expression.Empty());
+        BlockExpression guardedBody = Expression.Block(validationExpression, body);
 
         return Expression
-            .Lambda<ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex>>(body, targetByRef, valueParam, indicesParam)
+            .Lambda<ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex>>(guardedBody, targetByRef, valueParam, indicesParam)
             .Compile();
     }
 
